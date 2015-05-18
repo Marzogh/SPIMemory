@@ -67,7 +67,7 @@ Reads all pages on Flash chip and dumps it to Serial stream. This function is us
  - Connect your arduino to the computer.
  - Open the Arduino IDE, the IDE's Serial Monitor, and an OSX POSIX terminal.
  - Type the following command into the terminal window. ```% tail -f /dev/tty.usbmodem1411 > FlashDump.txt``` Make sure to replace the _/dev/tty.usbmodem1411_ with the port your arduino is connected to. (You can find this in Tools --> Ports in Arduino IDE 1.6.x)
- - Then type the command to read all pages into the Serial console. If you use my code from the example file the command is ```readAllPages```
+ - Then type the command to read all pages into the Serial console. If you use my code from the example file the command is ```read_all_pages```
  - Wait a few seconds before typing ```Ctrl+C``` to end the tail process
  - Check that you have actually recieved all the data by typing ```% cat FlashDump.txt```. This should output the entire textfile into your terminal window.
 
