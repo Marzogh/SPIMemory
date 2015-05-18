@@ -11,40 +11,52 @@ The library is called by declaring the```SPIFLASH flash(csPin)``` constructor wh
 Make sure to include ```#include<SPI.H>``` when you include ```#include<SPIFlash.h>```.
 
 The library enables the following functions:
-
+<hr>
 ##### getID ()
 Fetches the JEDEC ID as a 32 bit number.
-##### beginRead(address)
+<hr>
+##### Continuous read commands
+###### beginRead(address)
 Begins the read process but does not actually do any reading. This function **must** be called before readNextByte().
-##### readNextByte()
+###### readNextByte()
 When called repeatedly, this function reads consecutive bytes in the flash chip's memory. This function **must** be called only after beginRead(address)
-##### endRead()
-Has to be called at the end of the readNextByte() function to end the read process
-##### readByte(page, offset)
-Reads a byte of data from a specific location on a page. Takes the page number (0-4095) and offset of data byte within page (0-255) as arguments
-##### writeByte(page, offset, data)
-Writes a byte of data to a specific location on a page. Takes the page number (0-4095), offset of data byte within page (0-255) and one byte of data (0-255) as arguments
-##### readPage(page_number, *page_buffer)
+###### endRead()
+Has to be called at the end of the readNextByte() function to end the read process.
+<hr>
+##### Read commands
+###### readByte(page, offset)
+Reads a byte of data from a specific location on a page. Takes the page number (0-4095) and offset of data byte within page (0-255) as arguments.
+###### readPage(page_number, *page_buffer)
 Reads a page worth of data into a page buffer array for further use. ```uint8_t page_buffer[256];``` The page buffer **must** be an array of 256 bytes.
-##### writePage(uint16_t page_number, uint8_t *page_buffer)
+<hr>
+##### Write commands
+###### writeByte(page, offset, data)
+Writes a byte of data to a specific location on a page. Takes the page number (0-4095), offset of data byte within page (0-255) and one byte of data (0-255) as arguments.
+###### writePage(uint16_t page_number, uint8_t *page_buffer)
 Writes a page worth of data into a page buffer array for further use. ```uint8_t page_buffer[256];``` The page buffer **must** be an array of 256 bytes.
-##### eraseSector(address)
+<hr>
+##### Erase commands
+###### eraseSector(address)
 Erases one sector - 16 pages/4KB. The chip rounds this down to the 4KB sector boundary prior to the address - if the address marks the beginning of a 4KB sector, erase will begin there. Byte addresses range from 0x00000 to 0xFFFFF (00000 to 1048575).
-##### eraseBlock32K(address)
+###### eraseBlock32K(address)
 Erases one 32KB block - 128 pages. The chip rounds this down to the 32KB block boundary prior to the address - if the address marks the beginning of a 32KB sector, erase will begin there.  Byte addresses range from 0x00000 to 0xFFFFF (00000 to 1048575).
-##### eraseBlock64K(address)
+###### eraseBlock64K(address)
 Erases one 64KB block - 256 pages. The chip rounds this down to the 64KB block boundary prior to the address - if the address marks the beginning of a 64KB sector, erase will begin there.  Byte addresses range from 0x00000 to 0xFFFFF (00000 to 1048575).
-##### eraseChip()
+###### eraseChip()
 Erases entire chip. Use with care.
-##### suspendProg()
+<hr>
+##### uspend/Resume commands
+###### suspendProg()
 Suspends current Block Erase/Sector Erase/Page Program. Does not suspend chipErase(). Page Program, Write Status Register, Erase instructions are not allowed. Erase suspend is only allowed during Block/Sector erase. Program suspend is only allowed during Page/Quad Page Program
-##### resumeProg()
+###### resumeProg()
 Resumes previously suspended Block Erase/Sector Erase/Page Program.
-##### powerDown()
-Puts device in low power state. Good for battery powered operations. Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4). In powerDown() the chip will only respond to powerUp()
-##### powerUp()
+<hr>
+##### Power operation commands
+###### powerDown()
+Puts device in low power state. Useful for battery powered operations. Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4). In powerDown() the chip will only respond to powerUp()
+###### powerUp()
 //Wakes chip from low power state.
-
+<hr>
 ##### readAllPages()
 Reads all pages on Flash chip and dumps it to Serial stream. This function is useful when extracting data from a flash chip onto a computer as a text file.
 
