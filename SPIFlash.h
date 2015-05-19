@@ -50,7 +50,9 @@ public:
 	         
 	         
 private:
-	void     _cmd(uint8_t c),
+	void     _chipSelect(void),
+	         _chipDeselect(void),
+	         _cmd(uint8_t c),
 	         _printPageBytes(uint8_t *page_buffer);
 	boolean  _notBusy(uint32_t timeout = 100L),
 		     _writeEnable(void),
@@ -61,6 +63,7 @@ private:
   
   volatile uint8_t *cs_port;
   uint8_t           cs_mask;
+  uint8_t			chipSelect;
 };
 
 #endif // _SPIFLASH_H_

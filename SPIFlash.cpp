@@ -36,7 +36,7 @@
 #define SUSPEND      0x75
 #define ID           0x90
 #define RESUME       0x7A
-#define JEDECID      0x9F
+#define JEDECID      0x9f
 #define RELEASE      0xAB
 #define POWERDOWN    0xB9
 #define BLOCK64ERASE 0xD8
@@ -47,25 +47,38 @@
 // Currently library works only with W25Q80BV
 #define CAPACITY       1L * 1024L * 1024L
 
-#define CHIP_SELECT   *cs_port &= ~cs_mask;
-#define CHIP_DESELECT *cs_port |=  cs_mask;
+//#define CHIP_SELECT   *cs_port |= ~cs_mask;
+//#define CHIP_DESELECT *cs_port &=  cs_mask;
 #define xfer(n)   SPI.transfer(n)
 
 // Constructor
 SPIFlash::SPIFlash(uint8_t cs) {
-	cs_mask = digitalPinToBitMask(cs);
+	//cs_mask = digitalPinToBitMask(cs);
 	SPI.begin();
     SPI.setDataMode(0);
     SPI.setBitOrder(MSBFIRST);
+    chipSelect = cs;
+    pinMode(cs, OUTPUT);
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Private functions used by read, write and erase operations     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
+//Selects chip
+void SPIFlash::_chipSelect() {
+	digitalWrite(chipSelect, HIGH);
+	digitalWrite(chipSelect, LOW);
+}
+
+//Deselects chip
+void SPIFlash::_chipDeselect() {
+	digitalWrite(chipSelect, HIGH);
+}
+
 // Select chip and issue command - data to follow
 void SPIFlash::_cmd(uint8_t c) {
-	CHIP_SELECT
+	_chipSelect();
 	(void)xfer(c);
 }
 
@@ -77,7 +90,7 @@ boolean SPIFlash::_notBusy(uint32_t timeout) {
 	do {
 		_cmd(READSTAT1);
 		state = xfer(0);
-		CHIP_DESELECT
+		_chipDeselect();
 		if((millis()-startTime) > timeout)
 			return false;
 	} while(state & BUSY);
@@ -89,12 +102,12 @@ boolean SPIFlash::_writeEnable(void) {
 	uint8_t state;
 
 	_cmd(WRITEENABLE);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	//verifies that WRITE is enabled
 	_cmd(READSTAT1);
 	state = xfer(0);
-	CHIP_DESELECT
+	_chipDeselect();
 	return (state & WRTEN) ? true : false;
 }
 
@@ -105,7 +118,7 @@ boolean SPIFlash::_writeEnable(void) {
 // Erase Security Register and Program Security register
 boolean SPIFlash::_writeDisable(void) {
 	_cmd(WRITEDISABLE);
-	CHIP_DESELECT
+	_chipDeselect();
 }
 
 
@@ -115,7 +128,7 @@ boolean SPIFlash::_getJedecId (byte *b1, byte *b2, byte *b3) {
   *b1 = xfer(0); // manufacturer id
   *b2 = xfer(0); // memory type
   *b3 = xfer(0); // capacity
-  CHIP_DESELECT
+  _chipDeselect();
   if (!_notBusy())
   	return false;
   return true;
@@ -134,7 +147,7 @@ boolean  SPIFlash::_readPage(uint16_t page_number, uint8_t *page_buffer) {
 	 for (int a = 0; a < 256; ++a) {
 	 	page_buffer[a] = xfer(0);
 	 }
-	 CHIP_DESELECT
+	 _chipDeselect();
 
 	 return true;
 }
@@ -151,7 +164,7 @@ boolean SPIFlash::_writePage(uint16_t page_number, uint8_t *page_buffer) {
 	for (int a = 0; a < 256; ++a) {
 		xfer(page_buffer[a]);
 	}
-	CHIP_DESELECT 
+	_chipDeselect(); 
 	delay(3);     // Maximum page program time - Ref. datasheet
 
 	if(!_notBusy())
@@ -186,8 +199,9 @@ uint32_t SPIFlash::getID(void) {
 
     byte b1, b2, b3;
     _getJedecId(&b1, &b2, &b3);
-    uint32_t combined = ((b1<<16)|(b2<<8)|b3);
-    return combined;
+      char buffer[128];
+      sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
+      Serial.println(buffer);
 }
 
 
@@ -213,7 +227,7 @@ uint8_t SPIFlash::readNextByte(void) {
 
 //Stops read operation. Should be called after all the required data is read from repeated readNextByte() calls
 void SPIFlash::endRead(void) {
-	CHIP_DESELECT
+	_chipDeselect();
 }
 
 //Reads a byte of data from a specific location in a page. Takes two arguements -
@@ -247,25 +261,15 @@ boolean SPIFlash::writePage(uint16_t page_number, uint8_t *page_buffer) {
 	uint8_t temp_buffer[256];
 	char buffer[80];
 	
-	sprintf(buffer, "Reading page (%04x)", page_number);
-	Serial.println(buffer);
-	_readPage(page_number, temp_buffer);
-	_printPageBytes(temp_buffer);
-
 	_writePage(page_number, page_buffer);
-	sprintf(buffer, "Writing page (%04x) done", page_number);
-	Serial.println(buffer);
-
-	sprintf(buffer, "Reading page (%04x)", page_number);
-	Serial.println(buffer);
 	_readPage(page_number, temp_buffer);
-	_printPageBytes(temp_buffer);
 
 	for(int a=0; a<256; ++a) {
 		if(!temp_buffer[a] == page_buffer[a])
 		return false;
 }
-
+	sprintf(buffer, "Writing page (%04x) done", page_number);
+	Serial.println(buffer);
 	return true;
 }
 
@@ -278,7 +282,7 @@ boolean SPIFlash::eraseSector(uint32_t address) {
 	(void)xfer(address >> 16);
 	(void)xfer(address >> 8);
 	(void)xfer(0);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	if(!_notBusy(1000L))
 		return false;	//Datasheet says erasing a sector takes 400ms max
@@ -300,7 +304,7 @@ boolean SPIFlash::eraseBlock32K(uint32_t address) {
 	(void)xfer(address >> 16);
 	(void)xfer(address >> 8);
 	(void)xfer(0);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	if(!_notBusy(1000L))
 		return false;	//Datasheet says erasing a sector takes 400ms max
@@ -322,7 +326,7 @@ boolean SPIFlash::eraseBlock64K(uint32_t address) {
 	(void)xfer(address >> 16);
 	(void)xfer(address >> 8);
 	(void)xfer(0);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	if(!_notBusy(1000L))
 		return false;	//Datasheet says erasing a sector takes 400ms max
@@ -341,7 +345,7 @@ boolean SPIFlash::eraseChip(void) {
 		return false;
 
 	_cmd(CHIPERASE);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	if(!_notBusy(10000L))
 		return false; //Datasheet says erasing chip takes 6s max
@@ -364,7 +368,7 @@ boolean SPIFlash::suspendProg(void) {
 		return false;
 
 	_cmd(SUSPEND);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	delay(20);			//Max suspend enable time according to the Datasheet
 
@@ -378,7 +382,7 @@ boolean SPIFlash::resumeProg(void) {
 		return false;
 
 	_cmd(RESUME);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	if(_notBusy())
 		return false;
@@ -395,7 +399,7 @@ boolean SPIFlash::powerDown(void) {
 		return false;
 
 	_cmd(POWERDOWN);
-	CHIP_DESELECT
+	_chipDeselect();
 
 	delay(3);							//Max powerDown enable time according to the Datasheet
 
@@ -414,7 +418,7 @@ boolean SPIFlash::powerUp(void) {
 		return false;
 
 	_cmd(RELEASE);						
-	CHIP_DESELECT
+	_chipDeselect();
 
 	delay(3);						    //Max release enable time according to the Datasheet
 
