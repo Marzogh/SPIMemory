@@ -1,12 +1,19 @@
 # SPIFlash
-#### Arduino library for Winbond Flash W25Q80BV
-<sup> Download the latest beta (0.5.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/tag/v0.5.0-beta">here</a>. Please report any bugs in issues. This library is still a work in progress.</sup>
+### Arduino library for Winbond Flash W25Q80BV
+<sup> Download the latest release (v1.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/tag/v1.0">here</a>. Please report any bugs in issues.</sup>
 
 This library is for the W25Q80BV serial flash memory chip. In its current form it enables reading and writing bytes from and to various locations, reading and writing pages, sector, block and chip erase, powering down for low power operation and continuous read functions.
 
 - The W25Q80BV has a capacity of 64 Mbits (1 Megabyte) which consists of 4096 pages of 256 bytes each.
 - It has 16 blocks of 64KB each
 - Byte addresses are 24 bit range from 0x00000 to 0xFFFFF (00000 to 1048575 - decimal)
+
+#### Installation
+- Click on the 'Download zip' button to the right.
+- Unzip the archive and rename resulting folder to 'SPIFlash'
+- Move the folder to your libraries folder (~/sketches/libraries)
+
+#### Usage
 
 The library is called by declaring the```SPIFLASH flash(csPin)``` constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
 Make sure to include ```#include<SPI.H>``` when you include ```#include<SPIFlash.h>```.
@@ -46,7 +53,7 @@ Erases one 64KB block - 256 pages. The chip rounds this down to the 64KB block b
 ###### eraseChip()
 Erases entire chip. Use with care.
 <hr>
-##### uspend/Resume commands
+##### Suspend/Resume commands
 ###### suspendProg()
 Suspends current Block Erase/Sector Erase/Page Program. Does not suspend chipErase(). Page Program, Write Status Register, Erase instructions are not allowed. Erase suspend is only allowed during Block/Sector erase. Program suspend is only allowed during Page/Quad Page Program
 ###### resumeProg()
