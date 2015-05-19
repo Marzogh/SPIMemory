@@ -194,7 +194,7 @@ void SPIFlash::_printPageBytes(uint8_t *page_buffer) {
 //     Public functions used for read, write and erase operations     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-//Checks for and initiates the chip by requesting JEDEC ID which is returned as a 32 bit int
+//Checks for and initiates the chip by requesting JEDEC ID which is returned as 3 bytes
 uint32_t SPIFlash::getID(void) {
 
     byte b1, b2, b3;
