@@ -178,13 +178,25 @@ boolean SPIFlash::_writePage(uint16_t page_number, uint8_t *page_buffer) {
 	return true;
 }
 
-//Prints properly formatted data from page reads - for debugging
-void SPIFlash::_printPageBytes(uint8_t *page_buffer) {
+//Prints hex/dec formatted data from page reads - for debugging
+void SPIFlash::_printPageBytes(uint8_t *page_buffer, uint8_t outputType) {
 	char buffer[10];
 	for (int a = 0; a < 16; ++a) {
 		for (int b = 0; b < 16; ++b) {
-			sprintf(buffer, "%02x", page_buffer[a * 16 + b]);
-			Serial.print(buffer);
+			if (outputType == 1) {
+				sprintf(buffer, "%02x", page_buffer[a * 16 + b]);
+				Serial.print(buffer);
+			}
+			else if (outputType == 2) {
+				if (page_buffer[a * 16 + b] < 10) {
+					Serial.print("00");
+				}
+				else if (page_buffer[a * 16 + b] >= 10 && page_buffer[a * 16 + b] < 100) {
+					Serial.print("0");
+				}
+				Serial.print(page_buffer[a * 16 + b]);
+				Serial.print(",");
+			}
 		}
 		Serial.println();
 	}
@@ -194,7 +206,7 @@ void SPIFlash::_printPageBytes(uint8_t *page_buffer) {
 //     Public functions used for read, write and erase operations     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-//Checks for and initiates the chip by requesting JEDEC ID which is returned as 3 bytes
+//Checks for and initiates the chip by requesting JEDEC ID which is returned as a 32 bit int
 uint32_t SPIFlash::getID(void) {
 
     byte b1, b2, b3;
@@ -438,7 +450,7 @@ boolean SPIFlash::powerUp(void) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t page_buffer[]) == 256.
-void SPIFlash::readPage(uint16_t page_number, uint8_t *page_buffer) {
+void SPIFlash::readPage(uint16_t page_number, uint8_t *page_buffer, uint8_t outputType) {
 	if(!Serial)
 		Serial.begin(9600);
 
@@ -447,12 +459,12 @@ void SPIFlash::readPage(uint16_t page_number, uint8_t *page_buffer) {
 	Serial.println(buffer);
 
 	_readPage(page_number, page_buffer);
-	_printPageBytes(page_buffer);
+	_printPageBytes(page_buffer, outputType);
 }
 
 //Reads all pages on Flash chip and dumps it to Serial stream. 
 //This function is useful when extracting data from a flash chip onto a computer as a text file.
-void SPIFlash::readAllPages(void) {
+void SPIFlash::readAllPages(uint8_t outputType) {
 	if(!Serial)
 		Serial.begin(9600);
 
@@ -461,6 +473,6 @@ void SPIFlash::readAllPages(void) {
 
 	for (int a = 0; a < 4096; ++a) {
 		_readPage(a, page_buffer);
-		_printPageBytes(page_buffer);
+		_printPageBytes(page_buffer, outputType);
   }
 }

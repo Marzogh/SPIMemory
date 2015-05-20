@@ -42,8 +42,8 @@ public:
 	         powerUp(void),
 	         beginRead(uint32_t address);
 	void     endRead(void),
-	         readPage(uint16_t page_number, uint8_t *page_buffer),
-	         readAllPages(void);
+	         readPage(uint16_t page_number, uint8_t *page_buffer, uint8_t outputType),
+	         readAllPages(uint8_t outputType);
 	uint8_t  readNextByte(void),
 	         readByte(uint16_t page, uint8_t offset);
 	         
@@ -53,7 +53,7 @@ private:
 	void     _chipSelect(void),
 	         _chipDeselect(void),
 	         _cmd(uint8_t c),
-	         _printPageBytes(uint8_t *page_buffer);
+	         _printPageBytes(uint8_t *page_buffer, uint8_t outputType);
 	boolean  _notBusy(uint32_t timeout = 100L),
 		     _writeEnable(void),
 		     _writeDisable(void),
