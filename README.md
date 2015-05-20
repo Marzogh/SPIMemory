@@ -34,8 +34,8 @@ Has to be called at the end of the readNextByte() function to end the read proce
 ##### Read commands
 ###### readByte(page, offset)
 Reads a byte of data from a specific location on a page. Takes the page number (0-4095) and offset of data byte within page (0-255) as arguments.
-###### readPage(page_number, *page_buffer)
-Reads a page worth of data into a page buffer array for further use. ```uint8_t page_buffer[256];``` The page buffer **must** be an array of 256 bytes.
+###### readPage(page_number, *page_buffer, outputType)
+Reads a page worth of data into a page buffer array for further use. ```uint8_t page_buffer[256];``` The page buffer **must** be an array of 256 bytes. Setting an outputType of 1 enables output in hexadecimal while an outputType of 2 enables output in decimal, CSV - over Serial.
 <hr>
 ##### Write commands
 ###### writeByte(page, offset, data)
