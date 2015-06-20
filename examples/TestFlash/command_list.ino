@@ -22,7 +22,7 @@ void commandList() {
   Serial.println(F("  3. readByte [page] [offset]"));
   Serial.print(F("\t\t"));
   Serial.println(F("'3' followed by '100' and then by '20' returns the byte from page 100 position 20"));
-  Serial.println(F("  4. write_page [page]"));
+  Serial.println(F("  4. writePage [page]"));
   Serial.print(F("\t\t"));
   Serial.println(F("'4' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33"));
   Serial.println(F("  5. readPage [page]"));
@@ -44,7 +44,7 @@ void commandList() {
   Serial.println(F("  9. eraseBlock64K"));
   Serial.print(F("\t\t"));
   Serial.println(F("'9' followed by '543' erases a 64KB sector (Sector 2) containing the page 543"));
-  Serial.println(F("  10. erase_chip"));
+  Serial.println(F("  10. eraseChip"));
   Serial.print(F("\t\t"));
   Serial.println(F("'10' erases the entire chip"));
   Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
