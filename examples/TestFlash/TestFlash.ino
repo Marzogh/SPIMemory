@@ -25,7 +25,7 @@
  |  4. Write Page [page]                                                                                                            |
  |   '4' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
  |                                                                                                                                  |
- |  5. Read PAge [page]                                                                                                             |
+ |  5. Read Page [page]                                                                                                             |
  |   '5' followed by 33 reads page 33                                                                                               |
  |                                                                                                                                  |
  |  6. Read All Pages                                                                                                               |
@@ -33,8 +33,11 @@
  |   This function is to extract data from a flash chip onto a computer as a text file.                                             |
  |   Refer to 'Read me.md' in the library for details.                                                                              |
  |                                                                                                                                  |
- |  7. Erase Chip                                                                                                                   |
- |   '7' erases the entire chip                                                                                                     |
+ |  7. Erase sector                                                                                                                 |
+ |   '7'  followed by 2 erases a 4KB sector containing the page to be erased (Sector 0 - Pages 0-15, in this case).                 |
+ |                                                                                                                                  |
+ |  8. Erase Chip                                                                                                                   |
+ |   '8' erases the entire chip                                                                                                     |
  |                                                                                                                                  |
  ^----------------------------------------------------------------------------------------------------------------------------------^
  */
@@ -45,9 +48,8 @@
 #include<SPI.h>
 const int cs = 10;
 uint8_t pageBuffer[256];
-boolean commandReady(false);
 String serialCommand;
-char dataBuffer[128];
+char printBuffer[128];
 uint16_t page;
 uint8_t offset, dataByte;
 
@@ -101,9 +103,9 @@ void loop() {
       dataByte = Serial.parseInt();
       Serial.println(dataByte);
       flash.writeByte(page, offset, dataByte);
-      clearDataBuffer();
-      sprintf(dataBuffer, "%d has been written to position %d on page %d", dataByte, offset, page);
-      Serial.println(dataBuffer);
+      clearprintBuffer();
+      sprintf(printBuffer, "%d has been written to position %d on page %d", dataByte, offset, page);
+      Serial.println(printBuffer);
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
@@ -122,9 +124,9 @@ void loop() {
       }
       offset = Serial.parseInt();
       Serial.println(offset);
-      clearDataBuffer();
-      sprintf(dataBuffer, "The byte at position %d on page %d is: ", offset, page);
-      Serial.print(dataBuffer);
+      clearprintBuffer();
+      sprintf(printBuffer, "The byte at position %d on page %d is: ", offset, page);
+      Serial.print(printBuffer);
       Serial.println(flash.readByte(page, offset));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
@@ -144,9 +146,9 @@ void loop() {
         pageBuffer[i] = i;
       }
       flash.writePage(page, pageBuffer);
-      clearDataBuffer();
-      sprintf(dataBuffer, "Values from 0 to 255 have been written to the page %d", page);
-      Serial.println(dataBuffer);
+      clearprintBuffer();
+      sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
+      Serial.println(printBuffer);
       Serial.print("Type 1 to read the page you have just written. Type 0 to continue: ");
       while (!Serial.available()) {
       }
@@ -158,7 +160,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        flash.readPage(page, pageBuffer, outputType);
+        flash.printPage(page, outputType);
       }
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
@@ -179,7 +181,7 @@ void loop() {
       }
       uint8_t outputType = Serial.parseInt();
       Serial.println(outputType);
-      flash.readPage(page, pageBuffer, outputType);
+      flash.printPage(page, outputType);
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
@@ -200,14 +202,45 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        flash.readAllPages(outputType);
+        flash.printAllPages(outputType);
       }
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
     else if (commandNo == 7) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 7 : Erase Chip                                                    "));
+      Serial.println(F("                                                       Function 7 : Erase sector                                                    "));
+      Serial.println(F("                                                        SPIFlash library test                                                     "));
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.println(F("This function will erase a 4KB sector."));
+      Serial.print(F("Please enter the number of the page (0-4095) you wish to erase to: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      flash.eraseSector(page);
+      clearprintBuffer();
+      sprintf(printBuffer, "A 4KB sector starting with Page %d has been erased", page);
+      Serial.println(printBuffer);
+      Serial.print("Type 1 to read the page you have just erased. Type 0 to continue: ");
+      while (!Serial.available()) {
+      }
+      uint8_t choice = Serial.parseInt();
+      Serial.println(choice);
+      if (choice == 1) {
+        Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+        while (!Serial.available()) {
+        }
+        uint8_t outputType = Serial.parseInt();
+        Serial.println(outputType);
+        flash.printPage(page, outputType);
+      }
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+    }
+    else if (commandNo == 8) {
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.println(F("                                                       Function 8 : Erase Chip                                                    "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will erase the entire flash memory."));
@@ -226,10 +259,10 @@ void loop() {
   }
 }
 
-void clearDataBuffer()
+void clearprintBuffer()
 {
   for (uint8_t i = 0; i < 128; i++) {
-    dataBuffer[i] = 0;
+    printBuffer[i] = 0;
   }
 }
 

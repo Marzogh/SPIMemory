@@ -1,0 +1,12 @@
+--> Added the ability to set page overflow - set to overflow by default
+--> Added page turn feature - checks for overflow and increments page number
+--> Added a function to empty an array before it is filled again - used by the writeAnything function
+--> Added templates to read and write anything
+--> Added a method to calculate length of any array to enable writing any array type to memory
+--> Added a function to read and write any array (Optimized to read continuously instead of repeatedly calling the readByte function)
+--> Add note to say that Page numbers go from 0-4095 and offset values from 0-255
+--> Checks to see if data being written is the same as data already at the location. If so, does not overwrite - this reduces wear
+--> Added the ability to read and write data to a particular location in the memory without a process that involves reading and writing the whole page - reduces wear
+--> Enabled error check on all write commands to check for write errors
+--> Added functions to write an array of bytes
+--> Erase functions defined better and now work with page numbers instead of addresses. 

@@ -28,42 +28,48 @@
 
 class SPIFlash {
 public:
-  SPIFlash(uint8_t cs = 10);
+  SPIFlash(uint8_t cs = 10, bool overflow = true);
 	uint32_t getID(void);
-	boolean  writeByte(uint16_t page, uint8_t offset, uint8_t data),
-	         writePage(uint16_t page_number, uint8_t *page_buffer),
-	         eraseSector(uint32_t address),
-	         eraseBlock32K(uint32_t address),
-	         eraseBlock64K(uint32_t address),
+	bool     readPage(uint16_t page_number, uint8_t *data_buffer),
+           writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true),
+           writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck),
+	         writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true),
+	         eraseSector(uint16_t page_number),
+	         eraseBlock32K(uint16_t page_number),
+	         eraseBlock64K(uint16_t page_number),
 	         eraseChip(void),
 	         suspendProg(void),
 	         resumeProg(void),
 	         powerDown(void),
-	         powerUp(void),
-	         beginRead(uint32_t address);
-	void     endRead(void),
-	         readPage(uint16_t page_number, uint8_t *page_buffer, uint8_t outputType),
-	         readAllPages(uint8_t outputType);
-	uint8_t  readNextByte(void),
-	         readByte(uint16_t page, uint8_t offset);
-	         
-	         
-	         
+	         powerUp(void);
+	void     printPage(uint16_t page_number, uint8_t outputType),
+	         printAllPages(uint8_t outputType);
+	uint8_t  readByte(uint16_t page_number, uint8_t offset);
+	uint16_t pageTurn(uint16_t page_number);
+
+
 private:
 	void     _chipSelect(void),
 	         _chipDeselect(void),
 	         _cmd(uint8_t c),
-	         _printPageBytes(uint8_t *page_buffer, uint8_t outputType);
-	boolean  _notBusy(uint32_t timeout = 100L),
-		     _writeEnable(void),
-		     _writeDisable(void),
-		     _readPage(uint16_t page_number, uint8_t *page_buffer),
-	         _writePage(uint16_t page_number, uint8_t *page_buffer),
+           _endProcess(void),
+	         _empty(uint8_t *array),
+	         _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
+	bool     _notBusy(uint32_t timeout = 100L),
+           _beginRead(uint32_t address),
+           _beginWrite(uint32_t address),
+           _writeNextByte(uint8_t c),
+		       _writeEnable(void),
+		       _writeDisable(void),
+	         _writePage(uint16_t page_number, uint8_t *data_buffer),
 	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
+    uint8_t  _readNextByte(void);
+	uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   
   volatile uint8_t *cs_port;
   uint8_t           cs_mask;
   uint8_t			chipSelect;
+  bool			pageOverflow;
 };
 
 #endif // _SPIFLASH_H_
