@@ -215,7 +215,7 @@ void SPIFlash::_endProcess(void) {
 	_chipDeselect();
 	delay(3);
 }
-
+/*
 //Writes a page of data into a page buffer
 bool SPIFlash::_writePage(uint16_t page_number, uint8_t *data_buffer) {
 	if(!_notBusy() || page_number >= 4096 || !_writeEnable())
@@ -241,7 +241,7 @@ bool SPIFlash::_writePage(uint16_t page_number, uint8_t *data_buffer) {
 	// Erase Security Register and Program Security register
 
 	return true;
-}
+}*/
 
 //Prints hex/dec formatted data from page reads - for debugging
 void SPIFlash::_printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
@@ -452,21 +452,27 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck) {
 	uint8_t temp_buffer[256];
 	char buffer[80];
-	_writePage(page_number, data_buffer);
+	uint32_t address = _getAddress(page_number);
+
+	_beginWrite(address);
+	for (uint16_t i = 0; i < 256; i++)
+		_writeNextByte(data_buffer[i]);
+	_endProcess();
 	
 	if (errorCheck)
 	{
-		readPage(page_number, temp_buffer);
-		for(int a=0; a<256; ++a) {
-			if(!temp_buffer[a] == data_buffer[a])
+		_beginRead(address);
+		uint8_t j;
+		for (j = 0; j < 256; j++)
+		{
+			if (data_buffer[j] != _readNextByte())
+			{
 				return false;
-			else
-				{
-					sprintf(buffer, "Writing page (%04x) done", page_number);
-					Serial.println(buffer);
-					return true;
-				}
+			}
 		}
+		sprintf(buffer, "Writing page (%04x) done", page_number);
+		Serial.println(buffer);
+		return true;
 	}
 	else
 	{
@@ -524,7 +530,7 @@ bool SPIFlash::eraseBlock32K(uint16_t page_number) {
 	return true;
 }
 
-//Erases one 32k block containing the page to be erased. The blocks are numbered 0 - 15 containing 256 pages each.
+//Erases one 64k block containing the page to be erased. The blocks are numbered 0 - 15 containing 256 pages each.
 // Page 0-255 --> Block 0; Page 256-511 --> Block 1;......Page 3840-4095 --> Block 15
 bool SPIFlash::eraseBlock64K(uint16_t page_number) {
 	if(!_notBusy() || !_writeEnable())

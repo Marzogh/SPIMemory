@@ -33,7 +33,7 @@ public:
 	bool     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer),
            readPage(uint16_t page_number, uint8_t *data_buffer),
            writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true),
-           writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck),
+           writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck = true),
 	         writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true),
 	         eraseSector(uint16_t page_number),
 	         eraseBlock32K(uint16_t page_number),
@@ -61,7 +61,6 @@ private:
            _writeNextByte(uint8_t c),
 		       _writeEnable(void),
 		       _writeDisable(void),
-	         _writePage(uint16_t page_number, uint8_t *data_buffer),
 	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  _readNextByte(void),
            _addressCheck(uint32_t address);
