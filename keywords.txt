@@ -12,20 +12,28 @@ SPIFlash	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 begin	KEYWORD2
+getID	KEYWORD2
 beginRead	KEYWORD2
 readNextByte	KEYWORD2
 endRead	KEYWORD2
 readByte	KEYWORD2
 readPage	KEYWORD2
+readAnything	KEYWORD2
 readAllPages	KEYWORD2
 writeByte	KEYWORD2
+writeBytes	KEYWORD2
 writePage	KEYWORD2
+writeAnything KEYWORD2
+printPage	KEYWORD2
+printAllPages	KEYWORD2
 eraseSector	KEYWORD2
 eraseBlock32K	KEYWORD2
 eraseBlock64K	KEYWORD2
 eraseChip	KEYWORD2
 suspendProg	KEYWORD2
 resumeProg	KEYWORD2
+powerUp	KEYWORD2
+powerDown	KEYWORD2
 
 
 #######################################
