@@ -1,5 +1,6 @@
-/* Arduino SPIFlash Library
+/* Arduino SPIFlash Library v.1.2.0
  * Copyright (C) 2015 by Prajwal Bhattaram
+ * Modified by Prajwal Bhattaram - 21/06/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * W25Q80BV serial flash memory. In its current form it enables reading 
