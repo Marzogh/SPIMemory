@@ -30,7 +30,7 @@ Fetches the JEDEC ID as a 32 bit number.
 ##### Continuous read/write commands
 ###### readBytes(page_number, offset, *data_buffer)
 Reads an array of bytes starting from a specific location in a page. Takes the page number (0-4095), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be read from the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of storage available on the Arduino board.
-###### writeBytes()
+###### writeBytes(page_number, offset, *data_buffer)
 Writes an array of bytes starting from a specific location in a page. Takes the page number (0-4095), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be written to the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of storage available on the Arduino board.
 <hr>
 ##### Read commands
@@ -42,7 +42,7 @@ Reads a page worth of data into a data buffer array for further use. ```uint8_t 
 ##### Write commands
 ###### writeByte(page, offset, data)
 Writes a byte of data to a specific location on a page. Takes the page number (0-4095), offset of data byte within page (0-255) and one byte of data (0-255) as arguments.
-###### writePage(uint16_t page_number, uint8_t *data_buffer)
+###### writePage(page_number, *data_buffer)
 Writes a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
 <hr>
 ##### Erase commands
