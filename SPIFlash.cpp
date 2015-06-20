@@ -154,6 +154,21 @@ bool SPIFlash::_getJedecId (byte *b1, byte *b2, byte *b3) {
   return true;
 }  
 
+//Checks to see if pageOverflow is permitted and assists with determining next address to write to.
+uint8_t SPIFlash::_addressCheck(uint32_t address)
+{
+  if (address > 0xFFFFF) {
+    if (!pageOverflow) {
+      return (1);
+    }
+    else
+    return (2);  
+  }
+  else if (address < 0xFFFFF) {
+    return (0);
+  } 
+}
+
 //Initiates read operation - but data is not read yet
 bool SPIFlash::_beginRead(uint32_t address) {
 	if((address >= CAPACITY) || !_notBusy())
@@ -337,7 +352,7 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 	uint32_t address = _getAddress(page_number, offset);
 
 	uint16_t n;
-	uint16_t maxBytes = 256-(address%256);  // force the first set of bytes to stay within the first page
+	uint16_t maxBytes = 256-(address%256);  // Force the first set of bytes to stay within the first page
 	uint16_t data_offset = 0;
 
 	uint16_t length = arrayLen(data_buffer);
@@ -351,6 +366,21 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 		_endProcess();
 
 		address += n;  // Adjust the address and remaining bytes by what we've just transferred.
+		uint8_t addressCheck = _addressCheck(address);
+		
+		switch (addressCheck) {
+			case 0:
+			break;
+
+			case 1:
+			Serial.println(F("Out of memory."));
+			while (1);
+			break;
+
+			case 2:
+			address = 0x00;
+			break;
+		}
 		data_offset += n;
 		length -= n;
 		maxBytes = 256;   // Now we can do up to 256 bytes per loop
@@ -571,25 +601,6 @@ bool SPIFlash::powerUp(void) {
 	return false;
 }
 
-
-//
-// Higher level functions for easy data access
-//
-
-uint16_t SPIFlash::pageTurn(uint16_t page_number)
-{
-  if (page_number < 4095) {
-    page_number++;
-  }
-  else if (page_number = 4095) {
-    if (!pageOverflow) {
-      while (1);
-    }
-    else
-      page_number = 0;
-  }
-  return page_number;
-}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //         These functions return data to Serial stream. 	          //

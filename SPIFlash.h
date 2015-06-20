@@ -45,7 +45,6 @@ public:
 	void     printPage(uint16_t page_number, uint8_t outputType),
 	         printAllPages(uint8_t outputType);
 	uint8_t  readByte(uint16_t page_number, uint8_t offset);
-	uint16_t pageTurn(uint16_t page_number);
 
 
 private:
@@ -63,7 +62,8 @@ private:
 		       _writeDisable(void),
 	         _writePage(uint16_t page_number, uint8_t *data_buffer),
 	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
-    uint8_t  _readNextByte(void);
+  uint8_t  _readNextByte(void),
+           _addressCheck(uint32_t address);
 	uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   
   volatile uint8_t *cs_port;
