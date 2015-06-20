@@ -1,6 +1,6 @@
 # SPIFlash
 ### Arduino library for Winbond Flash W25Q80BV
-<sup> Download the latest stable release (v1.2.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/tag/v1.2.0">here</a>. Please report any bugs in issues.</sup>
+<sup> Download the latest stable release (v1.2.1) from <a href = "https://github.com/Marzogh/SPIFlash/releases/tag/v1.2.1">here</a>. Please report any bugs in issues.</sup>
 
 This library is for the W25Q80BV serial flash memory chip. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
 

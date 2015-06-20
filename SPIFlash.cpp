@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.1.2.0
+/* Arduino SPIFlash Library v.1.2.1
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 21/06/2015
  *
@@ -128,7 +128,7 @@ bool SPIFlash::_writeDisable(void) {
 //Empties the values stored in any array by setting all the values of all the bits in the array to 1
 void SPIFlash::_empty(uint8_t *array) {
 	int i;
-	for (i = 0; i < arrayLen(array); i++)
+	for (i = 0; i < arrayLen(array); ++i)
 		array[i] = 0xFF;
 }
 
@@ -216,33 +216,6 @@ void SPIFlash::_endProcess(void) {
 	_chipDeselect();
 	delay(3);
 }
-/*
-//Writes a page of data into a page buffer
-bool SPIFlash::_writePage(uint16_t page_number, uint8_t *data_buffer) {
-	if(!_notBusy() || page_number >= 4096 || !_writeEnable())
-		return false;
-
-	_cmd(PAGEPROG);
-	// Construct the 24-bit address from the 16-bit page number and 0x00, since we will write 256 bytes (one page).
-	xfer((page_number >>  8) & 0xFF);
-	xfer((page_number >>  0) & 0xFF);
-	xfer(0);
-	for (int a = 0; a < 256; ++a) {
-		xfer(data_buffer[a]);
-	}
-	_chipDeselect(); 
-	delay(3);     // Maximum page program time - Ref. datasheet
-
-	if(!_notBusy())
-		return false;
-
-	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
-	// i.e. to write disable state upon the following conditions:
-	// Power-up, Write Disable, ``Page Program``, Quad Page Program, Sector Erase, Block Erase, Chip Erase, Write Status Register,
-	// Erase Security Register and Program Security register
-
-	return true;
-}*/
 
 //Prints hex/dec formatted data from page reads - for debugging
 void SPIFlash::_printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
@@ -254,19 +227,17 @@ void SPIFlash::_printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
 				Serial.print(buffer);
 			}
 			else if (outputType == 2) {
-				if (data_buffer[a * 16 + b] < 10) {
-					Serial.print("00");
-				}
-				else if (data_buffer[a * 16 + b] >= 10 && data_buffer[a * 16 + b] < 100) {
-					Serial.print("0");
-				}
-				Serial.print(data_buffer[a * 16 + b]);
-				Serial.print(",");
+				uint8_t x = data_buffer[a * 16 + b];
+				if (x < 10) Serial.print("0");
+				if (x < 100) Serial.print("0");
+				Serial.print(x);
+				Serial.print(',');
 			}
 		}
 		Serial.println();
 	}
 }
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Public functions used for read, write and erase operations     //
@@ -277,7 +248,7 @@ uint32_t SPIFlash::getID(void) {
 
     byte b1, b2, b3;
     _getJedecId(&b1, &b2, &b3);
-      char buffer[128];
+      char buffer[64];
       sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
       Serial.println(buffer);
 }
@@ -286,7 +257,7 @@ uint32_t SPIFlash::getID(void) {
 //  1. page --> Any page number from 0 to 4095
 //  2. offset --> Any offset within the page - from 0 to 255
 uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset) {
-	if(_notBusy()) {
+	if(!_notBusy() || page_number >= 4096 || offset >= 256) {
 		uint32_t address = _getAddress(page_number, offset);
 		_beginRead(address);
 		uint8_t var = _readNextByte();
@@ -300,7 +271,7 @@ uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset) {
 //  2. offset --> Any offset within the page - from 0 to 255
 //  3. data_buffer --> The array of bytes to be written to from the flash memory - starting at the offset on the page indicated
 bool  SPIFlash::readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer) {
-	 if(!_notBusy())
+	 if(!_notBusy() || page_number >= 4096 || offset >= 256)
 	 	return false;
 
 	 uint32_t address = _getAddress(page_number, offset);
@@ -333,7 +304,7 @@ bool  SPIFlash::readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 
 // Reads a page of data into a page buffer
 bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer) {
-	 if(!_notBusy())
+	 if(!_notBusy() || page_number >= 4096)
 	 	return false;
 
 	 uint8_t offset = 0;
@@ -356,7 +327,7 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck) {
-	if(!_notBusy())
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
 		return false;
 
 	uint32_t address = _getAddress(page_number, offset);
@@ -367,9 +338,8 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 	if (errorCheck)
 	{
 		_beginRead(address);
-		uint8_t comparator = _readNextByte();
+		bool result = data == _readNextByte() ? true : false;
 		_endProcess();
-		bool result = data == comparator ? true : false;
 		return result;
 	}
 	else
@@ -385,7 +355,7 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck) {
-	if(!_notBusy())
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
 		return false;
 
 	uint32_t address = _getAddress(page_number, offset);
@@ -400,7 +370,7 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 	{
 		n = (length<=maxBytes) ? length : maxBytes;
 		_beginWrite(address);
-		for (uint16_t i = 0; i < n; i++)
+		for (uint16_t i = 0; i < n; ++i)
 			_writeNextByte(data_buffer[data_offset+i]);
 		_endProcess();
 
@@ -430,10 +400,9 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 		address = _getAddress(page_number, offset);
 		length = arrayLen(data_buffer);
 		_beginRead(address);
-		while (length > 0){
+		while (length > 0) {
 			uint16_t j;
-			uint8_t comparator = _readNextByte();
-			if (data_buffer[j++] == comparator)
+			if (data_buffer[j++] == _readNextByte())
 				length--;
 			else
 				return false;
@@ -451,25 +420,25 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck) {
-	uint8_t temp_buffer[256];
-	char buffer[80];
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096)
+		return false;
+
+	char buffer[28];
 	uint32_t address = _getAddress(page_number);
 
 	_beginWrite(address);
-	for (uint16_t i = 0; i < 256; i++)
+	for (uint16_t i = 0; i < 256; ++i)
 		_writeNextByte(data_buffer[i]);
 	_endProcess();
 	
 	if (errorCheck)
 	{
 		_beginRead(address);
-		uint8_t j;
-		for (j = 0; j < 256; j++)
+		uint16_t i;
+		for (i = 0; i < 256; ++i)
 		{
-			if (data_buffer[j] != _readNextByte())
-			{
+			if (data_buffer[i] != _readNextByte())
 				return false;
-			}
 		}
 		sprintf(buffer, "Writing page (%04x) done", page_number);
 		Serial.println(buffer);
@@ -659,7 +628,7 @@ void SPIFlash::printPage(uint16_t page_number, uint8_t outputType) {
 	if(!Serial)
 		Serial.begin(38400);
 
-	char buffer[80];
+	char buffer[24];
 	sprintf(buffer, "Reading page (%04x)", page_number);
 	Serial.println(buffer);
 
