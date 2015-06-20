@@ -30,7 +30,8 @@ class SPIFlash {
 public:
   SPIFlash(uint8_t cs = 10, bool overflow = true);
 	uint32_t getID(void);
-	bool     readPage(uint16_t page_number, uint8_t *data_buffer),
+	bool     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer),
+           readPage(uint16_t page_number, uint8_t *data_buffer),
            writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true),
            writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck),
 	         writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true),

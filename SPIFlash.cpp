@@ -281,7 +281,7 @@ uint32_t SPIFlash::getID(void) {
       Serial.println(buffer);
 }
 
-// Reads a byte of data from a specific location in a page. Takes two arguements -
+// Reads a byte of data from a specific location in a page. Takes two arguments -
 //  1. page --> Any page number from 0 to 4095
 //  2. offset --> Any offset within the page - from 0 to 255
 uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset) {
@@ -292,6 +292,42 @@ uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset) {
 		_endProcess();
 		return var;
 	}
+}
+
+// Reads an array of bytes starting from a specific location in a page. Takes three arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data_buffer --> The array of bytes to be written to from the flash memory - starting at the offset on the page indicated
+bool  SPIFlash::readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer) {
+	 if(!_notBusy())
+	 	return false;
+
+	 uint32_t address = _getAddress(page_number, offset);
+	 uint16_t length = arrayLen(data_buffer);
+	 _beginRead(address);
+	 for (int a = 0; a < length; ++a) {
+	 	data_buffer[a] = _readNextByte();
+	 	address++;
+	 	uint8_t addressCheck = _addressCheck(address);
+		
+		switch (addressCheck) {
+			case 0:					// Not at end of memory
+			break;
+
+			case 1:					// At end of memory - (!pageOverflow)
+			Serial.println(F("End of memory bank"));
+			while (1);
+			break;
+
+			case 2:					// At end of memory - (pageOverflow)
+			address = 0x00;
+			break;
+		}
+
+	 }
+	 _endProcess();
+
+	 return true;
 }
 
 // Reads a page of data into a page buffer
@@ -311,10 +347,11 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer) {
 	 return true;
 }
 
-// Writes a byte of data to a specific location in a page. Takes three arguements -
+// Writes a byte of data to a specific location in a page. Takes four arguments -
 //  1. page --> Any page number from 0 to 4095
 //  2. offset --> Any offset within the page - from 0 to 255
 //  3. data --> One byte of data to be written to a particular location on a page
+//	4. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck) {
@@ -339,10 +376,11 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 
 }
 
-// Writes a byte of data to a specific location in a page. Takes three arguements -
+// Writes an array of bytes starting from a specific location in a page. Takes four arguments -
 //  1. page --> Any page number from 0 to 4095
 //  2. offset --> Any offset within the page - from 0 to 255
-//  3. data --> An array of bytes to be written to the flash memory - starting at a particular location on a page
+//  3. data --> An array of bytes to be written to the flash memory - starting at the offset on the page indicated
+//	4. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck) {
@@ -369,15 +407,15 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 		uint8_t addressCheck = _addressCheck(address);
 		
 		switch (addressCheck) {
-			case 0:
+			case 0:					// Not at end of memory
 			break;
 
-			case 1:
+			case 1:					// At end of memory - (!pageOverflow)
 			Serial.println(F("Out of memory."));
 			while (1);
 			break;
 
-			case 2:
+			case 2:					// At end of memory - (pageOverflow)
 			address = 0x00;
 			break;
 		}
@@ -408,6 +446,7 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 }
 
 // Writes a page of data from a data_buffer array. Make sure the sizeOf(uint8_t data_buffer[]) == 256. 
+//	errorCheck --> Turned on by default. Checks for writing errors.
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck) {

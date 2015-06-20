@@ -13,10 +13,8 @@ SPIFlash	KEYWORD1
 #######################################
 begin	KEYWORD2
 getID	KEYWORD2
-beginRead	KEYWORD2
-readNextByte	KEYWORD2
-endRead	KEYWORD2
 readByte	KEYWORD2
+readBytes	KEYWORD2
 readPage	KEYWORD2
 readAnything	KEYWORD2
 readAllPages	KEYWORD2
