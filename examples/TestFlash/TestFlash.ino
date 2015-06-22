@@ -311,7 +311,7 @@ void loop() {
     }
     else if (commandNo == 10) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 8 : Erase Chip                                                    "));
+      Serial.println(F("                                                      Function 10 : Erase Chip                                                    "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will erase the entire flash memory."));

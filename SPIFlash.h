@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.1.2.1
+/* Arduino SPIFlash Library v.1.2.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 21/06/2015
  *
@@ -47,6 +47,8 @@ public:
 	void     printPage(uint16_t page_number, uint8_t outputType),
 	         printAllPages(uint8_t outputType);
 	uint8_t  readByte(uint16_t page_number, uint8_t offset);
+  template <class T>  uint32_t writeAnything(uint16_t page_number, uint8_t offset, const T& value);
+  template <class T> uint32_t readAnything(uint16_t page_number, uint8_t offset, T& value);
 
 
 private:
@@ -59,6 +61,7 @@ private:
 	bool     _notBusy(uint32_t timeout = 100L),
            _beginRead(uint32_t address),
            _beginWrite(uint32_t address),
+           _writeByte(uint32_t address, uint8_t data, bool errorCheck = true),
            _writeNextByte(uint8_t c),
 		       _writeEnable(void),
 		       _writeDisable(void),
@@ -72,5 +75,34 @@ private:
   uint8_t			chipSelect;
   bool			pageOverflow;
 };
+
+template <class T> uint32_t SPIFlash::writeAnything(uint16_t page_number, uint8_t offset, const T& value)
+{
+ uint32_t address = _getAddress(page_number, offset);
+  const byte* p = (const byte*)(const void*)&value;
+  //_beginWrite(address);
+  uint16_t i;
+  for(i = 0; i < sizeof(value);i++)
+  {
+    _writeByte(address++, *p++);
+  }
+  //_endProcess();
+  return i;
+}
+
+template <class T> uint32_t SPIFlash::readAnything(uint16_t page_number, uint8_t offset, T& value)
+{
+  uint32_t address = _getAddress(page_number, offset);
+  byte* p = (byte*)(void*)&value;
+  _beginRead(address);
+  uint16_t i;
+  for(i = 0;i<sizeof(value);i++)
+  {
+    *p++ = _readNextByte();
+  }
+  _endProcess();
+  return i;
+}
+
 
 #endif // _SPIFLASH_H_

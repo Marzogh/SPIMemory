@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.1.2.1
+/* Arduino SPIFlash Library v.1.2.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 21/06/2015
  *
@@ -188,6 +188,33 @@ bool SPIFlash::_beginRead(uint32_t address) {
 //Reads next byte. Call 'n' times to read 'n' number of bytes. Should be called after _beginRead()
 uint8_t SPIFlash::_readNextByte(void) {
 	return xfer(0);
+}
+
+// Writes a byte of data to a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> One byte of data to be written to a particular location on a page
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::_writeByte(uint32_t address, uint8_t data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || address >= CAPACITY)
+		return false;
+
+	_beginWrite(address);
+	_writeNextByte(data);
+	_endProcess();
+
+	if (errorCheck)
+	{
+		_beginRead(address);
+		bool result = data == _readNextByte() ? true : false;
+		_endProcess();
+		return result;
+	}
+	else
+		return true;
+
 }
 
 //Initiates write operation - but data is not written yet
