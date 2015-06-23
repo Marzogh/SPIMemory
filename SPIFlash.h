@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.1.2.0
+/* Arduino SPIFlash Library v.1.3.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 21/06/2015
  *
@@ -33,6 +33,7 @@ public:
 	uint32_t getID(void);
 	bool     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer),
            readPage(uint16_t page_number, uint8_t *data_buffer),
+           readByte(uint16_t page_number, uint8_t offset, uint8_t data),
            writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true),
            writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck = true),
 	         writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true),
@@ -61,12 +62,14 @@ private:
 	bool     _notBusy(uint32_t timeout = 100L),
            _beginRead(uint32_t address),
            _beginWrite(uint32_t address),
+           _readPage(uint16_t page_number, uint8_t *page_buffer),
            _writeByte(uint32_t address, uint8_t data, bool errorCheck = true),
            _writeNextByte(uint8_t c),
 		       _writeEnable(void),
 		       _writeDisable(void),
 	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  _readNextByte(void),
+           _readByte(uint32_t address),
            _addressCheck(uint32_t address);
 	uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   

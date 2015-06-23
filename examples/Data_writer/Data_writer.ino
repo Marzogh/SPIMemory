@@ -1,24 +1,10 @@
 #include<SPIFlash.h>
 #include<SPI.h>
 
-#define SENSOR true
+#define SENSOR
 
 const int LDR = A0;
 const int cs = 10;
-
-
-#define pageLimit 4095
-uint8_t pageBuffer[256];
-/*boolean boolBuffer[2048];
-uint8_t byteBuffer[256];
-uint16_t intBuffer[128];
-uint32_t longBuffer[64];
-uint32_t floatBuffer[64];*/
-uint32_t currentAddress;
-//uint16_t page = 0;
-//uint8_t offset, dataByte, arraySize;
-
-//Lux stuff
 
 
 SPIFlash flash(cs);
@@ -90,17 +76,11 @@ void loop() {
 void readLDR()
 {
   configuration.adc = analogRead(LDR);
-  configuration.vOut = (configuration.adc * 0.0048828125);           // vOut = Output voltage from potential Divider. [vOut = ADC * (Vin / 1024)]
+  configuration.vOut = (configuration.adc * 0.0048828125);                       // vOut = Output voltage from potential Divider. [vOut = ADC * (Vin / 1024)]
   configuration.RLDR = (10.0 * (5 - configuration.vOut)) / configuration.vOut;   // Equation to calculate Resistance of LDR, [R-LDR =(R1 (Vin - vOut))/ vOut]. R1 is in KOhms
-  // R1 = 10 KOhms , Vin = 5.0 Vdc.
+                                                                                 // R1 = 10 KOhms , Vin = 5.0 Vdc.
   configuration.lux = (500 / configuration.RLDR);
 }
 
-void resetPageBuffer()
-{
-  int s;
-  for (s = 0; s < 256; s++) {
-    pageBuffer[s] = 0;
-  }
-}
+
 

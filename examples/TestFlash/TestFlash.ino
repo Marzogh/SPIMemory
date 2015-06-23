@@ -4,7 +4,7 @@
  |                                                      SPIFlash library test v1.2.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                          Prajwal Bhattaram                                                       |
- |                                                              20.06.2015                                                          |
+ |                                                              23.06.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -65,7 +65,7 @@ uint8_t offset, dataByte;
 SPIFlash flash(cs);
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {

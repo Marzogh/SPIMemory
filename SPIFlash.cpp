@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.1.2.0
+/* Arduino SPIFlash Library v.1.3.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 21/06/2015
  *
@@ -46,6 +46,7 @@
 #define WRTEN        0x02
 
 #define arrayLen(x)  (sizeof(x) / sizeof(*x))
+#define lengthOf(x)  (sizeof(x))/sizeof(byte)
 
 // Currently library works only with W25Q80BV
 #define CAPACITY       1L * 1024L * 1024L
@@ -137,8 +138,9 @@ void SPIFlash::_empty(uint8_t *array) {
 // 1. page_number --> Any page number from 0 to 4095
 // 2. offset --> Any offset within the page - from 0 to 255
 uint32_t SPIFlash::_getAddress(uint16_t page_number, uint8_t offset) {
-	uint32_t address = page_number << 8;
-	address += offset;
+	/*uint32_t address = page_number << 8;
+	address += offset;*/
+	uint32_t address = (page_number >>  8) + (page_number >>  0) + offset ;
 	return address;
 }
 
@@ -168,6 +170,13 @@ uint8_t SPIFlash::_addressCheck(uint32_t address)
   else if (address < 0xFFFFF) {
     return (0);
   } 
+}
+
+uint8_t SPIFlash::_readByte(uint32_t address) {
+		_beginRead(address);
+		uint8_t data = _readNextByte();
+		_endProcess();
+		return data;
 }
 
 //Initiates read operation - but data is not read yet
@@ -284,12 +293,14 @@ uint32_t SPIFlash::getID(void) {
 //  1. page --> Any page number from 0 to 4095
 //  2. offset --> Any offset within the page - from 0 to 255
 uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset) {
-	if(!_notBusy() || page_number >= 4096 || offset >= 256) {
+	if(!_notBusy() || page_number >= 4096 || offset >= 256) 
+		return false;
+	else
+	{
 		uint32_t address = _getAddress(page_number, offset);
-		_beginRead(address);
-		uint8_t var = _readNextByte();
-		_endProcess();
-		return var;
+		uint8_t data;
+		data = _readByte(address);
+		return data;
 	}
 }
 
@@ -358,19 +369,7 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 		return false;
 
 	uint32_t address = _getAddress(page_number, offset);
-	_beginWrite(address);
-	_writeNextByte(data);
-	_endProcess();
-
-	if (errorCheck)
-	{
-		_beginRead(address);
-		bool result = data == _readNextByte() ? true : false;
-		_endProcess();
-		return result;
-	}
-	else
-		return true;
+	_writeByte(address, data, errorCheck);
 
 }
 
@@ -647,13 +646,13 @@ bool SPIFlash::powerUp(void) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //         These functions return data to Serial stream. 	          //
 //         Declares Serial.begin() if not previously declared.        //
-//                 Initiates Serial at 38400 baud.                    //
+//                 Initiates Serial at 115200 baud.                    //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
 void SPIFlash::printPage(uint16_t page_number, uint8_t outputType) {
 	if(!Serial)
-		Serial.begin(38400);
+		Serial.begin(115200);
 
 	char buffer[24];
 	sprintf(buffer, "Reading page (%04x)", page_number);
@@ -668,7 +667,7 @@ void SPIFlash::printPage(uint16_t page_number, uint8_t outputType) {
 //This function is useful when extracting data from a flash chip onto a computer as a text file.
 void SPIFlash::printAllPages(uint8_t outputType) {
 	if(!Serial)
-		Serial.begin(38400);
+		Serial.begin(115200);
 
 	Serial.println("Reading all pages");
 	uint8_t data_buffer[256];
