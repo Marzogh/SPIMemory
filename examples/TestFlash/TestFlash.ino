@@ -45,8 +45,8 @@
  |   '9'  followed by 2 erases a 64KB block containing the page to be erased                                                        |
  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
  |                                                                                                                                  |
- |  10. Erase Chip                                                                                                                   |
- |   '10' erases the entire chip                                                                                                     |
+ |  10. Erase Chip                                                                                                                  |
+ |   '10' erases the entire chip                                                                                                    |
  |                                                                                                                                  |
  ^----------------------------------------------------------------------------------------------------------------------------------^
  */
@@ -61,6 +61,8 @@ String serialCommand;
 char printBuffer[128];
 uint16_t page;
 uint8_t offset, dataByte;
+uint16_t dataInt;
+
 
 SPIFlash flash(cs);
 
@@ -85,7 +87,7 @@ void loop() {
     else if (commandNo == 1) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("                                                      Function 1 : Get JEDEC ID                                                   "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       flash.getID();
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
@@ -142,7 +144,56 @@ void loop() {
     }
     else if (commandNo == 4) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 4 : Write Page                                                    "));
+      Serial.println(F("                                                       Function 4 : Write Word                                                    "));
+      Serial.println(F("                                                        SPIFlash library test                                                     "));
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.print(F("Please enter the number of the page (0-4095) you wish to modify: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position on the page (0-255) you wish to modify: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
+      Serial.print(F("Please enter the value of the word (>255) you wish to save: "));
+      while (!Serial.available()) {
+      }
+      dataInt = Serial.parseInt();
+      Serial.println(dataInt);
+      flash.writeWord(page, offset, dataInt);
+      clearprintBuffer();
+      sprintf(printBuffer, "%d has been written to position %d on page %d", dataInt, offset, page);
+      Serial.println(printBuffer);
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+    }
+    else if (commandNo == 5) {
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.println(F("                                                       Function 5 : Read Word                                                     "));
+      Serial.println(F("                                                        SPIFlash library test                                                     "));
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.print(F("Please enter the number of the page (0-4095) the byte you wish to read is on: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position of the word on the page (0-255) you wish to read: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
+      clearprintBuffer();
+      sprintf(printBuffer, "The unsigned int at position %d on page %d is: ", offset, page);
+      Serial.print(printBuffer);
+      Serial.println(flash.readWord(page, offset));
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+    }
+    else if (commandNo == 6) {
+      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      Serial.println(F("                                                       Function 6 : Write Page                                                    "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will write a sequence of bytes (0-255) to the page selected."));
@@ -174,9 +225,9 @@ void loop() {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
-    else if (commandNo == 5) {
+    else if (commandNo == 7) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 5 : Read Page                                                    "));
+      Serial.println(F("                                                       Function 7 : Read Page                                                    "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will read the entire page selected."));
@@ -194,9 +245,9 @@ void loop() {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
-    else if (commandNo == 6) {
+    else if (commandNo == 8) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                     Function 6 : Read All Pages                                                  "));
+      Serial.println(F("                                                     Function 8 : Read All Pages                                                  "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will read the entire flash memory."));
@@ -216,9 +267,9 @@ void loop() {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
-    else if (commandNo == 7) {
+    else if (commandNo == 9) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 7 : Erase sector                                                  "));
+      Serial.println(F("                                                       Function 9 : Erase sector                                                  "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will erase a 4KB sector."));
@@ -247,9 +298,9 @@ void loop() {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
-    else if (commandNo == 8) {
+    else if (commandNo == 10) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 8 : Erase 32KB Block                                              "));
+      Serial.println(F("                                                       Function 10 : Erase 32KB Block                                              "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will erase a 32KB block."));
@@ -278,9 +329,9 @@ void loop() {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
-    else if (commandNo == 9) {
+    else if (commandNo == 11) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 9 : Erase 64KB Block                                              "));
+      Serial.println(F("                                                       Function 11 : Erase 64KB Block                                              "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will erase a 64KB block."));
@@ -309,9 +360,9 @@ void loop() {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
-    else if (commandNo == 10) {
+    else if (commandNo == 12) {
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                      Function 10 : Erase Chip                                                    "));
+      Serial.println(F("                                                      Function 12 : Erase Chip                                                    "));
       Serial.println(F("                                                        SPIFlash library test                                                     "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("This function will erase the entire flash memory."));

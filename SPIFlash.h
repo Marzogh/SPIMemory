@@ -36,6 +36,12 @@ public:
            readByte(uint16_t page_number, uint8_t offset, uint8_t data),
            writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true),
            writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck = true),
+           writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck = true),
+           writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck = true),
+           writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bool errorCheck = true),
+           writeLong(uint16_t page_number, uint8_t offset, int32_t data, bool errorCheck = true),
+           writeULong(uint16_t page_number, uint8_t offset, uint32_t data, bool errorCheck = true),
+           writeFloat(uint16_t page_number, uint8_t offset, float data, bool errorCheck = true),
 	         writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true),
 	         eraseSector(uint16_t page_number),
 	         eraseBlock32K(uint16_t page_number),
@@ -47,7 +53,13 @@ public:
 	         powerUp(void);
 	void     printPage(uint16_t page_number, uint8_t outputType),
 	         printAllPages(uint8_t outputType);
-	uint8_t  readByte(uint16_t page_number, uint8_t offset);
+	int8_t   readChar(uint16_t page_number, uint8_t offset);
+  uint8_t  readByte(uint16_t page_number, uint8_t offset);
+  int16_t  readShort(uint16_t page_number, uint8_t offset);
+  uint16_t readWord(uint16_t page_number, uint8_t offset);
+  int32_t  readLong(uint16_t page_number, uint8_t offset);
+  uint32_t readULong(uint16_t page_number, uint8_t offset);
+  float    readFloat(uint16_t page_number, uint8_t offset);
   template <class T>  uint32_t writeAnything(uint16_t page_number, uint8_t offset, const T& value);
   template <class T> uint32_t readAnything(uint16_t page_number, uint8_t offset, T& value);
 
@@ -63,7 +75,9 @@ private:
            _beginRead(uint32_t address),
            _beginWrite(uint32_t address),
            _readPage(uint16_t page_number, uint8_t *page_buffer),
-           _writeByte(uint32_t address, uint8_t data, bool errorCheck = true),
+           _write8Bit(uint32_t address, uint8_t data, bool errorCheck = true),
+           _write16Bit(uint32_t address, uint16_t data, bool errorCheck = true),
+           _write32Bit(uint32_t address, uint32_t data, bool errorCheck = true),
            _writeNextByte(uint8_t c),
 		       _writeEnable(void),
 		       _writeDisable(void),
@@ -83,13 +97,11 @@ template <class T> uint32_t SPIFlash::writeAnything(uint16_t page_number, uint8_
 {
  uint32_t address = _getAddress(page_number, offset);
   const byte* p = (const byte*)(const void*)&value;
-  //_beginWrite(address);
   uint16_t i;
   for(i = 0; i < sizeof(value);i++)
   {
-    _writeByte(address++, *p++);
+    _write8Bit(address++, *p++);
   }
-  //_endProcess();
   return i;
 }
 
@@ -97,13 +109,11 @@ template <class T> uint32_t SPIFlash::readAnything(uint16_t page_number, uint8_t
 {
   uint32_t address = _getAddress(page_number, offset);
   byte* p = (byte*)(void*)&value;
-  _beginRead(address);
   uint16_t i;
   for(i = 0;i<sizeof(value);i++)
   {
-    *p++ = _readNextByte();
+    *p++ = _readByte(address++);
   }
-  _endProcess();
   return i;
 }
 

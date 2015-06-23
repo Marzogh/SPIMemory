@@ -206,7 +206,7 @@ uint8_t SPIFlash::_readNextByte(void) {
 //	4. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-bool SPIFlash::_writeByte(uint32_t address, uint8_t data, bool errorCheck) {
+bool SPIFlash::_write8Bit(uint32_t address, uint8_t data, bool errorCheck) {
 	if(!_notBusy() || !_writeEnable() || address >= CAPACITY)
 		return false;
 
@@ -224,6 +224,41 @@ bool SPIFlash::_writeByte(uint32_t address, uint8_t data, bool errorCheck) {
 	else
 		return true;
 
+}
+
+// Writes two bytes of data to a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> Two bytes of data to be written to a particular location on a page
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::_write16Bit(uint32_t address, uint16_t data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || address >= CAPACITY)
+		return false;
+	union
+	{
+		byte b[2];
+		uint16_t i;
+	} var;
+	var.i = data;
+	//_beginRead(address);
+	for (int j = 0; j < 2; j++) {
+		_write8Bit(address+j, var.b[j], errorCheck);
+	}
+	
+}
+
+bool SPIFlash::_write32Bit(uint32_t address, uint32_t data, bool errorCheck) {
+	union
+	{
+		byte b[4];
+		float f;
+	} var;
+	var.f = data;
+	for (int i = 0; i < 4; i++) {
+		_write8Bit(address+i, var.b[i], errorCheck);
+	}
 }
 
 //Initiates write operation - but data is not written yet
@@ -304,6 +339,21 @@ uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset) {
 	}
 }
 
+// Reads a char of data from a specific location in a page. Takes two arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+int8_t SPIFlash::readChar(uint16_t page_number, uint8_t offset) {
+	if(!_notBusy() || page_number >= 4096 || offset >= 256) 
+		return false;
+	else
+	{
+		uint32_t address = _getAddress(page_number, offset);
+		int8_t data;
+		data = _readByte(address);
+		return data;
+	}
+}
+
 // Reads an array of bytes starting from a specific location in a page. Takes three arguments -
 //  1. page --> Any page number from 0 to 4095
 //  2. offset --> Any offset within the page - from 0 to 255
@@ -340,6 +390,96 @@ bool  SPIFlash::readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 	 return true;
 }
 
+// Reads an unsigned int of data from a specific location in a page. Takes two arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset) {
+	if(_notBusy() || page_number < 4096 || offset < 256) {
+		uint32_t address = _getAddress(page_number, offset);
+		union
+		{
+			byte b[2];
+			uint16_t I;
+		} data;
+		for (int i=0; i < 2; i++) {
+			data.b[i] = _readByte(address +i);
+		}
+		return data.I;
+	}
+}
+
+// Reads a signed int of data from a specific location in a page. Takes two arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset) {
+	if(_notBusy() || page_number < 4096 || offset < 256) {
+		uint32_t address = _getAddress(page_number, offset);
+		union
+		{
+			byte b[2];
+			int16_t I;
+		} data;
+		for (int i=0; i < 2; i++) {
+			data.b[i] = _readByte(address +i);
+		}
+		return data.I;
+	}
+}
+
+// Reads an unsigned long of data from a specific location in a page. Takes two arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+uint32_t SPIFlash::readULong(uint16_t page_number, uint8_t offset) {
+	if(_notBusy() || page_number < 4096 || offset < 256) {
+		uint32_t address = _getAddress(page_number, offset);
+		union
+		{
+			byte b[4];
+			uint32_t l;
+		} data;
+		for (int i=0; i < 4; i++) {
+			data.b[i] = _readByte(address +i);
+		}
+		return data.l;
+	}
+}
+
+// Reads a signed long of data from a specific location in a page. Takes two arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+int32_t SPIFlash::readLong(uint16_t page_number, uint8_t offset) {
+	if(_notBusy() || page_number < 4096 || offset < 256) {
+		uint32_t address = _getAddress(page_number, offset);
+		union
+		{
+			byte b[4];
+			int32_t l;
+		} data;
+		for (int i=0; i < 4; i++) {
+			data.b[i] = _readByte(address +i);
+		}
+		return data.l;
+	}
+}
+
+// Reads a signed long of data from a specific location in a page. Takes two arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+float SPIFlash::readFloat(uint16_t page_number, uint8_t offset) {
+	if(_notBusy() || page_number < 4096 || offset < 256) {
+		uint32_t address = _getAddress(page_number, offset);
+		union
+		{
+			byte b[4];
+			float f;
+		} data;
+		for (int i=0; i < 4; i++) {
+			data.b[i] = _readByte(address +i);
+		}
+		return data.f;
+	}
+}
+
 // Reads a page of data into a page buffer
 bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer) {
 	 if(!_notBusy() || page_number >= 4096)
@@ -369,7 +509,23 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 		return false;
 
 	uint32_t address = _getAddress(page_number, offset);
-	_writeByte(address, data, errorCheck);
+	_write8Bit(address, data, errorCheck);
+
+}
+
+// Writes a byte of data to a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> One byte of data to be written to a particular location on a page
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
+		return false;
+
+	uint32_t address = _getAddress(page_number, offset);
+	_write8Bit(address, data, errorCheck);
 
 }
 
@@ -439,6 +595,100 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 	else
 		return true;
 
+}
+
+// Writes an unsigned int as two bytes starting from a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> An int to be written to the flash memory - starting at the offset on the page indicated
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
+		return false;
+
+	uint32_t address = _getAddress(page_number, offset);
+	if (_write16Bit(address, data))
+     	return true;
+}
+
+// Writes a signed int as two bytes starting from a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> An int to be written to the flash memory - starting at the offset on the page indicated
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
+		return false;
+
+	uint32_t address = _getAddress(page_number, offset);
+	//One = Most significant -> Two = Least significant byte
+      uint8_t two = (data & 0xFF);
+      uint8_t one = ((data >> 8) & 0xFF);
+     if (_write8Bit(address, two, errorCheck) && _write8Bit((address+1), one, errorCheck))
+     	return true;
+}
+
+// Writes an unsigned long as four bytes starting from a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> A long to be written to the flash memory - starting at the offset on the page indicated
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
+		return false;
+
+	uint32_t address = _getAddress(page_number, offset);
+	//One = Most significant -> Two = Least significant byte
+      uint8_t four = (data & 0xFF);
+      uint8_t three = ((data >> 8) & 0xFF);
+      uint8_t two = ((data >> 16) & 0xFF);
+      uint8_t one = ((data >> 24) & 0xFF);
+     if (_write8Bit(address, four, errorCheck) && _write8Bit((address+1), three, errorCheck)
+     	&& _write8Bit((address+2), two, errorCheck) && _write8Bit((address+3), one, errorCheck))
+     	return true;
+}
+
+// Writes a signed long as four bytes starting from a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> A long to be written to the flash memory - starting at the offset on the page indicated
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
+		return false;
+
+	uint32_t address = _getAddress(page_number, offset);
+	//One = Most significant -> Two = Least significant byte
+      uint8_t four = (data & 0xFF);
+      uint8_t three = ((data >> 8) & 0xFF);
+      uint8_t two = ((data >> 16) & 0xFF);
+      uint8_t one = ((data >> 24) & 0xFF);
+     if (_write8Bit(address, four, errorCheck) && _write8Bit((address+1), three, errorCheck)
+     	&& _write8Bit((address+2), two, errorCheck) && _write8Bit((address+3), one, errorCheck))
+     	return true;
+}
+
+// Writes a float as four bytes starting from a specific location in a page. Takes four arguments -
+//  1. page --> Any page number from 0 to 4095
+//  2. offset --> Any offset within the page - from 0 to 255
+//  3. data --> A long to be written to the flash memory - starting at the offset on the page indicated
+//	4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool errorCheck) {
+	if(!_notBusy() || !_writeEnable() || page_number >= 4096 || offset >= 256)
+		return false;
+
+	uint32_t address = _getAddress(page_number, offset);
+	_write32Bit(address, data);
 }
 
 // Writes a page of data from a data_buffer array. Make sure the sizeOf(uint8_t data_buffer[]) == 256. 
