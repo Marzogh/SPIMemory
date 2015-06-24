@@ -72,6 +72,8 @@ private:
 	         _empty(uint8_t *array),
 	         _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
 	bool     _notBusy(uint32_t timeout = 100L),
+           _getAddress(uint16_t page_number, uint8_t offset = 0),
+           _addressCheck(uint32_t address),
            _beginRead(uint32_t address),
            _beginWrite(uint32_t address),
            _readPage(uint16_t page_number, uint8_t *page_buffer),
@@ -83,13 +85,12 @@ private:
 		       _writeDisable(void),
 	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  _readNextByte(void),
-           _readByte(uint32_t address),
-           _addressCheck(uint32_t address);
-	uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
+           _readByte(uint32_t address);
   
   volatile uint8_t *cs_port;
   uint8_t           cs_mask;
   uint8_t			chipSelect;
+  uint32_t    currentAddress;
   bool			pageOverflow;
 };
 
