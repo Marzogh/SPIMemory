@@ -257,13 +257,14 @@ uint32_t SPIFlash::getID(void) {
 //  1. page --> Any page number from 0 to 4095
 //  2. offset --> Any offset within the page - from 0 to 255
 uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset) {
-	if(!_notBusy() || page_number >= 4096 || offset >= 256) {
-		uint32_t address = _getAddress(page_number, offset);
-		_beginRead(address);
-		uint8_t var = _readNextByte();
-		_endProcess();
-		return var;
-	}
+	if(!_notBusy() || page_number >= 4096 || offset >= 256)
+	 	return false;
+	 	
+	uint32_t address = _getAddress(page_number, offset);
+	_beginRead(address);
+	uint8_t var = _readNextByte();
+	_endProcess();
+	return var;
 }
 
 // Reads an array of bytes starting from a specific location in a page. Takes three arguments -
