@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.1.3.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 29/08/2015
+ * Modified by Prajwal Bhattaram - 30/08/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * W25Q80BV serial flash memory. In its current form it enables reading 
@@ -32,29 +32,29 @@ public:
   SPIFlash(uint8_t cs = 10, bool overflow = true);
   uint16_t getManID();
 	uint32_t getJEDECID();
-	bool     readByte(uint16_t page_number, uint8_t offset, uint8_t data),
-           writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true),
-           writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck = true),
-           writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck = true),
-           writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck = true),
-           writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bool errorCheck = true),
-           writeLong(uint16_t page_number, uint8_t offset, int32_t data, bool errorCheck = true),
-           writeULong(uint16_t page_number, uint8_t offset, uint32_t data, bool errorCheck = true),
-           writeFloat(uint16_t page_number, uint8_t offset, float data, bool errorCheck = true),
-	         writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true),
-	         eraseSector(uint16_t page_number),
-	         eraseBlock32K(uint16_t page_number),
-	         eraseBlock64K(uint16_t page_number),
-	         eraseChip(void),
-	         suspendProg(void),
-	         resumeProg(void),
-	         powerDown(void),
-	         powerUp(void);
-	void     begin(),
-           readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer),
-           readPage(uint16_t page_number, uint8_t *data_buffer),
-           printPage(uint16_t page_number, uint8_t outputType),
-	         printAllPages(uint8_t outputType);
+	bool     readByte(uint16_t page_number, uint8_t offset, uint8_t data);
+  bool     writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true);
+  bool     writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck = true);
+  bool     writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck = true);
+  bool     writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck = true);
+  bool     writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bool errorCheck = true);
+  bool     writeLong(uint16_t page_number, uint8_t offset, int32_t data, bool errorCheck = true);
+  bool     writeULong(uint16_t page_number, uint8_t offset, uint32_t data, bool errorCheck = true);
+  bool     writeFloat(uint16_t page_number, uint8_t offset, float data, bool errorCheck = true);
+  bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
+  bool     eraseSector(uint16_t page_number);
+  bool     eraseBlock32K(uint16_t page_number);
+  bool     eraseBlock64K(uint16_t page_number);
+  bool     eraseChip(void);
+  bool     suspendProg(void);
+  bool     resumeProg(void);
+  bool     powerDown(void);
+  bool     powerUp(void);
+	void     begin();
+  void     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer);
+  void     readPage(uint16_t page_number, uint8_t *data_buffer);
+  void     printPage(uint16_t page_number, uint8_t outputType);
+  void     printAllPages(uint8_t outputType);
 	int8_t   readChar(uint16_t page_number, uint8_t offset);
   uint8_t  readByte(uint16_t page_number, uint8_t offset);
   int16_t  readShort(uint16_t page_number, uint8_t offset);
@@ -67,29 +67,29 @@ public:
 
 
 private:
-	void     _chipSelect(void),
-	         _chipDeselect(void),
-	         _cmd(uint8_t c),
-           _endProcess(void),
-           _errorCodeCheck(void),
-	         _empty(uint8_t *array),
-           _beginRead(uint32_t address),
-	         _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
-	bool     _notBusy(uint32_t timeout = 10L),
-           _addressCheck(uint32_t address),
-           _beginWrite(uint32_t address),
-           _readPage(uint16_t page_number, uint8_t *page_buffer),
-           _writeNextByte(uint8_t c),
-		       _writeEnable(void),
-		       _writeDisable(void),
-	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3),
-           _getManId(uint8_t *b1, uint8_t *b2),
-           _writeByte(uint32_t address, uint8_t data, bool errorCheck = true);
-  uint8_t  _readNextByte(void),
-           _readByte(uint32_t address);
-  uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0),
-           _prepRead(uint16_t page_number, uint8_t offset = 0),
-           _prepWrite(uint16_t page_number, uint8_t offset = 0);
+	void     _chipSelect(void);
+  void     _chipDeselect(void);
+  void     _cmd(uint8_t c);
+  void     _endProcess(void);
+  void     _errorCodeCheck(void);
+  void     _empty(uint8_t *array);
+  void     _beginRead(uint32_t address);
+  void     _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
+	bool     _notBusy(uint32_t timeout = 10L);
+  bool     _addressCheck(uint32_t address);
+  bool     _beginWrite(uint32_t address);
+  bool     _readPage(uint16_t page_number, uint8_t *page_buffer);
+  bool     _writeNextByte(uint8_t c);
+  bool     _writeEnable(void);
+  bool     _writeDisable(void);
+  bool     _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
+  bool     _getManId(uint8_t *b1, uint8_t *b2);
+  bool     _writeByte(uint32_t address, uint8_t data, bool errorCheck = true);
+  uint8_t  _readNextByte(void);
+  uint8_t  _readByte(uint32_t address);
+  uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
+  uint32_t _prepRead(uint16_t page_number, uint8_t offset = 0);
+  uint32_t _prepWrite(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   
   volatile uint8_t *cs_port;
@@ -100,8 +100,6 @@ private:
   const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
   const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L};
-  const uint16_t KB          = 1024L;
-  const uint32_t MB          = 1024L * 1024L;
 };
 
 template <class T> uint32_t SPIFlash::writeAnything(uint16_t page_number, uint8_t offset, const T& value)

@@ -1,12 +1,10 @@
 # SPIFlash
-### Arduino library for Winbond Flash W25Q80BV
-<sup> Download the latest stable release (v1.2.1) from <a href = "https://github.com/Marzogh/SPIFlash/releases/tag/v1.2.1">here</a>. Please report any bugs in issues.</sup>
+### Arduino library for Winbond Flash Memory Chips
+<sup> Download the latest stable release (v1.3.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/tag/v1.3.0">here</a>. Please report any bugs in issues.</sup>
 
-This library is for the W25Q80BV serial flash memory chip. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
+This library is for a the Winbond serial flash memory chips. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
 
-- The W25Q80BV has a capacity of 64 Mbits (1 Megabyte) which consists of 4096 pages of 256 bytes each.
-- Its memory registers are arranged in 16 blocks of 64KB each
-- Byte addresses are 24 bit and range from 0x00000 to 0xFFFFF (00000 to 1048575 - decimal)
+- For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
 #### Installation
 - Click on the 'Download zip' button to the right.
@@ -17,6 +15,7 @@ This library is for the W25Q80BV serial flash memory chip. In its current form i
 
 The library is called by declaring the```SPIFLASH flash(csPin)``` constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
 Make sure to include ```#include<SPI.H>``` when you include ```#include<SPIFlash.h>```.
+Also make sure to include ```flash.begin()``` in ```void setup()```. This enables the library to detect the type of flash chip installed and load the right parameters.
 
 ###### Notes on Address overflow and Error checking
 - The library has Address overflow enabled by default - i.e. if the last address read/written from/to,  in any function, is 0xFFFFF then, the next address read/written from/to is 0x00000. This can be disabled by setting the optional last 'overflow' argument in the constructor to false - For eg. call the constructor  ```SPIFlash(csPin, false)```  instead of ```SPIFlash(csPin)```.

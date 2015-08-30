@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.1.3.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 29/08/2015
+ * Modified by Prajwal Bhattaram - 30/08/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * W25Q80BV serial flash memory. In its current form it enables reading 
@@ -255,7 +255,7 @@ bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
 	return true;
 }
 
-// Checks for presence of chip by requesting JEDEC ID
+//Checks for presence of chip by requesting JEDEC ID
 bool SPIFlash::_getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
   if(!_notBusy())
   	return false;
@@ -313,10 +313,10 @@ uint8_t SPIFlash::_readNextByte(void) {
 	return xfer(0);
 }
 
-// Reads a byte of data from a specific location in a page. Takes one argument -
- //  1. address --> address to read from
- // WARNING: You can only write to previously erased memory locations (see datasheet).
- // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+//Reads a byte of data from a specific location in a page. Takes one argument -
+//  1. address --> address to read from
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
  uint8_t SPIFlash::_readByte(uint32_t address) {
  	uint8_t data;
  	if(!_notBusy()||!_addressCheck(address))
@@ -358,12 +358,12 @@ bool SPIFlash::_writeNextByte(uint8_t c) {
 }
 
 // Writes a byte of data to a specific location in a page. Takes three arguments -
- //  1. address --> address to write to
- //  2. data --> One byte of data to be written to a particular location on a page
- //	 3. errorCheck --> Turned on by default. Checks for writing errors
- // WARNING: You can only write to previously erased memory locations (see datasheet).
- // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
- bool SPIFlash::_writeByte(uint32_t address, uint8_t data, bool errorCheck) {
+//  1. address --> address to write to
+//  2. data --> One byte of data to be written to a particular location on a page
+//  3. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::_writeByte(uint32_t address, uint8_t data, bool errorCheck) {
  	
  	if(!_notBusy()||!_writeEnable()||!_addressCheck(address))
  		return false;
@@ -455,11 +455,10 @@ void SPIFlash::begin() {
 
    	maxPage = capacity/PAGESIZE;
 
-    /*char buffer[64];
+   	#ifdef RUNDIAGNOSTIC
+    char buffer[64];
     sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %lu\nmaxPage: %d", manID, devID, capacity, maxPage);
-    Serial.println(buffer);*/
-
-    #ifdef RUNDIAGNOSTIC
+    Serial.println(buffer);
     errorcode = SUCCESS;			//Successful chip detect
     _errorCodeCheck();
     #endif
@@ -470,9 +469,6 @@ void SPIFlash::begin() {
 uint16_t SPIFlash::getManID() {
 	uint8_t b1, b2;
     _getManId(&b1, &b2);
-    /*char buffer[64];
-     sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
-     Serial.println(buffer);*/
     uint32_t id = b1;
     id = (id << 8)|(b2 << 0);
     return id;
@@ -482,9 +478,6 @@ uint16_t SPIFlash::getManID() {
 uint32_t SPIFlash::getJEDECID() {
 	uint8_t b1, b2, b3;
     _getJedecId(&b1, &b2, &b3);
-    /*char buffer[64];
-     sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
-     Serial.println(buffer);*/
     uint32_t id = b1;
     id = (id << 8)|(b2 << 0);
     id = (id << 8)|(b3 << 0);

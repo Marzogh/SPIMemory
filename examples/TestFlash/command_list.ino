@@ -1,10 +1,10 @@
 void commandList() {
   Serial.println(F("-----------------------------------------------------------------------------------------------------------------------------------"));
-  Serial.println(F("                                                W25Q80BV - Winbond 64 Mbit (1MB) Flash                                             "));
-  Serial.println(F("                                                      SPIFlash library test v1.2.0                                                 "));
+  Serial.println(F("                                                            Winbond Flash                                                          "));
+  Serial.println(F("                                                      SPIFlash library test v1.3.0                                                 "));
   Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("                                                           Prajwal Bhattaram                                                       "));
-  Serial.println(F("                                                               20.06.2015                                                          "));
+  Serial.println(F("                                                               29.08.2015                                                          "));
   Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("                                      (Please make sure your Serial monitor is set to 'No Line Ending')                            "));
   Serial.println(F("                                      *****************************************************************                            "));
@@ -22,10 +22,10 @@ void commandList() {
   Serial.println(F("  3. readByte [page] [offset]"));
   Serial.print(F("\t\t"));
   Serial.println(F("'3' followed by '100' and then by '20' returns the byte from page 100 position 20"));
-  Serial.println(F("  4. writeInt [page] [offset]"));
+  Serial.println(F("  4. writeWord [page] [offset]"));
   Serial.print(F("\t\t"));
   Serial.println(F("'4' followed by '55' and then by '35' and then by '633' writes the int 633 to page 5 position 35"));
-  Serial.println(F("  5. readInt [page] [offset]"));
+  Serial.println(F("  5. readWord [page] [offset]"));
   Serial.print(F("\t\t"));
   Serial.println(F("'5' followed by '200' and then by '30' returns the int from page 200 position 30"));
   Serial.println(F("  6. writePage [page]"));

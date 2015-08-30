@@ -1,10 +1,10 @@
 /*
  *----------------------------------------------------------------------------------------------------------------------------------*
- |                                                W25Q80BV - Winbond 64 Mbit (1MB) Flash                                            |
- |                                                      SPIFlash library test v1.2.0                                                |
+ |                                                            Winbond Flash                                                         |
+ |                                                      SPIFlash library test v1.3.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                          Prajwal Bhattaram                                                       |
- |                                                              23.06.2015                                                          |
+ |                                                              30.08.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -21,32 +21,39 @@
  |                                                                                                                                  |
  |  3. Read Byte [page] [offset]                                                                                                    |
  |   '3' followed by '100' and then by '20' returns the byte from page 100 position 20                                              |
+ |                                                                                                                                  | 
+ |  4. Write Word [page] [offset]                                                                                                   |
+ |   '4' followed by '55' and then by '35' and then by '633' writes the int 633 to page 5 position 35                               |
+ |                                                                                                                                  | 
+ |  5. readWord [page] [offset]"));                                                                                                 |
+ |   '5' followed by '200' and then by '30' returns the int from page 200 position 30                                               |
  |                                                                                                                                  |
- |  4. Write Page [page]                                                                                                            |
- |   '4' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
+ |  6. Write Page [page]                                                                                                            |
+ |   '6' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
  |                                                                                                                                  |
- |  5. Read Page [page]                                                                                                             |
- |   '5' followed by 33 reads page 33                                                                                               |
+ |  7. Print Page [page]                                                                                                            |
+ |   '7' followed by 33 reads & prints page 33. To just read a page to a data buffer, refer                                         |
+ |    to 'ReadMe.md' in the library folder.                                                                                         |
  |                                                                                                                                  |
- |  6. Read All Pages                                                                                                               |
- |   '6' reads all 4096 pages and outputs them to the serial console                                                                |
+ |  8. Print All Pages                                                                                                              |
+ |   '8' reads all 4096 pages and outputs them to the serial console                                                                |
  |   This function is to extract data from a flash chip onto a computer as a text file.                                             |
  |   Refer to 'Read me.md' in the library for details.                                                                              |
  |                                                                                                                                  |
- |  7. Erase sector                                                                                                                 |
- |   '7'  followed by 2 erases a 4KB sector containing the page to be erased                                                        |
+ |  9. Erase 4KB sector                                                                                                             |
+ |   '9'  followed by 2 erases a 4KB sector containing the page to be erased                                                        |
  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
  |                                                                                                                                  |
- |  8. Erase sector                                                                                                                 |
- |   '8'  followed by 2 erases a 32KB block containing the page to be erased                                                        |
+ |  10. Erase 32KB block                                                                                                            |
+ |   '10'  followed by 2 erases a 32KB block containing the page to be erased                                                       |
  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
  |                                                                                                                                  |
- |  9. Erase sector                                                                                                                 |
- |   '9'  followed by 2 erases a 64KB block containing the page to be erased                                                        |
+ |  11. Erase 64KB block                                                                                                            |
+ |   '11'  followed by 2 erases a 64KB block containing the page to be erased                                                       |
  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
  |                                                                                                                                  |
- |  10. Erase Chip                                                                                                                  |
- |   '10' erases the entire chip                                                                                                    |
+ |  12. Erase Chip                                                                                                                  |
+ |   '12' erases the entire chip                                                                                                    |
  |                                                                                                                                  |
  ^----------------------------------------------------------------------------------------------------------------------------------^
  */
@@ -68,11 +75,18 @@ SPIFlash flash(cs);
 
 void setup() {
   Serial.begin(115200);
-  Serial.println(F("Initialising Flash memory"));
+  Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
   }
+  Serial.println();
+  flash.begin();/*
+  clearprintBuffer();
+  sprintf(printBuffer, "Flash initiation code: %x", flashCode);
+  Serial.println(printBuffer);
+  Serial.println(F("If flashCode !=0 please redownload the latest version of the library."));
+  Serial.println(F("If flashcode still !=0 after downloading the latest version, please raise an issue at https://github.com/Marzogh/SPIFlash/issues."));*/
   Serial.println();
   Serial.println();
   commandList();
@@ -89,7 +103,19 @@ void loop() {
       Serial.println(F("                                                      Function 1 : Get JEDEC ID                                                   "));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      flash.getID();
+      uint8_t b1, b2;
+      uint16_t b3;
+      uint32_t JEDEC = flash.getJEDECID();
+      uint16_t ManID = flash.getManID();
+      b1 = (ManID >> 8);
+      b2 = (ManID >> 0);
+      b3 = (JEDEC >> 0);
+      clearprintBuffer();
+      sprintf(printBuffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
+      Serial.println(printBuffer);
+      clearprintBuffer();
+      sprintf(printBuffer, "JEDEC ID: %04lxh", JEDEC);
+      Serial.println(printBuffer);
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
@@ -113,10 +139,12 @@ void loop() {
       }
       dataByte = Serial.parseInt();
       Serial.println(dataByte);
-      flash.writeByte(page, offset, dataByte);
-      clearprintBuffer();
-      sprintf(printBuffer, "%d has been written to position %d on page %d", dataByte, offset, page);
-      Serial.println(printBuffer);
+      Serial.println(flash.writeByte(page, offset, dataByte));
+      /*else {
+        clearprintBuffer();
+        sprintf(printBuffer, "%d has been written to position %d on page %d", dataByte, offset, page);
+        Serial.println(printBuffer);
+      }*/
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
     }
@@ -372,8 +400,10 @@ void loop() {
       }
       c = (char)Serial.read();
       if (c == 'Y' || c == 'y') {
-        flash.eraseChip();
-        Serial.println(F("Chip erased"));
+        if (flash.eraseChip())
+          Serial.println(F("Chip erased"));
+        else
+          Serial.println(F("Error erasing chip"));
       }
       Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
       Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
