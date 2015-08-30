@@ -20,8 +20,8 @@ struct Configuration {
 Configuration configuration;
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println(F("Initialising Flash memory"));
+  Serial.begin(115200);
+  Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
@@ -43,7 +43,7 @@ void loop() {
   #endif
   //currentAddress = flash.writeAnything(0, 0, configuration);
 
-  Serial.print("Saving amount: ");
+  Serial.print("Saving amount at: ");
   Serial.println(flash.writeAnything(2, 4, configuration));
   Serial.println(configuration.lux);
   Serial.println(configuration.vOut);
@@ -57,8 +57,10 @@ void loop() {
   configuration.RLDR = 0;
   configuration.light = 0;
   configuration.adc = 0;
-  Serial.println("Local Set to 0");
-  Serial.print("Reading back: ");
+  Serial.println();
+  Serial.println("Local values set to 0");
+  Serial.println();
+  Serial.print("Reading back from: ");
   Serial.println(flash.readAnything(2, 4, configuration));
   flash.eraseSector(2);
   

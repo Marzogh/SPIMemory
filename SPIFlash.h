@@ -30,8 +30,8 @@
 class SPIFlash {
 public:
   SPIFlash(uint8_t cs = 10, bool overflow = true);
-  uint8_t  begin();
-	uint32_t getID();
+  uint16_t getManID();
+	uint32_t getJEDECID();
 	bool     readByte(uint16_t page_number, uint8_t offset, uint8_t data),
            writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true),
            writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck = true),
@@ -50,7 +50,8 @@ public:
 	         resumeProg(void),
 	         powerDown(void),
 	         powerUp(void);
-	void     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer),
+	void     begin(),
+           readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer),
            readPage(uint16_t page_number, uint8_t *data_buffer),
            printPage(uint16_t page_number, uint8_t outputType),
 	         printAllPages(uint8_t outputType);
@@ -61,7 +62,7 @@ public:
   int32_t  readLong(uint16_t page_number, uint8_t offset);
   uint32_t readULong(uint16_t page_number, uint8_t offset);
   float    readFloat(uint16_t page_number, uint8_t offset);
-  template <class T>  bool writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
+  template <class T> uint32_t writeAnything(uint16_t page_number, uint8_t offset, const T& value);
   template <class T> uint32_t readAnything(uint16_t page_number, uint8_t offset, T& value);
 
 
@@ -70,76 +71,75 @@ private:
 	         _chipDeselect(void),
 	         _cmd(uint8_t c),
            _endProcess(void),
+           _errorCodeCheck(void),
 	         _empty(uint8_t *array),
-	         _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
-	bool     _notBusy(uint32_t timeout = 100L),
-           _addressCheck(uint32_t address),
            _beginRead(uint32_t address),
+	         _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
+	bool     _notBusy(uint32_t timeout = 10L),
+           _addressCheck(uint32_t address),
            _beginWrite(uint32_t address),
            _readPage(uint16_t page_number, uint8_t *page_buffer),
            _writeNextByte(uint8_t c),
 		       _writeEnable(void),
 		       _writeDisable(void),
-	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
-  uint8_t  _readNextByte(void);
+	         _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3),
+           _getManId(uint8_t *b1, uint8_t *b2),
+           _writeByte(uint32_t address, uint8_t data, bool errorCheck = true);
+  uint8_t  _readNextByte(void),
+           _readByte(uint32_t address);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0),
            _prepRead(uint16_t page_number, uint8_t offset = 0),
            _prepWrite(uint16_t page_number, uint8_t offset = 0);
-  template <class T> bool _errorCheck(uint32_t address, const T& value);
+  template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   
   volatile uint8_t *cs_port;
   uint8_t           cs_mask;
   uint8_t			chipSelect;
-  uint32_t    capacity, maxPage;
+  uint32_t    capacity, maxPage, errorcode;
   bool			  pageOverflow;
-  const uint8_t memType[8]   = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18};
-  const uint16_t memSize[8]  = {64, 128, 512, 1, 2, 4, 8, 16};
+  const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+  const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
+                                2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L};
   const uint16_t KB          = 1024L;
   const uint32_t MB          = 1024L * 1024L;
 };
 
-template <class T> bool SPIFlash::writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck)
+template <class T> uint32_t SPIFlash::writeAnything(uint16_t page_number, uint8_t offset, const T& value)
 {
- uint32_t address = _getAddress(page_number, offset);
-  const byte* p = (const byte*)(const void*)&value;
-  uint16_t i;
-  _beginWrite(address);
-  for(i = 0; i < sizeof(value);i++)
-  {
-    _writeNextByte(*p++);
-  }
-  _endProcess();
-
-  if (!errorCheck)
-    return true;
-  else
-    return _errorCheck(address, value);
+  uint32_t address = _getAddress(page_number, offset);
+  Serial.println(address);
+    const byte* p = (const byte*)(const void*)&value;
+    uint16_t i;
+    for (i = 0; i < sizeof(value); i++){
+      _writeByte(address++, *p++);
+      }
+    return i;
 }
 
 template <class T> uint32_t SPIFlash::readAnything(uint16_t page_number, uint8_t offset, T& value)
 {
   uint32_t address = _getAddress(page_number, offset);
-  byte* p = (byte*)(void*)&value;
-  uint16_t i;
-  _beginRead(address);
-  for(i = 0; i<sizeof(value);i++)
-  {
-    *p++ = _readNextByte();
-  }
-  _endProcess();
-  return i;
+  uint8_t errorcode;
+  Serial.println(address);
+    byte* p = (byte*)(void*)&value;
+    uint16_t i;
+    for (i = 0; i < sizeof(value); i++) {
+      *p++ = _readByte(address++);
+    }
+    return i;
 }
 
-template <class T> bool SPIFlash::_errorCheck(uint32_t address, const T& value)
+template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value)
 {
   const byte* p = (const byte*)(const void*)&value;
-  uint16_t i;
+  uint16_t i = 0;
   _beginRead(address);
   for(i = 0; i < (sizeof(value));i++)
   {
     if (*p++ != _readNextByte())
       return false;
   }
+  _endProcess();
   return true;
 }
 

@@ -5,4 +5,5 @@
 --> _errorCheck() built into every write function.
 --> The library now supports readAnything() & writeAnything().
 --> There are now specific functions for reading and writing different types of variables - refer to ReadMe.md for further details.
---> All Read/Write functions now carry out a series of checks to keep data corruption to a minimum 
+--> All Read/Write functions now carry out a series of checks to keep data corruption to a minimum
+--> Added a diagnostic function to enable error code generation and checking - Follow instruction in the "Diagnostics.ino" example

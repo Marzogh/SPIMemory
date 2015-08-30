@@ -24,26 +24,57 @@ Make sure to include ```#include<SPI.H>``` when you include ```#include<SPIFlash
 
 The library enables the following functions:
 <hr>
-##### getID ()
+##### Primary commands
+###### begin()
+Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly
+###### getID()
 Fetches the JEDEC ID as a 32 bit number.
+<hr>
+##### Read commands
+###### readAnything(page_number, offset, value)
+Reads _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-4095), the offset of the data within page (0-255) and the variable/struct to write the data back to, as arguments.
+###### readByte(page_number, offset)
+Reads a _byte_ (unsigned 8 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the byte within page (0-255) as arguments.
+###### readChar(page_number, offset)
+Reads a _char_ (signed 8 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the char within page (0-255) as arguments.
+###### readWord(page_number, offset)
+Reads a _word_ (unsigned 16 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the word within page (0-255) as arguments.
+###### readShort(page_number, offset)
+Reads a _short_ (signed 16 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the short within page (0-255) as arguments.
+###### readULong(page_number, offset)
+Reads an _unsigned long_ (unsigned 32 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the unsigned long within page (0-255) as arguments.
+###### readLong(page_number, offset)
+Reads a _long_ (signed 32 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the long within page (0-255) as arguments.
+###### readFloat(page_number, offset)
+Reads a _float_ (decimal value) from a specific location on a page. Takes the page number (0-4095) and offset of the float within page (0-255) as arguments.
+###### readPage(page_number, *data_buffer)
+Reads a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
+<hr>
+##### Write commands
+###### writeByte(page, offset, data)
+Writes a byte of data to a specific location on a page. Takes the page number (0-4095), offset of data byte within page (0-255) and one byte of data (0-255) as arguments.
+###### writeChar(page_number, offset, data)
+Writes a _char_ (signed 8 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the char and one char of data within page (0-255) as arguments.
+###### writeWord(page_number, offset, data)
+Writes a _word_ (unsigned 16 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the word and one word of data within page (0-255) as arguments.
+###### writeShort(page_number, offset, data)
+Writes a _short_ (signed 16 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the short and one short of data within page (0-255) as arguments.
+###### writeULong(page_number, offset, data)
+Writes an _unsigned long_ (unsigned 32 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the unsigned long and one unsigned long of data within page (0-255) as arguments.
+###### writeLong(page_number, offset, data)
+Writes a _long_ (signed 32 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the long and one long of data within page (0-255) as arguments.
+###### writeFloat(page_number, offset, data)
+Writes a _float_ (decimal value) to a specific location on a page. Takes the page number (0-4095), the offset of the float and one float of data within page (0-255) as arguments.
+###### writePage(page_number, *data_buffer)
+Writes a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
+###### writeAnything(page_number, offset, value)
+Writes _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-4095), the offset of the data within page (0-255) and the variable/struct to write the data from, as arguments.
 <hr>
 ##### Continuous read/write commands
 ###### readBytes(page_number, offset, *data_buffer)
 Reads an array of bytes starting from a specific location in a page. Takes the page number (0-4095), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be read from the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of storage available on the Arduino board.
 ###### writeBytes(page_number, offset, *data_buffer)
 Writes an array of bytes starting from a specific location in a page. Takes the page number (0-4095), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be written to the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of storage available on the Arduino board.
-<hr>
-##### Read commands
-###### readByte(page_number, offset)
-Reads a byte of data from a specific location on a page. Takes the page number (0-4095) and offset of data byte within page (0-255) as arguments.
-###### readPage(page_number, *data_buffer, outputType)
-Reads a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes. Setting an outputType of 1 enables output in hexadecimal while an outputType of 2 enables output in decimal, CSV - over Serial.
-<hr>
-##### Write commands
-###### writeByte(page, offset, data)
-Writes a byte of data to a specific location on a page. Takes the page number (0-4095), offset of data byte within page (0-255) and one byte of data (0-255) as arguments.
-###### writePage(page_number, *data_buffer)
-Writes a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
 <hr>
 ##### Erase commands
 ###### eraseSector(page_number)
@@ -70,7 +101,10 @@ Puts device in low power state. Useful for battery powered operations. Typical c
 ###### powerUp()
 //Wakes chip from low power state.
 <hr>
-##### readAllPages()
+##### printPage(page_number, outputType)
+Reads a page worth of data into a data buffer array for further useand prints to a Serial stream at 115200 baud by default. (The baudrate can be changed by calling ```Serial.begin()``` at a different baudrate in ``` void setup()```)Setting an outputType of 1 enables output in hexadecimal while an outputType of 2 enables output in decimal, CSV - over Serial.
+<hr>
+##### printAllPages()
 Reads all pages on Flash chip and dumps it to Serial stream. This function is useful when extracting data from a flash chip onto a computer as a text file.
 
 ###### How to get data off Flash memory via Serial
