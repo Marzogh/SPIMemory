@@ -12,14 +12,27 @@ SPIFlash	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 begin	KEYWORD2
-getID	KEYWORD2
+getJEDEC	KEYWORD2
+getManID	KEYWORD2
 readByte	KEYWORD2
 readBytes	KEYWORD2
+readChar	KEYWORD2
+readWord	KEYWORD2
+readShort	KEYWORD2
+readLong	KEYWORD2
+readULong	KEYWORD2
+readFloat	KEYWORD2
 readPage	KEYWORD2
 readAnything	KEYWORD2
 readAllPages	KEYWORD2
 writeByte	KEYWORD2
 writeBytes	KEYWORD2
+writeChar	KEYWORD2
+writeWord	KEYWORD2
+writeShort	KEYWORD2
+writeLong	KEYWORD2
+writeULong	KEYWORD2
+writeFloat	KEYWORD2
 writePage	KEYWORD2
 writeAnything KEYWORD2
 printPage	KEYWORD2
@@ -37,3 +50,5 @@ powerDown	KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
+devType		KEYWORD3
+memsize		KEYWORD3
