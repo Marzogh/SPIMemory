@@ -169,11 +169,13 @@ bool SPIFlash::_writeEnable(void) {
 bool SPIFlash::_writeDisable(void) {
 	_cmd(WRITEDISABLE);
 	_chipDeselect();
+
+	return true;
 }
 
 //Empties the values stored in any array by setting all the values of all the bits in the array to 1
 void SPIFlash::_empty(uint8_t *array) {
-	int i;
+	uint16_t i;
 	for (i = 0; i < arrayLen(array); ++i)
 		array[i] = 0xFF;
 }
@@ -236,6 +238,7 @@ uint32_t SPIFlash::_getAddress(uint16_t page_number, uint8_t offset) {
  		_errorCodeCheck();
  		while(1);
  		#endif
+ 		return false;
 	}
 	else
 	return address;
@@ -517,7 +520,7 @@ void  SPIFlash::readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 	uint32_t address = _prepRead(page_number, offset);
 	uint16_t length = arrayLen(data_buffer);
 	_beginRead(address);
-	for (int a = 0; a < length; a++) {
+	for (uint16_t a = 0; a < length; a++) {
 		data_buffer[a] = _readNextByte();
 		_addressCheck(address++);
 	}
@@ -535,7 +538,7 @@ uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset) {
 		uint16_t I;
 	} data;
 	_beginRead(address);
-	for (int i=0; i < (sizeof(int16_t)); i++) {
+	for (uint16_t i=0; i < (sizeof(int16_t)); i++) {
 	data.b[i] = _readNextByte();
 	}
 	_endProcess();
@@ -553,7 +556,7 @@ int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset) {
 		int16_t s;
 	} data;
 	_beginRead(address);
-	for (int i=0; i < (sizeof(int16_t)); i++) {
+	for (uint16_t i=0; i < (sizeof(int16_t)); i++) {
 		data.b[i] = _readNextByte();
 	}
 	_endProcess();
@@ -571,7 +574,7 @@ uint32_t SPIFlash::readULong(uint16_t page_number, uint8_t offset) {
 		uint32_t l;
 	} data;
 	_beginRead(address);
-	for (int i=0; i < (sizeof(uint32_t)); i++) {
+	for (uint16_t i=0; i < (sizeof(uint32_t)); i++) {
 		data.b[i] = _readNextByte();
 	}
 	_endProcess();
@@ -589,7 +592,7 @@ int32_t SPIFlash::readLong(uint16_t page_number, uint8_t offset) {
 		int32_t l;
 	} data;
 	_beginRead(address);
-	for (int i=0; i < (sizeof(int32_t)); i++) {
+	for (uint16_t i=0; i < (sizeof(int32_t)); i++) {
 		data.b[i] = _readNextByte();
 	}
 	_endProcess();
@@ -607,7 +610,7 @@ float SPIFlash::readFloat(uint16_t page_number, uint8_t offset) {
 		float f;
 	} data;
 	_beginRead(address);
-	for (int i=0; i < (sizeof(float)); i++) {
+	for (uint16_t i=0; i < (sizeof(float)); i++) {
 		data.b[i] = _readNextByte();
 	}
 	_endProcess();
@@ -694,7 +697,14 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 		length -= n;
 		maxBytes = 256;   // Now we can do up to 256 bytes per loop
 	}
-	return true;
+	_endProcess();
+	
+	if (!errorCheck)
+		return true;
+	else{
+		address = _prepWrite(page_number, offset);
+		return _writeErrorCheck(address, data);
+	}
 }
 
 // Writes an unsigned int as two bytes starting from a specific location in a page. Takes four arguments -
@@ -714,7 +724,7 @@ bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bo
 	} var;
 	var.w = data;
 	_beginWrite(address);
-	for (int j = 0; j < (sizeof(data)); j++) {
+	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_writeNextByte(var.b[j]);
 	}
 	_endProcess();
@@ -742,7 +752,7 @@ bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bo
 	} var;
 	var.s = data;
 	_beginWrite(address);
-	for (int j = 0; j < (sizeof(data)); j++) {
+	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_writeNextByte(var.b[j]);
 	}
 	_endProcess();
@@ -770,7 +780,7 @@ bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, b
 	} var;
 	var.l = data;
 	_beginWrite(address);
-	for (int j = 0; j < (sizeof(data)); j++) {
+	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_writeNextByte(var.b[j]);
 	}
 	_endProcess();
@@ -798,7 +808,7 @@ bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, boo
 	} var;
 	var.l = data;
 	_beginWrite(address);
-	for (int j = 0; j < (sizeof(data)); j++) {
+	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_writeNextByte(var.b[j]);
 	}
 	_endProcess();
@@ -826,7 +836,7 @@ bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool
 	} var;
 	var.f = data;
 	_beginWrite(address);
-	for (int j = 0; j < (sizeof(data)); j++) {
+	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_writeNextByte(var.b[j]);
 	}
 	_endProcess();
@@ -970,6 +980,8 @@ bool SPIFlash::suspendProg(void) {
 
 	if(!_notBusy(20L))	//Max suspend Enable time according to datasheet
 		return false;
+
+	return true;
 }
 
 //Resumes previously suspended Block Erase/Sector Erase/Page Program.
