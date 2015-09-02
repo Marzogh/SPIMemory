@@ -284,10 +284,8 @@ bool SPIFlash::_addressCheck(uint32_t address)
     }
 
   }
-  else if (address < capacity) {
-  	address = address;
+  else if (address < capacity) 
     return true;				// Not at end of memory
-  } 
 }
 
 //Double checks all parameters before calling a Read
@@ -703,7 +701,7 @@ bool SPIFlash::writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_bu
 		return true;
 	else{
 		address = _prepWrite(page_number, offset);
-		return _writeErrorCheck(address, data);
+		return _writeErrorCheck(address, data_buffer);
 	}
 }
 
