@@ -1,12 +1,12 @@
-/* Arduino SPIFlash Library v.1.3.0
+/* Arduino SPIFlash Library v.1.3.1
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 30/08/2015
+ * Modified by Prajwal Bhattaram - 02/09/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
- * W25Q80BV serial flash memory. In its current form it enables reading 
- * and writing bytes from and to various locations, reading and writing pages,
- * sector, block and chip erase, powering down for low power operation and
- * continuous read functions.
+ * Winbond NOR flash memory modules. In its current form it enables reading 
+ * and writing individual data variables, structs and arrays from and to various locations;
+ * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
  * along with the Arduino SPIFlash Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
+ 
 #include "SPIFlash.h"
 #include <util/delay.h>
 #include <SPI.h>
