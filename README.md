@@ -1,6 +1,6 @@
-# SPIFlash
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v1.3.1-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
-<sup> Download the latest stable release (v1.3.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/tag/v1.3.0">here</a>. Please report any bugs in issues.</sup>
+<sup> Download the latest stable release (v1.3.1) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
 This library is for a the Winbond serial flash memory chips. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
 
@@ -31,60 +31,60 @@ Fetches the JEDEC ID as a 32 bit number.
 <hr>
 ##### Read commands
 ###### readAnything(page_number, offset, value)
-Reads _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-4095), the offset of the data within page (0-255) and the variable/struct to write the data back to, as arguments.
+Reads _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data back to, as arguments.
 ###### readByte(page_number, offset)
-Reads a _byte_ (unsigned 8 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the byte within page (0-255) as arguments.
+Reads a _byte_ (unsigned 8 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the byte within page (0-255) as arguments.
 ###### readChar(page_number, offset)
-Reads a _char_ (signed 8 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the char within page (0-255) as arguments.
+Reads a _char_ (signed 8 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the char within page (0-255) as arguments.
 ###### readWord(page_number, offset)
-Reads a _word_ (unsigned 16 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the word within page (0-255) as arguments.
+Reads a _word_ (unsigned 16 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the word within page (0-255) as arguments.
 ###### readShort(page_number, offset)
-Reads a _short_ (signed 16 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the short within page (0-255) as arguments.
+Reads a _short_ (signed 16 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the short within page (0-255) as arguments.
 ###### readULong(page_number, offset)
-Reads an _unsigned long_ (unsigned 32 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the unsigned long within page (0-255) as arguments.
+Reads an _unsigned long_ (unsigned 32 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the unsigned long within page (0-255) as arguments.
 ###### readLong(page_number, offset)
-Reads a _long_ (signed 32 bit value) from a specific location on a page. Takes the page number (0-4095) and offset of the long within page (0-255) as arguments.
+Reads a _long_ (signed 32 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the long within page (0-255) as arguments.
 ###### readFloat(page_number, offset)
-Reads a _float_ (decimal value) from a specific location on a page. Takes the page number (0-4095) and offset of the float within page (0-255) as arguments.
+Reads a _float_ (decimal value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the float within page (0-255) as arguments.
 ###### readPage(page_number, *data_buffer)
 Reads a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
 <hr>
 ##### Write commands
 ###### writeByte(page, offset, data)
-Writes a byte of data to a specific location on a page. Takes the page number (0-4095), offset of data byte within page (0-255) and one byte of data (0-255) as arguments.
+Writes a byte of data to a specific location on a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and one byte of data (0-255) as arguments.
 ###### writeChar(page_number, offset, data)
-Writes a _char_ (signed 8 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the char and one char of data within page (0-255) as arguments.
+Writes a _char_ (signed 8 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the char and one char of data within page (0-255) as arguments.
 ###### writeWord(page_number, offset, data)
-Writes a _word_ (unsigned 16 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the word and one word of data within page (0-255) as arguments.
+Writes a _word_ (unsigned 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the word and one word of data within page (0-255) as arguments.
 ###### writeShort(page_number, offset, data)
-Writes a _short_ (signed 16 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the short and one short of data within page (0-255) as arguments.
+Writes a _short_ (signed 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the short and one short of data within page (0-255) as arguments.
 ###### writeULong(page_number, offset, data)
-Writes an _unsigned long_ (unsigned 32 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the unsigned long and one unsigned long of data within page (0-255) as arguments.
+Writes an _unsigned long_ (unsigned 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the unsigned long and one unsigned long of data within page (0-255) as arguments.
 ###### writeLong(page_number, offset, data)
-Writes a _long_ (signed 32 bit value) to a specific location on a page. Takes the page number (0-4095), the offset of the long and one long of data within page (0-255) as arguments.
+Writes a _long_ (signed 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the long and one long of data within page (0-255) as arguments.
 ###### writeFloat(page_number, offset, data)
-Writes a _float_ (decimal value) to a specific location on a page. Takes the page number (0-4095), the offset of the float and one float of data within page (0-255) as arguments.
+Writes a _float_ (decimal value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the float and one float of data within page (0-255) as arguments.
 ###### writePage(page_number, *data_buffer)
 Writes a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
 ###### writeAnything(page_number, offset, value)
-Writes _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-4095), the offset of the data within page (0-255) and the variable/struct to write the data from, as arguments.
+Writes _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data from, as arguments.
 <hr>
 ##### Continuous read/write commands
 ###### readBytes(page_number, offset, *data_buffer)
-Reads an array of bytes starting from a specific location in a page. Takes the page number (0-4095), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be read from the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of storage available on the Arduino board.
+Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be read from the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of storage available on the Arduino board.
 ###### writeBytes(page_number, offset, *data_buffer)
-Writes an array of bytes starting from a specific location in a page. Takes the page number (0-4095), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be written to the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of storage available on the Arduino board.
+Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be written to the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of storage available on the Arduino board.
 <hr>
 ##### Erase commands
 ###### eraseSector(page_number)
 Erases one 4KB sector - 16 pages - containing the page to be erased. The sectors are numbered 0 - 255 containing 16 pages each.
-Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255.
+Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255, and so on...
 ###### eraseBlock32K(page_number)
 Erases one 32KB block - 128 pages - containing the page to be erased. The blocks are numbered 0 - 31 containing 128 pages each.
-Page 0-127 --> Block 0; Page 128-255 --> Block 1;......Page 3968-4095 --> Block 31.
+Page 0-127 --> Block 0; Page 128-255 --> Block 1;......Page 3968-4095 --> Block 31, and so on...
 ###### eraseBlock64K(page_number)
 Erases one 64KB block - 256 pages - containing the page to be erased. The blocks are numbered 0 - 15 containing 256 pages each.
-// Page 0-255 --> Block 0; Page 256-511 --> Block 1;......Page 3840-4095 --> Block 15.
+// Page 0-255 --> Block 0; Page 256-511 --> Block 1;......Page 3840-4095 --> Block 15, and so on...
 ###### eraseChip()
 Erases entire chip. Use with care.
 <hr>

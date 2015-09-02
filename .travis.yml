@@ -1,0 +1,13 @@
+language: c++
+sudo: false
+before_install:
+  - source <(curl -SLs https://raw.githubusercontent.com/Marzogh/Travis-CI/master/install.sh)
+#install:
+#  - ln -s $PWD /usr/local/share/arduino/libraries/Adafruit_FONA
+#  - arduino --install-library "Adafruit SleepyDog Library,Adafruit FONA Library,Adafruit CC3000 Library"
+script:
+  - build_main_platforms
+notifications:
+  email:
+    on_success: change
+    on_failure: change
