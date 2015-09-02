@@ -1,9 +1,2 @@
---> Updated ReadMe.md has all information needed to use the library.
---> v1.3.0 is faster and lighter than previous versions.
---> The library is optimised to work with the following Winbond Flash modules W25X05CL, W25X10BV, W25X20BV, W25X40BV, W25Q80BV, W25Q16BV, W25Q32BV, W25Q64BV, W25Q128BV & W25Q256FV.
---> _addressCheck() built into every read/write function.
---> _errorCheck() built into every write function.
---> The library now supports readAnything() & writeAnything().
---> There are now specific functions for reading and writing different types of variables - refer to ReadMe.md for further details.
---> All Read/Write functions now carry out a series of checks to keep data corruption to a minimum
---> Added a diagnostic function to enable error code generation and checking - Follow instruction in the "Diagnostics.ino" example
+--> Bug fixes
+--> Fixed errors in ReadMe.md
