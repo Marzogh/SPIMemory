@@ -284,8 +284,8 @@ bool SPIFlash::_addressCheck(uint32_t address)
     }
 
   }
-  else if (address < capacity) 
-    return true;				// Not at end of memory
+
+  return true;				// Not at end of memory if (address < capacity)
 }
 
 //Double checks all parameters before calling a Read
