@@ -1,10 +1,10 @@
 void commandList() {
   Serial.println(F("-----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("                                                            Winbond Flash                                                          "));
-  Serial.println(F("                                                      SPIFlash library test v1.3.0                                                 "));
+  Serial.println(F("                                                      SPIFlash library test v1.3.2                                                 "));
   Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
-  Serial.println(F("                                                           Prajwal Bhattaram                                                       "));
-  Serial.println(F("                                                               29.08.2015                                                          "));
+  Serial.println(F("                                                                Marzogh                                                            "));
+  Serial.println(F("                                                              17.09.2015                                                           "));
   Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("                                      (Please make sure your Serial monitor is set to 'No Line Ending')                            "));
   Serial.println(F("                                      *****************************************************************                            "));

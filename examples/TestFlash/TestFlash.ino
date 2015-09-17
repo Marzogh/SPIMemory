@@ -1,10 +1,10 @@
 /*
  *----------------------------------------------------------------------------------------------------------------------------------*
  |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v1.3.0                                                |
+ |                                                      SPIFlash library test v1.3.2                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
- |                                                          Prajwal Bhattaram                                                       |
- |                                                              30.08.2015                                                          |
+ |                                                                Marzogh                                                           |
+ |                                                              17.09.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -81,12 +81,15 @@ void setup() {
     Serial.print(F("."));
   }
   Serial.println();
-  flash.begin();/*
+  flash.begin();
+  /*
+   //Uncomment this code block if your code doesn't run to check for Flash error code
   clearprintBuffer();
   sprintf(printBuffer, "Flash initiation code: %x", flashCode);
   Serial.println(printBuffer);
   Serial.println(F("If flashCode !=0 please redownload the latest version of the library."));
-  Serial.println(F("If flashcode still !=0 after downloading the latest version, please raise an issue at https://github.com/Marzogh/SPIFlash/issues."));*/
+  Serial.println(F("If flashcode still !=0 after downloading the latest version, please raise an issue at https://github.com/Marzogh/SPIFlash/issues."));
+  */
   Serial.println();
   Serial.println();
   commandList();
@@ -99,10 +102,10 @@ void loop() {
       commandList();
     }
     else if (commandNo == 1) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                      Function 1 : Get JEDEC ID                                                   "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
+      printLine();
       uint8_t b1, b2;
       uint16_t b3;
       uint32_t JEDEC = flash.getJEDECID();
@@ -116,15 +119,15 @@ void loop() {
       clearprintBuffer();
       sprintf(printBuffer, "JEDEC ID: %04lxh", JEDEC);
       Serial.println(printBuffer);
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 2) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 2 : Write Byte                                                    "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.print(F("Please enter the number of the page (0-4095) you wish to modify: "));
+      printSplash();
+      printLine();
+      Serial.print(F("Please enter the number of the page you wish to modify: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -145,15 +148,15 @@ void loop() {
         sprintf(printBuffer, "%d has been written to position %d on page %d", dataByte, offset, page);
         Serial.println(printBuffer);
       }*/
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 3) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 3 : Read Byte                                                     "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.print(F("Please enter the number of the page (0-4095) the byte you wish to read is on: "));
+      printSplash();
+      printLine();
+      Serial.print(F("Please enter the number of the page the byte you wish to read is on: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -167,15 +170,15 @@ void loop() {
       sprintf(printBuffer, "The byte at position %d on page %d is: ", offset, page);
       Serial.print(printBuffer);
       Serial.println(flash.readByte(page, offset));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 4) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 4 : Write Word                                                    "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.print(F("Please enter the number of the page (0-4095) you wish to modify: "));
+      printSplash();
+      printLine();
+      Serial.print(F("Please enter the number of the page you wish to modify: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -194,15 +197,15 @@ void loop() {
       clearprintBuffer();
       sprintf(printBuffer, "%d has been written to position %d on page %d", dataInt, offset, page);
       Serial.println(printBuffer);
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 5) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 5 : Read Word                                                     "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.print(F("Please enter the number of the page (0-4095) the byte you wish to read is on: "));
+      printSplash();
+      printLine();
+      Serial.print(F("Please enter the number of the page the byte you wish to read is on: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -216,16 +219,16 @@ void loop() {
       sprintf(printBuffer, "The unsigned int at position %d on page %d is: ", offset, page);
       Serial.print(printBuffer);
       Serial.println(flash.readWord(page, offset));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 6) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 6 : Write Page                                                    "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printSplash();
+      printLine();
       Serial.println(F("This function will write a sequence of bytes (0-255) to the page selected."));
-      Serial.print(F("Please enter the number of the page (0-4095) you wish to write to: "));
+      Serial.print(F("Please enter the number of the page you wish to write to: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -237,47 +240,47 @@ void loop() {
       clearprintBuffer();
       sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
       Serial.println(printBuffer);
-      Serial.print("Type 1 to read the page you have just written. Type 0 to continue: ");
+      printReadChoice();
       while (!Serial.available()) {
       }
       uint8_t choice = Serial.parseInt();
       Serial.println(choice);
       if (choice == 1) {
-        Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+        printOutputChoice();
         while (!Serial.available()) {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
         flash.printPage(page, outputType);
       }
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 7) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 7 : Read Page                                                    "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printSplash();
+      printLine();
       Serial.println(F("This function will read the entire page selected."));
-      Serial.print(F("Please enter the number of the page (0-4095) you wish to read: "));
+      Serial.print(F("Please enter the number of the page you wish to read: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
       Serial.println(page);
-      Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+      printOutputChoice();
       while (!Serial.available()) {
       }
       uint8_t outputType = Serial.parseInt();
       Serial.println(outputType);
       flash.printPage(page, outputType);
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 8) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                     Function 8 : Read All Pages                                                  "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printSplash();
+      printLine();
       Serial.println(F("This function will read the entire flash memory."));
       Serial.println(F("This will take a long time and might result in memory issues. Do you wish to continue? (Y/N)"));
       char c;
@@ -285,23 +288,23 @@ void loop() {
       }
       c = (char)Serial.read();
       if (c == 'Y' || c == 'y') {
-        Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+        printOutputChoice();
         while (!Serial.available()) {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
         flash.printAllPages(outputType);
       }
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 9) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("                                                       Function 9 : Erase sector                                                  "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
+      Serial.println(F("                                                       Function 9 : Erase 4KB sector                                               "));
+      printSplash();
+      printLine();
       Serial.println(F("This function will erase a 4KB sector."));
-      Serial.print(F("Please enter the number of the page (0-4095) you wish to erase: "));
+      Serial.print(F("Please enter the number of the page you wish to erase: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -310,29 +313,29 @@ void loop() {
       clearprintBuffer();
       sprintf(printBuffer, "A 4KB sector containing page %d has been erased", page);
       Serial.println(printBuffer);
-      Serial.print("Type 1 to read the page you have just erased. Type 0 to continue: ");
+      printReadChoice();
       while (!Serial.available()) {
       }
       uint8_t choice = Serial.parseInt();
       Serial.println(choice);
       if (choice == 1) {
-        Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+        printOutputChoice();
         while (!Serial.available()) {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
         flash.printPage(page, outputType);
       }
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 10) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 10 : Erase 32KB Block                                              "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printSplash();
+      printLine();
       Serial.println(F("This function will erase a 32KB block."));
-      Serial.print(F("Please enter the number of the page (0-4095) you wish to erase: "));
+      Serial.print(F("Please enter the number of the page you wish to erase: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -341,29 +344,29 @@ void loop() {
       clearprintBuffer();
       sprintf(printBuffer, "A 32KB block containing page %d has been erased", page);
       Serial.println(printBuffer);
-      Serial.print("Type 1 to read the page you have just erased. Type 0 to continue: ");
+      printReadChoice();
       while (!Serial.available()) {
       }
       uint8_t choice = Serial.parseInt();
       Serial.println(choice);
       if (choice == 1) {
-        Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+        printOutputChoice();
         while (!Serial.available()) {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
         flash.printPage(page, outputType);
       }
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 11) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                       Function 11 : Erase 64KB Block                                              "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printSplash();
+      printLine();
       Serial.println(F("This function will erase a 64KB block."));
-      Serial.print(F("Please enter the number of the page (0-4095) you wish to erase: "));
+      Serial.print(F("Please enter the number of the page you wish to erase: "));
       while (!Serial.available()) {
       }
       page = Serial.parseInt();
@@ -372,27 +375,27 @@ void loop() {
       clearprintBuffer();
       sprintf(printBuffer, "A 64KB block containing page %d has been erased", page);
       Serial.println(printBuffer);
-      Serial.print("Type 1 to read the page you have just erased. Type 0 to continue: ");
+      printReadChoice();
       while (!Serial.available()) {
       }
       uint8_t choice = Serial.parseInt();
       Serial.println(choice);
       if (choice == 1) {
-        Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+        printOutputChoice();
         while (!Serial.available()) {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
         flash.printPage(page, outputType);
       }
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
     else if (commandNo == 12) {
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printLine();
       Serial.println(F("                                                      Function 12 : Erase Chip                                                    "));
-      Serial.println(F("                                                        SPIFlash library test                                                     "));
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+      printSplash();
+      printLine();
       Serial.println(F("This function will erase the entire flash memory."));
       Serial.println(F("Do you wish to continue? (Y/N)"));
       char c;
@@ -405,8 +408,8 @@ void loop() {
         else
           Serial.println(F("Error erasing chip"));
       }
-      Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
-      Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+      printLine();
+      printNextCMD();
     }
   }
 }
@@ -416,6 +419,33 @@ void clearprintBuffer()
   for (uint8_t i = 0; i < 128; i++) {
     printBuffer[i] = 0;
   }
+}
+
+//Print commands
+
+void printLine()
+{
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+}
+
+void printSplash()
+{
+  Serial.println(F("                                                        SPIFlash library test                                                     "));
+}
+
+void printNextCMD()
+{
+  Serial.println(F("Please type the next command. Type 0 to get the list of commands"));
+}
+
+void printOutputChoice()
+{
+  Serial.print("Would you like your output in decimal or hexadecimal? Please indicate with '1' for HEX or '2' for DEC: ");
+}
+
+void printReadChoice()
+{
+  Serial.print("Type 1 to read the page you have just modified. Type 0 to continue: ");
 }
 
 
