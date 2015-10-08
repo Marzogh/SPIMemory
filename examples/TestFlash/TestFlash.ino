@@ -4,7 +4,7 @@
  |                                                      SPIFlash library test v1.3.2                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                                Marzogh                                                           |
- |                                                              17.09.2015                                                          |
+ |                                                              08.10.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -13,47 +13,53 @@
  |    For example - to write a byte of data, you would have to use the write_byte function - so type '3' into the serial console.   |
  |                                                    --------------------------------                                              |
  |                                                                                                                                  |
- |  1. Get ID                                                                                                                       |
+ |  1. getID                                                                                                                       |
  |   '1' gets the JEDEC ID of the chip                                                                                              |
  |                                                                                                                                  |
- |  2. Write Byte [page] [offset] [byte]                                                                                            |
+ |  2. writeByte [page] [offset] [byte]                                                                                             |
  |   '2' followed by '100' and then by '20' and then by '224' writes the byte 224 to page 100 position 20                           |
  |                                                                                                                                  |
- |  3. Read Byte [page] [offset]                                                                                                    |
+ |  3. readByte [page] [offset]                                                                                                     |
  |   '3' followed by '100' and then by '20' returns the byte from page 100 position 20                                              |
  |                                                                                                                                  | 
- |  4. Write Word [page] [offset]                                                                                                   |
+ |  4. writeWord [page] [offset]                                                                                                    |
  |   '4' followed by '55' and then by '35' and then by '633' writes the int 633 to page 5 position 35                               |
  |                                                                                                                                  | 
- |  5. readWord [page] [offset]"));                                                                                                 |
+ |  5. readWord [page] [offset]                                                                                                     |
  |   '5' followed by '200' and then by '30' returns the int from page 200 position 30                                               |
+ |                                                                                                                                  | 
+ |  6. writeStr [page] [offset] [inputString]                                                                                       |
+ |   '6' followed by '345' and then by '65' and then by 'Test String 1!' writes the String 'Test String 1! to page 345 position 65  |
+ |                                                                                                                                  | 
+ |  7. readStr [page] [offset] [outputString]                                                                                       |
+ |   '7' followed by '2050' and then by '73' reds the String from page 2050 position 73 into the outputString                       |
  |                                                                                                                                  |
- |  6. Write Page [page]                                                                                                            |
- |   '6' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
+ |  8. writePage [page]                                                                                                             |
+ |   '8' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
  |                                                                                                                                  |
- |  7. Print Page [page]                                                                                                            |
- |   '7' followed by 33 reads & prints page 33. To just read a page to a data buffer, refer                                         |
+ |  9. printPage [page]                                                                                                             |
+ |   '9' followed by 33 reads & prints page 33. To just read a page to a data buffer, refer                                         |
  |    to 'ReadMe.md' in the library folder.                                                                                         |
  |                                                                                                                                  |
- |  8. Print All Pages                                                                                                              |
- |   '8' reads all 4096 pages and outputs them to the serial console                                                                |
+ |  10. printAllPages                                                                                                               |
+ |   '10' reads all 4096 pages and outputs them to the serial console                                                               |
  |   This function is to extract data from a flash chip onto a computer as a text file.                                             |
  |   Refer to 'Read me.md' in the library for details.                                                                              |
  |                                                                                                                                  |
- |  9. Erase 4KB sector                                                                                                             |
- |   '9'  followed by 2 erases a 4KB sector containing the page to be erased                                                        |
+ |  11. Erase 4KB sector                                                                                                            |
+ |   '11'  followed by 2 erases a 4KB sector containing the page to be erased                                                       |
  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
  |                                                                                                                                  |
- |  10. Erase 32KB block                                                                                                            |
- |   '10'  followed by 2 erases a 32KB block containing the page to be erased                                                       |
+ |  12. Erase 32KB block                                                                                                            |
+ |   '12'  followed by 2 erases a 32KB block containing the page to be erased                                                       |
  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
  |                                                                                                                                  |
- |  11. Erase 64KB block                                                                                                            |
- |   '11'  followed by 2 erases a 64KB block containing the page to be erased                                                       |
+ |  13. Erase 64KB block                                                                                                            |
+ |   '13'  followed by 2 erases a 64KB block containing the page to be erased                                                       |
  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
  |                                                                                                                                  |
- |  12. Erase Chip                                                                                                                  |
- |   '12' erases the entire chip                                                                                                    |
+ |  14. Erase Chip                                                                                                                  |
+ |   '14' erases the entire chip                                                                                                    |
  |                                                                                                                                  |
  ^----------------------------------------------------------------------------------------------------------------------------------^
  */
@@ -69,6 +75,7 @@ char printBuffer[128];
 uint16_t page;
 uint8_t offset, dataByte;
 uint16_t dataInt;
+String inputString, outputString;
 
 
 SPIFlash flash(cs);
@@ -224,7 +231,59 @@ void loop() {
     }
     else if (commandNo == 6) {
       printLine();
-      Serial.println(F("                                                       Function 6 : Write Page                                                    "));
+      Serial.println(F("                                                      Function 6 : Write String                                                   "));
+      printSplash();
+      printLine();
+      Serial.println(F("This function will write a String of your choice to the page selected."));
+      Serial.print(F("Please enter the number of the page you wish to write to: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position on the page (0-255) you wish to write to: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
+      Serial.print(F("Please enter the String you wish to save: "));
+      while (!Serial.available()) {
+      }
+      flash.readSerialStr(inputString);
+      flash.writeStr(page, offset, inputString);
+      clearprintBuffer();
+      Serial.print(F("String "));
+      Serial.print(inputString);
+      sprintf(printBuffer, " has been written to position %d on page %d", offset, page);
+      Serial.println(printBuffer);
+      printLine();
+      printNextCMD();
+    }
+    else if (commandNo == 7) {
+      printLine();
+      Serial.println(F("                                                      Function 7 : Read String                                                    "));
+      printSplash();
+      printLine();
+      Serial.print(F("Please enter the number of the page the String you wish to read is on: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position of the String on the page (0-255) you wish to read: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
+      clearprintBuffer();
+      sprintf(printBuffer, "The String at position %d on page %d is: ", offset, page);
+      Serial.print(printBuffer);
+      flash.readStr(page, offset, outputString);
+      Serial.println(outputString);
+      printLine();
+      printNextCMD();
+    }
+    else if (commandNo == 8) {
+      printLine();
+      Serial.println(F("                                                       Function 8 : Write Page                                                    "));
       printSplash();
       printLine();
       Serial.println(F("This function will write a sequence of bytes (0-255) to the page selected."));
@@ -256,9 +315,9 @@ void loop() {
       printLine();
       printNextCMD();
     }
-    else if (commandNo == 7) {
+    else if (commandNo == 9) {
       printLine();
-      Serial.println(F("                                                       Function 7 : Read Page                                                    "));
+      Serial.println(F("                                                       Function 9 : Read Page                                                    "));
       printSplash();
       printLine();
       Serial.println(F("This function will read the entire page selected."));
@@ -276,9 +335,9 @@ void loop() {
       printLine();
       printNextCMD();
     }
-    else if (commandNo == 8) {
+    else if (commandNo == 10) {
       printLine();
-      Serial.println(F("                                                     Function 8 : Read All Pages                                                  "));
+      Serial.println(F("                                                     Function 10 : Read All Pages                                                  "));
       printSplash();
       printLine();
       Serial.println(F("This function will read the entire flash memory."));
@@ -298,9 +357,9 @@ void loop() {
       printLine();
       printNextCMD();
     }
-    else if (commandNo == 9) {
+    else if (commandNo == 11) {
       printLine();
-      Serial.println(F("                                                       Function 9 : Erase 4KB sector                                               "));
+      Serial.println(F("                                                       Function 11 : Erase 4KB sector                                               "));
       printSplash();
       printLine();
       Serial.println(F("This function will erase a 4KB sector."));
@@ -329,9 +388,9 @@ void loop() {
       printLine();
       printNextCMD();
     }
-    else if (commandNo == 10) {
+    else if (commandNo == 12) {
       printLine();
-      Serial.println(F("                                                       Function 10 : Erase 32KB Block                                              "));
+      Serial.println(F("                                                       Function 12 : Erase 32KB Block                                              "));
       printSplash();
       printLine();
       Serial.println(F("This function will erase a 32KB block."));
@@ -360,9 +419,9 @@ void loop() {
       printLine();
       printNextCMD();
     }
-    else if (commandNo == 11) {
+    else if (commandNo == 13) {
       printLine();
-      Serial.println(F("                                                       Function 11 : Erase 64KB Block                                              "));
+      Serial.println(F("                                                       Function 13 : Erase 64KB Block                                              "));
       printSplash();
       printLine();
       Serial.println(F("This function will erase a 64KB block."));
@@ -391,9 +450,9 @@ void loop() {
       printLine();
       printNextCMD();
     }
-    else if (commandNo == 12) {
+    else if (commandNo == 14) {
       printLine();
-      Serial.println(F("                                                      Function 12 : Erase Chip                                                    "));
+      Serial.println(F("                                                      Function 14 : Erase Chip                                                    "));
       printSplash();
       printLine();
       Serial.println(F("This function will erase the entire flash memory."));

@@ -99,72 +99,86 @@ void writeData() {
   flash.writeFloat(1920, 18, _float);
 
   Serial.println("Data Written\t\t||\t\tData Read\t\t||\t\tMatch");
+  Serial.println("--------------------------------------------------------------------------------------");
 
+  Serial.print("\t");
   Serial.print(_byte);
   Serial.print("\t\t||\t\t");
   Serial.print(flash.readByte(1920, 4));
-  Serial.print("\t\t||\t\t");
+  Serial.print("\t\t\t||\t\t");
   if (_byte == flash.readByte(1920, 4))
-    Serial.print("True");
+    Serial.println("True");
   else
-    Serial.print("False");
+    Serial.println("False");
 
+  Serial.print("\t");
   Serial.print(_char);
   Serial.print("\t\t||\t\t");
   Serial.print(flash.readChar(1920, 5));
-  Serial.print("\t\t||\t\t");
+  Serial.print("\t\t\t||\t\t");
   if (_char == flash.readChar(1920, 5))
-    Serial.print("True");
+    Serial.println("True");
   else
-    Serial.print("False");
+    Serial.println("False");
 
+  Serial.print("\t");
   Serial.print(_word);
   Serial.print("\t\t||\t\t");
   Serial.print(flash.readWord(1920, 6));
-  Serial.print("\t\t||\t\t");
+  Serial.print("\t\t\t||\t\t");
   if (_word == flash.readWord(1920, 6))
-    Serial.print("True");
+    Serial.println("True");
   else
-    Serial.print("False");
+    Serial.println("False");
 
+  Serial.print("\t");
   Serial.print(_short);
   Serial.print("\t\t||\t\t");
   Serial.print(flash.readShort(1920, 8));
-  Serial.print("\t\t||\t\t");
+  Serial.print("\t\t\t||\t\t");
   if (_short == flash.readShort(1920, 8))
-    Serial.print("True");
+    Serial.println("True");
   else
-    Serial.print("False");
+    Serial.println("False");
 
+  Serial.print("\t");
   Serial.print(_uLong);
   Serial.print("\t\t||\t\t");
   Serial.print(flash.readULong(1920, 10));
-  Serial.print("\t\t||\t\t");
+  Serial.print("\t\t\t||\t\t");
   if (_uLong == flash.readULong(1920, 10))
-    Serial.print("True");
+    Serial.println("True");
   else
-    Serial.print("False");
+    Serial.println("False");
 
+  Serial.print("\t");
   Serial.print(_long);
   Serial.print("\t\t||\t\t");
   Serial.print(flash.readLong(1920, 14));
-  Serial.print("\t\t||\t\t");
+  Serial.print("\t\t\t||\t\t");
   if (_long == flash.readLong(1920, 14))
-    Serial.print("True");
+    Serial.println("True");
   else
-    Serial.print("False");
+    Serial.println("False");
 
-  Serial.print(_float);
+  Serial.print("\t");
+  Serial.print(_float, 4);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readFloat(1920, 18));
-  Serial.print("\t\t||\t\t");
+  Serial.print(flash.readFloat(1920, 18), 4);
+  Serial.print("\t\t\t||\t\t");
   if (_float == flash.readFloat(1920, 18))
-    Serial.print("True");
+    Serial.println("True");
   else
-    Serial.print("False");
+    Serial.println("False");
 
   Serial.print("Saving struct at: ");
   Serial.println(flash.writeAnything(2, 4, test));
+  Serial.println("Data written");
+  Serial.println(test.s1);
+  Serial.println(test.s2);
+  Serial.println(test.s3);
+  Serial.println(test.s4);
+  Serial.println(test.s5);
 
   Serial.println("Saved!");
   test.s1 = 0;
@@ -199,6 +213,7 @@ void writeData() {
   sprintf(printBuffer, "These values have been read back from page %d", page);
   Serial.println(printBuffer);
   flash.printPage(page, dec);
+  flash.eraseChip();
 }
 
 void clearprintBuffer()

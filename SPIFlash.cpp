@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.1.3.1
+/* Arduino SPIFlash Library v.1.3.2
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 02/09/2015
+ * Modified by Prajwal Bhattaram - 08/10/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -245,6 +245,25 @@ uint32_t SPIFlash::_getAddress(uint16_t page_number, uint8_t offset) {
 	return address;
 }
 
+/* //Gets a page number and offset from an address. Takes three arguments:
+// 1. address --> Any address - from 0 to maxCapacity
+// 2. page_number --> Variable to which the page number is written
+// 3. offset --> Variable to which the offset is written
+bool SPIFlash::_getPageNOffset(uint32_t address, uint16_t page_number, uint8_t offset) {
+	if (!_addressCheck(address)){
+		#ifdef RUNDIAGNOSTIC
+		errorcode = OUTOFBOUNDS;
+ 		_errorCodeCheck();
+ 		while(1);
+ 		#endif
+ 		return false;
+	}
+	else {
+		uint16_t page = page_number;
+		address = (address << 8) + offset;
+		return true;
+}*/
+
 //Checks the device ID to establish storage parameters
 bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
 	if(!_notBusy())
@@ -486,6 +505,24 @@ uint32_t SPIFlash::getJEDECID() {
     return id;
 }
 
+//Gets the next available address for use as a two values - a page number + offset.
+//All addresses in the in the sketch must be obtained via this function or not at all.
+bool SPIFlash::getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset) {
+	if (!_addressCheck(currentAddress)){
+		#ifdef RUNDIAGNOSTIC
+		errorcode = OUTOFBOUNDS;
+ 		_errorCodeCheck();
+ 		while(1);
+ 		#endif
+ 		return false;
+	}
+	else {
+		offset = currentAddress;
+		page_number = (currentAddress >> 8);
+	}
+	currentAddress+=size;
+}
+
 // Reads a byte of data from a specific location in a page. Takes two arguments -
 //  1. page --> Any page number from 0 to maxPage
 //  2. offset --> Any offset within the page - from 0 to 255
@@ -614,6 +651,25 @@ float SPIFlash::readFloat(uint16_t page_number, uint8_t offset) {
 	}
 	_endProcess();
 	return data.f;
+}
+
+// Reads a string from a specific location on a page. Takes three arguments - 
+//	1. page --> Any page number from 0 to maxPage
+//	2. offset --> Any offset within the page - from 0 to 255
+//	3. outputString --> String variable to write the output to
+// This function first reads a short from the address to figure out the size of the String object stored and
+// then reads the String object data
+void SPIFlash::readStr(uint16_t page, uint8_t offset, String &outStr) {
+  int16_t strSz = readShort(page, offset);
+
+  char outChar[strSz];
+  offset += 2;
+
+  for (int16_t i = 0; i < strSz; i++) {
+    outChar[i] = readChar(page, offset);
+    offset++;
+  }
+  outStr = String(outChar);
 }
 
 // Reads a page of data into a page buffer
@@ -846,6 +902,32 @@ bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool
 		return _writeErrorCheck(address, data);
 }
 
+// Reads a string from a specific location on a page. Takes three arguments - 
+//	1. page --> Any page number from 0 to maxPage
+//	2. offset --> Any offset within the page - from 0 to 255
+//	3. inputString --> String variable to write the data from
+// This function first writes the size of the string as an unsigned int to the address to figure out the size of the String object stored and
+// then writes the String object data. Therefore it takes up two bytes more than the sie of the String itself.
+bool SPIFlash::writeStr(uint16_t page, uint8_t offset, String &inputStr, bool errorCheck) {
+  uint16_t strLen = inputStr.length();
+  strLen++;
+  char inputChar[strLen];
+  inputStr.toCharArray(inputChar, strLen);
+
+  if (writeShort(page, offset, strLen, errorCheck))
+  	offset += 2;
+  else
+  	return false;
+
+  for (int16_t i = 0; i < strLen; i++) {
+    if (writeChar(page, offset, inputChar[i], errorCheck))
+    	offset++;
+    else
+    	return false;
+  }
+  return true;
+}
+
 // Writes a page of data from a data_buffer array. Make sure the sizeOf(uint8_t data_buffer[]) == 256. 
 //	errorCheck --> Turned on by default. Checks for writing errors.
 // WARNING: You can only write to previously erased memory locations (see datasheet).
@@ -1044,6 +1126,15 @@ bool SPIFlash::powerUp(void) {
 //         Declares Serial.begin() if not previously declared.        //
 //                 Initiates Serial at 115200 baud.                    //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+//Reads a string from Serial
+bool SPIFlash::readSerialStr(String &inputStr) {
+  while (Serial.available()) {
+      inputStr = Serial.readStringUntil('\n');
+      return true;
+  }
+  return false;
+}
 
 //Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
 void SPIFlash::printPage(uint16_t page_number, uint8_t outputType) {
