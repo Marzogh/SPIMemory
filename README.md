@@ -1,6 +1,6 @@
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v1.3.1-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash)
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v1.3.2-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
-<sup> Download the latest stable release (v1.3.1) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
+<sup> Download the latest stable release (v1.3.2) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
 This library is for a the Winbond serial flash memory chips. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
 
@@ -30,6 +30,7 @@ Must be called at the start in setup(). This function detects the type of chip b
 Fetches the JEDEC ID as a 32 bit number.
 <hr>
 ##### Read commands
+All read commands take a last boolean argument 'fastRead'. This argument defaults to FALSE, but when set to TRUE carries out the Fast Read instruction so data can be read at up to the memory's maximum frequency.
 ###### readAnything(page_number, offset, value)
 Reads _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data back to, as arguments.
 ###### readByte(page_number, offset)
@@ -50,20 +51,23 @@ Reads a _float_ (decimal value) from a specific location on a page. Takes the pa
 Reads a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
 <hr>
 ##### Write commands
+All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
 ###### writeByte(page, offset, data)
-Writes a byte of data to a specific location on a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and one byte of data (0-255) as arguments.
+Writes a byte of data to a specific location on a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and one byte of data as arguments.
 ###### writeChar(page_number, offset, data)
-Writes a _char_ (signed 8 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the char and one char of data within page (0-255) as arguments.
+Writes a _char_ (signed 8 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the char within page (0-255) and one char of data  as arguments.
 ###### writeWord(page_number, offset, data)
-Writes a _word_ (unsigned 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the word and one word of data within page (0-255) as arguments.
+Writes a _word_ (unsigned 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the word within page (0-255) and one word of data as arguments.
 ###### writeShort(page_number, offset, data)
-Writes a _short_ (signed 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the short and one short of data within page (0-255) as arguments.
+Writes a _short_ (signed 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the short within page (0-255) and one short of data as arguments.
 ###### writeULong(page_number, offset, data)
-Writes an _unsigned long_ (unsigned 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the unsigned long and one unsigned long of data within page (0-255) as arguments.
+Writes an _unsigned long_ (unsigned 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the unsigned long within page (0-255) and one unsigned long of data as arguments.
 ###### writeLong(page_number, offset, data)
-Writes a _long_ (signed 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the long and one long of data within page (0-255) as arguments.
+Writes a _long_ (signed 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the long within page (0-255) and one long of data as arguments.
 ###### writeFloat(page_number, offset, data)
-Writes a _float_ (decimal value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the float and one float of data within page (0-255) as arguments.
+Writes a _float_ (decimal value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the float within page (0-255) and one float of data as arguments.
+###### writeStr(page_number, offset, data)
+Writes a _string_ (String Object) to a specific location on a page. Takes the page number (0-maxPage), the offset of the String within page (0-255) and a String as arguments.
 ###### writePage(page_number, *data_buffer)
 Writes a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
 ###### writeAnything(page_number, offset, value)

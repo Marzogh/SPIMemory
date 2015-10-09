@@ -1,2 +1,17 @@
---> Bug fixes
---> Fixed errors in ReadMe.md
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//									   SPIFlash Library 									   //
+//										 Changes log 										   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//										Version 1.3.2 										   //
+//									   Author: Marzogh										   //
+//										 09.10.2015											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+--> Added the ability to read and write String objects with a simple high level function readStr() & writeStr()
+--> Added the ability to getAddress()
+--> Added the ability to fastRead to every read function as the last boolean argument (defaults to FALSE)
+--> Changed the example code as given below:
+		--> Modified TestFlash.ino to use 25% less memory
+		--> Struct_writer.ino now writes struct to a random location on the Flash Memory chip.
+		--> Added instructions for real world data storage to Struct_writer.ino
+		--> Diagnostics.ino now provides a cleaner diagnostic readout

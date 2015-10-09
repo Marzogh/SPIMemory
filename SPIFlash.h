@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.1.3.1
+/* Arduino SPIFlash Library v.1.3.2
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 02/09/2015
+ * Modified by Prajwal Bhattaram - 09/10/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -33,7 +33,7 @@ public:
   SPIFlash(uint8_t cs = 10, bool overflow = true);
   uint16_t getManID();
 	uint32_t getJEDECID();
-	bool     readByte(uint16_t page_number, uint8_t offset, uint8_t data);
+	bool     readByte(uint16_t page_number, uint8_t offset, uint8_t data, bool fastRead = false);
   bool     writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true);
   bool     writeBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool errorCheck = true);
   bool     writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck = true);
@@ -43,6 +43,7 @@ public:
   bool     writeULong(uint16_t page_number, uint8_t offset, uint32_t data, bool errorCheck = true);
   bool     writeFloat(uint16_t page_number, uint8_t offset, float data, bool errorCheck = true);
   bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
+  bool     writeStr(uint16_t page, uint8_t offset, String &inputStr, bool errorCheck = true);
   bool     eraseSector(uint16_t page_number);
   bool     eraseBlock32K(uint16_t page_number);
   bool     eraseBlock64K(uint16_t page_number);
@@ -51,18 +52,21 @@ public:
   bool     resumeProg(void);
   bool     powerDown(void);
   bool     powerUp(void);
+  bool     readSerialStr(String &inputStr);
+  bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
 	void     begin();
-  void     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer);
-  void     readPage(uint16_t page_number, uint8_t *data_buffer);
-  void     printPage(uint16_t page_number, uint8_t outputType);
-  void     printAllPages(uint8_t outputType);
-	int8_t   readChar(uint16_t page_number, uint8_t offset);
-  uint8_t  readByte(uint16_t page_number, uint8_t offset);
-  int16_t  readShort(uint16_t page_number, uint8_t offset);
-  uint16_t readWord(uint16_t page_number, uint8_t offset);
-  int32_t  readLong(uint16_t page_number, uint8_t offset);
-  uint32_t readULong(uint16_t page_number, uint8_t offset);
-  float    readFloat(uint16_t page_number, uint8_t offset);
+  void     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool fastRead = false);
+  void     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
+  void     printPage(uint16_t page_number, uint8_t outputType, bool fastRead = false);
+  void     printAllPages(uint8_t outputType, bool fastRead = false);
+  void     readStr(uint16_t page, uint8_t offset, String &outStr, bool fastRead = false);
+	int8_t   readChar(uint16_t page_number, uint8_t offset, bool fastRead = false);
+  uint8_t  readByte(uint16_t page_number, uint8_t offset, bool fastRead = false);
+  int16_t  readShort(uint16_t page_number, uint8_t offset, bool fastRead = false);
+  uint16_t readWord(uint16_t page_number, uint8_t offset, bool fastRead = false);
+  int32_t  readLong(uint16_t page_number, uint8_t offset, bool fastRead = false);
+  uint32_t readULong(uint16_t page_number, uint8_t offset, bool fastRead = false);
+  float    readFloat(uint16_t page_number, uint8_t offset, bool fastRead = false);
   template <class T> uint32_t writeAnything(uint16_t page_number, uint8_t offset, const T& value);
   template <class T> uint32_t readAnything(uint16_t page_number, uint8_t offset, T& value);
 
@@ -75,6 +79,7 @@ private:
   void     _errorCodeCheck(void);
   void     _empty(uint8_t *array);
   void     _beginRead(uint32_t address);
+  void     _beginFastRead(uint32_t address);
   void     _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
 	bool     _notBusy(uint32_t timeout = 10L);
   bool     _addressCheck(uint32_t address);
@@ -87,7 +92,7 @@ private:
   bool     _getManId(uint8_t *b1, uint8_t *b2);
   bool     _writeByte(uint32_t address, uint8_t data, bool errorCheck = true);
   uint8_t  _readNextByte(void);
-  uint8_t  _readByte(uint32_t address);
+  uint8_t  _readByte(uint32_t address, bool fastRead = false);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   uint32_t _prepRead(uint16_t page_number, uint8_t offset = 0);
   uint32_t _prepWrite(uint16_t page_number, uint8_t offset = 0);
@@ -96,7 +101,7 @@ private:
   volatile uint8_t *cs_port;
   uint8_t           cs_mask;
   uint8_t			chipSelect;
-  uint32_t    capacity, maxPage, errorcode;
+  uint32_t    capacity, maxPage, errorcode, currentAddress;
   bool			  pageOverflow;
   const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
   const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
