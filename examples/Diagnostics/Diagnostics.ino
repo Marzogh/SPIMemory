@@ -4,7 +4,7 @@
 //                                                                   v 1.3.2                                                                     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                                                                    Marzogh                                                                    //
-//                                                                   17.09.15                                                                    //
+//                                                                   09.10.15                                                                    //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                                                                                                                                               //
 //                                  For a full diagnostics rundown - with error codes and details of the errors                                  //
@@ -28,6 +28,9 @@ struct Test {
 };
 Test test;
 
+uint16_t bytePage, charPage, wordPage, shortPage, ULongPage, longPage, floatPage, stringPage, structPage, page;
+uint8_t byteOffset, charOffset, wordOffset, shortOffset, ULongOffset, longOffset, floatOffset, stringOffset, structOffset;
+
 uint8_t _byte = 35;
 int8_t _char = -110;
 uint16_t _word = 4520;
@@ -35,6 +38,7 @@ int16_t _short = -1250;
 uint32_t _uLong = 876532;
 int32_t _long = -10959;
 float _float = 3.1415;
+String _string = "123 Test !@#";
 
 SPIFlash flash(cs);
 
@@ -50,11 +54,34 @@ void setup() {
   Serial.println();
   Serial.println();
 
+  randomSeed(analogRead(A0));
+
+  getAddresses();
   ID();
   writeData();
 }
 
 void loop() {
+
+}
+
+void getAddresses() {
+  bytePage = random(0, 4095);
+  byteOffset = random(0, 255);
+  charPage = random(0, 4095);
+  charOffset = random(0, 255);
+  wordPage = random(0, 4095);
+  wordOffset = random(0, 255);
+  shortPage = random(0, 4095);
+  shortOffset = random(0, 255);
+  ULongPage = random(0, 4095);
+  ULongOffset = random(0, 255);
+  longPage = random(0, 4095);
+  longOffset = random(0, 255);
+  floatPage = random(0, 4095);
+  floatOffset = random(0, 255);
+  stringPage = random(0, 4095);
+  stringOffset = random(0, 255);
 
 }
 
@@ -90,13 +117,14 @@ void writeData() {
   test.s4 = true;
   test.s5 = 5;
 
-  flash.writeByte(1920, 4, _byte);
-  flash.writeChar(1920, 5, _char);
-  flash.writeWord(1920, 6, _word);
-  flash.writeShort(1920, 8, _short);
-  flash.writeULong(1920, 10, _uLong);
-  flash.writeLong(1920, 14, _long);
-  flash.writeFloat(1920, 18, _float);
+  flash.writeByte(bytePage, byteOffset, _byte);
+  flash.writeChar(charPage, charOffset, _char);
+  flash.writeWord(wordPage, wordOffset, _word);
+  flash.writeShort(shortPage, shortOffset, _short);
+  flash.writeULong(ULongPage, ULongOffset, _uLong);
+  flash.writeLong(longPage, longOffset, _long);
+  flash.writeFloat(floatPage, floatOffset, _float);
+  flash.writeStr(stringPage, stringOffset, _string);
 
   Serial.println("Data Written\t\t||\t\tData Read\t\t||\t\tMatch");
   Serial.println("--------------------------------------------------------------------------------------");
@@ -104,9 +132,9 @@ void writeData() {
   Serial.print("\t");
   Serial.print(_byte);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readByte(1920, 4));
+  Serial.print(flash.readByte(bytePage, byteOffset));
   Serial.print("\t\t\t||\t\t");
-  if (_byte == flash.readByte(1920, 4))
+  if (_byte == flash.readByte(bytePage, byteOffset))
     Serial.println("True");
   else
     Serial.println("False");
@@ -114,9 +142,9 @@ void writeData() {
   Serial.print("\t");
   Serial.print(_char);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readChar(1920, 5));
+  Serial.print(flash.readChar(charPage, charOffset));
   Serial.print("\t\t\t||\t\t");
-  if (_char == flash.readChar(1920, 5))
+  if (_char == flash.readChar(charPage, charOffset))
     Serial.println("True");
   else
     Serial.println("False");
@@ -124,9 +152,9 @@ void writeData() {
   Serial.print("\t");
   Serial.print(_word);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readWord(1920, 6));
+  Serial.print(flash.readWord(wordPage, wordOffset));
   Serial.print("\t\t\t||\t\t");
-  if (_word == flash.readWord(1920, 6))
+  if (_word == flash.readWord(wordPage, wordOffset))
     Serial.println("True");
   else
     Serial.println("False");
@@ -134,9 +162,9 @@ void writeData() {
   Serial.print("\t");
   Serial.print(_short);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readShort(1920, 8));
+  Serial.print(flash.readShort(shortPage, shortOffset));
   Serial.print("\t\t\t||\t\t");
-  if (_short == flash.readShort(1920, 8))
+  if (_short == flash.readShort(shortPage, shortOffset))
     Serial.println("True");
   else
     Serial.println("False");
@@ -144,9 +172,9 @@ void writeData() {
   Serial.print("\t");
   Serial.print(_uLong);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readULong(1920, 10));
+  Serial.print(flash.readULong(ULongPage, ULongOffset));
   Serial.print("\t\t\t||\t\t");
-  if (_uLong == flash.readULong(1920, 10))
+  if (_uLong == flash.readULong(ULongPage, ULongOffset))
     Serial.println("True");
   else
     Serial.println("False");
@@ -154,9 +182,9 @@ void writeData() {
   Serial.print("\t");
   Serial.print(_long);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readLong(1920, 14));
+  Serial.print(flash.readLong(longPage, longOffset));
   Serial.print("\t\t\t||\t\t");
-  if (_long == flash.readLong(1920, 14))
+  if (_long == flash.readLong(longPage, longOffset))
     Serial.println("True");
   else
     Serial.println("False");
@@ -164,15 +192,25 @@ void writeData() {
   Serial.print("\t");
   Serial.print(_float, 4);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readFloat(1920, 18), 4);
+  Serial.print(flash.readFloat(floatPage, floatOffset), 4);
   Serial.print("\t\t\t||\t\t");
-  if (_float == flash.readFloat(1920, 18))
+  if (_float == flash.readFloat(floatPage, floatOffset))
+    Serial.println("True");
+  else
+    Serial.println("False");
+
+  Serial.print("\t");
+  Serial.print(_string);
+  Serial.print("\t\t||\t\t");
+  Serial.print(flash.readStr(stringPage, stringOffset));
+  Serial.print("\t\t\t||\t\t");
+  if (_string == flash.readStr(floatPage, floatOffset))
     Serial.println("True");
   else
     Serial.println("False");
 
   Serial.print("Saving struct at: ");
-  Serial.println(flash.writeAnything(2, 4, test));
+  Serial.println(flash.writeAnything(structPage, structOffset, test));
   Serial.println("Data written");
   Serial.println(test.s1);
   Serial.println(test.s2);
@@ -190,7 +228,7 @@ void writeData() {
   Serial.println("Local values set to 0");
   Serial.println();
   Serial.print("Reading struct back from: ");
-  Serial.println(flash.readAnything(2, 4, test));
+  Serial.println(flash.readAnything(structPage, structOffset, test));
   flash.eraseSector(2);
 
   Serial.println("After reading");
@@ -203,7 +241,6 @@ void writeData() {
   for (int i = 0; i < 256; ++i) {
     pageBuffer[i] = i;
   }
-  uint16_t page = 836;
   uint8_t hex = 1, dec = 2;
   flash.writePage(page, pageBuffer);
   clearprintBuffer();

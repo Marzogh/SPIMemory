@@ -45,7 +45,7 @@ Configuration configuration;
 
 void setup() {
   Serial.begin(115200);
-  randomSeed(analogRead(A1));
+  randomSeed(analogRead(A0));
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
