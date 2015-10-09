@@ -245,15 +245,15 @@ void loop() {
       }
       offset = Serial.parseInt();
       Serial.println(offset);
-      Serial.print(F("Please enter the String you wish to save: "));
+      Serial.println(F("Please enter the String you wish to save: "));
       while (!Serial.available()) {
       }
       flash.readSerialStr(inputString);
       flash.writeStr(page, offset, inputString);
       clearprintBuffer();
-      Serial.print(F("String "));
+      Serial.print(F("String '"));
       Serial.print(inputString);
-      sprintf(printBuffer, " has been written to position %d on page %d", offset, page);
+      sprintf(printBuffer, "' has been written to position %d on page %d", offset, page);
       Serial.println(printBuffer);
       printLine();
       printNextCMD();

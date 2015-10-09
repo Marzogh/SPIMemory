@@ -57,8 +57,8 @@ public:
 	void     begin();
   void     readBytes(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, bool fastRead = false);
   void     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
-  void     printPage(uint16_t page_number, uint8_t outputType);
-  void     printAllPages(uint8_t outputType);
+  void     printPage(uint16_t page_number, uint8_t outputType, bool fastRead = false);
+  void     printAllPages(uint8_t outputType, bool fastRead = false);
   void     readStr(uint16_t page, uint8_t offset, String &outStr, bool fastRead = false);
 	int8_t   readChar(uint16_t page_number, uint8_t offset, bool fastRead = false);
   uint8_t  readByte(uint16_t page_number, uint8_t offset, bool fastRead = false);

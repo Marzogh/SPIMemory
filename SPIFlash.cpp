@@ -92,6 +92,7 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 	SPI.begin();
     SPI.setDataMode(0);
     SPI.setBitOrder(MSBFIRST);
+    //SPI.setClockDivider(SPI_CLOCK_DIV2);
     chipSelect = cs;
     pageOverflow = overflow;
     pinMode(cs, OUTPUT);
@@ -1191,7 +1192,7 @@ bool SPIFlash::readSerialStr(String &inputStr) {
 }
 
 //Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
-void SPIFlash::printPage(uint16_t page_number, uint8_t outputType) {
+void SPIFlash::printPage(uint16_t page_number, uint8_t outputType, bool fastRead) {
 	if(!Serial)
 		Serial.begin(115200);
 
@@ -1200,21 +1201,21 @@ void SPIFlash::printPage(uint16_t page_number, uint8_t outputType) {
 	Serial.println(buffer);
 
 	uint8_t data_buffer[256];
-	readPage(page_number, data_buffer);
+	readPage(page_number, data_buffer, fastRead);
 	_printPageBytes(data_buffer, outputType);
 }
 
 //Reads all pages on Flash chip and dumps it to Serial stream. 
 //This function is useful when extracting data from a flash chip onto a computer as a text file.
-void SPIFlash::printAllPages(uint8_t outputType) {
+void SPIFlash::printAllPages(uint8_t outputType, bool fastRead) {
 	if(!Serial)
 		Serial.begin(115200);
 
 	Serial.println("Reading all pages");
 	uint8_t data_buffer[256];
 
-	for (int a = 0; a < 4096; ++a) {
-		readPage(a, data_buffer);
+	for (int a = 0; a < maxPage; a++) {
+		readPage(a, data_buffer, fastRead);
 		_printPageBytes(data_buffer, outputType);
   }
 }

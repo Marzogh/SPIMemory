@@ -201,10 +201,12 @@ void writeData() {
 
   Serial.print("\t");
   Serial.print(_string);
+  Serial.print("\t||\t\t");
+  String outString;
+  flash.readStr(stringPage, stringOffset, outString);
+  Serial.print(outString);
   Serial.print("\t\t||\t\t");
-  Serial.print(flash.readStr(stringPage, stringOffset));
-  Serial.print("\t\t\t||\t\t");
-  if (_string == flash.readStr(floatPage, floatOffset))
+  if (_string == outString)
     Serial.println("True");
   else
     Serial.println("False");
