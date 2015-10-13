@@ -25,9 +25,19 @@ The library enables the following functions:
 <hr>
 ##### Primary commands
 ###### begin()
-Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly
+Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly.
 ###### getID()
-Fetches the JEDEC ID as a 32 bit number.
+Fetches the JEDEC ID as a 32-bit value.
+###### getCapacity()
+Returns the capacity as a 32-bit value.
+###### getmaxPage()
+Returns the maximum number of pages in the flash memory as a 32-bit value.
+###### getAddress()
+Gets the next available address for use. Has two variants:
+* Takes the size of the data as an argument and returns a 32-bit address
+* Takes a three variables, the size of the data and two other variables to return a page number value & an offset into.
+
+All addresses in the in the sketch must be obtained via this function or not at all.
 <hr>
 ##### Read commands
 All read commands take a last boolean argument 'fastRead'. This argument defaults to FALSE, but when set to TRUE carries out the Fast Read instruction so data can be read at up to the memory's maximum frequency.
@@ -49,6 +59,12 @@ Reads an _unsigned long_ (unsigned 32 bit value) from a specific location on a p
 Reads a _long_ (signed 32 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the long within page (0-255) as arguments.
 ###### readFloat(page_number, offset)
 Reads a _float_ (decimal value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the float within page (0-255) as arguments.
+###### readStr(page_number, offset, outputStr)
+Reads a _string_ (String Object) to a specific location on a page to an outputStr variable. Takes the page number (0-maxPage), the offset of the String within page (0-255) and a String as arguments.
+###### readPage(page_number, *data_buffer)
+Reads a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
+###### readAnything(page_number, offset, value)
+Reads _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data to, as arguments.
 <hr>
 ##### Write commands
 All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
@@ -76,19 +92,23 @@ Writes a page worth of data into a data buffer array for further use. ```uint8_t
 Writes _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data from, as arguments.
 <hr>
 ##### Continuous read/write commands
+All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
+
+All read/write commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
 ###### readBytes(page_number, offset, *data_buffer)
 Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be read from the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of storage available on the Arduino board.
 ###### writeBytes(page_number, offset, *data_buffer)
 Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be written to the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of storage available on the Arduino board.
 <hr>
 ##### Erase commands
-###### eraseSector(page_number)
+All erase commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
+###### eraseSector(page_number, offset)
 Erases one 4KB sector - 16 pages - containing the page to be erased. The sectors are numbered 0 - 255 containing 16 pages each.
 Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255, and so on...
-###### eraseBlock32K(page_number)
+###### eraseBlock32K(page_number, offset)
 Erases one 32KB block - 128 pages - containing the page to be erased. The blocks are numbered 0 - 31 containing 128 pages each.
 Page 0-127 --> Block 0; Page 128-255 --> Block 1;......Page 3968-4095 --> Block 31, and so on...
-###### eraseBlock64K(page_number)
+###### eraseBlock64K(page_number, offset)
 Erases one 64KB block - 256 pages - containing the page to be erased. The blocks are numbered 0 - 15 containing 256 pages each.
 // Page 0-255 --> Block 0; Page 256-511 --> Block 1;......Page 3840-4095 --> Block 15, and so on...
 ###### eraseChip()
@@ -108,8 +128,12 @@ Puts device in low power state. Useful for battery powered operations. Typical c
 <hr>
 ##### Deprecated functions
 
-###### readPage(page_number, *data_buffer)
-Reads a page worth of data into a data buffer array for further use. ```uint8_t data_buffer[256];``` The data buffer **must** be an array of 256 bytes.
+The following functions are deprecated to enable compatibility with other AVR chips.
+`printPage();`
+`printAllPages()`
+`readSerialStr()`
+
+They can be used by uncommenting them in the SPIFlash.cpp file. However, be warned, this particular block of code has only been tested with the Arduino	IDE (1.6.5) and only with 8-bit ATMega based Arduino boards and will not be supported any further.
 
 ###### printPage(page_number, outputType)
 Reads a page worth of data into a data buffer array for further useand prints to a Serial stream at 115200 baud by default. (The baudrate can be changed by calling ```Serial.begin()``` at a different baudrate in ``` void setup()```)Setting an outputType of 1 enables output in hexadecimal while an outputType of 2 enables output in decimal, CSV - over Serial.
