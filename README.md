@@ -126,6 +126,17 @@ Puts device in low power state. Useful for battery powered operations. Typical c
 ###### powerUp()
 //Wakes chip from low power state.
 <hr>
+##### Error codes explained
+	- 0x00	SUCCESS 		Operation successful.
+	- 0x01	CALLBEGIN		Please make sure .begin() has been called in setup().
+	- 0x02	UNKNOWNCHIP	Unknown chip manufacturer.
+	- 0x03	UNKNOWNCAP		Unknown chip capacity.
+	- 0x04	CHIPBUSY		Chip busy.
+	- 0x05	OUTOFBOUNDS	Address out of bounds. Please check if .begin() has been called in setup().
+	- 0x06	CANTENWRITE		Unable to _writeEnable. Check wiring/chip.
+	- 0x07	OUTOFMEM		Pagenumber outside maximum.
+	- 0x08	OUTOFPAGE		Offset is outside page.
+<hr>
 ##### Deprecated functions
 
 The following functions are deprecated to enable compatibility with other AVR chips.
