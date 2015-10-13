@@ -28,8 +28,6 @@ readFloat	KEYWORD2
 readStr 	KEYWORD2
 readPage	KEYWORD2
 readAnything	KEYWORD2
-readAllPages	KEYWORD2
-readSerialStr	KEYWORD2
 writeByte	KEYWORD2
 writeBytes	KEYWORD2
 writeChar	KEYWORD2
