@@ -1,10 +1,10 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                                                               Struct_writer.ino                                                               //
 //                                                               SPIFlash library                                                                //
-//                                                                   v 1.3.2                                                                     //
+//                                                                   v 2.0.0                                                                     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                                                                    Marzogh                                                                    //
-//                                                               Created: 17.09.15                                                               //
+//                                                               Created: 14.10.15                                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                                                                                                                                               //
 //                        This program writes a struct to a random location on your flash memory chip and reads it back.                         //
@@ -20,7 +20,7 @@
 /*
  * Uncomment the #define below if you would like real world readings.
  * For real world readings, hook up a light dependant resistor to A0.
- * 
+ *
  */
 //#define SENSOR
 
@@ -36,7 +36,7 @@ SPIFlash flash(cs);
 
 struct Configuration {
   float lux;
-  float vOut;                   // voltage ouput from potential divider to Anolg input
+  float vOut;                   // Voltage ouput from potential divider to Anolg input
   float RLDR;                   // Resistance calculation of potential divider with LDR
   bool light;
   uint8_t adc;
@@ -58,27 +58,30 @@ void setup() {
 void loop() {
   uint16_t pageNo = random(0, 4095);
   uint8_t offset = random(0, 255);
-  
-  #ifndef SENSOR
+
+#ifndef SENSOR
   configuration.lux = 98.43;
   configuration.vOut = 4.84;
   configuration.RLDR = 889.32;
   configuration.light = true;
   configuration.adc = 5;
-  #endif
-  
-  #ifdef SENSOR
-  readLDR();
-  #endif
+#endif
 
-  Serial.print("Saving amount at: ");
-  Serial.println(flash.writeAnything(pageNo, offset, configuration));
+#ifdef SENSOR
+  readLDR();
+#endif
+
+  if (flash.writeAnything(pageNo, offset, configuration))
+    Serial.println ("Data write successful");
+  else
+    Serial.println ("Data write failed");
+    
   Serial.println(configuration.lux);
   Serial.println(configuration.vOut);
   Serial.println(configuration.RLDR);
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
-  
+
   Serial.println("Saved!");
   configuration.lux = 0;
   configuration.vOut = 0;
@@ -88,19 +91,19 @@ void loop() {
   Serial.println();
   Serial.println("Local values set to 0");
   Serial.println();
-  Serial.print("Reading back from: ");
+  Serial.print("Number of bytes read back: ");
   Serial.println(flash.readAnything(pageNo, offset, configuration));
-  flash.eraseSector(pageNo);
-  
+  flash.eraseSector(pageNo, 0);
+
   Serial.println("After reading");
   Serial.println(configuration.lux);
   Serial.println(configuration.vOut);
   Serial.println(configuration.RLDR);
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
-  
-  while(1){}
-  
+
+  while (1) {}
+
 }
 
 #ifdef SENSOR
@@ -109,7 +112,7 @@ void readLDR()
   configuration.adc = analogRead(LDR);
   configuration.vOut = (configuration.adc * 0.0048828125);                       // vOut = Output voltage from potential Divider. [vOut = ADC * (Vin / 1024)]
   configuration.RLDR = (10.0 * (5 - configuration.vOut)) / configuration.vOut;   // Equation to calculate Resistance of LDR, [R-LDR =(R1 (Vin - vOut))/ vOut]. R1 is in KOhms
-                                                                                 // R1 = 10 KOhms , Vin = 5.0 Vdc.
+  // R1 = 10 KOhms , Vin = 5.0 Vdc.
   configuration.lux = (500 / configuration.RLDR);
 }
 #endif

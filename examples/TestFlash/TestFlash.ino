@@ -1,10 +1,10 @@
 /*
  *----------------------------------------------------------------------------------------------------------------------------------*
  |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v1.3.2                                                |
+ |                                                      SPIFlash library test v2.0.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                                Marzogh                                                           |
- |                                                              08.10.2015                                                          |
+ |                                                              14.10.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -248,7 +248,7 @@ void loop() {
       Serial.println(F("Please enter the String you wish to save: "));
       while (!Serial.available()) {
       }
-      flash.readSerialStr(inputString);
+      readSerialStr(inputString);
       flash.writeStr(page, offset, inputString);
       clearprintBuffer();
       Serial.print(F("String '"));
@@ -310,7 +310,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        flash.printPage(page, outputType);
+        printPage(page, outputType);
       }
       printLine();
       printNextCMD();
@@ -331,7 +331,7 @@ void loop() {
       }
       uint8_t outputType = Serial.parseInt();
       Serial.println(outputType);
-      flash.printPage(page, outputType);
+      printPage(page, outputType);
       printLine();
       printNextCMD();
     }
@@ -352,7 +352,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        flash.printAllPages(outputType);
+        printAllPages(outputType);
       }
       printLine();
       printNextCMD();
@@ -368,7 +368,7 @@ void loop() {
       }
       page = Serial.parseInt();
       Serial.println(page);
-      flash.eraseSector(page);
+      flash.eraseSector(page, 0);
       clearprintBuffer();
       sprintf(printBuffer, "A 4KB sector containing page %d has been erased", page);
       Serial.println(printBuffer);
@@ -383,7 +383,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        flash.printPage(page, outputType);
+        printPage(page, outputType);
       }
       printLine();
       printNextCMD();
@@ -399,7 +399,7 @@ void loop() {
       }
       page = Serial.parseInt();
       Serial.println(page);
-      flash.eraseBlock32K(page);
+      flash.eraseBlock32K(page, 0);
       clearprintBuffer();
       sprintf(printBuffer, "A 32KB block containing page %d has been erased", page);
       Serial.println(printBuffer);
@@ -414,7 +414,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        flash.printPage(page, outputType);
+        printPage(page, outputType);
       }
       printLine();
       printNextCMD();
@@ -430,7 +430,7 @@ void loop() {
       }
       page = Serial.parseInt();
       Serial.println(page);
-      flash.eraseBlock64K(page);
+      flash.eraseBlock64K(page, 0);
       clearprintBuffer();
       sprintf(printBuffer, "A 64KB block containing page %d has been erased", page);
       Serial.println(printBuffer);
@@ -445,7 +445,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        flash.printPage(page, outputType);
+        printPage(page, outputType);
       }
       printLine();
       printNextCMD();
@@ -473,6 +473,8 @@ void loop() {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 void clearprintBuffer()
 {
   for (uint8_t i = 0; i < 128; i++) {
@@ -480,7 +482,69 @@ void clearprintBuffer()
   }
 }
 
-//Print commands
+//Reads a string from Serial
+bool readSerialStr(String &inputStr) {
+  if(!Serial)
+    Serial.begin(115200);
+  while (Serial.available()) {
+      inputStr = Serial.readStringUntil('\n');
+      return true;
+  }
+  return false;
+}
+
+//Prints hex/dec formatted data from page reads - for debugging
+void _printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
+  char buffer[10];
+  for (int a = 0; a < 16; ++a) {
+    for (int b = 0; b < 16; ++b) {
+      if (outputType == 1) {
+        sprintf(buffer, "%02x", data_buffer[a * 16 + b]);
+        Serial.print(buffer);
+      }
+      else if (outputType == 2) {
+        uint8_t x = data_buffer[a * 16 + b];
+        if (x < 10) Serial.print("0");
+        if (x < 100) Serial.print("0");
+        Serial.print(x);
+        Serial.print(',');
+      }
+    }
+    Serial.println();
+  }
+}
+
+//Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
+void printPage(uint16_t page_number, uint8_t outputType) {
+  if(!Serial)
+    Serial.begin(115200);
+
+  char buffer[24];
+  sprintf(buffer, "Reading page (%04x)", page_number);
+  Serial.println(buffer);
+
+  uint8_t data_buffer[256];
+  flash.readPage(page_number, data_buffer);
+  _printPageBytes(data_buffer, outputType);
+}
+
+//Reads all pages on Flash chip and dumps it to Serial stream. 
+//This function is useful when extracting data from a flash chip onto a computer as a text file.
+void printAllPages(uint8_t outputType) {
+  if(!Serial)
+    Serial.begin(115200);
+
+  Serial.println("Reading all pages");
+  uint8_t data_buffer[256];
+
+  uint32_t maxPage = flash.getMaxPage();
+  for (int a = 0; a < maxPage; a++) {
+    flash.readPage(a, data_buffer);
+    _printPageBytes(data_buffer, outputType);
+  }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Print commands~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 void printLine()
 {
