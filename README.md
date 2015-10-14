@@ -1,4 +1,4 @@
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v1.3.2-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash)
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v2.1.0-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
 <sup> Download the latest stable release (v2.0.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
