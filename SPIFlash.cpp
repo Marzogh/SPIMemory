@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.0.0
+/* Arduino SPIFlash Library v.2.1.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 14/10/2015
  *
@@ -24,7 +24,13 @@
  */
  
 #include "SPIFlash.h"
+
+#ifdef __AVR__                               	  // Target AVR Boards
 #include <util/delay.h>
+#endif
+#ifdef __SAM3X8E__                               // Target Arduino Due
+ #define _delay_us(us) delayMicroseconds(us)
+#endif
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
@@ -113,9 +119,10 @@ static uint8_t xfer(uint8_t n) {
 
 // Constructor
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
-#ifndef __AVR_ATtiny85__
+#ifndef __AVR_ATtiny85__ || __SAM3X8E__
 	cs_port = portOutputRegister(digitalPinToPort(cs));
 #endif
+
 	cs_mask = digitalPinToBitMask(cs);
 	SPI.begin();
     SPI.setDataMode(0);
@@ -417,7 +424,7 @@ bool SPIFlash::_writeByte(uint32_t address, uint8_t data, bool errorCheck) {
 //Stops all operations. Should be called after all the required data is read/written from repeated _readNextByte()/_writeNextByte() calls
 void SPIFlash::_endProcess(void) {
 	CHIP_DESELECT
-	delay(3);
+	_delay_us(3);
 }
 
 
@@ -1716,7 +1723,7 @@ bool SPIFlash::powerDown(void) {
 	_cmd(POWERDOWN);
 	CHIP_DESELECT
 
-	delay(3);							//Max powerDown enable time according to the Datasheet
+	_delay_us(3);							//Max powerDown enable time according to the Datasheet
 
 	if(_writeEnable())					//Tries to read STAT1. If STAT1 is accessible, chip has not powered down
 	{
@@ -1735,7 +1742,7 @@ bool SPIFlash::powerUp(void) {
 	_cmd(RELEASE);						
 	CHIP_DESELECT
 
-	delay(3);						    //Max release enable time according to the Datasheet
+	_delay_us(3);						    //Max release enable time according to the Datasheet
 
 	if(_writeEnable())					//Tries to read STAT1. If STAT1 is accessible, chip has powered up
 	{

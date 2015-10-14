@@ -1,13 +1,13 @@
 /*
  *----------------------------------------------------------------------------------------------------------------------------------*
  |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v1.4.0                                                |
+ |                                                      SPIFlash library test v2.1.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                                Marzogh                                                           |
  |                                                              08.10.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  */
- #include<SPIFlash.h>
+#include<SPIFlash.h>
 #include<SPI.h>
 
 #define cs 10
@@ -51,7 +51,7 @@ void setup() {
   Serial.print(F("Offset for int: "));
   Serial.println(tempOffset);
   Serial.println();
-  
+
   Serial.println(F("Please type the string into the console"));
   randomSeed(analogRead(A0));
   strPage = random(0, 4095);
@@ -82,11 +82,11 @@ void loop() {
 
 //Reads a string from Serial
 bool readSerialStr(String &inputStr) {
-  if(!Serial)
+  if (!Serial)
     Serial.begin(115200);
   while (Serial.available()) {
-      inputStr = Serial.readStringUntil('\n');
-      return true;
+    inputStr = Serial.readStringUntil('\n');
+    return true;
   }
   return false;
 }

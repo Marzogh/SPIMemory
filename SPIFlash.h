@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.2.0.0
+/* Arduino SPIFlash Library v.2.1.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 14/10/2015
+ * Modified by Prajwal Bhattaram - 15/10/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -120,16 +120,19 @@ private:
   uint32_t _prepWrite(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   
+  #ifdef __SAM3X8E__                // Target Arduino Due
+  volatile uint32_t *cs_port;
+  #endif
+  #ifdef __AVR__                    // Target AVR Arduino boards
   volatile uint8_t *cs_port;
-  uint8_t           cs_mask;
+  #endif
+  uint8_t     cs_mask;
   uint8_t			chipSelect;
   uint32_t    capacity, maxPage, errorcode, currentAddress;
   bool			  pageOverflow;
   const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
   const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L};
-  /*const uint8_t pinMap[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20};
-  const uint8_t portMap[3] = {}*/
 };
 
 // Writes any type of data to a specific location in the flash memory. 
