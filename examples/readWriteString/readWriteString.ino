@@ -57,7 +57,7 @@ void setup() {
   strPage = random(0, 4095);
   strOffset = random(0, 255);
   String inputString;
-  while (!flash.readSerialStr(inputString));
+  while (!readSerialStr(inputString));
   flash.writeStr(strPage, strOffset, inputString);
   Serial.print(F("Written string: "));
   Serial.print(inputString);
@@ -80,4 +80,14 @@ void loop() {
 
 }
 
+//Reads a string from Serial
+bool readSerialStr(String &inputStr) {
+  if(!Serial)
+    Serial.begin(115200);
+  while (Serial.available()) {
+      inputStr = Serial.readStringUntil('\n');
+      return true;
+  }
+  return false;
+}
 
