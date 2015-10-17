@@ -83,6 +83,8 @@ void getAddresses() {
   floatOffset = random(0, 255);
   stringPage = random(0, 4095);
   stringOffset = random(0, 255);
+  structPage = random(0, 4095);
+  structOffset = random(0, 255);
 
 }
 
@@ -127,118 +129,131 @@ void writeData() {
   flash.writeFloat(floatPage, floatOffset, _float);
   flash.writeStr(stringPage, stringOffset, _string);
 
-  Serial.println("\tData Written\t||\t\tData Read\t\t||\t\tResult");
-  Serial.println("---------------------------------------------------------------------------------------------------------------------");
+  Serial.println(F("\tData Written\t||\t\tData Read\t\t||\t\tResult"));
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_byte);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   Serial.print(flash.readByte(bytePage, byteOffset));
-  Serial.print("\t\t\t||\t\t");
+  Serial.print(F("\t\t\t||\t\t"));
   if (_byte == flash.readByte(bytePage, byteOffset))
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_char);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   Serial.print(flash.readChar(charPage, charOffset));
-  Serial.print("\t\t\t||\t\t");
+  Serial.print(F("\t\t\t||\t\t"));
   if (_char == flash.readChar(charPage, charOffset))
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_word);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   Serial.print(flash.readWord(wordPage, wordOffset));
-  Serial.print("\t\t\t||\t\t");
+  Serial.print(F("\t\t\t||\t\t"));
   if (_word == flash.readWord(wordPage, wordOffset))
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_short);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   Serial.print(flash.readShort(shortPage, shortOffset));
-  Serial.print("\t\t\t||\t\t");
+  Serial.print(F("\t\t\t||\t\t"));
   if (_short == flash.readShort(shortPage, shortOffset))
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_uLong);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   Serial.print(flash.readULong(ULongPage, ULongOffset));
-  Serial.print("\t\t\t||\t\t");
+  Serial.print(F("\t\t\t||\t\t"));
   if (_uLong == flash.readULong(ULongPage, ULongOffset))
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_long);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   Serial.print(flash.readLong(longPage, longOffset));
-  Serial.print("\t\t\t||\t\t");
+  Serial.print(F("\t\t\t||\t\t"));
   if (_long == flash.readLong(longPage, longOffset))
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_float, 4);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   Serial.print(flash.readFloat(floatPage, floatOffset), 4);
-  Serial.print("\t\t\t||\t\t");
+  Serial.print(F("\t\t\t||\t\t"));
   if (_float == flash.readFloat(floatPage, floatOffset))
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.print("\t");
+  Serial.print(F("\t"));
   Serial.print(_string);
-  Serial.print("\t||\t\t");
+  Serial.print(F("\t||\t\t"));
   String outString;
   flash.readStr(stringPage, stringOffset, outString);
   Serial.print(outString);
-  Serial.print("\t\t||\t\t");
+  Serial.print(F("\t\t||\t\t"));
   if (_string == outString)
-    Serial.println("Pass");
+    Serial.println(F("Pass"));
   else
-    Serial.println("Fail");
+    Serial.println(F("Fail"));
 
-  Serial.println(flash.writeAnything(structPage, structOffset, test));
-  Serial.println("Struct data written");
-  Serial.println(test.s1);
-  Serial.println(test.s2);
-  Serial.println(test.s3);
-  Serial.println(test.s4);
-  Serial.println(test.s5);
-
-  Serial.println("Saved!");
-  test.s1 = 0;
-  test.s2 = 0;
-  test.s3 = 0;
-  test.s4 = 0;
-  test.s5 = 0;
   Serial.println();
-  Serial.println("Local values set to 0");
-  Serial.println();
-  Serial.print("Number of bytes read back: ");
-  Serial.println(flash.readAnything(structPage, structOffset, test));
-  flash.eraseSector(2, 0);
+  if (flash.writeAnything(structPage, structOffset, test)) {
+    Serial.println(F("Struct data written successfully"));
+    Serial.print(test.s1);
+    Serial.print(F(", "));
+    Serial.print(test.s2);
+    Serial.print(F(", "));
+    Serial.print(test.s3);
+    Serial.print(F(", "));
+    Serial.print(test.s4);
+    Serial.print(F(", "));
+    Serial.println(test.s5);
 
-  Serial.println("After reading");
-  Serial.println(test.s1);
-  Serial.println(test.s2);
-  Serial.println(test.s3);
-  Serial.println(test.s4);
-  Serial.println(test.s5);
+    Serial.println(F("Saved!"));
+    test.s1 = 0;
+    test.s2 = 0;
+    test.s3 = 0;
+    test.s4 = 0;
+    test.s5 = 0;
+    Serial.println(F("Local values set to 0"));
+    flash.readAnything(structPage, structOffset, test);
+    flash.eraseSector(2, 0);
+
+    Serial.println(F("After reading"));
+    Serial.print(test.s1);
+    Serial.print(F(", "));
+    Serial.print(test.s2);
+    Serial.print(F(", "));
+    Serial.print(test.s3);
+    Serial.print(F(", "));
+    Serial.print(test.s4);
+    Serial.print(F(", "));
+    Serial.println(test.s5);
+    Serial.println();
+  }
+  else {
+    Serial.println();
+    Serial.println(F("Struct write failed!"));
+    Serial.println();
+  }
 
   for (int i = 0; i < 256; ++i) {
     pageBuffer[i] = i;
@@ -275,8 +290,8 @@ void _printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
       }
       else if (outputType == 2) {
         uint8_t x = data_buffer[a * 16 + b];
-        if (x < 10) Serial.print("0");
-        if (x < 100) Serial.print("0");
+        if (x < 10) Serial.print(F("0"));
+        if (x < 100) Serial.print(F("0"));
         Serial.print(x);
         Serial.print(',');
       }
@@ -287,7 +302,7 @@ void _printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
 
 //Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
 void printPage(uint16_t page_number, uint8_t outputType) {
-  if(!Serial)
+  if (!Serial)
     Serial.begin(115200);
 
   char buffer[24];

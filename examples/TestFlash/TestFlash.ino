@@ -571,4 +571,3 @@ void printReadChoice()
   Serial.print("Type 1 to read the page you have just modified. Type 0 to continue: ");
 }
 
-

@@ -33,7 +33,7 @@ void commandList() {
   Serial.println(F("'6' followed by '345' and then by '65' and then by 'Test String 1!' writes the String 'Test String 1! to page 345 position 65"));
   Serial.println(F("  7. readStr [page] [offset] [outputString]"));
   Serial.print(F("\t\t"));
-  Serial.println(F("'7' followed by '2050' and then by '73' reds the String from page 2050 position 73 into the outputString"));
+  Serial.println(F("'7' followed by '2050' and then by '73' reads the String from page 2050 position 73 into the outputString"));
   Serial.println(F("  8. writePage [page]"));
   Serial.print(F("\t\t"));
   Serial.println(F("'8' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33"));

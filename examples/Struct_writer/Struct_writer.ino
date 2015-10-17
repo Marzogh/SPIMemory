@@ -45,6 +45,7 @@ Configuration configuration;
 
 void setup() {
   Serial.begin(115200);
+  flash.begin();
   randomSeed(analogRead(A0));
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
@@ -90,9 +91,14 @@ void loop() {
   configuration.adc = 0;
   Serial.println();
   Serial.println("Local values set to 0");
+  Serial.println(configuration.lux);
+  Serial.println(configuration.vOut);
+  Serial.println(configuration.RLDR);
+  Serial.println(configuration.light);
+  Serial.println(configuration.adc);
   Serial.println();
-  Serial.print("Number of bytes read back: ");
-  Serial.println(flash.readAnything(pageNo, offset, configuration));
+  //Serial.print("Number of bytes read back: ");
+  flash.readAnything(pageNo, offset, configuration);
   flash.eraseSector(pageNo, 0);
 
   Serial.println("After reading");

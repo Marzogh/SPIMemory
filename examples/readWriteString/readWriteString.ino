@@ -21,7 +21,8 @@ void setup() {
   Serial.begin(115200);
   uint16_t tempPage;
   uint8_t tempOffset;
-  flash.getAddress(sizeof(byte), tempPage, tempOffset);
+  flash.begin();
+  /*flash.getAddress(sizeof(byte), tempPage, tempOffset);
   Serial.print(F("Page number for byte: "));
   Serial.println(tempPage);
   Serial.print(F("Offset for byte: "));
@@ -50,22 +51,22 @@ void setup() {
   Serial.println(tempPage);
   Serial.print(F("Offset for int: "));
   Serial.println(tempOffset);
-  Serial.println();
+  Serial.println();*/
 
   Serial.println(F("Please type the string into the console"));
   randomSeed(analogRead(A0));
   strPage = random(0, 4095);
   strOffset = random(0, 255);
-  String inputString;
+  String inputString;// = "Test String!! :D";
   while (!readSerialStr(inputString));
-  flash.writeStr(strPage, strOffset, inputString);
+  Serial.println(flash.writeStr(strPage, strOffset, inputString));
   Serial.print(F("Written string: "));
   Serial.print(inputString);
   Serial.print(F(" to page "));
   Serial.print(strPage);
   Serial.print(F(", at offset "));
   Serial.println(strOffset);
-  String outputString;
+  String outputString = "";
   flash.readStr(strPage, strOffset, outputString);
   Serial.print(F("Read string: "));
   Serial.print(outputString);
