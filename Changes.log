@@ -2,6 +2,25 @@
 //					SPIFlash Library 									   //
 //					  Changes log 										   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 Version 2.1.0 										   //
+//					Author: Marzogh										   //
+//					  18.10.2015											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+--> Arduino Due compatible - refer to wiki for further details
+--> Fixed bug with write/readByteArray
+--> Added write/readCharArray
+--> Added a proper error checking function that gets called when #ifdef RUNDIAGNOSTIC is uncommented in SPIFlash.cpp.
+	This function returns a verbose error message to the Serial console instead of the terse error codes of the previous version.
+--> The following functions have been changed to enable bug fixes and uniformity in coding style.
+			A. writeBytes()
+			B. readBytes()
+			They have been replaced with readByteArray() and writeByteArray().
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//					SPIFlash Library 									   //
+//					  Changes log 										   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 Version 2.0.0 										   //
 //					Author: Marzogh										   //
 //					  12.10.2015											   //

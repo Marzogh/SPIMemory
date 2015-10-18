@@ -12,14 +12,15 @@ SPIFlash	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 begin	KEYWORD2
-getJEDEC	KEYWORD2
+getJEDECID	KEYWORD2
 getManID	KEYWORD2
 getAddress	KEYWORD2
 getCapacity	KEYWORD2
 getMaxPage	KEYWORD2
 readByte	KEYWORD2
-readBytes	KEYWORD2
+readByteArray	KEYWORD2
 readChar	KEYWORD2
+readCharArray	KEYWORD2
 readWord	KEYWORD2
 readShort	KEYWORD2
 readLong	KEYWORD2
@@ -29,8 +30,9 @@ readStr 	KEYWORD2
 readPage	KEYWORD2
 readAnything	KEYWORD2
 writeByte	KEYWORD2
-writeBytes	KEYWORD2
+writeByteArray	KEYWORD2
 writeChar	KEYWORD2
+writeCharArray	KEYWORD2
 writeWord	KEYWORD2
 writeShort	KEYWORD2
 writeLong	KEYWORD2

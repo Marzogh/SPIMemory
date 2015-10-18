@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v2.1.0-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash)
+=======
 # SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash)
+>>>>>>> master
 ### Arduino library for Winbond Flash Memory Chips
 <sup> Download the latest stable release (v2.0.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
@@ -6,10 +10,20 @@ This library is for a the Winbond serial flash memory chips. In its current form
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
+Currently tested & compatible with Arduino 1.6.5 and the ARduino Uno, Arduino Leonardo, Arduino Mega and the Arduino Due.
+
 #### Installation
+
+#####Option 1
 - Click on the 'Download zip' button to the right.
 - Unzip the archive and rename resulting folder to 'SPIFlash'
 - Move the folder to your libraries folder (~/sketches/libraries)
+
+#####Option 2
+- Open the Arduino IDE.
+- Go to Sketch > Include Library > Manage libraries.
+- Search for SPIFlash.
+- Install the latest version.
 
 #### Usage
 
@@ -26,10 +40,12 @@ The library enables the following functions:
 ##### Primary commands
 ###### begin()
 Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly.
-###### getID()
-Fetches the JEDEC ID as a 32-bit value.
+###### getMANID()
+Returns the Manufacturer ID as a 16-bit value.
+###### getJEDECID()
+Returns the JEDEC ID as a 32-bit value.
 ###### getCapacity()
-Returns the capacity as a 32-bit value.
+Returns the capacity in bytes as a 32-bit value.
 ###### getmaxPage()
 Returns the maximum number of pages in the flash memory as a 32-bit value.
 ###### getAddress()
@@ -38,6 +54,8 @@ Gets the next available address for use. Has two variants:
 * Takes a three variables, the size of the data and two other variables to return a page number value & an offset into.
 
 All addresses in the in the sketch must be obtained via this function or not at all.
+<hr>
+###### All read/write commands can take a 32-bit address variable in the place of the 16-bit page number & 8-bit offset variables.
 <hr>
 ##### Read commands
 All read commands take a last boolean argument 'fastRead'. This argument defaults to FALSE, but when set to TRUE carries out the Fast Read instruction so data can be read at up to the memory's maximum frequency.
@@ -94,11 +112,14 @@ Writes _any type of variable/struct_ (any sized value) from a specific location 
 ##### Continuous read/write commands
 All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
 
-All read/write commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
-###### readBytes(page_number, offset, *data_buffer)
-Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be read from the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of storage available on the Arduino board.
-###### writeBytes(page_number, offset, *data_buffer)
-Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be written to the flash memory - as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of storage available on the Arduino board.
+###### readByteArray(page_number, offset, *data_buffer, bufferSize)
+Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be read from the flash memory - and size of the array as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of RAM available on the Arduino board.
+###### writeByteArray(page_number, offset, *data_buffer, bufferSize)
+Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be written to the flash memory - and size of the array as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of RAM available on the Arduino board.
+###### readCharArray(page_number, offset, *data_buffer, bufferSize)
+Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be read from the flash memory - and size of the array as arguments. ```char data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of RAM available on the Arduino board.
+###### writeCharArray(page_number, offset, *data_buffer, bufferSize)
+Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be written to the flash memory - and size of the array as arguments. ```char data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of RAM available on the Arduino board.
 <hr>
 ##### Erase commands
 All erase commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
