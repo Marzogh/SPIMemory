@@ -13,10 +13,10 @@
 --> Added a proper error checking function that gets called when #ifdef RUNDIAGNOSTIC is uncommented in SPIFlash.cpp.
 	This function returns a verbose error message to the Serial console instead of the terse error codes of the previous version.
 --> The following functions have been changed to enable bug fixes and uniformity in coding style.
-		They will no longer be supported from v2.2.0 onwards. 
 			A. writeBytes()
 			B. readBytes()
 			They have been replaced with readByteArray() and writeByteArray().
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					SPIFlash Library 									   //
 //					  Changes log 										   //
