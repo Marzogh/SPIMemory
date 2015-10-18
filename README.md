@@ -1,13 +1,13 @@
 
 # SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
-<sup> Download the latest stable release (v2.0.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
+<sup> Download the latest stable release (v2.1.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
 This library is for a the Winbond serial flash memory chips. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
-Currently tested & compatible with Arduino 1.6.5 and the ARduino Uno, Arduino Leonardo, Arduino Mega and the Arduino Due.
+Currently tested & compatible with Arduino 1.6.5 and the Arduino Uno, Arduino Leonardo, Arduino Mega and the Arduino Due.
 
 #### Installation
 
