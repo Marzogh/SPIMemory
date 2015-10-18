@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v2.1.0-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash)
-=======
+
 # SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash)
 >>>>>>> master
 ### Arduino library for Winbond Flash Memory Chips
