@@ -35,7 +35,7 @@
           <p>SPI library for Winbond Flash Memory modules</p>
           <hr>
           <span class="credits left">Project maintained by <a href="https://github.com/Marzogh">Marzogh</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash;</span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
         <h1>
@@ -45,16 +45,21 @@
 <h3>
 <a id="arduino-library-for-winbond-flash-memory-chips" class="anchor" href="#arduino-library-for-winbond-flash-memory-chips" aria-hidden="true"><span class="octicon octicon-link"></span></a>Arduino library for Winbond Flash Memory Chips</h3>
 
-<p><sup> Download the latest stable release (v2.0.0) from <a href="https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup></p>
+<p><sup> Download the latest stable release (v2.1.0) from <a href="https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup></p>
 
-<p>This library is for the Winbond serial flash memory chips. In its current form it enables reading and writing of most types of data; sector, block and chip erase; and powering down for low power operation.</p>
+<p>This library is for a the Winbond serial flash memory chips. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.</p>
 
 <ul>
 <li>For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.</li>
 </ul>
 
-<h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+<p>Currently tested &amp; compatible with Arduino 1.6.5 and the Arduino Uno, Arduino Leonardo, Arduino Mega and the Arduino Due.</p>
+
+<h4>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h4>
+
+<h5>
+<a id="option-1" class="anchor" href="#option-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Option 1</h5>
 
 <ul>
 <li>Click on the 'Download zip' button to the right.</li>
@@ -62,15 +67,25 @@
 <li>Move the folder to your libraries folder (~/sketches/libraries)</li>
 </ul>
 
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<h5>
+<a id="option-2" class="anchor" href="#option-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Option 2</h5>
+
+<ul>
+<li>Open the Arduino IDE.</li>
+<li>Go to Sketch &gt; Include Library &gt; Manage libraries.</li>
+<li>Search for SPIFlash.</li>
+<li>Install the latest version.</li>
+</ul>
+
+<h4>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4>
 
 <p>The library is called by declaring the<code>SPIFLASH flash(csPin)</code> constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
 Make sure to include <code>#include&lt;SPI.H&gt;</code> when you include <code>#include&lt;SPIFlash.h&gt;</code>.
 Also make sure to include <code>flash.begin()</code> in <code>void setup()</code>. This enables the library to detect the type of flash chip installed and load the right parameters.</p>
 
-<h4>
-<a id="notes-on-address-overflow-and-error-checking" class="anchor" href="#notes-on-address-overflow-and-error-checking" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notes on Address overflow and Error checking</h4>
+<h6>
+<a id="notes-on-address-overflow-and-error-checking" class="anchor" href="#notes-on-address-overflow-and-error-checking" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notes on Address overflow and Error checking</h6>
 
 <ul>
 <li>The library has Address overflow enabled by default - i.e. if the last address read/written from/to,  in any function, is 0xFFFFF then, the next address read/written from/to is 0x00000. This can be disabled by setting the optional last 'overflow' argument in the constructor to false - For eg. call the constructor  <code>SPIFlash(csPin, false)</code>  instead of <code>SPIFlash(csPin)</code>.</li>
@@ -81,31 +96,36 @@ Also make sure to include <code>flash.begin()</code> in <code>void setup()</code
 
 <hr>
 
-<h3>
-<a id="primary-commands" class="anchor" href="#primary-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Primary commands</h3>
+<h5>
+<a id="primary-commands" class="anchor" href="#primary-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Primary commands</h5>
 
-<h4>
-<a id="begin" class="anchor" href="#begin" aria-hidden="true"><span class="octicon octicon-link"></span></a>begin()</h4>
+<h6>
+<a id="begin" class="anchor" href="#begin" aria-hidden="true"><span class="octicon octicon-link"></span></a>begin()</h6>
 
 <p>Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly.</p>
 
-<h4>
-<a id="getid" class="anchor" href="#getid" aria-hidden="true"><span class="octicon octicon-link"></span></a>getID()</h4>
+<h6>
+<a id="getmanid" class="anchor" href="#getmanid" aria-hidden="true"><span class="octicon octicon-link"></span></a>getMANID()</h6>
 
-<p>Fetches the JEDEC ID as a 32-bit value.</p>
+<p>Returns the Manufacturer ID as a 16-bit value.</p>
 
-<h4>
-<a id="getcapacity" class="anchor" href="#getcapacity" aria-hidden="true"><span class="octicon octicon-link"></span></a>getCapacity()</h4>
+<h6>
+<a id="getjedecid" class="anchor" href="#getjedecid" aria-hidden="true"><span class="octicon octicon-link"></span></a>getJEDECID()</h6>
 
-<p>Returns the capacity as a 32-bit value.</p>
+<p>Returns the JEDEC ID as a 32-bit value.</p>
 
-<h4>
-<a id="getmaxpage" class="anchor" href="#getmaxpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>getmaxPage()</h4>
+<h6>
+<a id="getcapacity" class="anchor" href="#getcapacity" aria-hidden="true"><span class="octicon octicon-link"></span></a>getCapacity()</h6>
+
+<p>Returns the capacity in bytes as a 32-bit value.</p>
+
+<h6>
+<a id="getmaxpage" class="anchor" href="#getmaxpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>getmaxPage()</h6>
 
 <p>Returns the maximum number of pages in the flash memory as a 32-bit value.</p>
 
-<h4>
-<a id="getaddress" class="anchor" href="#getaddress" aria-hidden="true"><span class="octicon octicon-link"></span></a>getAddress()</h4>
+<h6>
+<a id="getaddress" class="anchor" href="#getaddress" aria-hidden="true"><span class="octicon octicon-link"></span></a>getAddress()</h6>
 
 <p>Gets the next available address for use. Has two variants:</p>
 
@@ -118,210 +138,223 @@ Also make sure to include <code>flash.begin()</code> in <code>void setup()</code
 
 <hr>
 
-<h3>
-<a id="read-commands" class="anchor" href="#read-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Read commands</h3>
+<h6>
+<a id="all-readwrite-commands-can-take-a-32-bit-address-variable-in-the-place-of-the-16-bit-page-number--8-bit-offset-variables" class="anchor" href="#all-readwrite-commands-can-take-a-32-bit-address-variable-in-the-place-of-the-16-bit-page-number--8-bit-offset-variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>All read/write commands can take a 32-bit address variable in the place of the 16-bit page number &amp; 8-bit offset variables.</h6>
+
+<hr>
+
+<h5>
+<a id="read-commands" class="anchor" href="#read-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Read commands</h5>
 
 <p>All read commands take a last boolean argument 'fastRead'. This argument defaults to FALSE, but when set to TRUE carries out the Fast Read instruction so data can be read at up to the memory's maximum frequency.</p>
 
 <p>All read commands can take a 32-bit address variable instead of the 16-bit page number &amp; 8-bit offset variables</p>
 
-<h4>
-<a id="readanythingpage_number-offset-value" class="anchor" href="#readanythingpage_number-offset-value" aria-hidden="true"><span class="octicon octicon-link"></span></a>readAnything(page_number, offset, value)</h4>
+<h6>
+<a id="readanythingpage_number-offset-value" class="anchor" href="#readanythingpage_number-offset-value" aria-hidden="true"><span class="octicon octicon-link"></span></a>readAnything(page_number, offset, value)</h6>
 
 <p>Reads <em>any type of variable/struct</em> (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data back to, as arguments.</p>
 
-<h4>
-<a id="readbytepage_number-offset" class="anchor" href="#readbytepage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readByte(page_number, offset)</h4>
+<h6>
+<a id="readbytepage_number-offset" class="anchor" href="#readbytepage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readByte(page_number, offset)</h6>
 
 <p>Reads a <em>byte</em> (unsigned 8 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the byte within page (0-255) as arguments.</p>
 
-<h4>
-<a id="readcharpage_number-offset" class="anchor" href="#readcharpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readChar(page_number, offset)</h4>
+<h6>
+<a id="readcharpage_number-offset" class="anchor" href="#readcharpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readChar(page_number, offset)</h6>
 
 <p>Reads a <em>char</em> (signed 8 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the char within page (0-255) as arguments.</p>
 
-<h4>
-<a id="readwordpage_number-offset" class="anchor" href="#readwordpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readWord(page_number, offset)</h4>
+<h6>
+<a id="readwordpage_number-offset" class="anchor" href="#readwordpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readWord(page_number, offset)</h6>
 
 <p>Reads a <em>word</em> (unsigned 16 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the word within page (0-255) as arguments.</p>
 
-<h4>
-<a id="readshortpage_number-offset" class="anchor" href="#readshortpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readShort(page_number, offset)</h4>
+<h6>
+<a id="readshortpage_number-offset" class="anchor" href="#readshortpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readShort(page_number, offset)</h6>
 
 <p>Reads a <em>short</em> (signed 16 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the short within page (0-255) as arguments.</p>
 
-<h4>
-<a id="readulongpage_number-offset" class="anchor" href="#readulongpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readULong(page_number, offset)</h4>
+<h6>
+<a id="readulongpage_number-offset" class="anchor" href="#readulongpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readULong(page_number, offset)</h6>
 
 <p>Reads an <em>unsigned long</em> (unsigned 32 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the unsigned long within page (0-255) as arguments.</p>
 
-<h4>
-<a id="readlongpage_number-offset" class="anchor" href="#readlongpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readLong(page_number, offset)</h4>
+<h6>
+<a id="readlongpage_number-offset" class="anchor" href="#readlongpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readLong(page_number, offset)</h6>
 
 <p>Reads a <em>long</em> (signed 32 bit value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the long within page (0-255) as arguments.</p>
 
-<h4>
-<a id="readfloatpage_number-offset" class="anchor" href="#readfloatpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readFloat(page_number, offset)</h4>
+<h6>
+<a id="readfloatpage_number-offset" class="anchor" href="#readfloatpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>readFloat(page_number, offset)</h6>
 
 <p>Reads a <em>float</em> (decimal value) from a specific location on a page. Takes the page number (0-maxPage) and offset of the float within page (0-255) as arguments.</p>
 
-<h4>
-<a id="readstrpage_number-offset-outputstr" class="anchor" href="#readstrpage_number-offset-outputstr" aria-hidden="true"><span class="octicon octicon-link"></span></a>readStr(page_number, offset, outputStr)</h4>
+<h6>
+<a id="readstrpage_number-offset-outputstr" class="anchor" href="#readstrpage_number-offset-outputstr" aria-hidden="true"><span class="octicon octicon-link"></span></a>readStr(page_number, offset, outputStr)</h6>
 
 <p>Reads a <em>string</em> (String Object) to a specific location on a page to an outputStr variable. Takes the page number (0-maxPage), the offset of the String within page (0-255) and a String as arguments.</p>
 
-<h4>
-<a id="readpagepage_number-data_buffer" class="anchor" href="#readpagepage_number-data_buffer" aria-hidden="true"><span class="octicon octicon-link"></span></a>readPage(page_number, *data_buffer)</h4>
+<h6>
+<a id="readpagepage_number-data_buffer" class="anchor" href="#readpagepage_number-data_buffer" aria-hidden="true"><span class="octicon octicon-link"></span></a>readPage(page_number, *data_buffer)</h6>
 
 <p>Reads a page worth of data into a data buffer array for further use. <code>uint8_t data_buffer[256];</code> The data buffer <strong>must</strong> be an array of 256 bytes.</p>
 
-<h4>
-<a id="readanythingpage_number-offset-value-1" class="anchor" href="#readanythingpage_number-offset-value-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>readAnything(page_number, offset, value)</h4>
+<h6>
+<a id="readanythingpage_number-offset-value-1" class="anchor" href="#readanythingpage_number-offset-value-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>readAnything(page_number, offset, value)</h6>
 
 <p>Reads <em>any type of variable/struct</em> (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data to, as arguments.</p>
 
 <hr>
 
-<h3>
-<a id="write-commands" class="anchor" href="#write-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Write commands</h3>
+<h5>
+<a id="write-commands" class="anchor" href="#write-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Write commands</h5>
 
 <p>All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.</p>
 
 <p>All write commands can take a 32-bit address variable instead of the 16-bit page number &amp; 8-bit offset variables</p>
 
-<h4>
-<a id="writebytepage-offset-data" class="anchor" href="#writebytepage-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeByte(page, offset, data)</h4>
+<h6>
+<a id="writebytepage-offset-data" class="anchor" href="#writebytepage-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeByte(page, offset, data)</h6>
 
 <p>Writes a byte of data to a specific location on a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and one byte of data as arguments.</p>
 
-<h4>
-<a id="writecharpage_number-offset-data" class="anchor" href="#writecharpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeChar(page_number, offset, data)</h4>
+<h6>
+<a id="writecharpage_number-offset-data" class="anchor" href="#writecharpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeChar(page_number, offset, data)</h6>
 
 <p>Writes a <em>char</em> (signed 8 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the char within page (0-255) and one char of data  as arguments.</p>
 
-<h4>
-<a id="writewordpage_number-offset-data" class="anchor" href="#writewordpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeWord(page_number, offset, data)</h4>
+<h6>
+<a id="writewordpage_number-offset-data" class="anchor" href="#writewordpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeWord(page_number, offset, data)</h6>
 
 <p>Writes a <em>word</em> (unsigned 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the word within page (0-255) and one word of data as arguments.</p>
 
-<h4>
-<a id="writeshortpage_number-offset-data" class="anchor" href="#writeshortpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeShort(page_number, offset, data)</h4>
+<h6>
+<a id="writeshortpage_number-offset-data" class="anchor" href="#writeshortpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeShort(page_number, offset, data)</h6>
 
 <p>Writes a <em>short</em> (signed 16 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the short within page (0-255) and one short of data as arguments.</p>
 
-<h4>
-<a id="writeulongpage_number-offset-data" class="anchor" href="#writeulongpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeULong(page_number, offset, data)</h4>
+<h6>
+<a id="writeulongpage_number-offset-data" class="anchor" href="#writeulongpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeULong(page_number, offset, data)</h6>
 
 <p>Writes an <em>unsigned long</em> (unsigned 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the unsigned long within page (0-255) and one unsigned long of data as arguments.</p>
 
-<h4>
-<a id="writelongpage_number-offset-data" class="anchor" href="#writelongpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeLong(page_number, offset, data)</h4>
+<h6>
+<a id="writelongpage_number-offset-data" class="anchor" href="#writelongpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeLong(page_number, offset, data)</h6>
 
 <p>Writes a <em>long</em> (signed 32 bit value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the long within page (0-255) and one long of data as arguments.</p>
 
-<h4>
-<a id="writefloatpage_number-offset-data" class="anchor" href="#writefloatpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeFloat(page_number, offset, data)</h4>
+<h6>
+<a id="writefloatpage_number-offset-data" class="anchor" href="#writefloatpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeFloat(page_number, offset, data)</h6>
 
 <p>Writes a <em>float</em> (decimal value) to a specific location on a page. Takes the page number (0-maxPage), the offset of the float within page (0-255) and one float of data as arguments.</p>
 
-<h4>
-<a id="writestrpage_number-offset-data" class="anchor" href="#writestrpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeStr(page_number, offset, data)</h4>
+<h6>
+<a id="writestrpage_number-offset-data" class="anchor" href="#writestrpage_number-offset-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeStr(page_number, offset, data)</h6>
 
 <p>Writes a <em>string</em> (String Object) to a specific location on a page. Takes the page number (0-maxPage), the offset of the String within page (0-255) and a String as arguments.</p>
 
-<h4>
-<a id="writepagepage_number-data_buffer" class="anchor" href="#writepagepage_number-data_buffer" aria-hidden="true"><span class="octicon octicon-link"></span></a>writePage(page_number, *data_buffer)</h4>
+<h6>
+<a id="writepagepage_number-data_buffer" class="anchor" href="#writepagepage_number-data_buffer" aria-hidden="true"><span class="octicon octicon-link"></span></a>writePage(page_number, *data_buffer)</h6>
 
 <p>Writes a page worth of data into a data buffer array for further use. <code>uint8_t data_buffer[256];</code> The data buffer <strong>must</strong> be an array of 256 bytes.</p>
 
-<h4>
-<a id="writeanythingpage_number-offset-value" class="anchor" href="#writeanythingpage_number-offset-value" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeAnything(page_number, offset, value)</h4>
+<h6>
+<a id="writeanythingpage_number-offset-value" class="anchor" href="#writeanythingpage_number-offset-value" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeAnything(page_number, offset, value)</h6>
 
 <p>Writes <em>any type of variable/struct</em> (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data from, as arguments.</p>
 
 <hr>
 
-<h3>
-<a id="continuous-readwrite-commands" class="anchor" href="#continuous-readwrite-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Continuous read/write commands</h3>
+<h5>
+<a id="continuous-readwrite-commands" class="anchor" href="#continuous-readwrite-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Continuous read/write commands</h5>
 
 <p>All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.</p>
 
-<p>All read/write commands can take a 32-bit address variable instead of the 16-bit page number &amp; 8-bit offset variables</p>
+<h6>
+<a id="readbytearraypage_number-offset-data_buffer-buffersize" class="anchor" href="#readbytearraypage_number-offset-data_buffer-buffersize" aria-hidden="true"><span class="octicon octicon-link"></span></a>readByteArray(page_number, offset, *data_buffer, bufferSize)</h6>
 
-<h4>
-<a id="readbytespage_number-offset-data_buffer" class="anchor" href="#readbytespage_number-offset-data_buffer" aria-hidden="true"><span class="octicon octicon-link"></span></a>readBytes(page_number, offset, *data_buffer)</h4>
+<p>Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be read from the flash memory - and size of the array as arguments. <code>uint8_t data_buffer[n];</code> The data buffer <strong>must</strong> be an array of n <strong>bytes</strong>. 'n' is determined by the amount of RAM available on the Arduino board.</p>
 
-<p>Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be read from the flash memory - as arguments. <code>uint8_t data_buffer[n];</code> The data buffer <strong>must</strong> be an array of n <strong>bytes</strong>. 'n' is determined by the amount of storage available on the Arduino board.</p>
+<h6>
+<a id="writebytearraypage_number-offset-data_buffer-buffersize" class="anchor" href="#writebytearraypage_number-offset-data_buffer-buffersize" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeByteArray(page_number, offset, *data_buffer, bufferSize)</h6>
 
-<h4>
-<a id="writebytespage_number-offset-data_buffer" class="anchor" href="#writebytespage_number-offset-data_buffer" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeBytes(page_number, offset, *data_buffer)</h4>
+<p>Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be written to the flash memory - and size of the array as arguments. <code>uint8_t data_buffer[n];</code> The data buffer <strong>must</strong> be an array of 'n' <strong>bytes</strong>. The number of bytes - 'n' - is determined by the amount of RAM available on the Arduino board.</p>
 
-<p>Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and a data_buffer - i.e. an array of bytes to be written to the flash memory - as arguments. <code>uint8_t data_buffer[n];</code> The data buffer <strong>must</strong> be an array of 'n' <strong>bytes</strong>. The number of bytes - 'n' - is determined by the amount of storage available on the Arduino board.</p>
+<h6>
+<a id="readchararraypage_number-offset-data_buffer-buffersize" class="anchor" href="#readchararraypage_number-offset-data_buffer-buffersize" aria-hidden="true"><span class="octicon octicon-link"></span></a>readCharArray(page_number, offset, *data_buffer, bufferSize)</h6>
+
+<p>Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be read from the flash memory - and size of the array as arguments. <code>char data_buffer[n];</code> The data buffer <strong>must</strong> be an array of n <strong>bytes</strong>. 'n' is determined by the amount of RAM available on the Arduino board.</p>
+
+<h6>
+<a id="writechararraypage_number-offset-data_buffer-buffersize" class="anchor" href="#writechararraypage_number-offset-data_buffer-buffersize" aria-hidden="true"><span class="octicon octicon-link"></span></a>writeCharArray(page_number, offset, *data_buffer, bufferSize)</h6>
+
+<p>Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be written to the flash memory - and size of the array as arguments. <code>char data_buffer[n];</code> The data buffer <strong>must</strong> be an array of 'n' <strong>bytes</strong>. The number of bytes - 'n' - is determined by the amount of RAM available on the Arduino board.</p>
 
 <hr>
 
-<h3>
-<a id="erase-commands" class="anchor" href="#erase-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Erase commands</h3>
+<h5>
+<a id="erase-commands" class="anchor" href="#erase-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Erase commands</h5>
 
 <p>All erase commands can take a 32-bit address variable instead of the 16-bit page number &amp; 8-bit offset variables</p>
 
-<h4>
-<a id="erasesectorpage_number-offset" class="anchor" href="#erasesectorpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseSector(page_number, offset)</h4>
+<h6>
+<a id="erasesectorpage_number-offset" class="anchor" href="#erasesectorpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseSector(page_number, offset)</h6>
 
 <p>Erases one 4KB sector - 16 pages - containing the page to be erased. The sectors are numbered 0 - 255 containing 16 pages each.
 Page 0-15 --&gt; Sector 0; Page 16-31 --&gt; Sector 1;......Page 4080-4095 --&gt; Sector 255, and so on...</p>
 
-<h4>
-<a id="eraseblock32kpage_number-offset" class="anchor" href="#eraseblock32kpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseBlock32K(page_number, offset)</h4>
+<h6>
+<a id="eraseblock32kpage_number-offset" class="anchor" href="#eraseblock32kpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseBlock32K(page_number, offset)</h6>
 
 <p>Erases one 32KB block - 128 pages - containing the page to be erased. The blocks are numbered 0 - 31 containing 128 pages each.
 Page 0-127 --&gt; Block 0; Page 128-255 --&gt; Block 1;......Page 3968-4095 --&gt; Block 31, and so on...</p>
 
-<h4>
-<a id="eraseblock64kpage_number-offset" class="anchor" href="#eraseblock64kpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseBlock64K(page_number, offset)</h4>
+<h6>
+<a id="eraseblock64kpage_number-offset" class="anchor" href="#eraseblock64kpage_number-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseBlock64K(page_number, offset)</h6>
 
 <p>Erases one 64KB block - 256 pages - containing the page to be erased. The blocks are numbered 0 - 15 containing 256 pages each.
 // Page 0-255 --&gt; Block 0; Page 256-511 --&gt; Block 1;......Page 3840-4095 --&gt; Block 15, and so on...</p>
 
-<h4>
-<a id="erasechip" class="anchor" href="#erasechip" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseChip()</h4>
+<h6>
+<a id="erasechip" class="anchor" href="#erasechip" aria-hidden="true"><span class="octicon octicon-link"></span></a>eraseChip()</h6>
 
 <p>Erases entire chip. Use with care.</p>
 
 <hr>
 
-<h3>
-<a id="suspendresume-commands" class="anchor" href="#suspendresume-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Suspend/Resume commands</h3>
+<h5>
+<a id="suspendresume-commands" class="anchor" href="#suspendresume-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Suspend/Resume commands</h5>
 
-<h4>
-<a id="suspendprog" class="anchor" href="#suspendprog" aria-hidden="true"><span class="octicon octicon-link"></span></a>suspendProg()</h4>
+<h6>
+<a id="suspendprog" class="anchor" href="#suspendprog" aria-hidden="true"><span class="octicon octicon-link"></span></a>suspendProg()</h6>
 
 <p>Suspends current Block Erase/Sector Erase/Page Program. Does not suspend chipErase(). Page Program, Write Status Register, Erase instructions are not allowed. Erase suspend is only allowed during Block/Sector erase. Program suspend is only allowed during Page/Quad Page Program</p>
 
-<h4>
-<a id="resumeprog" class="anchor" href="#resumeprog" aria-hidden="true"><span class="octicon octicon-link"></span></a>resumeProg()</h4>
+<h6>
+<a id="resumeprog" class="anchor" href="#resumeprog" aria-hidden="true"><span class="octicon octicon-link"></span></a>resumeProg()</h6>
 
 <p>Resumes previously suspended Block Erase/Sector Erase/Page Program.</p>
 
 <hr>
 
-<h3>
-<a id="power-operation-commands" class="anchor" href="#power-operation-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Power operation commands</h3>
+<h5>
+<a id="power-operation-commands" class="anchor" href="#power-operation-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Power operation commands</h5>
 
-<h4>
-<a id="powerdown" class="anchor" href="#powerdown" aria-hidden="true"><span class="octicon octicon-link"></span></a>powerDown()</h4>
+<h6>
+<a id="powerdown" class="anchor" href="#powerdown" aria-hidden="true"><span class="octicon octicon-link"></span></a>powerDown()</h6>
 
 <p>Puts device in low power state. Useful for battery powered operations. Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4). In powerDown() the chip will only respond to powerUp()</p>
 
-<h4>
-<a id="powerup" class="anchor" href="#powerup" aria-hidden="true"><span class="octicon octicon-link"></span></a>powerUp()</h4>
+<h6>
+<a id="powerup" class="anchor" href="#powerup" aria-hidden="true"><span class="octicon octicon-link"></span></a>powerUp()</h6>
 
 <p>//Wakes chip from low power state.</p>
 
 <hr>
 
-<h3>
-<a id="error-codes-explained" class="anchor" href="#error-codes-explained" aria-hidden="true"><span class="octicon octicon-link"></span></a>Error codes explained</h3>
+<h5>
+<a id="error-codes-explained" class="anchor" href="#error-codes-explained" aria-hidden="true"><span class="octicon octicon-link"></span></a>Error codes explained</h5>
 
 <pre><code>- 0x00  SUCCESS         Operation successful.
 - 0x01  CALLBEGIN       Please make sure .begin() has been called in setup().
@@ -336,8 +369,8 @@ Page 0-127 --&gt; Block 0; Page 128-255 --&gt; Block 1;......Page 3968-4095 --&g
 
 <hr>
 
-<h3>
-<a id="deprecated-functions" class="anchor" href="#deprecated-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deprecated functions</h3>
+<h5>
+<a id="deprecated-functions" class="anchor" href="#deprecated-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deprecated functions</h5>
 
 <p>The following functions are deprecated to enable compatibility with other AVR chips.
 <code>printPage();</code>
@@ -346,18 +379,18 @@ Page 0-127 --&gt; Block 0; Page 128-255 --&gt; Block 1;......Page 3968-4095 --&g
 
 <p>They can be used by uncommenting them in the SPIFlash.cpp file. However, be warned, this particular block of code has only been tested with the Arduino IDE (1.6.5) and only with 8-bit ATMega based Arduino boards and will not be supported any further.</p>
 
-<h4>
-<a id="printpagepage_number-outputtype" class="anchor" href="#printpagepage_number-outputtype" aria-hidden="true"><span class="octicon octicon-link"></span></a>printPage(page_number, outputType)</h4>
+<h6>
+<a id="printpagepage_number-outputtype" class="anchor" href="#printpagepage_number-outputtype" aria-hidden="true"><span class="octicon octicon-link"></span></a>printPage(page_number, outputType)</h6>
 
 <p>Reads a page worth of data into a data buffer array for further useand prints to a Serial stream at 115200 baud by default. (The baudrate can be changed by calling <code>Serial.begin()</code> at a different baudrate in <code>void setup()</code>)Setting an outputType of 1 enables output in hexadecimal while an outputType of 2 enables output in decimal, CSV - over Serial.</p>
 
-<h4>
-<a id="printallpages" class="anchor" href="#printallpages" aria-hidden="true"><span class="octicon octicon-link"></span></a>printAllPages()</h4>
+<h6>
+<a id="printallpages" class="anchor" href="#printallpages" aria-hidden="true"><span class="octicon octicon-link"></span></a>printAllPages()</h6>
 
 <p>Reads all pages on Flash chip and dumps it to Serial stream. This function is useful when extracting data from a flash chip onto a computer as a text file.</p>
 
-<h4>
-<a id="how-to-get-data-off-flash-memory-via-serial" class="anchor" href="#how-to-get-data-off-flash-memory-via-serial" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to get data off Flash memory via Serial</h4>
+<h6>
+<a id="how-to-get-data-off-flash-memory-via-serial" class="anchor" href="#how-to-get-data-off-flash-memory-via-serial" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to get data off Flash memory via Serial</h6>
 
 <p><sub>(Works only for Unix based Operating Systems)</sub></p>
 
