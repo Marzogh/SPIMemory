@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.2.1.0
- * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 18/10/2015
+/* Arduino SPIFlash Library v.2.1.1
+ * Copyright (C) 2015 by Marzogh
+ * Modified by Marzogh - 24/10/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -113,11 +113,13 @@ public:
   bool     powerUp(void);
   //--------------------------------------------Private functions-------------------------------------------//
 private:
+  void     _troubleshoot(uint8_t error);
   void     _cmd(uint8_t cmd, bool _continue = true, uint8_t cs = 0);
   void     _endProcess(void);
   void     _errorCodeCheck(void);
   void     _beginRead(uint32_t address);
   void     _beginFastRead(uint32_t address);
+  bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
   bool     _addressCheck(uint32_t address);
   bool     _beginWrite(uint32_t address);
@@ -127,6 +129,7 @@ private:
   bool     _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
   bool     _chipID(void);
+  uint8_t  _readStat1(void);
   uint8_t  _readNextByte(bool _continue = true);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   uint32_t _prepRead(uint32_t address);

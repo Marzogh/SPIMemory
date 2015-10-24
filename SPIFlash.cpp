@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.2.1.0
- * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 18/10/2015
+/* Arduino SPIFlash Library v.2.1.1
+ * Copyright (C) 2015 by Marzogh
+ * Modified by Marzogh - 24/10/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -49,6 +49,7 @@
 #define FASTREAD	 0x0B
 #define WRITEDISABLE 0x04
 #define READSTAT1    0x05
+#define READSTAT2	 0x35
 #define WRITEENABLE  0x06
 #define SECTORERASE  0x20
 #define BLOCK32ERASE 0x52
@@ -63,6 +64,7 @@
 
 #define BUSY         0x01
 #define WRTEN        0x02
+#define SUS 		 0x40
 #define DUMMYBYTE	 0xEE
 
 #define arrayLen(x)  	(sizeof(x) / sizeof(*x))
@@ -155,6 +157,36 @@ void SPIFlash::_cmd(uint8_t cmd, bool _continue, uint8_t cs) {
 	CHIP_SELECT
 	(void)xfer(cmd);
  #endif
+}
+
+// Checks if status register 1 can be accessed - used during powerdown and power up and for debugging
+uint8_t SPIFlash::_readStat1(void) {
+	uint8_t stat1;
+	_cmd(READSTAT1);
+	#if defined (__SAM3X8E__)
+	stat1 = SPI.transfer(csPin, 0x00);
+	#else
+	stat1 = xfer(0);
+	CHIP_DESELECT
+	#endif
+	return stat1;
+}
+
+// Checks the erase/program suspend flag before enabling/disabling a program/erase suspend operation
+bool SPIFlash::_noSuspend(void) {
+	uint8_t state;
+
+	_cmd(READSTAT2);
+	#if defined (__arm__) && defined (__SAM3X8E__)
+		state = SPI.transfer(csPin, 0x00);
+	#else
+		state = xfer(0);
+		CHIP_DESELECT
+	#endif
+
+	if(state & SUS)
+		return false;
+	return true;
 }
 
 // Polls the status register 1 until busy flag is cleared or timeout
@@ -317,11 +349,11 @@ bool SPIFlash::_chipID(void) {
 
    	maxPage = capacity/PAGESIZE;
 
-   	#ifdef RUNDIAGNOSTIC
+   	/*#ifdef RUNDIAGNOSTIC
     char buffer[64];
     sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %lu\nmaxPage: %d", manID, devID, capacity, maxPage);
     Serial.println(buffer);
-    #endif
+    #endif*/
 }
 
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
@@ -1427,12 +1459,6 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 		return true;
 	else
 		return _writeErrorCheck(address, data_buffer);
-
-	#ifdef RUNDIAGNOSTIC
-	char buffer[64];
-	sprintf(buffer, "Writing page (%04x) done", page_number);
-	Serial.println(buffer);
-	#endif
 }
 
 
@@ -1577,7 +1603,7 @@ bool SPIFlash::eraseChip(void) {
 //Erase suspend is only allowed during Block/Sector erase. 
 //Program suspend is only allowed during Page/Quad Page Program
 bool SPIFlash::suspendProg(void) {
-	if(!_notBusy())
+	if(_notBusy() || !_noSuspend())
 		return false;
 
 	_cmd(SUSPEND, NO_CONTINUE);
@@ -1585,14 +1611,16 @@ bool SPIFlash::suspendProg(void) {
 	CHIP_DESELECT
 	#endif
 
-	if(!_notBusy(20L))	//Max suspend Enable time according to datasheet
+	_delay_us(20);
+
+	if(!_notBusy() || _noSuspend())	//Max suspend Enable time according to datasheet
 		return false;
 	return true;
 }
 
 //Resumes previously suspended Block Erase/Sector Erase/Page Program.
 bool SPIFlash::resumeProg(void) {
-	if(!_notBusy())
+	if(!_notBusy() || _noSuspend())
 		return false;
 
 	_cmd(RESUME, NO_CONTINUE);
@@ -1600,7 +1628,9 @@ bool SPIFlash::resumeProg(void) {
 	CHIP_DESELECT
 	#endif
 
-	if(_notBusy())
+	_delay_us(20);
+
+	if(_notBusy() || !_noSuspend())
 		return false;
 	return true;
 
@@ -1619,31 +1649,24 @@ bool SPIFlash::powerDown(void) {
 	#endif
 	_delay_us(3);							//Max powerDown enable time according to the Datasheet
 
-	if(_writeEnable())					//Tries to read STAT1. If STAT1 is accessible, chip has not powered down
-	{
-		_writeDisable();
+	if (_readStat1() != 255)
 		return false;
-	}
 	return true;
 }
 
 //Wakes chip from low power state.
 bool SPIFlash::powerUp(void) {
-	if(!_notBusy())
-		return false;
+	uint8_t devID;
 
-	_cmd(RELEASE, NO_CONTINUE);
-	#if defined (__AVR__)					
+	_cmd(RELEASE, NO_CONTINUE);	
+	#if defined (__AVR__)
 	CHIP_DESELECT
 	#endif
 	_delay_us(3);						    //Max release enable time according to the Datasheet
 
-	if(_writeEnable())					//Tries to read STAT1. If STAT1 is accessible, chip has powered up
-	{
-		_writeDisable();
-		return true;
-	}
-	return false;
+	if (_readStat1() == 255)
+		return false;
+	return true;
 }
 
 /************************************************************************************************************************
