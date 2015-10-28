@@ -11,7 +11,7 @@ SPIFlash	KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-begin	KEYWORD2
+begin		KEYWORD2
 getJEDECID	KEYWORD2
 getManID	KEYWORD2
 getAddress	KEYWORD2
