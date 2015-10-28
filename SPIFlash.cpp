@@ -86,6 +86,7 @@
  #define CHIPBUSY		0x04
  #define OUTOFBOUNDS	0x05
  #define CANTENWRITE	0x06
+ #define UNKNOWNERROR	0xFF
 
  #endif
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -333,11 +334,13 @@ bool SPIFlash::_chipID(void) {
 
     //Check flash memory type and identify capacity
     uint8_t i;
-    //capacity;
+    //capacity & chip name
     for (i = 0; i < sizeof(devType); i++)
     {
-    	if (devID == devType[i])
+    	if (devID == devType[i]) {
     		capacity = memSize[i];
+    		name = chipName[i];
+    	}
     }
     if (capacity == 0) {
     	#ifdef RUNDIAGNOSTIC
@@ -511,47 +514,82 @@ void SPIFlash::_endProcess(void) {
 #ifdef RUNDIAGNOSTIC
 //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
 void SPIFlash::_troubleshoot(uint8_t error) {
+	#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+	Serial.print("Error code: 0x");
+	#endif
 	switch (error) {
 		case SUCCESS:
+		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(SUCCESS, HEX);
+		#else
 		Serial.println("Action completed successfully");
+		#endif
 		break;
 
  		case CALLBEGIN:
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(CALLBEGIN, HEX);
+		#else
  		Serial.println("*constructor_of_choice*.begin() was not called in void setup()");
+		#endif
 		break;
 
 		case UNKNOWNCHIP:
+		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(UNKNOWNCHIP, HEX);
+		#else
 		Serial.println("Unable to identify chip. Are you shure this is a Winbond Flash chip");
  		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with your chip type and I will try to add support to your chip");
+		#endif
 
 		break;
 
  		case UNKNOWNCAP:
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(UNKNOWNCAP, HEX);
+		#else
  		Serial.println("Unable to identify capacity.");
  		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with your chip type and I will work on adding support to your chip");
+		#endif
 		break;
 
  		case CHIPBUSY:
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(CHIPBUSY, HEX);
+		#else
  		Serial.println("Chip is busy.");
  		Serial.println("Make sure all pins have been connected properly");
  		Serial.print("If it still doesn't work, ");
  		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+		#endif
 		break;
 
  		case OUTOFBOUNDS:
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(OUTOFBOUNDS, HEX);
+		#else
  		Serial.println("Page overflow has been disabled and the address called exceeds the memory");
+		#endif
 		break;
 
  		case CANTENWRITE:
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(CANTENWRITE, HEX);
+		#else
  		Serial.println("Unable to Enable Writing to chip.");
  		Serial.println("Please make sure the HOLD & WRITEPROTECT pins are connected properly to VCC & GND respectively");
  		Serial.print("If you are still facing issues, ");
  		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+		#endif
 		break;
 
 		default:
+		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		Serial.println(UNKNOWNERROR, HEX);
+		#else
 		Serial.println("Unknown error");
  		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+		#endif
 		break;
 	}
 }
@@ -580,6 +618,12 @@ uint32_t SPIFlash::getCapacity() {
 //Returns maximum number of pages
 uint32_t SPIFlash::getMaxPage() {
 	return maxPage;
+}
+
+
+//Returns identifying name of the chip
+uint16_t SPIFlash::getChipName() {
+	return name;
 }
 
 //Checks for and initiates the chip by requesting JEDEC ID which is returned as a 32 bit int
@@ -1651,9 +1695,13 @@ bool SPIFlash::powerDown(void) {
 
 	uint8_t status1 = _readStat1();
 	uint8_t status2 = _readStat1();
-	if (status1 == status2)
-		status1 = +_readStat1();
-	else if (status1 != status2)
+	uint8_t status3 = _readStat1();
+	if (status1 == status2 || status2 == status3 || status3 == status1) {
+		status1 = _readStat1();
+		status2 = _readStat1();
+		status3 = _readStat1();
+	}
+	else if (status1 != status2 || status2 != status3 || status3 != status1)
 		return false;
 	return true;
 }
