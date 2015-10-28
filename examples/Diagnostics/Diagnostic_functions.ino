@@ -24,18 +24,17 @@ void ID() {
   printLine();
   Serial.println(F("                                                           Get ID                                                                 "));
   printLine();
-  printLine();
   uint8_t b1, b2;
   uint16_t b3;
   uint32_t JEDEC = flash.getJEDECID();
   uint16_t ManID = flash.getManID();
-  uint32_t capacity = flash.getCapacity();
   uint32_t maxPage = flash.getMaxPage();
   uint16_t _name = flash.getChipName();
 
-//---------------------------------------------------------------------------------------------//
-//--------------------------Prints the name of the Flash chip in use---------------------------//
-//---------------------------------------------------------------------------------------------//
+  //---------------------------------------------------------------------------------------------//
+  //--------------------------Prints the name of the Flash chip in use---------------------------//
+  //---------------------------------------------------------------------------------------------//
+  Serial.print(F("                                                       Winbond "));
   if (_name < 80) {
     if (_name == 05) {
       clearprintBuffer();
@@ -62,26 +61,23 @@ void ID() {
     Serial.println(printBuffer);
     clearprintBuffer();
   }
-//---------------------------------------------------------------------------------------------//
+  printLine();
+  //---------------------------------------------------------------------------------------------//
 
   b1 = (ManID >> 8);
   b2 = (ManID >> 0);
   b3 = (JEDEC >> 0);
   clearprintBuffer();
-  sprintf(printBuffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
+  sprintf(printBuffer, "\tJEDEC ID: %04lxh", JEDEC);
   Serial.println(printBuffer);
   clearprintBuffer();
-  sprintf(printBuffer, "JEDEC ID: %04lxh", JEDEC);
-  Serial.println(printBuffer);
-  clearprintBuffer();
-  sprintf(printBuffer, "Total capacity: %04lxh\nMaximum pages: %04lxh", capacity, maxPage);
+  sprintf(printBuffer, "\tManufacturer ID: %02xh\n\tMemory Type: %02xh\n\tCapacity: %02xh\n\tMaximum pages: %d", b1, b2, b3, maxPage);
   Serial.println(printBuffer);
 }
 
 void writeData() {
   printLine();
   Serial.println(F("                                                          Write Data                                                              "));
-  printLine();
   printLine();
 
   inputStruct.s1 = 31325;
@@ -100,7 +96,7 @@ void writeData() {
   flash.writeStr(stringPage, stringOffset, _string);
   flash.writeAnything(structPage, structOffset, inputStruct);
   flash.writePage(page, pageInputBuffer);
-  Serial.println(F("Data written without errors"));
+  Serial.println(F("\tData written without errors"));
 }
 
 bool checkPage() {
@@ -116,7 +112,6 @@ void checkData() {
 
   printLine();
   Serial.println(F("                                                          Data Check                                                              "));
-  printLine();
   printLine();
 
   Serial.println(F("\tData Written\t||\t\tData Read\t\t||\t\tResult"));
@@ -236,8 +231,7 @@ void checkFunctions() {
   printLine();
   Serial.println(F("                                                     Check Other Functions                                                        "));
   printLine();
-  printLine();
-  Serial.println(F("\t\t\tFunction\t\t||\t\tResult"));
+  Serial.println(F("\t\t\t\t\tFunction\t\t||\t\tResult"));
   printLine();
 
   uint32_t capacity = flash.getCapacity();
@@ -247,7 +241,7 @@ void checkFunctions() {
   uint32_t stringAddress2 = random(0, capacity);
   uint32_t stringAddress3 = random(0, capacity);
 
-  printTab(3, 0);
+  printTab(5, 0);
   Serial.print(F("powerDown"));
   printTab(2, 2);
   if (flash.writeStr(stringAddress1, _string) && flash.powerDown() && !flash.writeStr(stringAddress2, _string))
@@ -255,7 +249,7 @@ void checkFunctions() {
   else
     printFail();
 
-  printTab(3, 0);
+  printTab(5, 0);
   Serial.print(F("powerUp"));
   printTab(3, 2);
   if (flash.powerUp() && flash.writeStr(stringAddress3, _string))
@@ -263,19 +257,21 @@ void checkFunctions() {
   else
     printFail();
 
-  printTab(3, 0);
+  printTab(5, 0);
   Serial.print(F("sectorErase"));
-  printTab(3, 2);
+  printTab(2, 2);
   if (flash.eraseSector(stringAddress1) && flash.eraseSector(stringAddress2) && flash.eraseSector(stringAddress3))
     printPass();
   else
     printFail();
 
-  printTab(3, 0);
+  printTab(5, 0);
   Serial.print(F("chipErase"));
-  printTab(3, 2);
+  printTab(2, 2);
   if (flash.eraseChip())
     printPass();
   else
     printFail();
+
+  printLine();
 }
