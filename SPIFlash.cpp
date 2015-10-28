@@ -1649,7 +1649,11 @@ bool SPIFlash::powerDown(void) {
 	#endif
 	_delay_us(3);							//Max powerDown enable time according to the Datasheet
 
-	if (_readStat1() != 255)
+	uint8_t status1 = _readStat1();
+	uint8_t status2 = _readStat1();
+	if (status1 == status2)
+		status1 = +_readStat1();
+	else if (status1 != status2)
 		return false;
 	return true;
 }
