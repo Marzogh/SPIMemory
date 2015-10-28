@@ -1,7 +1,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                                                                Diagnostics.ino                                                                //
 //                                                               SPIFlash library                                                                //
-//                                                                   v 2.0.0                                                                     //
+//                                                                   v 2.2.0                                                                     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                                                                    Marzogh                                                                    //
 //                                                                   14.10.15                                                                    //
@@ -16,7 +16,7 @@
 #include<SPIFlash.h>
 #include<SPI.h>
 const int cs = 10;
-uint8_t pageBuffer[256];
+uint8_t pageInputBuffer[256], pageOutputBuffer[256];
 char printBuffer[128];
 
 struct Test {
@@ -26,7 +26,8 @@ struct Test {
   bool s4;
   byte s5;
 };
-Test test;
+Test inputStruct;
+Test outputStruct;
 
 uint16_t bytePage, charPage, wordPage, shortPage, ULongPage, longPage, floatPage, stringPage, structPage, page;
 uint8_t byteOffset, charOffset, wordOffset, shortOffset, ULongOffset, longOffset, floatOffset, stringOffset, structOffset;
@@ -56,9 +57,15 @@ void setup() {
 
   randomSeed(analogRead(A0));
 
+  for (int i = 0; i < 256; ++i) {
+    pageInputBuffer[i] = i;
+  }
+
   getAddresses();
   ID();
   writeData();
+  checkData();
+  checkFunctions();
 }
 
 void loop() {
@@ -114,11 +121,11 @@ void writeData() {
   Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
 
-  test.s1 = 31325;
-  test.s2 = 4.84;
-  test.s3 = 880932;
-  test.s4 = true;
-  test.s5 = 5;
+  inputStruct.s1 = 31325;
+  inputStruct.s2 = 4.84;
+  inputStruct.s3 = 880932;
+  inputStruct.s4 = true;
+  inputStruct.s5 = 5;
 
   flash.writeByte(bytePage, byteOffset, _byte);
   flash.writeChar(charPage, charOffset, _char);
@@ -128,6 +135,19 @@ void writeData() {
   flash.writeLong(longPage, longOffset, _long);
   flash.writeFloat(floatPage, floatOffset, _float);
   flash.writeStr(stringPage, stringOffset, _string);
+  flash.writeAnything(structPage, structOffset, inputStruct);
+  flash.writePage(page, pageInputBuffer);
+  clearprintBuffer();
+  sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
+  Serial.println(printBuffer);
+}
+
+void checkData() {
+
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+  Serial.println(F("                                                          Data Check                                                              "));
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
 
   Serial.println(F("\tData Written\t||\t\tData Read\t\t||\t\tResult"));
   Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
@@ -214,60 +234,46 @@ void writeData() {
   else
     Serial.println(F("Fail"));
 
-  Serial.println();
-  if (flash.writeAnything(structPage, structOffset, test)) {
-    Serial.println(F("Struct data written successfully"));
-    Serial.print(test.s1);
-    Serial.print(F(", "));
-    Serial.print(test.s2);
-    Serial.print(F(", "));
-    Serial.print(test.s3);
-    Serial.print(F(", "));
-    Serial.print(test.s4);
-    Serial.print(F(", "));
-    Serial.println(test.s5);
+  Serial.print(F("\t"));
+  Serial.print(F("inputStruct"));
+  Serial.print(F("\t||\t\t"));
+  flash.readAnything(structPage, structOffset, outputStruct);
+  Serial.print(F("outputStruct"));
+  Serial.print(F("\t\t||\t\t"));
+  if (inputStruct.s1 == outputStruct.s1 && inputStruct.s2 == outputStruct.s2 && inputStruct.s3 == outputStruct.s3 && inputStruct.s4 == outputStruct.s4 && inputStruct.s5 == outputStruct.s5)
+    Serial.println(F("Pass"));
+  else
+    Serial.println(F("Fail"));
 
-    Serial.println(F("Saved!"));
-    test.s1 = 0;
-    test.s2 = 0;
-    test.s3 = 0;
-    test.s4 = 0;
-    test.s5 = 0;
-    Serial.println(F("Local values set to 0"));
-    flash.readAnything(structPage, structOffset, test);
-    flash.eraseSector(2, 0);
+  Serial.print(F("\t"));
+  Serial.print(F("0 - 255"));
+  Serial.print(F("\t\t||\t\t"));
+  if (flash.readPage(page, pageOutputBuffer))
+    Serial.print(F("0 - 255"));
+  else
+    Serial.print(F("Unknown"));
+  Serial.print(F("\t\t\t||\t\t"));
+  if (checkPage())
+    Serial.println(F("Pass"));
+  else
+    Serial.println(F("Fail"));
+}
 
-    Serial.println(F("After reading"));
-    Serial.print(test.s1);
-    Serial.print(F(", "));
-    Serial.print(test.s2);
-    Serial.print(F(", "));
-    Serial.print(test.s3);
-    Serial.print(F(", "));
-    Serial.print(test.s4);
-    Serial.print(F(", "));
-    Serial.println(test.s5);
-    Serial.println();
-  }
-  else {
-    Serial.println();
-    Serial.println(F("Struct write failed!"));
-    Serial.println();
-  }
+void checkFunctions() {
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+  Serial.println(F("                                                        Check Functions                                                           "));
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
 
-  for (int i = 0; i < 256; ++i) {
-    pageBuffer[i] = i;
-  }
-  uint8_t hex = 1, dec = 2;
-  flash.writePage(page, pageBuffer);
-  clearprintBuffer();
-  sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
-  Serial.println(printBuffer);
-  clearprintBuffer();
-  sprintf(printBuffer, "These values have been read back from page %d", page);
-  Serial.println(printBuffer);
-  printPage(page, dec);
-  flash.eraseChip();
+  Serial.println(F("\t\t\tFunction\t\t||\t\tResult"));
+  Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------"));
+
+
+  testPowerFunc();
+  if (flash.eraseChip())
+    Serial.println (F("Chip erased successfully"));
+  else
+    Serial.println (F("Chip erase unsuccessful"));
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -313,3 +319,43 @@ void printPage(uint16_t page_number, uint8_t outputType) {
   flash.readPage(page_number, data_buffer);
   _printPageBytes(data_buffer, outputType);
 }
+
+bool checkPage() {
+  for (int i = 0; i < 256; i++) {
+    if (pageInputBuffer[i] != pageOutputBuffer[i])
+      return false;
+  }
+  return true;
+}
+
+void testPowerFunc() {
+  uint32_t capacity = flash.getCapacity();
+  String testString = "This is a inputStruct String";
+  if (!Serial)
+    Serial.begin(115200);
+  uint32_t stringAddress1 = random(0, capacity);
+  uint32_t stringAddress2 = random(0, capacity);
+  uint32_t stringAddress3 = random(0, capacity);
+
+  Serial.print(F("\t\t\t"));
+  Serial.print(F("PowerDown"));
+  Serial.print(F("\t\t||\t\t"));
+  if (flash.writeStr(stringAddress1, testString) && flash.powerDown() && !flash.writeStr(stringAddress2, testString))
+    Serial.println(F("Pass"));
+  else
+    Serial.println(F("Fail"));
+
+  Serial.print(F("\t\t\t"));
+  Serial.print(F("PowerUp"));
+  Serial.print(F("\t\t\t||\t\t"));
+  if (flash.powerUp() && flash.writeStr(stringAddress3, testString))
+    Serial.println(F("Pass"));
+  else
+    Serial.println(F("Fail"));
+
+  if (flash.eraseSector(stringAddress1) && flash.eraseSector(stringAddress2) && flash.eraseSector(stringAddress3))
+    Serial.println(F("Sectors erased successfully"));
+  else
+    Serial.println(F("Sector erase unsuccessful"));
+}
+
