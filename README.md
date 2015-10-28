@@ -1,5 +1,5 @@
 
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v2.2.0-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
 <sup> Download the latest stable release (v2.1.1) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
@@ -45,6 +45,8 @@ Returns the JEDEC ID as a 32-bit value.
 Returns the capacity in bytes as a 32-bit value.
 ###### getmaxPage()
 Returns the maximum number of pages in the flash memory as a 32-bit value.
+###### getChipName()
+Returns the identifiying number of the chip's name from which the chip's name can be generated. (Refer to the getID() function in examples/Diagnostics/Diagnostics.ino)
 ###### getAddress()
 Gets the next available address for use. Has two variants:
 * Takes the size of the data as an argument and returns a 32-bit address
