@@ -231,7 +231,7 @@ void checkFunctions() {
   printLine();
   Serial.println(F("                                                     Check Other Functions                                                        "));
   printLine();
-  Serial.println(F("\t\t\t\t\tFunction\t\t||\t\tResult"));
+  Serial.println(F("\t\t\tFunction\t\t||\t\tResult"));
   printLine();
 
   uint32_t capacity = flash.getCapacity();
@@ -241,7 +241,7 @@ void checkFunctions() {
   uint32_t stringAddress2 = random(0, capacity);
   uint32_t stringAddress3 = random(0, capacity);
 
-  printTab(5, 0);
+  printTab(3, 0);
   Serial.print(F("powerDown"));
   printTab(2, 2);
   if (flash.writeStr(stringAddress1, _string) && flash.powerDown() && !flash.writeStr(stringAddress2, _string))
@@ -249,7 +249,7 @@ void checkFunctions() {
   else
     printFail();
 
-  printTab(5, 0);
+  printTab(3, 0);
   Serial.print(F("powerUp"));
   printTab(3, 2);
   if (flash.powerUp() && flash.writeStr(stringAddress3, _string))
@@ -257,7 +257,7 @@ void checkFunctions() {
   else
     printFail();
 
-  printTab(5, 0);
+  printTab(3, 0);
   Serial.print(F("sectorErase"));
   printTab(2, 2);
   if (flash.eraseSector(stringAddress1) && flash.eraseSector(stringAddress2) && flash.eraseSector(stringAddress3))
@@ -265,7 +265,7 @@ void checkFunctions() {
   else
     printFail();
 
-  printTab(5, 0);
+  printTab(3, 0);
   Serial.print(F("chipErase"));
   printTab(2, 2);
   if (flash.eraseChip())

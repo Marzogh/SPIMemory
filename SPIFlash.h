@@ -122,6 +122,7 @@ private:
   void     _beginFastRead(uint32_t address);
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
+  bool     _notPrevWritten(uint32_t address, uint8_t size = 1);
   bool     _addressCheck(uint32_t address);
   bool     _beginWrite(uint32_t address);
   bool     _writeNextByte(uint8_t c, bool _continue = true);

@@ -39,6 +39,18 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //#define RUNDIAGNOSTIC												  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//   Uncomment the code below to increase the speed of the library    //
+//	   				by disabling _notPrevWritten()   				  //
+//																	  //
+// Make sure the sectors being written to have been erased beforehand //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#if defined (__SAM3X8E__)
+#define HIGHSPEED		
+#elif defined (__AVR__)
+//#define HIGHSPEED													  
+#endif																  
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define _MANID		 0xEF
 #define PAGESIZE	 0x100
@@ -86,6 +98,7 @@
  #define CHIPBUSY		0x04
  #define OUTOFBOUNDS	0x05
  #define CANTENWRITE	0x06
+ #define PREVWRITTEN 	0x07
  #define UNKNOWNERROR	0xFF
 
  #endif
@@ -511,15 +524,32 @@ void SPIFlash::_endProcess(void) {
 	_delay_us(3);
 }
 
+#ifndef HIGHSPEED
+bool SPIFlash::_notPrevWritten(uint32_t address, uint8_t size) {
+	uint8_t databyte1, databyte2, databyte3;
+	databyte1 = readByte(address, true);
+	databyte2 = readByte((address + (size/2)), true);
+	databyte3 = readByte((address+size), true);
+	if (databyte1 != 255 || databyte2 != 255 || databyte3 != 255) {
+		#ifdef RUNDIAGNOSTIC
+		errorcode = PREVWRITTEN;
+ 		_troubleshoot(errorcode);
+ 		#endif
+		return false;
+	}
+	_delay_us(3);
+	return true;
+}
+#endif
+
 #ifdef RUNDIAGNOSTIC
 //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
 void SPIFlash::_troubleshoot(uint8_t error) {
-	#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
-	Serial.print("Error code: 0x");
-	#endif
+	
 	switch (error) {
 		case SUCCESS:
-		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
 		Serial.println(SUCCESS, HEX);
 		#else
 		Serial.println("Action completed successfully");
@@ -527,7 +557,8 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		break;
 
  		case CALLBEGIN:
- 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
 		Serial.println(CALLBEGIN, HEX);
 		#else
  		Serial.println("*constructor_of_choice*.begin() was not called in void setup()");
@@ -535,7 +566,8 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		break;
 
 		case UNKNOWNCHIP:
-		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
 		Serial.println(UNKNOWNCHIP, HEX);
 		#else
 		Serial.println("Unable to identify chip. Are you shure this is a Winbond Flash chip");
@@ -545,7 +577,8 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		break;
 
  		case UNKNOWNCAP:
- 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
 		Serial.println(UNKNOWNCAP, HEX);
 		#else
  		Serial.println("Unable to identify capacity.");
@@ -554,7 +587,8 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		break;
 
  		case CHIPBUSY:
- 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
 		Serial.println(CHIPBUSY, HEX);
 		#else
  		Serial.println("Chip is busy.");
@@ -565,7 +599,8 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		break;
 
  		case OUTOFBOUNDS:
- 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
 		Serial.println(OUTOFBOUNDS, HEX);
 		#else
  		Serial.println("Page overflow has been disabled and the address called exceeds the memory");
@@ -573,7 +608,8 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		break;
 
  		case CANTENWRITE:
- 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
 		Serial.println(CANTENWRITE, HEX);
 		#else
  		Serial.println("Unable to Enable Writing to chip.");
@@ -583,8 +619,21 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		#endif
 		break;
 
+		case PREVWRITTEN:
+ 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x0");
+		Serial.println(PREVWRITTEN, HEX);
+		#else
+ 		Serial.println("This sector already contains data.");
+ 		Serial.println("Please make sure the sectors being written to are erased.");
+ 		Serial.print("If you are still facing issues, ");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+		#endif
+		break;
+
 		default:
-		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__)
+		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
+ 		Serial.print("Error code: 0x");
 		Serial.println(UNKNOWNERROR, HEX);
 		#else
 		Serial.println("Unknown error");
@@ -1087,9 +1136,14 @@ uint8_t  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fas
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeByte(uint32_t address, uint8_t data, bool errorCheck) {
-	if(!_prepWrite(address)) {
+	if(!_prepWrite(address))
 		return false;
-	}
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data)))
+		return false;
+	#endif
+
 	_beginWrite(address);
 	_writeNextByte(data, NO_CONTINUE);
 	_endProcess();
@@ -1123,6 +1177,11 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 bool SPIFlash::writeChar(uint32_t address, int8_t data, bool errorCheck) {
 	if (!_prepWrite(address))
 		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data)))
+		return false;
+	#endif
 
 	_beginWrite(address);
 	_writeNextByte(data, NO_CONTINUE);
@@ -1159,6 +1218,12 @@ bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool
 bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck) {
 	if (!_prepWrite(address))
 		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data_buffer)))
+		return false;
+	#endif
+
 	_beginWrite(address);
 
 	for (int i = 0; i < bufferSize; i++) {
@@ -1199,6 +1264,12 @@ bool SPIFlash::writeByteArray(uint16_t page_number, uint8_t offset, uint8_t *dat
 bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck) {
 	if (!_prepWrite(address))
 		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data_buffer)))
+		return false;
+	#endif
+
 	_beginWrite(address);
 
 	for (int i = 0; i < bufferSize; i++) {
@@ -1239,6 +1310,11 @@ bool SPIFlash::writeCharArray(uint16_t page_number, uint8_t offset, char *data_b
 bool SPIFlash::writeWord(uint32_t address, uint16_t data, bool errorCheck) {
 	if(!_prepWrite(address))
 		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data)))
+		return false;
+	#endif
 
 	union
 	{
@@ -1286,6 +1362,11 @@ bool SPIFlash::writeShort(uint32_t address, int16_t data, bool errorCheck) {
 	if(!_prepWrite(address))
 		return false;
 
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data)))
+		return false;
+	#endif
+
 	union
 	{
 		uint8_t b[sizeof(data)];
@@ -1330,6 +1411,11 @@ bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bo
 bool SPIFlash::writeULong(uint32_t address, uint32_t data, bool errorCheck) {
 	if(!_prepWrite(address))
 		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data)))
+		return false;
+	#endif
 
 	union
 	{
@@ -1376,6 +1462,11 @@ bool SPIFlash::writeLong(uint32_t address, int32_t data, bool errorCheck) {
 	if(!_prepWrite(address))
 		return false;
 
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data)))
+		return false;
+	#endif
+
 	union
 	{
 		uint8_t b[sizeof(data)];
@@ -1420,6 +1511,11 @@ bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, boo
 bool SPIFlash::writeFloat(uint32_t address, float data, bool errorCheck) {
 	if(!_prepWrite(address))
 		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data)))
+		return false;
+	#endif
 
 	union
 	{
@@ -1467,6 +1563,12 @@ bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool
 bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
   if(!_prepWrite(address))
 		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(inputStr)))
+		return false;
+	#endif
+
   uint16_t inStrLen = inputStr.length() + 1;
   char inputChar[inStrLen];
   writeWord(address, inStrLen, errorCheck);
@@ -1489,6 +1591,11 @@ bool SPIFlash::writeStr(uint16_t page_number, uint8_t offset, String &inputStr, 
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck) {
 	uint32_t address = _prepWrite(page_number);
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, sizeof(data_buffer)))
+		return false;
+	#endif
 
 	_beginWrite(address);
 	for (uint16_t i = 0; i < PAGESIZE; ++i){
