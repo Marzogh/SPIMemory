@@ -1805,7 +1805,7 @@ bool SPIFlash::powerDown(void) {
 	status1 = _readStat1();
 	
 	if (status1 != 255 && status2 != 255) {
-		if (status1 == status2 && status1 == 0) {
+		if (status1 == status2 || status1 == 0 || status2 == 0) {
 			status1 = _readStat1();
 			status2 = _readStat1();
 		}
@@ -1814,7 +1814,8 @@ bool SPIFlash::powerDown(void) {
 	}
 	else if (status1 == 255 && status2 == 255)
 		return true;
-	return false;
+	else if (status1 == 0 && status2 == 0)
+		return false;
 }
 
 //Wakes chip from low power state.
