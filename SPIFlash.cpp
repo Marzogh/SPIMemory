@@ -1802,15 +1802,19 @@ bool SPIFlash::powerDown(void) {
 
 	uint8_t status1 = _readStat1();
 	uint8_t status2 = _readStat1();
-	uint8_t status3 = _readStat1();
-	if (status1 == status2 || status2 == status3 || status3 == status1) {
-		status1 = _readStat1();
-		status2 = _readStat1();
-		status3 = _readStat1();
+	status1 = _readStat1();
+	
+	if (status1 != 255 && status2 != 255) {
+		if (status1 == status2 && status1 == 0) {
+			status1 = _readStat1();
+			status2 = _readStat1();
+		}
+		else if (status1 != status2)
+			return true;
 	}
-	else if (status1 != status2 || status2 != status3 || status3 != status1)
-		return false;
-	return true;
+	else if (status1 == 255 && status2 == 255)
+		return true;
+	return false;
 }
 
 //Wakes chip from low power state.
