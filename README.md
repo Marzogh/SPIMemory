@@ -7,7 +7,7 @@ This library is for a the Winbond serial flash memory chips. In its current form
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
-Currently tested & compatible with Arduino 1.6.5 and the Arduino Uno, Arduino Leonardo, Arduino Mega and the Arduino Due.
+Currently tested & compatible with Arduino 1.6.5 and the Arduino Uno, Arduino Leonardo, Arduino Mega and the Arduino Due. Testing on 1.6.6 in progress.
 
 #### Installation
 
