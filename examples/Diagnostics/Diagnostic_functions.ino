@@ -71,7 +71,7 @@ void ID() {
   sprintf(printBuffer, "\tJEDEC ID: %04lxh", JEDEC);
   Serial.println(printBuffer);
   clearprintBuffer();
-  sprintf(printBuffer, "\tManufacturer ID: %02xh\n\tMemory Type: %02xh\n\tCapacity: %02xh\n\tMaximum pages: %d", b1, b2, b3, maxPage);
+  sprintf(printBuffer, "\tManufacturer ID: %02xh\n\tMemory Type: %02xh\n\tCapacity: %02xh\n\tMaximum pages: %Lu", b1, b2, b3, maxPage);
   Serial.println(printBuffer);
 }
 

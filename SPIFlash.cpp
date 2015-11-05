@@ -370,6 +370,7 @@ bool SPIFlash::_chipID(void) {
     sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %lu\nmaxPage: %d", manID, devID, capacity, maxPage);
     Serial.println(buffer);
     #endif*/
+    return true;
 }
 
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
@@ -505,9 +506,9 @@ bool SPIFlash::_beginWrite(uint32_t address) {
 bool SPIFlash::_writeNextByte(uint8_t b, bool _continue) {
 	#if defined (__arm__) && defined (__SAM3X8E__)
 		if (!_continue)
-			uint8_t result = SPI.transfer(csPin, b);
+			SPI.transfer(csPin, b);
 		else
-			uint8_t result = SPI.transfer(csPin, b, SPI_CONTINUE);
+			SPI.transfer(csPin, b, SPI_CONTINUE);
 	#else
 		xfer(b);
 	#endif
@@ -815,6 +816,7 @@ uint8_t  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_
 		}
 		_endProcess();
 	}
+	return true;
 }
 // Variant B
 uint8_t  SPIFlash::readByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead) {
@@ -1080,7 +1082,7 @@ float SPIFlash::readFloat(uint16_t page_number, uint8_t offset, bool fastRead) {
 // This function first reads a short from the address to figure out the size of the String object stored and
 // then reads the String object data
 // Variant A
-uint8_t SPIFlash::readStr(uint32_t address, String &outStr, bool fastRead) {
+bool SPIFlash::readStr(uint32_t address, String &outStr, bool fastRead) {
   if (!_prepRead(address))
 		return false;
   uint16_t strLen;
@@ -1093,18 +1095,19 @@ uint8_t SPIFlash::readStr(uint32_t address, String &outStr, bool fastRead) {
   readCharArray(address, outputChar, strLen, fastRead);
 
   outStr = String(outputChar);
+  return true;
 }
 // Variant B
-uint8_t SPIFlash::readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead) {
+bool SPIFlash::readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead) {
   uint32_t address = _getAddress(page_number, offset);
-  readStr(address, outStr, fastRead);
+  return readStr(address, outStr, fastRead);
 }
 
 // Reads a page of data into a page buffer. Takes three arguments - 
 //  1. page --> Any page number from 0 to maxPage
 //  2. data_buffer --> a data buffer to read the data into (This HAS to be an array of 256 bytes)
 //	3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-uint8_t  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead) {
+bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead) {
 	uint32_t address = _prepRead(page_number);
 	
 	if(!fastRead)
@@ -1119,6 +1122,7 @@ uint8_t  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fas
 				data_buffer[a] = _readNextByte();
 	}
 	_endProcess();
+	return true;
 }
 
 // Writes a byte of data to a specific location in a page.
@@ -1582,7 +1586,7 @@ bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
 // Variant B
 bool SPIFlash::writeStr(uint16_t page_number, uint8_t offset, String &inputStr, bool errorCheck) {
   uint32_t address = _getAddress(page_number, offset);
-  writeStr(address, inputStr, errorCheck);
+  return writeStr(address, inputStr, errorCheck);
 }
 
 // Writes a page of data from a data_buffer array. Make sure the sizeOf(uint8_t data_buffer[]) == 256. 
@@ -1816,11 +1820,11 @@ bool SPIFlash::powerDown(void) {
 		return true;
 	else if (status1 == 0 && status2 == 0)
 		return false;
+	return true;
 }
 
 //Wakes chip from low power state.
 bool SPIFlash::powerUp(void) {
-	uint8_t devID;
 
 	_cmd(RELEASE, NO_CONTINUE);	
 	#if defined (__AVR__)
