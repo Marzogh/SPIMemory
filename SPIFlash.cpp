@@ -822,7 +822,7 @@ uint8_t  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_
 uint8_t  SPIFlash::readByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead) {
 	uint32_t address = _getAddress(page_number, offset);
 	
-	readByteArray(address, data_buffer, bufferSize, fastRead);
+	return readByteArray(address, data_buffer, bufferSize, fastRead);
 }
 
 // Reads an array of bytes starting from a specific location in a page.// Has two variants:

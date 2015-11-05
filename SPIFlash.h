@@ -230,7 +230,7 @@ template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool 
 template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t offset, T& value, bool fastRead)
 {
   uint32_t address = _getAddress(page_number, offset);
-  readAnything(address, value, fastRead);
+  return readAnything(address, value, fastRead);
 }
 
 // Private template to check for errors in writing to flash memory
