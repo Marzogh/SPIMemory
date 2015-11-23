@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.1.1
+/* Arduino SPIFlash Library v.2.2.0
  * Copyright (C) 2015 by Marzogh
  * Modified by Marzogh - 24/10/2015
  *
@@ -1613,7 +1613,7 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 	if (!errorCheck)
 		return true;
 	else
-		return _writeErrorCheck(address, data_buffer);
+		return _writeErrorCheck(address, *data_buffer);
 }
 
 

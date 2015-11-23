@@ -2,18 +2,6 @@
 //					SPIFlash Library 									   //
 //					  Changes log 										   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//				 	 Version 2.2.0 										   //
-//					Author: Marzogh										   //
-//					  24.10.2015											   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
---> When #RUNDIAGNOSTIC is uncommented, the _troubleshoot() function is now optimised for different µCs
---> Added the ability to check if the address has been previously written to before initiating a write 
-	operation. (AVR boards only)
---> Added the ability get the chip's name
---> Diagnostics.ino has been made more and efficient and provides a cleaner Serial output
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 Version 2.1.1 										   //
 //					Author: Marzogh										   //
 //					  24.10.2015											   //

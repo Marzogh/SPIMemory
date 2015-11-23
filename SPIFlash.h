@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.1.1
+/* Arduino SPIFlash Library v.2.2.0
  * Copyright (C) 2015 by Marzogh
  * Modified by Marzogh - 24/10/2015
  *
@@ -89,11 +89,11 @@ public:
   //------------------------------------------Write / Read Strings------------------------------------------//
   bool     writeStr(uint32_t address, String &inputStr, bool errorCheck = true);
   bool     writeStr(uint16_t page_number, uint8_t offset, String &inputStr, bool errorCheck = true);
-  bool    readStr(uint32_t address, String &outStr, bool fastRead = false);
-  bool    readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
+  bool     readStr(uint32_t address, String &outStr, bool fastRead = false);
+  bool     readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
   //-------------------------------------------Write / Read Pages-------------------------------------------//
   bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
-  bool  readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
+  bool     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
   //------------------------------------------Write / Read Anything-----------------------------------------//
   template <class T> bool writeAnything(uint32_t address, const T& value, bool errorCheck = true);
   template <class T> bool writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
