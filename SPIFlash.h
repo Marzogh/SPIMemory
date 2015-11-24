@@ -37,8 +37,9 @@ public:
   uint16_t getManID();
   uint32_t getJEDECID();
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
-  bool     getAddress(uint16_t size);
+  uint32_t getAddress(uint16_t size);
   uint16_t getChipName();
+  uint16_t sizeofStr(String &inputStr);
   uint32_t getCapacity();
   uint32_t getMaxPage();
   //-------------------------------------------Write / Read Bytes-------------------------------------------//
@@ -144,7 +145,8 @@ private:
   volatile uint8_t *cs_port;
   uint8_t     cs_mask, csPin, errorcode;
   uint16_t    name;
-  uint32_t    capacity, maxPage, currentAddress;
+  uint32_t    capacity, maxPage;
+  uint32_t    currentAddress = 1;
   const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
   const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L};

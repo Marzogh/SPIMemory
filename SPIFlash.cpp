@@ -731,7 +731,7 @@ uint32_t SPIFlash::getJEDECID() {
 //	B. Takes a three variables, the size of the data and two other variables to return a page number value & an offset into.
 // All addresses in the in the sketch must be obtained via this function or not at all.
 // Variant A
-bool SPIFlash::getAddress(uint16_t size) {
+uint32_t SPIFlash::getAddress(uint16_t size) {
 	if (!_addressCheck(currentAddress)){
 		#ifdef RUNDIAGNOSTIC
 		errorcode = OUTOFBOUNDS;
@@ -741,6 +741,8 @@ bool SPIFlash::getAddress(uint16_t size) {
 	}
 	else {
 		uint32_t address = currentAddress;
+		/*Serial.print("Current Address: ");
+		Serial.println(currentAddress);*/
 		currentAddress+=size;
 		return address;
 	}
@@ -751,6 +753,19 @@ bool SPIFlash::getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset)
 	offset = (address >> 0);
 	page_number = (address >> 8);
 	return true;
+}
+
+//Function for returning the size of the string (only to be used for the getAddress() function)
+uint16_t SPIFlash::sizeofStr(String &inputStr) {
+	uint16_t inStrLen = inputStr.length() + 1;
+	uint16_t size;
+
+	//inputStr.toCharArray(inputChar, inStrLen);
+
+	size=(sizeof(char)*inStrLen);
+	size+=sizeof(inStrLen);
+
+	return size;
 }
 
 // Reads a byte of data from a specific location in a page. 
