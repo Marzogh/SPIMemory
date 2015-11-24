@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.2.0
  * Copyright (C) 2015 by Marzogh
- * Modified by Marzogh - 24/10/2015
+ * Modified by Marzogh - 24/11/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -46,7 +46,7 @@
 // Make sure the sectors being written to have been erased beforehand //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #if defined (__SAM3X8E__)
-#define HIGHSPEED		
+//#define HIGHSPEED		
 #elif defined (__AVR__)
 //#define HIGHSPEED													  
 #endif																  
@@ -527,7 +527,9 @@ void SPIFlash::_endProcess(void) {
 
 #ifndef HIGHSPEED
 bool SPIFlash::_notPrevWritten(uint32_t address, uint8_t size) {
-	uint8_t databyte1, databyte2, databyte3;
+	uint32_t _size = size;
+
+	/*uint8_t databyte1, databyte2, databyte3;
 	databyte1 = readByte(address, true);
 	databyte2 = readByte((address + (size/2)), true);
 	databyte3 = readByte((address+size), true);
@@ -539,6 +541,35 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint8_t size) {
 		return false;
 	}
 	_delay_us(3);
+	return true;*/
+	uint32_t sampleSize;
+	if (_size <= 10) {
+		sampleSize = _size;
+	}
+
+	if (_size > 10) {
+		do {
+			sampleSize++;
+			_size/=10;
+		} while((_size/10) >= 1);
+	}
+
+	uint32_t addresses[sampleSize];
+
+	for (uint16_t i = 0; i < sampleSize; i++) {
+		addresses[i] = (rand() % size) + address;
+	}
+
+	for (uint16_t i = 0; i < sampleSize; i++) {
+		uint8_t databyte = readByte(addresses[i]);
+		if (databyte != 0xFF) {
+			#ifdef RUNDIAGNOSTIC
+			errorcode = PREVWRITTEN;
+ 			_troubleshoot(errorcode);
+ 			#endif
+			return false;
+		}
+	}
 	return true;
 }
 #endif
