@@ -10,8 +10,10 @@ This library is for a the Winbond serial flash memory chips. In its current form
 ####Compatibility
 #####Arduino IDEs supported
 - IDE v1.5.x
-- IDE v1.6.0 - v1.6.5
+- IDE v1.6.0-v1.6.5
+
 #####Boards
+
 ######Completely supported
 - Arduino Uno
 - Arduino Leonardo
