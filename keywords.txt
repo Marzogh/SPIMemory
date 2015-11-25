@@ -17,6 +17,8 @@ getManID	KEYWORD2
 getAddress	KEYWORD2
 getCapacity	KEYWORD2
 getMaxPage	KEYWORD2
+getChipName KEYWORD2
+sizeofStr	KEYWORD2
 readByte	KEYWORD2
 readByteArray	KEYWORD2
 readChar	KEYWORD2

@@ -1,12 +1,17 @@
 /*
- *----------------------------------------------------------------------------------------------------------------------------------*
- |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v2.1.0                                                |
- |----------------------------------------------------------------------------------------------------------------------------------|
- |                                                                Marzogh                                                           |
- |                                                              08.10.2015                                                          |
- |----------------------------------------------------------------------------------------------------------------------------------|
- */
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                             readWriteString.ino                                                               |
+|                                                               SPIFlash library                                                                |
+|                                                                   v 2.2.0                                                                     |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                                    Marzogh                                                                    |
+|                                                                  25.11.2015                                                                   |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                                                                                                               |
+|                        This program shows the method of reading a string from the console and saving it to flash memory                       |
+|                                                                                                                                               |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+*/
 #include<SPIFlash.h>
 #include<SPI.h>
 
@@ -19,39 +24,8 @@ SPIFlash flash(cs);
 
 void setup() {
   Serial.begin(115200);
-  uint16_t tempPage;
-  uint8_t tempOffset;
+
   flash.begin();
-  /*flash.getAddress(sizeof(byte), tempPage, tempOffset);
-  Serial.print(F("Page number for byte: "));
-  Serial.println(tempPage);
-  Serial.print(F("Offset for byte: "));
-  Serial.println(tempOffset);
-  Serial.println();
-  flash.getAddress(sizeof(int), tempPage, tempOffset);
-  Serial.print(F("Page number for int: "));
-  Serial.println(tempPage);
-  Serial.print(F("Offset for int: "));
-  Serial.println(tempOffset);
-  Serial.println();
-  flash.getAddress(sizeof(long), tempPage, tempOffset);
-  Serial.print(F("Page number for long: "));
-  Serial.println(tempPage);
-  Serial.print(F("Offset for long: "));
-  Serial.println(tempOffset);
-  Serial.println();
-  flash.getAddress(sizeof(float), tempPage, tempOffset);
-  Serial.print(F("Page number for float: "));
-  Serial.println(tempPage);
-  Serial.print(F("Offset for float: "));
-  Serial.println(tempOffset);
-  Serial.println();
-  flash.getAddress(sizeof(int), tempPage, tempOffset);
-  Serial.print(F("Page number for int: "));
-  Serial.println(tempPage);
-  Serial.print(F("Offset for int: "));
-  Serial.println(tempOffset);
-  Serial.println();*/
 
   Serial.println(F("Please type the string into the console"));
   randomSeed(analogRead(A0));

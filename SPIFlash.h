@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.2.1.1
- * Copyright (C) 2015 by Marzogh
- * Modified by Marzogh - 24/10/2015
+/* Arduino SPIFlash Library v.2.2.0
+ * Copyright (C) 2015 by Prajwal Bhattaram
+ * Modified by Prajwal Bhattaram - 24/11/2015
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -37,7 +37,9 @@ public:
   uint16_t getManID();
   uint32_t getJEDECID();
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
-  bool     getAddress(uint16_t size);
+  uint32_t getAddress(uint16_t size);
+  uint16_t getChipName();
+  uint16_t sizeofStr(String &inputStr);
   uint32_t getCapacity();
   uint32_t getMaxPage();
   //-------------------------------------------Write / Read Bytes-------------------------------------------//
@@ -88,11 +90,11 @@ public:
   //------------------------------------------Write / Read Strings------------------------------------------//
   bool     writeStr(uint32_t address, String &inputStr, bool errorCheck = true);
   bool     writeStr(uint16_t page_number, uint8_t offset, String &inputStr, bool errorCheck = true);
-  uint8_t  readStr(uint32_t address, String &outStr, bool fastRead = false);
-  uint8_t  readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
+  bool     readStr(uint32_t address, String &outStr, bool fastRead = false);
+  bool     readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
   //-------------------------------------------Write / Read Pages-------------------------------------------//
   bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
-  uint8_t  readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
+  bool     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
   //------------------------------------------Write / Read Anything-----------------------------------------//
   template <class T> bool writeAnything(uint32_t address, const T& value, bool errorCheck = true);
   template <class T> bool writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
@@ -121,6 +123,7 @@ private:
   void     _beginFastRead(uint32_t address);
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
+  bool     _notPrevWritten(uint32_t address, uint8_t size = 1);
   bool     _addressCheck(uint32_t address);
   bool     _beginWrite(uint32_t address);
   bool     _writeNextByte(uint8_t c, bool _continue = true);
@@ -141,10 +144,13 @@ private:
   bool        pageOverflow;
   volatile uint8_t *cs_port;
   uint8_t     cs_mask, csPin, errorcode;
-  uint32_t    capacity, maxPage, currentAddress;
+  uint16_t    name;
+  uint32_t    capacity, maxPage;
+  uint32_t    currentAddress = 1;
   const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
   const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L};
+  const uint16_t chipName[10] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256};
 };
 
 
@@ -220,12 +226,13 @@ template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool 
       *p++ =_readNextByte();
     }
     _endProcess();
+    return true;
 }
 // Variant B
 template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t offset, T& value, bool fastRead)
 {
   uint32_t address = _getAddress(page_number, offset);
-  readAnything(address, value, fastRead);
+  return readAnything(address, value, fastRead);
 }
 
 // Private template to check for errors in writing to flash memory

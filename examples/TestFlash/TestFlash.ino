@@ -1,10 +1,10 @@
 /*
  *----------------------------------------------------------------------------------------------------------------------------------*
  |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v2.1.0                                                |
+ |                                                      SPIFlash library test v2.2.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                                Marzogh                                                           |
- |                                                              14.10.2015                                                          |
+ |                                                              25.11.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -13,7 +13,7 @@
  |    For example - to write a byte of data, you would have to use the write_byte function - so type '3' into the serial console.   |
  |                                                    --------------------------------                                              |
  |                                                                                                                                  |
- |  1. getID                                                                                                                       |
+ |  1. getID                                                                                                                        |
  |   '1' gets the JEDEC ID of the chip                                                                                              |
  |                                                                                                                                  |
  |  2. writeByte [page] [offset] [byte]                                                                                             |
@@ -21,16 +21,16 @@
  |                                                                                                                                  |
  |  3. readByte [page] [offset]                                                                                                     |
  |   '3' followed by '100' and then by '20' returns the byte from page 100 position 20                                              |
- |                                                                                                                                  | 
+ |                                                                                                                                  |
  |  4. writeWord [page] [offset]                                                                                                    |
  |   '4' followed by '55' and then by '35' and then by '633' writes the int 633 to page 5 position 35                               |
- |                                                                                                                                  | 
+ |                                                                                                                                  |
  |  5. readWord [page] [offset]                                                                                                     |
  |   '5' followed by '200' and then by '30' returns the int from page 200 position 30                                               |
- |                                                                                                                                  | 
+ |                                                                                                                                  |
  |  6. writeStr [page] [offset] [inputString]                                                                                       |
  |   '6' followed by '345' and then by '65' and then by 'Test String 1!' writes the String 'Test String 1! to page 345 position 65  |
- |                                                                                                                                  | 
+ |                                                                                                                                  |
  |  7. readStr [page] [offset] [outputString]                                                                                       |
  |   '7' followed by '2050' and then by '73' reds the String from page 2050 position 73 into the outputString                       |
  |                                                                                                                                  |
@@ -149,12 +149,14 @@ void loop() {
       }
       dataByte = Serial.parseInt();
       Serial.println(dataByte);
-      Serial.println(flash.writeByte(page, offset, dataByte));
-      /*else {
+      if (flash.writeByte(page, offset, dataByte)) {
         clearprintBuffer();
         sprintf(printBuffer, "%d has been written to position %d on page %d", dataByte, offset, page);
         Serial.println(printBuffer);
-      }*/
+      }
+      else {
+        writeFail();
+      }
       printLine();
       printNextCMD();
     }
@@ -200,10 +202,14 @@ void loop() {
       }
       dataInt = Serial.parseInt();
       Serial.println(dataInt);
-      flash.writeWord(page, offset, dataInt);
-      clearprintBuffer();
-      sprintf(printBuffer, "%d has been written to position %d on page %d", dataInt, offset, page);
-      Serial.println(printBuffer);
+      if (flash.writeWord(page, offset, dataInt)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "%d has been written to position %d on page %d", dataInt, offset, page);
+        Serial.println(printBuffer);
+      }
+      else {
+        writeFail();
+      }
       printLine();
       printNextCMD();
     }
@@ -249,12 +255,16 @@ void loop() {
       while (!Serial.available()) {
       }
       readSerialStr(inputString);
-      flash.writeStr(page, offset, inputString);
-      clearprintBuffer();
-      Serial.print(F("String '"));
-      Serial.print(inputString);
-      sprintf(printBuffer, "' has been written to position %d on page %d", offset, page);
-      Serial.println(printBuffer);
+      if (flash.writeStr(page, offset, inputString)) {
+        clearprintBuffer();
+        Serial.print(F("String '"));
+        Serial.print(inputString);
+        sprintf(printBuffer, "' has been written to position %d on page %d", offset, page);
+        Serial.println(printBuffer);
+      }
+      else {
+        writeFail();
+      }
       printLine();
       printNextCMD();
     }
@@ -295,22 +305,26 @@ void loop() {
       for (int i = 0; i < 256; ++i) {
         pageBuffer[i] = i;
       }
-      flash.writePage(page, pageBuffer);
-      clearprintBuffer();
-      sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
-      Serial.println(printBuffer);
-      printReadChoice();
-      while (!Serial.available()) {
-      }
-      uint8_t choice = Serial.parseInt();
-      Serial.println(choice);
-      if (choice == 1) {
-        printOutputChoice();
+      if (flash.writePage(page, pageBuffer)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
+        Serial.println(printBuffer);
+        printReadChoice();
         while (!Serial.available()) {
         }
-        uint8_t outputType = Serial.parseInt();
-        Serial.println(outputType);
-        printPage(page, outputType);
+        uint8_t choice = Serial.parseInt();
+        Serial.println(choice);
+        if (choice == 1) {
+          printOutputChoice();
+          while (!Serial.available()) {
+          }
+          uint8_t outputType = Serial.parseInt();
+          Serial.println(outputType);
+          printPage(page, outputType);
+        }
+      }
+      else {
+        writeFail();
       }
       printLine();
       printNextCMD();
@@ -484,11 +498,11 @@ void clearprintBuffer()
 
 //Reads a string from Serial
 bool readSerialStr(String &inputStr) {
-  if(!Serial)
+  if (!Serial)
     Serial.begin(115200);
   while (Serial.available()) {
-      inputStr = Serial.readStringUntil('\n');
-      return true;
+    inputStr = Serial.readStringUntil('\n');
+    return true;
   }
   return false;
 }
@@ -516,7 +530,7 @@ void _printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
 
 //Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
 void printPage(uint16_t page_number, uint8_t outputType) {
-  if(!Serial)
+  if (!Serial)
     Serial.begin(115200);
 
   char buffer[24];
@@ -528,10 +542,10 @@ void printPage(uint16_t page_number, uint8_t outputType) {
   _printPageBytes(data_buffer, outputType);
 }
 
-//Reads all pages on Flash chip and dumps it to Serial stream. 
+//Reads all pages on Flash chip and dumps it to Serial stream.
 //This function is useful when extracting data from a flash chip onto a computer as a text file.
 void printAllPages(uint8_t outputType) {
-  if(!Serial)
+  if (!Serial)
     Serial.begin(115200);
 
   Serial.println("Reading all pages");
@@ -569,5 +583,15 @@ void printOutputChoice()
 void printReadChoice()
 {
   Serial.print("Type 1 to read the page you have just modified. Type 0 to continue: ");
+}
+
+void writeSuccess()
+{
+  Serial.println("Data write successful");
+}
+
+void writeFail()
+{
+  Serial.println("Data write failed");
 }
 

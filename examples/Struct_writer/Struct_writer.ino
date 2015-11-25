@@ -1,18 +1,20 @@
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//                                                               Struct_writer.ino                                                               //
-//                                                               SPIFlash library                                                                //
-//                                                                   v 2.1.0                                                                     //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//                                                                    Marzogh                                                                    //
-//                                                               Created: 14.10.15                                                               //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//                                                                                                                                               //
-//                        This program writes a struct to a random location on your flash memory chip and reads it back.                         //
-//        Uncomment #define SENSOR below to get real world readings. Real world readings require a Light dependant resistor hooked up to A0.     //
-//                   For information on how to hook up an LDR to an Arduino, please refer to Adafruit's excellent tutorial at                    //
-//                                          https://learn.adafruit.com/photocells/using-a-photocell                                              //
-//                                                                                                                                               //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+/*
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                               Struct_writer.ino                                                               |
+|                                                               SPIFlash library                                                                |
+|                                                                   v 2.2.0                                                                     |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                                    Marzogh                                                                    |
+|                                                                  25.11.2015                                                                   |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                                                                                                               |
+|                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
+|        Uncomment #define SENSOR below to get real world readings. Real world readings require a Light dependant resistor hooked up to A0.     |
+|                   For information on how to hook up an LDR to an Arduino, please refer to Adafruit's excellent tutorial at                    |
+|                                          https://learn.adafruit.com/photocells/using-a-photocell                                              |
+|                                                                                                                                               |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+*/
 
 #include<SPIFlash.h>
 #include<SPI.h>
