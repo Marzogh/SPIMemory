@@ -1,11 +1,26 @@
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//					SPIFlash Library 									   //
-//					  Changes log 										   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//				 	 Version 2.1.1 										   //
-//					Author: Marzogh										   //
-//					  24.10.2015											   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//										  SPIFlash Library 				 						   //
+//					  				  		Changes log 									   	   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.2.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						24.11.2015											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+--> When #RUNDIAGNOSTIC is uncommented, the _troubleshoot() function is now optimised for different µCs
+--> Added the ability to check if the address has been previously written to before initiating a write 
+	operation.
+--> Added a sizeofStr() function to get sizes of String objects, to use with the getAddress() function
+--> Fixed a bug with getAddress()
+--> Added the ability get the chip's name via getChipName()
+--> Diagnostics.ino has been made more and efficient and provides a cleaner Serial output
+--> Added getAddressEx.ino to show how getAdress() works.
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.1.1 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						24.10.2015											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> Fixed bugs that prevented the following functions from working properly
 			A. powerDown()
@@ -13,11 +28,11 @@
 			C. suspendProg()
 			D. resumeProg()
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//				 	 Version 2.1.0 										   //
-//					Author: Marzogh										   //
-//					  18.10.2015											   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.1.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						18.10.2015											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> Arduino Due compatible - refer to wiki for further details
 --> Fixed bug with write/readByteArray
@@ -29,11 +44,11 @@
 			B. readBytes()
 			They have been replaced with readByteArray() and writeByteArray().
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//				 	 Version 2.0.0 										   //
-//					Author: Marzogh										   //
-//					  12.10.2015											   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.0.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						12.10.2015											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> Sped up all functions atleast 25x
 --> Compatible with ATTiny85
@@ -60,11 +75,11 @@
 	They can be used by uncommenting them in the SPIFlash.cpp file. However, be warned, this particular block of code has only 
 	been tested with the Arduino	IDE (1.6.5) and only with 8-bit AVR based Arduino boards and will not be supported any further.
 		
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//					 Version 1.3.2 										   //
-//					Author: Marzogh										   //
-//					   09.10.2015											   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 1.3.2 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						09.10.2015											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> Added the ability to read and write String objects with a simple high level function readStr() & writeStr()
 --> Added the ability to getAddress()

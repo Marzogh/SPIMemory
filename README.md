@@ -1,15 +1,25 @@
 
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v2.2.0-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
-<sup> Download the latest stable release (v2.1.1) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
+<sup> Download the latest stable release (v2.2.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
 This library is for a the Winbond serial flash memory chips. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
-Currently tested & compatible with Arduino 1.6.5 and the Arduino Uno, Arduino Leonardo, Arduino Mega and the Arduino Due. Testing on 1.6.6 in progress.
+####Compatibility
+#####Arduino IDEs supported
+- IDE v1.5.x
+- IDE v1.6.0 - v1.6.5
+#####Boards
+######Completely supported
+- Arduino Uno
+- Arduino Leonardo
+- Arduino Mega
+- Arduino Due
+- ATTiny85
 
-#### Installation
+####Installation
 
 #####Option 1
 - Click on the 'Download zip' button to the right.
@@ -53,6 +63,10 @@ Gets the next available address for use. Has two variants:
 * Takes a three variables, the size of the data and two other variables to return a page number value & an offset into.
 
 All addresses in the in the sketch must be obtained via this function or not at all.
+###### sizeofStr()
+Use this function to find the size of a String to use as the argument in getAddress(size). Using size = sizeof(String) will cause the getAddress(size) function to fail.
+
+size = sizeof(variable) can be used for all types of data but String objects.
 <hr>
 ###### All read/write commands can take a 32-bit address variable in the place of the 16-bit page number & 8-bit offset variables.
 <hr>
@@ -116,9 +130,9 @@ Reads an array of bytes starting from a specific location in a page. Takes the p
 ###### writeByteArray(page_number, offset, *data_buffer, bufferSize)
 Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be written to the flash memory - and size of the array as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of RAM available on the Arduino board.
 ###### readCharArray(page_number, offset, *data_buffer, bufferSize)
-Reads an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be read from the flash memory - and size of the array as arguments. ```char data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of RAM available on the Arduino board.
+Reads an array of chars starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of chars to be read from the flash memory - and size of the array as arguments. ```char data_buffer[n];``` The data buffer **must** be an array of n **chars**. 'n' is determined by the amount of RAM available on the Arduino board.
 ###### writeCharArray(page_number, offset, *data_buffer, bufferSize)
-Writes an array of bytes starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of bytes to be written to the flash memory - and size of the array as arguments. ```char data_buffer[n];``` The data buffer **must** be an array of 'n' **bytes**. The number of bytes - 'n' - is determined by the amount of RAM available on the Arduino board.
+Writes an array of chars starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of chars to be written to the flash memory - and size of the array as arguments. ```char data_buffer[n];``` The data buffer **must** be an array of 'n' **chars**. The number of chars - 'n' - is determined by the amount of RAM available on the Arduino board.
 <hr>
 ##### Erase commands
 All erase commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
@@ -176,7 +190,7 @@ Reads all pages on Flash chip and dumps it to Serial stream. This function is us
 <sub>(Works only for Unix based Operating Systems)</sub>
 
  - Make sure you include code to let you dump entire flash memory/specific page's content to Serial (Refer to the code in the _TestFlash.h_ for details on how to do this)
- - Connect your arduino to the computer.
+ - Connect your Arduino board to the computer.
  - Open the Arduino IDE, the IDE's Serial Monitor, and an OSX POSIX terminal.
  - Type the following command into the terminal window. ```% tail -f /dev/tty.usbmodem1411 > FlashDump.txt``` Make sure to replace the _/dev/tty.usbmodem1411_ with the port your arduino is connected to. (You can find this in Tools --> Ports in Arduino IDE 1.6.x)
  - Then type the command to read all pages into the Serial console. If you use my code from the example file the command is ```read_all_pages```

@@ -4,7 +4,7 @@
  |                                                      SPIFlash library test v2.2.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                                Marzogh                                                           |
- |                                                              24.11.2015                                                          |
+ |                                                              25.11.2015                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -13,7 +13,7 @@
  |    For example - to write a byte of data, you would have to use the write_byte function - so type '3' into the serial console.   |
  |                                                    --------------------------------                                              |
  |                                                                                                                                  |
- |  1. getID                                                                                                                       |
+ |  1. getID                                                                                                                        |
  |   '1' gets the JEDEC ID of the chip                                                                                              |
  |                                                                                                                                  |
  |  2. writeByte [page] [offset] [byte]                                                                                             |

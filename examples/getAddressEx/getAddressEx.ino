@@ -1,3 +1,19 @@
+/*
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                               getAddressEx.ino                                                                |
+|                                                               SPIFlash library                                                                |
+|                                                                   v 2.2.0                                                                     |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                                    Marzogh                                                                    |
+|                                                                  25.11.2015                                                                   |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+|                                                                                                                                               |
+|                                  This program shows the method to use the getAddress() function to automate                                   |
+|                                the process of address allocation when using a flash memory module. Please note                                |
+|                                         the special function used to get the size of the String object.                                       |
+|                                                                                                                                               |
+|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+*/
 #include<SPI.h>
 #include<SPIFlash.h>
 
@@ -39,6 +55,7 @@ void loop() {
 
 }
 
+// Function to get adresses for various variables
 void getAddresses() {
   for (uint8_t i = 0; i < arrayLen(byteAddr); i++) {
     byteAddr[i] = flash.getAddress(sizeof(byte));
@@ -65,6 +82,7 @@ void getAddresses() {
   }
 }
 
+// Function to write data
 void writeData() {
   for (uint8_t i = 0; i < arrayLen(byteAddr); i++) {
     if (flash.writeByte(byteAddr[i], testByte[i])) {
