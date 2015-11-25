@@ -3,7 +3,7 @@
 ### Arduino library for Winbond Flash Memory Chips
 <sup> Download the latest stable release (v2.2.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
-This library is for a the Winbond serial flash memory chips. In its current form it enables reading and writing bytes from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes; sector, block and chip erase; and powering down for low power operation.
+This Arduino library is for use with Winbond serial flash memory chips. In its current form it supports identifying the flash chip and its various features; automatic address allocation and management; reading and writing bytes/chars/ints/longs/floats/Strings from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes/chars; sector, block and chip erase; and powering down for low power operation.
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
