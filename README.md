@@ -17,6 +17,8 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 ######Completely supported
 - Arduino Uno
 - Arduino Leonardo
+- Arduino Micro
+- Arduino Fio
 - Arduino Mega
 - Arduino Due
 - ATTiny85
