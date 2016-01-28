@@ -34,6 +34,9 @@ byte testByte[] = {
 
 SPIFlash flash(CS);
 
+void getAddresses();
+void writeData();
+
 void setup() {
   Serial.begin(115200);
   Serial.print(F("Initialising Flash memory"));
