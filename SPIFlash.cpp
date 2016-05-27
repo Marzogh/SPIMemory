@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.2.0
+/* Arduino SPIFlash Library v.2.2.1
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 24/11/2015
  *
@@ -24,16 +24,23 @@
  */
  
 #include "SPIFlash.h"
+#include "defines.h"
 
 #if defined (__arm__) && defined (__SAM3X8E__)
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>
 #endif
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//          Uncomment the line below to make your program adapt 	  //
+//	   		   itself to run on non-supported flash chips. 			  //
+//																	  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//#define NOTCHIPSPECIFIC											  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
-//	   						does not respond   						  //
+//	   					 does not respond   						  //
 //																	  //
 // 		Error codes will be generated and returned on functions		  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -49,60 +56,7 @@
 //#define HIGHSPEED		
 #elif defined (__AVR__)
 //#define HIGHSPEED													  
-#endif																  
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
-#define _MANID		 0xEF
-#define PAGESIZE	 0x100
-
-#define	MANID		 0x90
-#define PAGEPROG     0x02
-#define READDATA     0x03
-#define FASTREAD	 0x0B
-#define WRITEDISABLE 0x04
-#define READSTAT1    0x05
-#define READSTAT2	 0x35
-#define WRITEENABLE  0x06
-#define SECTORERASE  0x20
-#define BLOCK32ERASE 0x52
-#define CHIPERASE    0x60
-#define SUSPEND      0x75
-#define ID           0x90
-#define RESUME       0x7A
-#define JEDECID      0x9f
-#define RELEASE      0xAB
-#define POWERDOWN    0xB9
-#define BLOCK64ERASE 0xD8
-
-#define BUSY         0x01
-#define WRTEN        0x02
-#define SUS 		 0x40
-#define DUMMYBYTE	 0xEE
-
-#define arrayLen(x)  	(sizeof(x) / sizeof(*x))
-#define lengthOf(x)  	(sizeof(x))/sizeof(byte)
-#define maxAddress		capacity
-#define NO_CONTINUE		0x00
-#define PASS			0x01
-#define FAIL			0x00
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     					   List of Error codes						  //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
- #ifdef RUNDIAGNOSTIC
-
- #define SUCCESS 	 	0x00
- #define CALLBEGIN		0x01
- #define UNKNOWNCHIP	0x02
- #define UNKNOWNCAP		0x03
- #define CHIPBUSY		0x04
- #define OUTOFBOUNDS	0x05
- #define CANTENWRITE	0x06
- #define PREVWRITTEN 	0x07
- #define UNKNOWNERROR	0xFF
-
- #endif
- //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#endif		
 
 #if defined (__arm__) && defined (__SAM3X8E__)
  #include <SPI.h>
@@ -337,7 +291,7 @@ bool SPIFlash::_chipID(void) {
     uint8_t manID, devID ;
     _getManId(&manID, &devID);
 
-    if (manID != _MANID){		//If the chip is not a Winbond Chip
+    if (manID != _MANID_WB){		//If the chip is not a Winbond Chip
     	#ifdef RUNDIAGNOSTIC
     	errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
     	_troubleshoot(errorcode);
@@ -363,7 +317,7 @@ bool SPIFlash::_chipID(void) {
     	while(1);
     }
 
-   	maxPage = capacity/PAGESIZE;
+   	maxPage = capacity/PAGESIZE_WB;
 
    	/*#ifdef RUNDIAGNOSTIC
     char buffer[64];
@@ -688,7 +642,9 @@ void SPIFlash::begin() {
 	SPI.setClockDivider(csPin, 21);
 	SPI.setDataMode(csPin, SPI_MODE0);
 	#endif
+	#ifndef NOTCHIPSPECIFIC
 	_chipID();
+	#endif
 }
 
 //Returns capacity of chip
@@ -1648,8 +1604,8 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 	#endif
 
 	_beginWrite(address);
-	for (uint16_t i = 0; i < PAGESIZE; ++i){
-		if (i == (PAGESIZE-1))
+	for (uint16_t i = 0; i < PAGESIZE_WB; ++i){
+		if (i == (PAGESIZE_WB-1))
 		_writeNextByte(data_buffer[i], NO_CONTINUE);
 	else
 		_writeNextByte(data_buffer[i]);
