@@ -11,6 +11,7 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 #####Arduino IDEs supported
 - IDE v1.5.x
 - IDE v1.6.0-v1.6.5
+- IDE v1.6.9
 
 #####Boards
 
