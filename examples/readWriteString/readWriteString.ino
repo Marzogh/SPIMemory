@@ -22,6 +22,8 @@ byte strOffset;
 
 SPIFlash flash(cs);
 
+bool readSerialStr(String &inputStr);
+
 void setup() {
   Serial.begin(115200);
 

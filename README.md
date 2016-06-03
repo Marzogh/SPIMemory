@@ -1,5 +1,5 @@
 
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v2.2.1-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
 <sup> Download the latest stable release (v2.2.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
@@ -11,12 +11,15 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 #####Arduino IDEs supported
 - IDE v1.5.x
 - IDE v1.6.0-v1.6.5
+- IDE v1.6.9
 
 #####Boards
 
 ######Completely supported
 - Arduino Uno
 - Arduino Leonardo
+- Arduino Micro
+- Arduino Fio
 - Arduino Mega
 - Arduino Due
 - ATTiny85
@@ -200,4 +203,3 @@ Reads all pages on Flash chip and dumps it to Serial stream. This function is us
  - Check that you have actually recieved all the data by typing ```% cat FlashDump.txt```. This should output the entire textfile into your terminal window.
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Marzogh/spiflash/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
