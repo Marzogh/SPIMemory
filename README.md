@@ -22,6 +22,7 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - Arduino Fio
 - Arduino Mega
 - Arduino Due
+- ESP8266 Boards (On the Arduino IDE)
 - ATTiny85
 
 ####Installation
