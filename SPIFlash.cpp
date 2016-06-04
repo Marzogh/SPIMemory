@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.2.2.1
+/* Arduino SPIFlash Library v.2.3.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 24/11/2015
+ * Modified by Prajwal Bhattaram - 04/06/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading 
@@ -24,23 +24,16 @@
  */
  
 #include "SPIFlash.h"
-#include "defines.h"
 
-#if defined (__arm__) && defined (__SAM3X8E__)
+#if defined (__SAM3X8E__) || defined (ARDUINO_ARCH_ESP8266)
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>
 #endif
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//          Uncomment the line below to make your program adapt 	  //
-//	   		   itself to run on non-supported flash chips. 			  //
-//																	  //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define NOTCHIPSPECIFIC											  //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
-//	   					 does not respond   						  //
+//	   						does not respond   						  //
 //																	  //
 // 		Error codes will be generated and returned on functions		  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -54,13 +47,66 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #if defined (__SAM3X8E__)
 //#define HIGHSPEED		
-#elif defined (__AVR__)
+#elif defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 //#define HIGHSPEED													  
-#endif		
+#endif																  
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#if defined (__arm__) && defined (__SAM3X8E__)
+#define _MANID		 0xEF
+#define PAGESIZE	 0x100
+
+#define	MANID		 0x90
+#define PAGEPROG     0x02
+#define READDATA     0x03
+#define FASTREAD	 0x0B
+#define WRITEDISABLE 0x04
+#define READSTAT1    0x05
+#define READSTAT2	 0x35
+#define WRITEENABLE  0x06
+#define SECTORERASE  0x20
+#define BLOCK32ERASE 0x52
+#define CHIPERASE    0x60
+#define SUSPEND      0x75
+#define ID           0x90
+#define RESUME       0x7A
+#define JEDECID      0x9f
+#define RELEASE      0xAB
+#define POWERDOWN    0xB9
+#define BLOCK64ERASE 0xD8
+
+#define BUSY         0x01
+#define WRTEN        0x02
+#define SUS 		 0x40
+#define DUMMYBYTE	 0xEE
+
+#define arrayLen(x)  	(sizeof(x) / sizeof(*x))
+#define lengthOf(x)  	(sizeof(x))/sizeof(byte)
+#define maxAddress		capacity
+#define NO_CONTINUE		0x00
+#define PASS			0x01
+#define FAIL			0x00
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//     					   List of Error codes						  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+ #ifdef RUNDIAGNOSTIC
+
+ #define SUCCESS 	 	0x00
+ #define CALLBEGIN		0x01
+ #define UNKNOWNCHIP	0x02
+ #define UNKNOWNCAP		0x03
+ #define CHIPBUSY		0x04
+ #define OUTOFBOUNDS	0x05
+ #define CANTENWRITE	0x06
+ #define PREVWRITTEN 	0x07
+ #define UNKNOWNERROR	0xFF
+
+ #endif
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+#if defined (__SAM3X8E__)
  #include <SPI.h>
-#elif defined (__AVR__)
+#elif defined (ARDUINO_ARCH_AVR)
 	#ifdef __AVR_ATtiny85__
 		#define CHIP_SELECT   PORTB &= ~cs_mask;
 		#define CHIP_DESELECT PORTB |=  cs_mask;
@@ -80,20 +126,25 @@
 			return USIDR;
 		}
 	#else
-		#include <SPI.h>
-		#define CHIP_SELECT   *cs_port &= ~cs_mask;
-		#define CHIP_DESELECT *cs_port |=  cs_mask;
-		#define xfer(n)   SPI.transfer(n)
-	#endif
+        #include <SPI.h>
+        #define CHIP_SELECT   *cs_port &= ~cs_mask;
+        #define CHIP_DESELECT *cs_port |=  cs_mask;
+        #define xfer(n)   SPI.transfer(n)
+    #endif
+#elif defined (ARDUINO_ARCH_ESP8266)
+        #include <SPI.h>
+        #define CHIP_SELECT   digitalWrite(csPin, LOW);
+        #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+        #define xfer(n)   SPI.transfer(n)
 #endif
 
 // Constructor
-#if defined (__arm__) && defined (__SAM3X8E__)
+#if defined (__SAM3X8E__)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 	csPin = cs;
 	pageOverflow = overflow;
 }
-#elif defined (__AVR__)
+#elif defined (ARDUINO_ARCH_AVR)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 	csPin = cs;
 #ifndef __AVR_ATtiny85__
@@ -107,6 +158,17 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
     pageOverflow = overflow;
     pinMode(cs, OUTPUT);
 }
+#elif defined (ARDUINO_ARCH_ESP8266)
+SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
+	csPin = cs;
+	SPI.begin();
+    SPI.setDataMode(0);
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setFrequency(800000);
+    //SPI.setClockDivider(SPI_CLOCK_DIV2);
+    pageOverflow = overflow;
+    pinMode(cs, OUTPUT);
+}
 #endif
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -116,7 +178,7 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 // Select chip and issue command - data to follow
 void SPIFlash::_cmd(uint8_t cmd, bool _continue, uint8_t cs) {
 	cs = csPin;
- #if defined (__arm__) && defined (__SAM3X8E__)
+ #if defined (__SAM3X8E__)
 	if (!_continue)
 		SPI.transfer(cs, cmd);
 	else
@@ -145,7 +207,7 @@ bool SPIFlash::_noSuspend(void) {
 	uint8_t state;
 
 	_cmd(READSTAT2);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 		state = SPI.transfer(csPin, 0x00);
 	#else
 		state = xfer(0);
@@ -164,7 +226,7 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
 
 	do {
 		_cmd(READSTAT1);
-		#if defined (__arm__) && defined (__SAM3X8E__)
+		#if defined (__SAM3X8E__)
 		state = SPI.transfer(csPin, 0x00);
 	#else
 		state = xfer(0);
@@ -185,7 +247,7 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
 bool SPIFlash::_writeEnable(void) {
 	uint8_t state;
 
-	#if defined (__arm__) && (__SAM3X8E__)
+	#if (__SAM3X8E__)
 	SPI.transfer(csPin, WRITEENABLE);
 	#else
 	_cmd(WRITEENABLE);
@@ -193,7 +255,7 @@ bool SPIFlash::_writeEnable(void) {
 	#endif
 
 	//verifies that WRITE is enabled
-	#if defined (__arm__) && (__SAM3X8E__)
+	#if (__SAM3X8E__)
 	SPI.transfer(csPin, READSTAT1, SPI_CONTINUE);
 	state = SPI.transfer(csPin, 0x00);
 	#else
@@ -220,7 +282,7 @@ bool SPIFlash::_writeEnable(void) {
 // Erase Security Register and Program Security register
 bool SPIFlash::_writeDisable(void) {
 	_cmd(WRITEDISABLE);
-	#if defined (__AVR__)
+	#if defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 	CHIP_DESELECT
 	#endif
 
@@ -250,7 +312,7 @@ bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
 	if(!_notBusy())
 		return false;
 	_cmd(MANID);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 		SPI.transfer(csPin, 0x00, SPI_CONTINUE);
 		SPI.transfer(csPin, 0x00, SPI_CONTINUE);
 		SPI.transfer(csPin, 0x00, SPI_CONTINUE);
@@ -272,7 +334,7 @@ bool SPIFlash::_getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
   if(!_notBusy())
   	return false;
   _cmd(JEDECID);
-  #if defined (__arm__) && defined (__SAM3X8E__)
+  #if defined (__SAM3X8E__)
 		*b1 = SPI.transfer(csPin, 0x00, SPI_CONTINUE);		// manufacturer id
 		*b2 = SPI.transfer(csPin, 0x00, SPI_CONTINUE);		// manufacturer id
 		*b3 = SPI.transfer(csPin, 0x00);					// capacity
@@ -291,7 +353,7 @@ bool SPIFlash::_chipID(void) {
     uint8_t manID, devID ;
     _getManId(&manID, &devID);
 
-    if (manID != _MANID_WB){		//If the chip is not a Winbond Chip
+    if (manID != _MANID){		//If the chip is not a Winbond Chip
     	#ifdef RUNDIAGNOSTIC
     	errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
     	_troubleshoot(errorcode);
@@ -317,7 +379,7 @@ bool SPIFlash::_chipID(void) {
     	while(1);
     }
 
-   	maxPage = capacity/PAGESIZE_WB;
+   	maxPage = capacity/PAGESIZE;
 
    	/*#ifdef RUNDIAGNOSTIC
     char buffer[64];
@@ -374,7 +436,7 @@ uint32_t SPIFlash::_prepRead(uint16_t page_number, uint8_t offset) {
 //Initiates read operation - but data is not read yet
 void SPIFlash::_beginRead(uint32_t address) {
 	_cmd(READDATA);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
   	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
   	SPI.transfer(csPin, address, SPI_CONTINUE);
@@ -390,7 +452,7 @@ void SPIFlash::_beginRead(uint32_t address) {
 //- but data is not read yet
 void SPIFlash::_beginFastRead(uint32_t address) {
 	_cmd(FASTREAD);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
   	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
   	SPI.transfer(csPin, address, SPI_CONTINUE);
@@ -405,7 +467,7 @@ void SPIFlash::_beginFastRead(uint32_t address) {
 //Reads next byte. Call 'n' times to read 'n' number of bytes. Should be called after _beginRead()
 uint8_t SPIFlash::_readNextByte(bool _continue) {
 	uint8_t result;
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 		if (!_continue)
 			result = SPI.transfer(csPin, 0x00);
 		else
@@ -443,7 +505,7 @@ uint32_t SPIFlash::_prepWrite(uint16_t page_number, uint8_t offset) {
 //Initiates write operation - but data is not written yet
 bool SPIFlash::_beginWrite(uint32_t address) {
 	_cmd(PAGEPROG);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
   	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
   	SPI.transfer(csPin, address, SPI_CONTINUE);
@@ -458,7 +520,7 @@ bool SPIFlash::_beginWrite(uint32_t address) {
 
 //Writes next byte. Call 'n' times to read 'n' number of bytes. Should be called after _beginWrite()
 bool SPIFlash::_writeNextByte(uint8_t b, bool _continue) {
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 		if (!_continue)
 			SPI.transfer(csPin, b);
 		else
@@ -471,7 +533,7 @@ bool SPIFlash::_writeNextByte(uint8_t b, bool _continue) {
 
 //Stops all operations. Should be called after all the required data is read/written from repeated _readNextByte()/_writeNextByte() calls
 void SPIFlash::_endProcess(void) {
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 	_delay_us(3);
 	#else
 	CHIP_DESELECT
@@ -637,14 +699,12 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 
 //Identifies chip and establishes parameters
 void SPIFlash::begin() {
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
 	SPI.begin(csPin);
 	SPI.setClockDivider(csPin, 21);
 	SPI.setDataMode(csPin, SPI_MODE0);
 	#endif
-	#ifndef NOTCHIPSPECIFIC
 	_chipID();
-	#endif
 }
 
 //Returns capacity of chip
@@ -1604,8 +1664,8 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 	#endif
 
 	_beginWrite(address);
-	for (uint16_t i = 0; i < PAGESIZE_WB; ++i){
-		if (i == (PAGESIZE_WB-1))
+	for (uint16_t i = 0; i < PAGESIZE; ++i){
+		if (i == (PAGESIZE-1))
 		_writeNextByte(data_buffer[i], NO_CONTINUE);
 	else
 		_writeNextByte(data_buffer[i]);
@@ -1630,7 +1690,7 @@ bool SPIFlash::eraseSector(uint32_t address) {
  		return false;
 
 	_cmd(SECTORERASE);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
  	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
  	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
  	SPI.transfer(csPin, 0x00);
@@ -1668,7 +1728,7 @@ bool SPIFlash::eraseBlock32K(uint32_t address) {
  		return false;
 
 	_cmd(BLOCK32ERASE);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
  	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
  	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
  	SPI.transfer(csPin, 0x00);
@@ -1706,7 +1766,7 @@ bool SPIFlash::eraseBlock64K(uint32_t address) {
  		return false;
 
 	_cmd(BLOCK64ERASE);
-	#if defined (__arm__) && defined (__SAM3X8E__)
+	#if defined (__SAM3X8E__)
  	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
  	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
  	SPI.transfer(csPin, 0x00);
@@ -1739,7 +1799,7 @@ bool SPIFlash::eraseChip(void) {
  		return false;
 
 	_cmd(CHIPERASE, NO_CONTINUE);
-	#if defined (__AVR__)
+	#if defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 	CHIP_DESELECT
 	#endif
 
@@ -1764,7 +1824,7 @@ bool SPIFlash::suspendProg(void) {
 		return false;
 
 	_cmd(SUSPEND, NO_CONTINUE);
-	#if defined (__AVR__)
+	#if defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 	CHIP_DESELECT
 	#endif
 
@@ -1781,7 +1841,7 @@ bool SPIFlash::resumeProg(void) {
 		return false;
 
 	_cmd(RESUME, NO_CONTINUE);
-	#if defined (__AVR__)
+	#if defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 	CHIP_DESELECT
 	#endif
 
@@ -1801,7 +1861,7 @@ bool SPIFlash::powerDown(void) {
 		return false;
 
 	_cmd(POWERDOWN, NO_CONTINUE);
-	#if defined (__AVR__)
+	#if defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 	CHIP_DESELECT
 	#endif
 	_delay_us(3);							//Max powerDown enable time according to the Datasheet
@@ -1829,7 +1889,7 @@ bool SPIFlash::powerDown(void) {
 bool SPIFlash::powerUp(void) {
 
 	_cmd(RELEASE, NO_CONTINUE);	
-	#if defined (__AVR__)
+	#if defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 	CHIP_DESELECT
 	#endif
 	_delay_us(3);						    //Max release enable time according to the Datasheet
@@ -1838,80 +1898,3 @@ bool SPIFlash::powerUp(void) {
 		return false;
 	return true;
 }
-
-/************************************************************************************************************************
-		These functions are deprecated to enable compatibility with various AVR chips. They can be used by uncommenting 
-		this block of code. However, be warned, this particular block of code has only been tested with the Arduino
-		IDE (1.6.5) and only with 8-bit AVR based Arduino boards and is not supported from library version 2.0 onward
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-					//        These functions work with data to/from Serial stream. 	  //
-					//         Declares Serial.begin() if not previously declared.        //
-					//                 Initiates Serial at 115200 baud.                   //
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
-
-		This function is deprecated to enable compatibility with various AVR chips. It can be used by uncommenting 
-		this block of code. However, be warned, this particular block of code has only been tested with the Arduino
-		IDE and only with 8-bit AVR based Arduino boards.
-
-//Prints hex/dec formatted data from page reads - for debugging
-void SPIFlash::_printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
-	char buffer[10];
-	for (int a = 0; a < 16; ++a) {
-		for (int b = 0; b < 16; ++b) {
-			if (outputType == 1) {
-				sprintf(buffer, "%02x", data_buffer[a * 16 + b]);
-				Serial.print(buffer);
-			}
-			else if (outputType == 2) {
-				uint8_t x = data_buffer[a * 16 + b];
-				if (x < 10) Serial.print("0");
-				if (x < 100) Serial.print("0");
-				Serial.print(x);
-				Serial.print(',');
-			}
-		}
-		Serial.println();
-	}
-}
-
-//Reads a string from Serial
-bool SPIFlash::readSerialStr(String &inputStr) {
-	if(!Serial)
-		Serial.begin(115200);
-	while (Serial.available()) {
-      inputStr = Serial.readStringUntil('\n');
-      return true;
-  }
-  return false;
-}
-
-//Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
-void SPIFlash::printPage(uint16_t page_number, uint8_t outputType, bool fastRead) {
-	if(!Serial)
-		Serial.begin(115200);
-
-	char buffer[24];
-	sprintf(buffer, "Reading page (%04x)", page_number);
-	Serial.println(buffer);
-
-	uint8_t data_buffer[256];
-	readPage(page_number, data_buffer, fastRead);
-	_printPageBytes(data_buffer, outputType);
-}
-
-//Reads all pages on Flash chip and dumps it to Serial stream. 
-//This function is useful when extracting data from a flash chip onto a computer as a text file.
-void SPIFlash::printAllPages(uint8_t outputType, bool fastRead) {
-	if(!Serial)
-		Serial.begin(115200);
-
-	Serial.println("Reading all pages");
-	uint8_t data_buffer[256];
-
-	for (int a = 0; a < maxPage; a++) {
-		readPage(a, data_buffer, fastRead);
-		_printPageBytes(data_buffer, outputType);
-  }
-}
-************************************************************************************************************************/

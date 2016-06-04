@@ -1,10 +1,10 @@
 /*
  *----------------------------------------------------------------------------------------------------------------------------------*
  |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v2.2.0                                                |
+ |                                                      SPIFlash library test v2.3.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                                Marzogh                                                           |
- |                                                              25.11.2015                                                          |
+ |                                                              04.06.2016                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -80,20 +80,8 @@ String inputString, outputString;
 
 SPIFlash flash(cs);
 
-void clearprintBuffer();
-bool readSerialStr(String &inputStr);
-void _printPageBytes(uint8_t *data_buffer, uint8_t outputType);
-void printPage(uint16_t page_number, uint8_t outputType);
-void printAllPages(uint8_t outputType);
-void printLine();
-void printSplash();
-void printNextCMD();
-void printOutputChoice();
-void printReadChoice();
-void writeSuccess();
-void writeFail();
-
 void setup() {
+  delay(10);
   Serial.begin(115200);
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
