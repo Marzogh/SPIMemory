@@ -8,6 +8,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> ESP8266 compatibility added
+--> Compatible with Arduino Fio and Micro
 --> Now compatible with Arduino IDE v1.6.9
 --> Compatible with Arduino-Makefile. (Thanks Raphael!)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
