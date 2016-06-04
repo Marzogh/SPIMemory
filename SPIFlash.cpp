@@ -204,34 +204,35 @@ uint8_t SPIFlash::_readStat1(void) {
 
 // Checks the erase/program suspend flag before enabling/disabling a program/erase suspend operation
 bool SPIFlash::_noSuspend(void) {
-	uint8_t state;
+	uint8_t stat2;
 
 	_cmd(READSTAT2);
 	#if defined (__SAM3X8E__)
-		state = SPI.transfer(csPin, 0x00);
+		stat2 = SPI.transfer(csPin, 0x00);
 	#else
-		state = xfer(0);
+		stat2 = xfer(0);
 		CHIP_DESELECT
 	#endif
 
-	if(state & SUS)
+	if(stat2 & SUS)
 		return false;
 	return true;
 }
 
 // Polls the status register 1 until busy flag is cleared or timeout
 bool SPIFlash::_notBusy(uint32_t timeout) {
-	uint8_t state;
+	//uint8_t state;
 	uint32_t startTime = millis();
 
 	do {
-		_cmd(READSTAT1);
-		#if defined (__SAM3X8E__)
+		state = _readStat1();
+		/*_cmd(READSTAT1);
+	#if defined (__SAM3X8E__)
 		state = SPI.transfer(csPin, 0x00);
 	#else
 		state = xfer(0);
 		CHIP_DESELECT
-	#endif
+	#endif*/
 		if((millis()-startTime) > timeout){
 			#ifdef RUNDIAGNOSTIC
 			errorcode = CHIPBUSY;
@@ -244,35 +245,30 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
 }
 
 //Enables writing to chip by setting the WRITEENABLE bit
-bool SPIFlash::_writeEnable(void) {
-	uint8_t state;
+bool SPIFlash::_writeEnable(uint32_t timeout) {
+	//uint8_t state;
+	uint32_t startTime = millis();
 
-	#if (__SAM3X8E__)
-	SPI.transfer(csPin, WRITEENABLE);
-	#else
-	_cmd(WRITEENABLE);
-	CHIP_DESELECT
-	#endif
+	do{
+		if (!(state & WRTEN)){
+			#if (__SAM3X8E__)
+			SPI.transfer(csPin, WRITEENABLE);
+			#else
+			_cmd(WRITEENABLE);
+			CHIP_DESELECT
+			#endif
+			state = _readStat1();
+		}
+		if((millis()-startTime) > timeout){
+			#ifdef RUNDIAGNOSTIC
+			errorcode = CHIPBUSY;
+			_troubleshoot(errorcode);
+			#endif
+			return false;
+		}
+	} while (!(state & WRTEN));
 
-	//verifies that WRITE is enabled
-	#if (__SAM3X8E__)
-	SPI.transfer(csPin, READSTAT1, SPI_CONTINUE);
-	state = SPI.transfer(csPin, 0x00);
-	#else
-	_cmd(READSTAT1);
-	state = xfer(0);
-	CHIP_DESELECT
-	#endif
-	if(state & WRTEN)
-		return true;
-	else {
-		#ifdef RUNDIAGNOSTIC
-		errorcode = CANTENWRITE;
- 		_troubleshoot(errorcode);
- 		#endif
-
-		return false;
-	}
+	return true;
 }
 
 //Disables writing to chip by setting the Write Enable Latch (WEL) bit in the Status Register to 0
@@ -544,21 +540,7 @@ void SPIFlash::_endProcess(void) {
 #ifndef HIGHSPEED
 bool SPIFlash::_notPrevWritten(uint32_t address, uint8_t size) {
 	uint32_t _size = size;
-
-	/*uint8_t databyte1, databyte2, databyte3;
-	databyte1 = readByte(address, true);
-	databyte2 = readByte((address + (size/2)), true);
-	databyte3 = readByte((address+size), true);
-	if (databyte1 != 255 || databyte2 != 255 || databyte3 != 255) {
-		#ifdef RUNDIAGNOSTIC
-		errorcode = PREVWRITTEN;
- 		_troubleshoot(errorcode);
- 		#endif
-		return false;
-	}
-	_delay_us(3);
-	return true;*/
-	uint32_t sampleSize;
+	uint32_t sampleSize = 1;
 	if (_size <= 10) {
 		sampleSize = _size;
 	}
@@ -567,25 +549,37 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint8_t size) {
 		do {
 			sampleSize++;
 			_size/=10;
-		} while((_size/10) >= 1);
+		} while((_size/2) >= 1);
 	}
 
 	uint32_t addresses[sampleSize];
+
+	Serial.print("Sample size: ");
+	Serial.println(sampleSize);
 
 	for (uint16_t i = 0; i < sampleSize; i++) {
 		addresses[i] = (rand() % size) + address;
 	}
 
 	for (uint16_t i = 0; i < sampleSize; i++) {
-		uint8_t databyte = readByte(addresses[i]);
-		if (databyte != 0xFF) {
+		_beginRead(addresses[i]);
+		if(_readNextByte() != 0xFF)
+		{
 			#ifdef RUNDIAGNOSTIC
 			errorcode = PREVWRITTEN;
  			_troubleshoot(errorcode);
  			#endif
 			return false;
 		}
+		#if defined (__SAM3X8E__)
+		_readNextByte(NO_CONTINUE)
+		_delay_us(3);
+		#else
+		CHIP_DESELECT
+		_delay_us(3);
+		#endif
 	}
+
 	return true;
 }
 #endif
@@ -691,6 +685,47 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 	}
 }
 #endif
+
+// Private template to check for errors in writing to flash memory
+template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
+if (!_prepRead(address))
+    return false;
+
+  const byte* p = (const byte*)(const void*)&value;
+
+  _beginRead(address);
+  for(uint16_t i = 0; i < sizeof(value);i++)
+  {
+    if(*p++ != _readNextByte())
+    {
+      return false;
+    }
+    /*#if defined (__arm__) && defined (__SAM3X8E__)
+      if (i == sizeof(value)-1) {
+        if (*p++ != _readNextByte(false))
+          return false;
+        else 
+          return true;
+      }
+      else
+        if (*p++ != _readNextByte())
+          return false;
+    #elif defined (__AVR__)
+    if (*p++ != _readNextByte())
+      return false;
+    #endif*/
+  }
+  #if defined (__SAM3X8E__)
+  _readNextByte(NO_CONTINUE)
+  _delay_us(3);
+  #else
+  CHIP_DESELECT
+  _delay_us(3);
+  #endif
+  
+  return true;
+}
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -1177,8 +1212,8 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRe
 	else
 		_beginFastRead(address);
 
-	for (int a = 0; a < 256; ++a) {
-		if (a == (255))
+	for (int a = 0; a < PAGESIZE; ++a) {
+		if (a == (PAGESIZE - 1))
 				data_buffer[a] = _readNextByte(NO_CONTINUE);
 			else
 				data_buffer[a] = _readNextByte();
@@ -1332,8 +1367,9 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
 		return false;
 
 	#ifndef HIGHSPEED
-	if(!_notPrevWritten(address, sizeof(data_buffer)))
+	if(!_notPrevWritten(address, bufferSize)) {
 		return false;
+	}
 	#endif
 
 	_beginWrite(address);
@@ -1627,23 +1663,50 @@ bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool
 // then writes the String object data. Therefore it takes up two bytes more than the size of the String itself.
 // Variant A
 bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
-  if(!_prepWrite(address))
-		return false;
-
-	#ifndef HIGHSPEED
-	if(!_notPrevWritten(address, sizeof(inputStr)))
-		return false;
-	#endif
 
   uint16_t inStrLen = inputStr.length() + 1;
   char inputChar[inStrLen];
-  writeWord(address, inStrLen, errorCheck);
 
-  address+=sizeof(inStrLen);
-  
-  inputStr.toCharArray(inputChar, inStrLen);
-  writeCharArray(address, inputChar, inStrLen, errorCheck);
-  return true;
+  union
+	{
+		uint8_t b[sizeof(inStrLen)];
+		uint16_t w;
+	} var;
+	var.w = inStrLen;
+	inputStr.toCharArray(inputChar, inStrLen);
+	
+	if(!_prepWrite(address))
+		return false;
+
+	#ifndef HIGHSPEED
+	if(!_notPrevWritten(address, inStrLen))
+		return false;
+	#endif
+
+	_beginWrite(address);
+
+	for (uint16_t j = 0; j < sizeof(inStrLen); j++) {
+      		_writeNextByte(var.b[j]);
+	}
+
+	for (int i = 0; i < inStrLen; i++) {
+		_addressCheck(address+i);
+		if (i == (inStrLen-1))
+			_writeNextByte(inputChar[i], NO_CONTINUE);
+		else
+			_writeNextByte(inputChar[i]);
+	}
+	_endProcess();
+
+	if (!errorCheck) {
+		return true;
+	}
+	else {
+		String tempStr;
+		readStr(address, tempStr);
+
+		return inputStr.equals(tempStr);
+	}
 }
 // Variant B
 bool SPIFlash::writeStr(uint16_t page_number, uint8_t offset, String &inputStr, bool errorCheck) {
@@ -1674,8 +1737,27 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 	
 	if (!errorCheck)
 		return true;
-	else
-		return _writeErrorCheck(address, *data_buffer);
+	else {
+		if (!_prepRead(address)) {
+			return false;
+		}
+		_beginRead(address);
+		for (uint16_t j = 0; j < PAGESIZE; j++){
+			if(j == PAGESIZE-1) {
+				if (data_buffer[j] != _readNextByte(NO_CONTINUE)) {
+					return false;
+				}
+			}
+			else {
+				if (data_buffer[j] != _readNextByte()) {
+					return false;
+				}
+			}
+		}
+		_endProcess();
+		return true;
+		//return _writeErrorCheck(address, *data_buffer);
+	}
 }
 
 

@@ -127,7 +127,7 @@ private:
   bool     _addressCheck(uint32_t address);
   bool     _beginWrite(uint32_t address);
   bool     _writeNextByte(uint8_t c, bool _continue = true);
-  bool     _writeEnable(void);
+  bool     _writeEnable(uint32_t timeout = 10L);
   bool     _writeDisable(void);
   bool     _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
@@ -143,7 +143,7 @@ private:
   //-------------------------------------------Private variables------------------------------------------//
   bool        pageOverflow;
   volatile uint8_t *cs_port;
-  uint8_t     cs_mask, csPin, errorcode;
+  uint8_t     cs_mask, csPin, errorcode, state;
   uint16_t    name;
   uint32_t    capacity, maxPage;
   uint32_t    currentAddress = 1;
@@ -235,33 +235,6 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
   return readAnything(address, value, fastRead);
 }
 
-// Private template to check for errors in writing to flash memory
-template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-if (!_prepRead(address))
-    return false;
-
-  const byte* p = (const byte*)(const void*)&value;
-  _beginRead(address);
-  for(uint16_t i = 0; i < sizeof(value);i++)
-  {
-    #if defined (__arm__) && defined (__SAM3X8E__)
-      if (i == sizeof(value)-1) {
-        if (*p++ != _readNextByte(false))
-          return false;
-        else 
-          return true;
-      }
-      else
-        if (*p++ != _readNextByte())
-          return false;
-    #elif defined (__AVR__)
-    if (*p++ != _readNextByte())
-      return false;
-    #endif
-  }
-  _endProcess();
-  return true;
-}
 
 
 #endif // _SPIFLASH_H_
