@@ -147,9 +147,10 @@ private:
   uint16_t    name;
   uint32_t    capacity, maxPage;
   uint32_t    currentAddress = 1;
-  const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+  const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18};
   const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
-                                2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L};
+                                2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
+                                32L * 1024L * 1024L};
   const uint16_t chipName[10] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256};
 };
 
