@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.2.1
+/* Arduino SPIFlash Library v.2.3.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 24/11/2015
  *

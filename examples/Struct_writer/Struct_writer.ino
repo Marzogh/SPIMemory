@@ -2,10 +2,10 @@
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                               Struct_writer.ino                                                               |
 |                                                               SPIFlash library                                                                |
-|                                                                   v 2.2.0                                                                     |
+|                                                                   v 2.3.0                                                                     |
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                                    Marzogh                                                                    |
-|                                                                  25.11.2015                                                                   |
+|                                                                  04.06.2016                                                                   |
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                                                                                                               |
 |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
@@ -30,7 +30,7 @@
 const int LDR = A0;
 #endif
 
-const int cs = 10;
+const int cs = 4;
 
 
 SPIFlash flash(cs);
@@ -56,9 +56,8 @@ void setup() {
   }
   Serial.println();
   Serial.println();
-}
 
-void loop() {
+  
   uint16_t pageNo = random(0, 4095);
   uint8_t offset = random(0, 255);
 
@@ -99,7 +98,6 @@ void loop() {
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
   Serial.println();
-  //Serial.print("Number of bytes read back: ");
   flash.readAnything(pageNo, offset, configuration);
   flash.eraseSector(pageNo, 0);
 
@@ -110,8 +108,10 @@ void loop() {
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
 
-  while (1) {}
+}
 
+void loop() {
+delay(1000);
 }
 
 #ifdef SENSOR
