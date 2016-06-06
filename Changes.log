@@ -2,6 +2,16 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.4.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						06.06.2016											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+--> Arduino Zero compatibility added
+--> Increased speed of executing functions
+--> Diagnostics.ino now outputs time taken for each function as a part of its readout
+--> Fixed errorchecking bug - it now works for all daya types - not just byte/char as previously
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						04.06.2016											   //

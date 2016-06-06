@@ -26,7 +26,7 @@
 #include "SPIFlash.h"
 #include "defines.h"
 
-#if defined (__SAM3X8E__) || defined (ARDUINO_ARCH_ESP8266)
+#if defined (ARDUINO_ARCH_SAM)|| defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266)
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>
@@ -46,7 +46,7 @@
 //																	  //
 // Make sure the sectors being written to have been erased beforehand //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#if defined (__SAM3X8E__)
+#if defined (ARDUINO_ARCH_SAM)
 //#define HIGHSPEED		
 #elif defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 //#define HIGHSPEED													  
@@ -105,7 +105,7 @@
  #endif */
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#if defined (__SAM3X8E__)
+#if defined (ARDUINO_ARCH_SAM)
  #include <SPI.h>
 #elif defined (ARDUINO_ARCH_AVR)
 	#ifdef __AVR_ATtiny85__
@@ -132,7 +132,7 @@
         #define CHIP_DESELECT *cs_port |=  cs_mask;
         #define xfer(n)   SPI.transfer(n)
     #endif
-#elif defined (ARDUINO_ARCH_ESP8266)
+#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
         #include <SPI.h>
         #define CHIP_SELECT   digitalWrite(csPin, LOW);
         #define CHIP_DESELECT digitalWrite(csPin, HIGH);
@@ -140,7 +140,7 @@
 #endif
 
 // Constructor
-#if defined (__SAM3X8E__)
+#if defined (ARDUINO_ARCH_SAM)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 	csPin = cs;
 	pageOverflow = overflow;
@@ -159,13 +159,15 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
     pageOverflow = overflow;
     pinMode(cs, OUTPUT);
 }
-#elif defined (ARDUINO_ARCH_ESP8266)
+#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 	csPin = cs;
 	SPI.begin();
     SPI.setDataMode(0);
     SPI.setBitOrder(MSBFIRST);
+    #ifdef ARDUINO_ARCH_ESP8266
     SPI.setFrequency(800000);
+    #endif
     //SPI.setClockDivider(SPI_CLOCK_DIV2);
     pageOverflow = overflow;
     pinMode(cs, OUTPUT);
@@ -179,7 +181,7 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 // Select chip and issue command - data to follow
 void SPIFlash::_cmd(uint8_t cmd, bool _continue) {
 	uint8_t cs = csPin;
- #if defined (__SAM3X8E__)
+ #if defined (ARDUINO_ARCH_SAM)
 	if (!_continue)
 		SPI.transfer(cs, cmd);
 	else
@@ -194,7 +196,7 @@ void SPIFlash::_cmd(uint8_t cmd, bool _continue) {
 uint8_t SPIFlash::_readStat1(void) {
 	uint8_t stat1;
 	_cmd(READSTAT1);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 	stat1 = SPI.transfer(csPin, 0x00);
 	#else
 	stat1 = xfer(0);
@@ -208,7 +210,7 @@ bool SPIFlash::_noSuspend(void) {
 	uint8_t stat2;
 
 	_cmd(READSTAT2);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 		stat2 = SPI.transfer(csPin, 0x00);
 	#else
 		stat2 = xfer(0);
@@ -228,7 +230,7 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
 	do {
 		state = _readStat1();
 		/*_cmd(READSTAT1);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 		state = SPI.transfer(csPin, 0x00);
 	#else
 		state = xfer(0);
@@ -252,7 +254,7 @@ bool SPIFlash::_writeEnable(uint32_t timeout) {
 
 	do{
 		if (!(state & WRTEN)){
-			#if (__SAM3X8E__)
+			#if (ARDUINO_ARCH_SAM)
 			SPI.transfer(csPin, WRITEENABLE);
 			#else
 			_cmd(WRITEENABLE);
@@ -309,7 +311,7 @@ bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
 	if(!_notBusy())
 		return false;
 	_cmd(MANID);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 		SPI.transfer(csPin, 0x00, SPI_CONTINUE);
 		SPI.transfer(csPin, 0x00, SPI_CONTINUE);
 		SPI.transfer(csPin, 0x00, SPI_CONTINUE);
@@ -331,7 +333,7 @@ bool SPIFlash::_getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
   if(!_notBusy())
   	return false;
   _cmd(JEDECID);
-  #if defined (__SAM3X8E__)
+  #if defined (ARDUINO_ARCH_SAM)
 		*b1 = SPI.transfer(csPin, 0x00, SPI_CONTINUE);		// manufacturer id
 		*b2 = SPI.transfer(csPin, 0x00, SPI_CONTINUE);		// manufacturer id
 		*b3 = SPI.transfer(csPin, 0x00);					// capacity
@@ -433,7 +435,7 @@ uint32_t SPIFlash::_prepRead(uint16_t page_number, uint8_t offset) {
 //Initiates read operation - but data is not read yet
 void SPIFlash::_beginRead(uint32_t address) {
 	_cmd(READDATA);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
   	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
   	SPI.transfer(csPin, address, SPI_CONTINUE);
@@ -449,7 +451,7 @@ void SPIFlash::_beginRead(uint32_t address) {
 //- but data is not read yet
 void SPIFlash::_beginFastRead(uint32_t address) {
 	_cmd(FASTREAD);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
   	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
   	SPI.transfer(csPin, address, SPI_CONTINUE);
@@ -464,7 +466,7 @@ void SPIFlash::_beginFastRead(uint32_t address) {
 //Reads next byte. Call 'n' times to read 'n' number of bytes. Should be called after _beginRead()
 uint8_t SPIFlash::_readNextByte(bool _continue) {
 	uint8_t result;
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 		if (!_continue)
 			result = SPI.transfer(csPin, 0x00);
 		else
@@ -502,7 +504,7 @@ uint32_t SPIFlash::_prepWrite(uint16_t page_number, uint8_t offset) {
 //Initiates write operation - but data is not written yet
 bool SPIFlash::_beginWrite(uint32_t address) {
 	_cmd(PAGEPROG);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
   	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
   	SPI.transfer(csPin, address, SPI_CONTINUE);
@@ -517,7 +519,7 @@ bool SPIFlash::_beginWrite(uint32_t address) {
 
 //Writes next byte. Call 'n' times to read 'n' number of bytes. Should be called after _beginWrite()
 bool SPIFlash::_writeNextByte(uint8_t b, bool _continue) {
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 		if (!_continue)
 			SPI.transfer(csPin, b);
 		else
@@ -530,7 +532,7 @@ bool SPIFlash::_writeNextByte(uint8_t b, bool _continue) {
 
 //Stops all operations. Should be called after all the required data is read/written from repeated _readNextByte()/_writeNextByte() calls
 void SPIFlash::_endProcess(void) {
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 	_delay_us(3);
 	#else
 	CHIP_DESELECT
@@ -572,7 +574,7 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint8_t size) {
  			#endif
 			return false;
 		}
-		#if defined (__SAM3X8E__)
+		#if defined (ARDUINO_ARCH_SAM)
 		_readNextByte(NO_CONTINUE);
 		_delay_us(3);
 		#else
@@ -693,7 +695,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 
 //Identifies chip and establishes parameters
 void SPIFlash::begin() {
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
 	SPI.begin(csPin);
 	SPI.setClockDivider(csPin, 21);
 	SPI.setDataMode(csPin, SPI_MODE0);
@@ -1731,7 +1733,7 @@ bool SPIFlash::eraseSector(uint32_t address) {
  		return false;
 
 	_cmd(SECTORERASE);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
  	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
  	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
  	SPI.transfer(csPin, 0x00);
@@ -1769,7 +1771,7 @@ bool SPIFlash::eraseBlock32K(uint32_t address) {
  		return false;
 
 	_cmd(BLOCK32ERASE);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
  	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
  	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
  	SPI.transfer(csPin, 0x00);
@@ -1807,7 +1809,7 @@ bool SPIFlash::eraseBlock64K(uint32_t address) {
  		return false;
 
 	_cmd(BLOCK64ERASE);
-	#if defined (__SAM3X8E__)
+	#if defined (ARDUINO_ARCH_SAM)
  	SPI.transfer(csPin, address >> 16, SPI_CONTINUE);
  	SPI.transfer(csPin, address >> 8, SPI_CONTINUE);
  	SPI.transfer(csPin, 0x00);
