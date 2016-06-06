@@ -24,6 +24,7 @@
  */
  
 #include "SPIFlash.h"
+#include "defines.h"
 
 #if defined (__SAM3X8E__) || defined (ARDUINO_ARCH_ESP8266)
  #define _delay_us(us) delayMicroseconds(us)
@@ -51,7 +52,7 @@
 //#define HIGHSPEED													  
 #endif																  
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
+/*
 #define _MANID		 0xEF
 #define PAGESIZE	 0x100
 
@@ -101,7 +102,7 @@
  #define PREVWRITTEN 	0x07
  #define UNKNOWNERROR	0xFF
 
- #endif
+ #endif */
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #if defined (__SAM3X8E__)
@@ -176,8 +177,8 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 // Select chip and issue command - data to follow
-void SPIFlash::_cmd(uint8_t cmd, bool _continue, uint8_t cs) {
-	cs = csPin;
+void SPIFlash::_cmd(uint8_t cmd, bool _continue) {
+	uint8_t cs = csPin;
  #if defined (__SAM3X8E__)
 	if (!_continue)
 		SPI.transfer(cs, cmd);
@@ -349,7 +350,7 @@ bool SPIFlash::_chipID(void) {
     uint8_t manID, devID ;
     _getManId(&manID, &devID);
 
-    if (manID != _MANID){		//If the chip is not a Winbond Chip
+    if (manID != _MANID_WB){		//If the chip is not a Winbond Chip
     	#ifdef RUNDIAGNOSTIC
     	errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
     	_troubleshoot(errorcode);
@@ -375,7 +376,7 @@ bool SPIFlash::_chipID(void) {
     	while(1);
     }
 
-   	maxPage = capacity/PAGESIZE;
+   	maxPage = capacity/PAGESIZE_WB;
 
    	/*#ifdef RUNDIAGNOSTIC
     char buffer[64];
@@ -572,7 +573,7 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint8_t size) {
 			return false;
 		}
 		#if defined (__SAM3X8E__)
-		_readNextByte(NO_CONTINUE)
+		_readNextByte(NO_CONTINUE);
 		_delay_us(3);
 		#else
 		CHIP_DESELECT
@@ -685,48 +686,6 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 	}
 }
 #endif
-
-// Private template to check for errors in writing to flash memory
-template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-if (!_prepRead(address))
-    return false;
-
-  const byte* p = (const byte*)(const void*)&value;
-
-  _beginRead(address);
-  for(uint16_t i = 0; i < sizeof(value);i++)
-  {
-    if(*p++ != _readNextByte())
-    {
-      return false;
-    }
-    /*#if defined (__arm__) && defined (__SAM3X8E__)
-      if (i == sizeof(value)-1) {
-        if (*p++ != _readNextByte(false))
-          return false;
-        else 
-          return true;
-      }
-      else
-        if (*p++ != _readNextByte())
-          return false;
-    #elif defined (__AVR__)
-    if (*p++ != _readNextByte())
-      return false;
-    #endif*/
-  }
-  #if defined (__SAM3X8E__)
-  _readNextByte(NO_CONTINUE)
-  _delay_us(3);
-  #else
-  CHIP_DESELECT
-  _delay_us(3);
-  #endif
-  
-  return true;
-}
-
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Public functions used for read, write and erase operations     //
@@ -1212,8 +1171,8 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRe
 	else
 		_beginFastRead(address);
 
-	for (int a = 0; a < PAGESIZE; ++a) {
-		if (a == (PAGESIZE - 1))
+	for (int a = 0; a < PAGESIZE_WB; ++a) {
+		if (a == (PAGESIZE_WB - 1))
 				data_buffer[a] = _readNextByte(NO_CONTINUE);
 			else
 				data_buffer[a] = _readNextByte();
@@ -1327,7 +1286,7 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
 
 	_beginWrite(address);
 
-	for (int i = 0; i < bufferSize; i++) {
+	for (uint16_t i = 0; i < bufferSize; i++) {
 		_addressCheck(address+i);
 		if (i == (bufferSize-1))
 			_writeNextByte(data_buffer[i], NO_CONTINUE);
@@ -1374,7 +1333,7 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
 
 	_beginWrite(address);
 
-	for (int i = 0; i < bufferSize; i++) {
+	for (uint16_t i = 0; i < bufferSize; i++) {
 		_addressCheck(address+i);
 		if (i == (bufferSize-1))
 			_writeNextByte(data_buffer[i], NO_CONTINUE);
@@ -1727,8 +1686,8 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 	#endif
 
 	_beginWrite(address);
-	for (uint16_t i = 0; i < PAGESIZE; ++i){
-		if (i == (PAGESIZE-1))
+	for (uint16_t i = 0; i < PAGESIZE_WB; ++i){
+		if (i == (PAGESIZE_WB-1))
 		_writeNextByte(data_buffer[i], NO_CONTINUE);
 	else
 		_writeNextByte(data_buffer[i]);
@@ -1742,8 +1701,8 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 			return false;
 		}
 		_beginRead(address);
-		for (uint16_t j = 0; j < PAGESIZE; j++){
-			if(j == PAGESIZE-1) {
+		for (uint16_t j = 0; j < PAGESIZE_WB; j++){
+			if(j == PAGESIZE_WB-1) {
 				if (data_buffer[j] != _readNextByte(NO_CONTINUE)) {
 					return false;
 				}

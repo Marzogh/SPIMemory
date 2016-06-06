@@ -116,7 +116,7 @@ public:
   //--------------------------------------------Private functions-------------------------------------------//
 private:
   void     _troubleshoot(uint8_t error);
-  void     _cmd(uint8_t cmd, bool _continue = true, uint8_t cs = 0);
+  void     _cmd(uint8_t cmd, bool _continue = true);
   void     _endProcess(void);
   void     _errorCodeCheck(void);
   void     _beginRead(uint32_t address);
@@ -235,6 +235,39 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
   return readAnything(address, value, fastRead);
 }
 
+// Private template to check for errors in writing to flash memory
+template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
+if (!_prepRead(address))
+    return false;
+
+  const byte* p = (const byte*)(const void*)&value;
+
+  _beginRead(address);
+  for(uint16_t i = 0; i < sizeof(value);i++)
+  {
+    if(*p++ != _readNextByte())
+    {
+      return false;
+    }
+    /*#if defined (__arm__) && defined (__SAM3X8E__)
+      if (i == sizeof(value)-1) {
+        if (*p++ != _readNextByte(false))
+          return false;
+        else 
+          return true;
+      }
+      else
+        if (*p++ != _readNextByte())
+          return false;
+    #elif defined (__AVR__)
+    if (*p++ != _readNextByte())
+      return false;
+    #endif*/
+  }
+  _endProcess();
+  
+  return true;
+}
 
 
 #endif // _SPIFLASH_H_
