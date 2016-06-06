@@ -1,1 +1,6 @@
 *.development
+
+#OS specific ignores
+
+*.DS_Store
+Thumbs.db
