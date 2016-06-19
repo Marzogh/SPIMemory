@@ -2,6 +2,14 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.3.1 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						04.06.2016											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+--> W25Q256FV support added. (Thanks Stanislav-Povolotsky!)
+--> Cleaned up redundant code in TestFlash.ino and SPIFlash.h
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						04.06.2016											   //
@@ -18,7 +26,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> When #RUNDIAGNOSTIC is uncommented, the _troubleshoot() function is now optimised for different µCs
---> Added the ability to check if the address has been previously written to before initiating a write 
+--> Added the ability to check if the address has been previously written to before initiating a write
 	operation.
 --> Added a sizeofStr() function to get sizes of String objects, to use with the getAddress() function
 --> Fixed a bug with getAddress()
@@ -82,9 +90,9 @@
 			C. printAllPages()
 			D. readSerialStr()
 
-	They can be used by uncommenting them in the SPIFlash.cpp file. However, be warned, this particular block of code has only 
+	They can be used by uncommenting them in the SPIFlash.cpp file. However, be warned, this particular block of code has only
 	been tested with the Arduino	IDE (1.6.5) and only with 8-bit AVR based Arduino boards and will not be supported any further.
-		
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 1.3.2 									   	   //
 //									Author: Prajwal Bhattaram									   //

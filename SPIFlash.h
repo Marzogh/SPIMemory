@@ -1,9 +1,9 @@
-/* Arduino SPIFlash Library v.2.3.0
+/* Arduino SPIFlash Library v.2.3.1
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 24/11/2015
+ * Modified by Prajwal Bhattaram - 19/06/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading 
+ * Winbond NOR flash memory modules. In its current form it enables reading
  * and writing individual data variables, structs and arrays from and to various locations;
  * reading and writing pages; continuous read functions; sector, block and chip erase;
  * suspending and resuming programming/erase and powering down for low power operation.
@@ -22,7 +22,7 @@
  * along with the Arduino SPIFlash Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
 
@@ -58,8 +58,8 @@ public:
   int8_t   readChar(uint32_t address, bool fastRead = false);
   int8_t   readChar(uint16_t page_number, uint8_t offset, bool fastRead = false);
   //----------------------------------------Write / Read Char Arrays----------------------------------------//
-  bool     writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck = true); 
-  bool     writeCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool errorCheck = true); 
+  bool     writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
+  bool     writeCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
   uint8_t  readCharArray(uint32_t address, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
   uint8_t  readCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
   //------------------------------------------Write / Read Shorts------------------------------------------//
@@ -156,9 +156,9 @@ private:
 
   //--------------------------------------------Templates-------------------------------------------//
 
-// Writes any type of data to a specific location in the flash memory. 
+// Writes any type of data to a specific location in the flash memory.
 // Has two variants:
-//  A. Takes two arguments - 
+//  A. Takes two arguments -
 //    1. address --> Any address from 0 to maxAddress
 //    2. T& value --> Variable to return data into
 //    4. errorCheck --> Turned on by default. Checks for writing errors
@@ -170,7 +170,7 @@ private:
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {  
+template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {
   if (!_prepWrite(address))
     return false;
   else {
@@ -197,9 +197,9 @@ template <class T> bool SPIFlash::writeAnything(uint16_t page_number, uint8_t of
   return writeAnything(address, value, errorCheck);
 }
 
-// Reads any type of data from a specific location in the flash memory. 
+// Reads any type of data from a specific location in the flash memory.
 // Has two variants:
-//  A. Takes two arguments - 
+//  A. Takes two arguments -
 //    1. address --> Any address from 0 to maxAddress
 //    2. T& value --> Variable to return data into
 //    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
@@ -248,7 +248,7 @@ if (!_prepRead(address))
       if (i == sizeof(value)-1) {
         if (*p++ != _readNextByte(false))
           return false;
-        else 
+        else
           return true;
       }
       else
