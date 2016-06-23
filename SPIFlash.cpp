@@ -51,59 +51,6 @@
 #elif defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 //#define HIGHSPEED													  
 #endif																  
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-/*
-#define _MANID		 0xEF
-#define PAGESIZE	 0x100
-
-#define	MANID		 0x90
-#define PAGEPROG     0x02
-#define READDATA     0x03
-#define FASTREAD	 0x0B
-#define WRITEDISABLE 0x04
-#define READSTAT1    0x05
-#define READSTAT2	 0x35
-#define WRITEENABLE  0x06
-#define SECTORERASE  0x20
-#define BLOCK32ERASE 0x52
-#define CHIPERASE    0x60
-#define SUSPEND      0x75
-#define ID           0x90
-#define RESUME       0x7A
-#define JEDECID      0x9f
-#define RELEASE      0xAB
-#define POWERDOWN    0xB9
-#define BLOCK64ERASE 0xD8
-
-#define BUSY         0x01
-#define WRTEN        0x02
-#define SUS 		 0x40
-#define DUMMYBYTE	 0xEE
-
-#define arrayLen(x)  	(sizeof(x) / sizeof(*x))
-#define lengthOf(x)  	(sizeof(x))/sizeof(byte)
-#define maxAddress		capacity
-#define NO_CONTINUE		0x00
-#define PASS			0x01
-#define FAIL			0x00
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     					   List of Error codes						  //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
- #ifdef RUNDIAGNOSTIC
-
- #define SUCCESS 	 	0x00
- #define CALLBEGIN		0x01
- #define UNKNOWNCHIP	0x02
- #define UNKNOWNCAP		0x03
- #define CHIPBUSY		0x04
- #define OUTOFBOUNDS	0x05
- #define CANTENWRITE	0x06
- #define PREVWRITTEN 	0x07
- #define UNKNOWNERROR	0xFF
-
- #endif */
- //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #if defined (ARDUINO_ARCH_SAM)
  #include <SPI.h>
@@ -615,7 +562,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.print("Error code: 0x0");
 		Serial.println(UNKNOWNCHIP, HEX);
 		#else
-		Serial.println("Unable to identify chip. Are you shure this is a Winbond Flash chip");
+		Serial.println("Unable to identify chip. Are you sure this is a Winbond Flash chip");
  		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with your chip type and I will try to add support to your chip");
 		#endif
 
@@ -639,7 +586,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.println("Chip is busy.");
  		Serial.println("Make sure all pins have been connected properly");
  		Serial.print("If it still doesn't work, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 
@@ -660,7 +607,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.println("Unable to Enable Writing to chip.");
  		Serial.println("Please make sure the HOLD & WRITEPROTECT pins are connected properly to VCC & GND respectively");
  		Serial.print("If you are still facing issues, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 
@@ -672,7 +619,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.println("This sector already contains data.");
  		Serial.println("Please make sure the sectors being written to are erased.");
  		Serial.print("If you are still facing issues, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 
@@ -682,7 +629,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		Serial.println(UNKNOWNERROR, HEX);
 		#else
 		Serial.println("Unknown error");
- 		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 	}
@@ -701,6 +648,10 @@ void SPIFlash::begin() {
 	SPI.setDataMode(csPin, SPI_MODE0);
 	#endif
 	_chipID();
+}
+
+uint8_t SPIFlash::error() {
+	return errorcode;
 }
 
 //Returns capacity of chip

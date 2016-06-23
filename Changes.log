@@ -4,13 +4,21 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.4.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						06.06.2016											   //
+//					  						23.06.2016											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> Arduino Zero compatibility added
 --> Increased speed of executing functions
 --> Diagnostics.ino now outputs time taken for each function as a part of its readout
 --> Fixed errorchecking bug - it now works for all daya types - not just byte/char as previously
+--> Added a function 'error()' to enable users to check for errors at any point in their program.//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.3.1 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						19.06.2016											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+--> W25Q256FV support added. (Thanks Stanislav-Povolotsky!)
+--> Cleaned up redundant code in TestFlash.ino and SPIFlash.h
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

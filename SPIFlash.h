@@ -34,6 +34,7 @@ public:
   SPIFlash(uint8_t cs = 10, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin();
+  uint8_t  error();
   uint16_t getManID();
   uint32_t getJEDECID();
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
