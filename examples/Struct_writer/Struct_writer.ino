@@ -30,10 +30,9 @@
 const int LDR = A0;
 #endif
 
-const int cs = 4;
 
 
-SPIFlash flash(cs);
+SPIFlash flash;
 
 
 struct Configuration {

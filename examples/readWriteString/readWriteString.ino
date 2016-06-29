@@ -15,12 +15,10 @@
 #include<SPIFlash.h>
 #include<SPI.h>
 
-#define cs 10
-
 int strPage, strSize;
 byte strOffset;
 
-SPIFlash flash(cs);
+SPIFlash flash;
 
 bool readSerialStr(String &inputStr);
 

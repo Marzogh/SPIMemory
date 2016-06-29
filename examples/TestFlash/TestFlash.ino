@@ -68,7 +68,6 @@
 
 #include<SPIFlash.h>
 #include<SPI.h>
-const int cs = 10;
 uint8_t pageBuffer[256];
 String serialCommand;
 char printBuffer[128];
@@ -78,7 +77,7 @@ uint16_t dataInt;
 String inputString, outputString;
 
 
-SPIFlash flash(cs);
+SPIFlash flash;
 
 void setup() {
   delay(10);

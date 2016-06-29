@@ -17,7 +17,6 @@
 #include<SPI.h>
 #include<SPIFlash.h>
 
-#define CS 4
 #define arrayLen(x) sizeof(x)/sizeof(x[0])
 uint32_t strAddr[3], floatAddr[2], byteAddr[4];
 String testStr[] = {
@@ -32,7 +31,7 @@ byte testByte[] = {
   3, 245, 84, 100
 };
 
-SPIFlash flash(CS);
+SPIFlash flash;
 
 void getAddresses();
 void writeData();

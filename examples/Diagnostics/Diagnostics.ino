@@ -18,11 +18,10 @@
 #include<SPIFlash.h>
 #include<SPI.h>
 
-const int cs = 4;
-uint8_t pageInputBuffer[256], pageOutputBuffer[256];
+//const int cs = 4;
 char printBuffer[128];
 
-struct Test {
+/*struct Test {
   word s1;
   float s2;
   long s3;
@@ -49,22 +48,12 @@ struct timer {
   uint32_t _Xchip;
 };
 timer writeTimer;
-timer readTimer;
+timer writeTimerNE;
+timer readTimer;*/
 
-uint16_t bytePage, charPage, wordPage, shortPage, ULongPage, longPage, floatPage, stringPage, structPage, page;
-uint8_t byteOffset, charOffset, wordOffset, shortOffset, ULongOffset, longOffset, floatOffset, stringOffset, structOffset;
 
-uint8_t _byte = 35;
-int8_t _char = -110;
-uint16_t _word = 4520;
-int16_t _short = -1250;
-uint32_t _uLong = 876532;
-int32_t _long = -10959;
-float _float = 3.1415;
-String _string = "123 Test !@#";
-float startTime;
 
-SPIFlash flash(cs);
+SPIFlash flash;
 
 void setup() {
   Serial.begin(115200);
@@ -80,15 +69,10 @@ void setup() {
 
   randomSeed(analogRead(A0));
 
-  for (int i = 0; i < 256; ++i) {
-    pageInputBuffer[i] = i;
-  }
-
-  getAddresses();
+  //getAddresses();
   ID();
-  writeData();
-  checkData();
-  checkFunctions();
+  diagnose();
+//  checkFunctions();
 }
 
 void loop() {
@@ -129,12 +113,11 @@ void printTab(uint8_t a, uint8_t b) {
   }
 }
 
-void startTimer() {
-  startTime = micros();
-}
-
-uint32_t getTimer() {
-  return (micros() - startTime);
+void printTime(uint32_t _wTime, uint32_t _rTime) {
+  printTab(2, 1);
+  printTimer(_wTime);
+  printTab(2, 1);
+  printTimer(_rTime);
 }
 
 void printTimer(uint32_t _us) {
