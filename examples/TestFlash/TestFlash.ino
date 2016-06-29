@@ -89,14 +89,6 @@ void setup() {
   }
   Serial.println();
   flash.begin();
-  /*
-   //Uncomment this code block if your code doesn't run to check for Flash error code
-  clearprintBuffer();
-  sprintf(printBuffer, "Flash initiation code: %x", flashCode);
-  Serial.println(printBuffer);
-  Serial.println(F("If flashCode !=0 please redownload the latest version of the library."));
-  Serial.println(F("If flashcode still !=0 after downloading the latest version, please raise an issue at https://github.com/Marzogh/SPIFlash/issues."));
-  */
   Serial.println();
   Serial.println();
   commandList();
@@ -594,4 +586,3 @@ void writeFail()
 {
   Serial.println("Data write failed");
 }
-

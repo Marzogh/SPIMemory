@@ -9,9 +9,19 @@
 
 --> Arduino Zero compatibility added
 --> Increased speed of executing functions
---> Diagnostics.ino now outputs time taken for each function as a part of its readout
+--> Diagnostics.ino now outputs time taken for each function as a part of its and provides additional diagnostic data
 --> Fixed errorchecking bug - it now works for all data types - not just byte/char as previously
 --> Optimized writePage()
+--> Fixed bug in _notPrevWritten()
+--> Fixed bug preventing writing to Address 0x00
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.3.1 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						04.06.2016											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+--> W25Q256FV support added. (Thanks Stanislav-Povolotsky!)
+--> Cleaned up redundant code in TestFlash.ino and SPIFlash.h
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
