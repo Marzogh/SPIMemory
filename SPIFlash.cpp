@@ -375,7 +375,12 @@ uint32_t SPIFlash::_prepRead(uint32_t address) {
     return false;
   }
 	else {
-		return address;
+    if (address == 0x00) {
+      return true;
+    }
+    else {
+      return address;
+    }
   }
 }
 // Variant B
@@ -445,9 +450,14 @@ uint32_t SPIFlash::_prepWrite(uint32_t address) {
  		_troubleshoot(errorcode);
  		#endif
  		return false;
-	}
-	else {
-		return address;
+  }
+  else {
+    if (address == 0x00) {
+      return true;
+    }
+    else {
+      return address;
+    }
   }
 }
 // Variant B
@@ -1118,14 +1128,17 @@ bool SPIFlash::readStr(uint16_t page_number, uint8_t offset, String &outStr, boo
 //  2. data_buffer --> a data buffer to read the data into (This HAS to be an array of 256 bytes)
 //	3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead) {
-	uint32_t address = _prepRead(page_number);
+	uint32_t address = _getAddress(page_number);
+  if(!_prepRead(address)) {
+    return false;
+  }
 
 	if(!fastRead)
 		_beginRead(address);
 	else
 		_beginFastRead(address);
 
-	for (int a = 0; a < PAGESIZE; ++a) {
+	for (int a = 0; a < PAGESIZE; a++) {
 		if (a == (PAGESIZE - 1))
 				data_buffer[a] = _readNextByte(NO_CONTINUE);
 			else
@@ -1209,7 +1222,7 @@ bool SPIFlash::writeChar(uint32_t address, int8_t data, bool errorCheck) {
 }
 // Variant B
 bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck) {
-	uint32_t address = _prepWrite(page_number, offset);
+	uint32_t address = _getAddress(page_number, offset);
 
 	return writeChar(address, data, errorCheck);
 
@@ -1632,7 +1645,10 @@ bool SPIFlash::writeStr(uint16_t page_number, uint8_t offset, String &inputStr, 
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck) {
-	uint32_t address = _prepWrite(page_number);
+	uint32_t address = _getAddress(page_number);
+  if (!_prepWrite(address)) {
+    return false;
+  }
 
 	#ifndef HIGHSPEED
 	if(!_notPrevWritten(address, PAGESIZE))
@@ -1640,7 +1656,7 @@ bool SPIFlash::writePage(uint16_t page_number, uint8_t *data_buffer, bool errorC
 	#endif
 
 	_beginWrite(address);
-	for (uint16_t i = 0; i < PAGESIZE; ++i){
+	for (uint16_t i = 0; i < PAGESIZE; i++){
 		if (i == (PAGESIZE-1)) {
       _writeNextByte(data_buffer[i], NO_CONTINUE);
     }

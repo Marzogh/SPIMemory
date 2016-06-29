@@ -238,12 +238,16 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-if (address != 0x00){
+/*if (address != 0x00){
   if (!_prepRead(address)) {
     return false;
   }
 }
 else if (address == 0x00 && !_notBusy()) {
+  return false;
+}
+*/
+if (!_prepRead(address) && !_notBusy()) {
   return false;
 }
 
