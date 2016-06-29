@@ -18,40 +18,10 @@
 #include<SPIFlash.h>
 #include<SPI.h>
 
-//const int cs = 4;
+#define WINBOND     0xEF
+#define MICROCHIP   0xBF
+
 char printBuffer[128];
-
-/*struct Test {
-  word s1;
-  float s2;
-  long s3;
-  bool s4;
-  byte s5;
-};
-Test inputStruct;
-Test outputStruct;
-
-struct timer {
-  uint32_t _byte;
-  uint32_t _char;
-  uint32_t _word;
-  uint32_t _short;
-  uint32_t _ulong;
-  uint32_t _long;
-  uint32_t _float;
-  uint32_t _string;
-  uint32_t _struct;
-  uint32_t _page;
-  uint32_t _pwrdwn;
-  uint32_t _pwrup;
-  uint32_t _Xsector;
-  uint32_t _Xchip;
-};
-timer writeTimer;
-timer writeTimerNE;
-timer readTimer;*/
-
-
 
 SPIFlash flash;
 
@@ -68,11 +38,8 @@ void setup() {
   Serial.println();
 
   randomSeed(analogRead(A0));
-
-  //getAddresses();
   ID();
   diagnose();
-//  checkFunctions();
 }
 
 void loop() {

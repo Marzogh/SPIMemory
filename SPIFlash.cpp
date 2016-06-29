@@ -314,6 +314,9 @@ bool SPIFlash::_chipID(void) {
     	if (devID == devType[i]) {
     		capacity = memSize[i];
     		name = chipName[i];
+        //Serial.println(devID, HEX);
+        //Serial.println(capacity);
+        //Serial.println(name);
     	}
     }
     if (capacity == 0) {

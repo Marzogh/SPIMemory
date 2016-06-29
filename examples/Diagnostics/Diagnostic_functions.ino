@@ -22,46 +22,76 @@ void ID() {
   uint8_t b1, b2;
   uint16_t b3;
   uint32_t JEDEC = flash.getJEDECID();
-  uint16_t ManID = flash.getManID();
   uint32_t maxPage = flash.getMaxPage();
   uint16_t _name = flash.getChipName();
+  b1 = (JEDEC >> 16);
+  b2 = (JEDEC >> 8);
+  b3 = (JEDEC >> 0);
 
-  //---------------------------------------------------------------------------------------------//
-  //--------------------------Prints the name of the Flash chip in use---------------------------//
-  //---------------------------------------------------------------------------------------------//
-  Serial.print(F("                                                                          Winbond "));
-  if (_name < 80) {
-    if (_name == 05) {
-      clearprintBuffer();
-      sprintf(printBuffer, "W25X%02dCL", _name);
-      Serial.println(printBuffer);
-      clearprintBuffer();
-    }
-    else if (_name % 10 == 0) {
-      clearprintBuffer();
-      sprintf(printBuffer, "W25X%02dBV", _name);
-      Serial.println(printBuffer);
-      clearprintBuffer();
+  if (b1 == WINBOND) {
+    //---------------------------------------------------------------------------------------------//
+    //--------------------------Prints the name of the Flash chip in use---------------------------//
+    //---------------------------------------------------------------------------------------------//
+    Serial.print(F("                                                                          Winbond "));
+    if (_name < 80) {
+      if (_name == 05) {
+        clearprintBuffer();
+        sprintf(printBuffer, "W25X%02d**", _name);
+        Serial.println(printBuffer);
+        clearprintBuffer();
+      }
+      else if (_name % 10 == 0) {
+        clearprintBuffer();
+        sprintf(printBuffer, "W25X%02d**", _name);
+        Serial.println(printBuffer);
+        clearprintBuffer();
+      }
+      else {
+        clearprintBuffer();
+        sprintf(printBuffer, "W25Q%02d**", _name);
+        Serial.println(printBuffer);
+        clearprintBuffer();
+      }
     }
     else {
       clearprintBuffer();
-      sprintf(printBuffer, "W25Q%02dBV", _name);
+      sprintf(printBuffer, "W25Q%02d**", _name);
       Serial.println(printBuffer);
       clearprintBuffer();
     }
   }
-  else {
-    clearprintBuffer();
-    sprintf(printBuffer, "W25Q%02dBV", _name);
-    Serial.println(printBuffer);
-    clearprintBuffer();
+  else if (b1 == MICROCHIP) {
+    Serial.print(F("                                                                        Microchip "));
+    if (_name < 80) {
+      if (_name == 05) {
+        clearprintBuffer();
+        sprintf(printBuffer, "W25X%02d**", _name);
+        Serial.println(printBuffer);
+        clearprintBuffer();
+      }
+      else if (_name % 10 == 0) {
+        clearprintBuffer();
+        sprintf(printBuffer, "W25X%02d**", _name);
+        Serial.println(printBuffer);
+        clearprintBuffer();
+      }
+      else {
+        clearprintBuffer();
+        sprintf(printBuffer, "W25Q%02d**", _name);
+        Serial.println(printBuffer);
+        clearprintBuffer();
+      }
+    }
+    else {
+      clearprintBuffer();
+      sprintf(printBuffer, "W25Q%02d**", _name);
+      Serial.println(printBuffer);
+      clearprintBuffer();
+    }
   }
   printLine();
   //---------------------------------------------------------------------------------------------//
 
-  b1 = (ManID >> 8);
-  b2 = (ManID >> 0);
-  b3 = (JEDEC >> 0);
   clearprintBuffer();
   sprintf(printBuffer, "\t\t\tJEDEC ID: %04lxh", JEDEC);
   Serial.println(printBuffer);
