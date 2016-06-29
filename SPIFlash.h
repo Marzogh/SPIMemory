@@ -1,9 +1,9 @@
-/* Arduino SPIFlash Library v.2.3.0
+/* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 24/11/2015
+ * Modified by Prajwal Bhattaram - 29/06/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading 
+ * Winbond NOR flash memory modules. In its current form it enables reading
  * and writing individual data variables, structs and arrays from and to various locations;
  * reading and writing pages; continuous read functions; sector, block and chip erase;
  * suspending and resuming programming/erase and powering down for low power operation.
@@ -22,7 +22,7 @@
  * along with the Arduino SPIFlash Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
 
@@ -31,9 +31,9 @@
 class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------//
-  SPIFlash(uint8_t cs = 10, bool overflow = true);
+  SPIFlash(uint8_t cs = SS, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
-  void     begin();
+  void     begin(void);
   uint16_t getManID();
   uint32_t getJEDECID();
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
@@ -58,8 +58,8 @@ public:
   int8_t   readChar(uint32_t address, bool fastRead = false);
   int8_t   readChar(uint16_t page_number, uint8_t offset, bool fastRead = false);
   //----------------------------------------Write / Read Char Arrays----------------------------------------//
-  bool     writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck = true); 
-  bool     writeCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool errorCheck = true); 
+  bool     writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
+  bool     writeCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
   uint8_t  readCharArray(uint32_t address, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
   uint8_t  readCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
   //------------------------------------------Write / Read Shorts------------------------------------------//
@@ -123,7 +123,7 @@ private:
   void     _beginFastRead(uint32_t address);
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
-  bool     _notPrevWritten(uint32_t address, uint8_t size = 1);
+  bool     _notPrevWritten(uint32_t address, uint16_t size = 1);
   bool     _addressCheck(uint32_t address);
   bool     _beginWrite(uint32_t address);
   bool     _writeNextByte(uint8_t c, bool _continue = true);
@@ -147,18 +147,19 @@ private:
   uint16_t    name;
   uint32_t    capacity, maxPage;
   uint32_t    currentAddress = 1;
-  const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
-  const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
-                                2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L};
-  const uint16_t chipName[10] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256};
+  const uint8_t devType[11]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x43};
+  const uint32_t memSize[11]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
+                                2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
+                                32L * 1024L * 1024L, 8L * 1024L * 1024L};
+  const uint16_t chipName[11] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256, 64};
 };
 
 
   //--------------------------------------------Templates-------------------------------------------//
 
-// Writes any type of data to a specific location in the flash memory. 
+// Writes any type of data to a specific location in the flash memory.
 // Has two variants:
-//  A. Takes two arguments - 
+//  A. Takes two arguments -
 //    1. address --> Any address from 0 to maxAddress
 //    2. T& value --> Variable to return data into
 //    4. errorCheck --> Turned on by default. Checks for writing errors
@@ -170,7 +171,7 @@ private:
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {  
+template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {
   if (!_prepWrite(address))
     return false;
   else {
@@ -197,9 +198,9 @@ template <class T> bool SPIFlash::writeAnything(uint16_t page_number, uint8_t of
   return writeAnything(address, value, errorCheck);
 }
 
-// Reads any type of data from a specific location in the flash memory. 
+// Reads any type of data from a specific location in the flash memory.
 // Has two variants:
-//  A. Takes two arguments - 
+//  A. Takes two arguments -
 //    1. address --> Any address from 0 to maxAddress
 //    2. T& value --> Variable to return data into
 //    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
@@ -237,11 +238,16 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-if (!_prepRead(address))
+if (address != 0x00){
+  if (!_prepRead(address)) {
     return false;
+  }
+}
+else if (address == 0x00 && !_notBusy()) {
+  return false;
+}
 
   const byte* p = (const byte*)(const void*)&value;
-
   _beginRead(address);
   for(uint16_t i = 0; i < sizeof(value);i++)
   {
@@ -253,7 +259,7 @@ if (!_prepRead(address))
       if (i == sizeof(value)-1) {
         if (*p++ != _readNextByte(false))
           return false;
-        else 
+        else
           return true;
       }
       else
@@ -265,7 +271,6 @@ if (!_prepRead(address))
     #endif*/
   }
   _endProcess();
-  
   return true;
 }
 
