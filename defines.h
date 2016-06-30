@@ -34,6 +34,7 @@
 #define WRITEDISABLE 0x04
 #define READSTAT1    0x05
 #define READSTAT2	 0x35
+#define WRITESTAT    0x01
 #define WRITEENABLE  0x06
 #define SECTORERASE  0x20
 #define BLOCK32ERASE 0x52
