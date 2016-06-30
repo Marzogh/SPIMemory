@@ -132,13 +132,13 @@ private:
   bool     _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
   bool     _chipID(void);
+  bool _prepRead(uint32_t address);
+  bool _prepRead(uint16_t page_number, uint8_t offset = 0);
+  bool _prepWrite(uint32_t address);
+  bool _prepWrite(uint16_t page_number, uint8_t offset = 0);
   uint8_t  _readStat1(void);
   uint8_t  _readNextByte(bool _continue = true);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
-  uint32_t _prepRead(uint32_t address);
-  uint32_t _prepRead(uint16_t page_number, uint8_t offset = 0);
-  uint32_t _prepWrite(uint32_t address);
-  uint32_t _prepWrite(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   //-------------------------------------------Private variables------------------------------------------//
   bool        pageOverflow;

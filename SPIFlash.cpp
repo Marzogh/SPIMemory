@@ -367,7 +367,7 @@ bool SPIFlash::_addressCheck(uint32_t address) {
 //	A. Takes address and returns the address if true, else returns false. Throws an error if there is a problem.
 //	B. Takes page_number and offset and returns address. Throws an error if there is a problem
 // Variant A
-uint32_t SPIFlash::_prepRead(uint32_t address) {
+bool SPIFlash::_prepRead(uint32_t address) {
 	if(!_notBusy()){
     return false;
   }
@@ -375,16 +375,11 @@ uint32_t SPIFlash::_prepRead(uint32_t address) {
     return false;
   }
 	else {
-    if (address == 0x00) {
-      return true;
-    }
-    else {
-      return address;
-    }
+    return true;
   }
 }
 // Variant B
-uint32_t SPIFlash::_prepRead(uint16_t page_number, uint8_t offset) {
+bool SPIFlash::_prepRead(uint16_t page_number, uint8_t offset) {
 	uint32_t address = _getAddress(page_number, offset);
 	return _prepRead(address);
 }
@@ -441,7 +436,7 @@ uint8_t SPIFlash::_readNextByte(bool _continue) {
 //	A. Takes address and returns address if true or 'false' if false. Throws an error if there is a problem.
 //	B. Takes page_number and offset and returns address. Throws an error if there is a problem
 // Variant A
-uint32_t SPIFlash::_prepWrite(uint32_t address) {
+bool SPIFlash::_prepWrite(uint32_t address) {
 	if(!_notBusy()||!_writeEnable())
  		return false;
 	if (!_addressCheck(address)) {
@@ -452,16 +447,11 @@ uint32_t SPIFlash::_prepWrite(uint32_t address) {
  		return false;
   }
   else {
-    if (address == 0x00) {
-      return true;
-    }
-    else {
-      return address;
-    }
+    return true;
   }
 }
 // Variant B
-uint32_t SPIFlash::_prepWrite(uint16_t page_number, uint8_t offset) {
+bool SPIFlash::_prepWrite(uint16_t page_number, uint8_t offset) {
 	uint32_t address = _getAddress(page_number, offset);
 	return _prepWrite(address);
 }
