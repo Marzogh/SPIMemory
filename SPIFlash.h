@@ -176,7 +176,7 @@ template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value
     return false;
   else {
     const byte* p = (const byte*)(const void*)&value;
-    _beginWrite(address);
+    _beginWrite(_currentAddress);
     for (uint16_t i = 0; i < sizeof(value); i++) {
       #if defined (__arm__) && defined (__SAM3X8E__)
         if (i == sizeof(value)-1)
@@ -216,9 +216,9 @@ template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool 
 
     byte* p = (byte*)(void*)&value;
     if(!fastRead)
-      _beginRead(address);
+      _beginRead(_currentAddress);
     else
-      _beginFastRead(address);
+      _beginFastRead(_currentAddress);
     for (uint16_t i = 0; i < sizeof(value); i++) {
       #if defined (__arm__) && defined (__SAM3X8E__)
         if (i == sizeof(value)-1)
@@ -243,7 +243,7 @@ if (!_prepRead(address, sizeof(value)) && !_notBusy()) {
 }
 
   const byte* p = (const byte*)(const void*)&value;
-  _beginRead(address);
+  _beginRead(_currentAddress);
   for(uint16_t i = 0; i < sizeof(value);i++)
   {
     #if defined (__arm__) && defined (__SAM3X8E__)
