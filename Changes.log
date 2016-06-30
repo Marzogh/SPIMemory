@@ -14,6 +14,8 @@
 --> Optimized writePage()
 --> Fixed bug in _notPrevWritten()
 --> Fixed bug preventing writing to Address 0x00
+--> Changed the way _addressCheck() works. It now checks all addresses involved in writing the data rather than one address block at a time and returns the correct address to write to in case overflow is enabled. Also, this function is now built into _prepRead() and _prepWrite().
+--> Reading and writing using page numbers + offset is now much faster than before.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.1 									   	   //
 //									Author: Prajwal Bhattaram									   //

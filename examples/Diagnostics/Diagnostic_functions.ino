@@ -24,6 +24,7 @@ void ID() {
   uint32_t JEDEC = flash.getJEDECID();
   uint32_t maxPage = flash.getMaxPage();
   uint16_t _name = flash.getChipName();
+  uint32_t capacity = flash.getCapacity();
   b1 = (JEDEC >> 16);
   b2 = (JEDEC >> 8);
   b3 = (JEDEC >> 0);
@@ -96,7 +97,8 @@ void ID() {
   sprintf(printBuffer, "\t\t\tJEDEC ID: %04lxh", JEDEC);
   Serial.println(printBuffer);
   clearprintBuffer();
-  sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %02xh\n\t\t\tMaximum pages: %lu", b1, b2, b3, maxPage);
+  //sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %02xh\n\t\t\tMaximum pages: %lu", b1, b2, b3, maxPage);
+  sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
   Serial.println(printBuffer);
 }
 
@@ -726,7 +728,11 @@ void pageDiag(void) {
     printPass();
   else
     printFail();
-  printTime(wTime, rTime);
+  //printTime(wTime, rTime);
+  printTab(2, 1);
+  printTimer(wTime);
+  printTab(1, 1);
+  printTimer(rTime);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                   Write (No Error)                                                                  //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

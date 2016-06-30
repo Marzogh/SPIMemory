@@ -50,8 +50,8 @@ public:
   //----------------------------------------Write / Read Byte Arrays----------------------------------------//
   bool     writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck = true);
   bool     writeByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck = true);
-  uint8_t  readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
-  uint8_t  readByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
+  bool     readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
+  bool     readByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
   //-------------------------------------------Write / Read Chars-------------------------------------------//
   bool     writeChar(uint32_t address, int8_t data, bool errorCheck = true);
   bool     writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck = true);
@@ -60,8 +60,8 @@ public:
   //----------------------------------------Write / Read Char Arrays----------------------------------------//
   bool     writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
   bool     writeCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
-  uint8_t  readCharArray(uint32_t address, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
-  uint8_t  readCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
+  bool     readCharArray(uint32_t address, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
+  bool     readCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
   //------------------------------------------Write / Read Shorts------------------------------------------//
   bool     writeShort(uint32_t address, int16_t data, bool errorCheck = true);
   bool     writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck = true);
@@ -123,8 +123,7 @@ private:
   void     _beginFastRead(uint32_t address);
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
-  bool     _notPrevWritten(uint32_t address, uint16_t size = 1);
-  bool     _addressCheck(uint32_t address);
+  bool     _notPrevWritten(uint32_t address, uint32_t size = 1);
   bool     _beginWrite(uint32_t address);
   bool     _writeNextByte(uint8_t c, bool _continue = true);
   bool     _writeEnable(uint32_t timeout = 10L);
@@ -132,10 +131,11 @@ private:
   bool     _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
   bool     _chipID(void);
-  bool _prepRead(uint32_t address);
-  bool _prepRead(uint16_t page_number, uint8_t offset = 0);
-  bool _prepWrite(uint32_t address);
-  bool _prepWrite(uint16_t page_number, uint8_t offset = 0);
+  bool     _addressCheck(uint32_t address, uint32_t size = 1);
+  bool     _prepRead(uint32_t address, uint32_t size);
+  bool     _prepRead(uint16_t page_number, uint8_t offset = 0, uint32_t size = 1);
+  bool     _prepWrite(uint32_t address, uint32_t size);
+  bool     _prepWrite(uint16_t page_number, uint8_t offset = 0, uint32_t size = 1);
   uint8_t  _readStat1(void);
   uint8_t  _readNextByte(bool _continue = true);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
@@ -146,7 +146,7 @@ private:
   uint8_t     cs_mask, csPin, errorcode, state;
   uint16_t    name;
   uint32_t    capacity, maxPage;
-  uint32_t    currentAddress = 1;
+  uint32_t    currentAddress, _currentAddress = 0;
   const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
   const uint32_t memSize[11]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
@@ -172,7 +172,7 @@ private:
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {
-  if (!_prepWrite(address))
+  if (!_prepWrite(address, sizeof(value)))
     return false;
   else {
     const byte* p = (const byte*)(const void*)&value;
@@ -211,7 +211,7 @@ template <class T> bool SPIFlash::writeAnything(uint16_t page_number, uint8_t of
 //    3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool fastRead) {
-  if (!_prepRead(address))
+  if (!_prepRead(address, sizeof(value)))
     return false;
 
     byte* p = (byte*)(void*)&value;
@@ -238,16 +238,7 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-/*if (address != 0x00){
-  if (!_prepRead(address)) {
-    return false;
-  }
-}
-else if (address == 0x00 && !_notBusy()) {
-  return false;
-}
-*/
-if (!_prepRead(address) && !_notBusy()) {
+if (!_prepRead(address, sizeof(value)) && !_notBusy()) {
   return false;
 }
 
@@ -255,24 +246,20 @@ if (!_prepRead(address) && !_notBusy()) {
   _beginRead(address);
   for(uint16_t i = 0; i < sizeof(value);i++)
   {
-    if(*p++ != _readNextByte())
-    {
-      return false;
-    }
-    /*#if defined (__arm__) && defined (__SAM3X8E__)
+    #if defined (__arm__) && defined (__SAM3X8E__)
       if (i == sizeof(value)-1) {
         if (*p++ != _readNextByte(false))
           return false;
-        else
-          return true;
       }
       else
         if (*p++ != _readNextByte())
           return false;
     #elif defined (__AVR__)
-    if (*p++ != _readNextByte())
-      return false;
-    #endif*/
+      if(*p++ != _readNextByte())
+      {
+        return false;
+      }
+      #endif
   }
   _endProcess();
   return true;
