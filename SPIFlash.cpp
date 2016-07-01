@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 29/06/2016
+ * Modified by Prajwal Bhattaram - 01/07/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -559,7 +559,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.print("Error code: 0x0");
 		Serial.println(UNKNOWNCHIP, HEX);
 		#else
-		Serial.println("Unable to identify chip. Are you shure this is a Winbond Flash chip");
+		Serial.println("Unable to identify chip. Are you sure this is a Winbond Flash chip");
  		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with your chip type and I will try to add support to your chip");
 		#endif
 
@@ -583,7 +583,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.println("Chip is busy.");
  		Serial.println("Make sure all pins have been connected properly");
  		Serial.print("If it still doesn't work, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 
@@ -604,7 +604,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.println("Unable to Enable Writing to chip.");
  		Serial.println("Please make sure the HOLD & WRITEPROTECT pins are connected properly to VCC & GND respectively");
  		Serial.print("If you are still facing issues, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 
@@ -616,7 +616,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
  		Serial.println("This sector already contains data.");
  		Serial.println("Please make sure the sectors being written to are erased.");
  		Serial.print("If you are still facing issues, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 
@@ -626,7 +626,7 @@ void SPIFlash::_troubleshoot(uint8_t error) {
 		Serial.println(UNKNOWNERROR, HEX);
 		#else
 		Serial.println("Unknown error");
- 		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occured");
+ 		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
 		#endif
 		break;
 	}
@@ -646,6 +646,10 @@ void SPIFlash::begin(void) {
 	SPI.setDataMode(csPin, SPI_MODE0);
 	#endif
 	_chipID();
+}
+
+uint8_t SPIFlash::error() {
+	return errorcode;
 }
 
 //Returns capacity of chip

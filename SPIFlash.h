@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 29/06/2016
+ * Modified by Prajwal Bhattaram - 01/07/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -34,6 +34,7 @@ public:
   SPIFlash(uint8_t cs = SS, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin(void);
+  uint8_t  error();
   uint16_t getManID();
   uint32_t getJEDECID();
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);

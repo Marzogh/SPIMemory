@@ -4,10 +4,10 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.4.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						06.06.2016											   //
+//					  						01.07.2016											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
---> Arduino Zero compatibility added
+--> Arduino Zero compatibility in progress
 --> Increased speed of executing functions
 --> Diagnostics.ino now outputs time taken for each function as a part of its and provides additional diagnostic data
 --> Fixed errorchecking bug - it now works for all data types - not just byte/char as previously
@@ -19,7 +19,11 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.1 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						04.06.2016											   //
+//					  						19.06.2016											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+--> Diagnostics.ino now outputs time taken for each function as a part of its readout
+--> Fixed errorchecking bug - it now works for all daya types - not just byte/char as previously
+--> Added a function 'error()' to enable users to check for errors at any point in their program.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> W25Q256FV support added. (Thanks Stanislav-Povolotsky!)
