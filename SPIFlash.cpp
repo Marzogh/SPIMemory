@@ -522,7 +522,7 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
 		}
     #if defined (ARDUINO_ARCH_SAM)
     _readNextByte(NO_CONTINUE);
-    _delay_us(3)
+    _delay_us(3);
     #else
     CHIP_DESELECT
     _delay_us(3);
