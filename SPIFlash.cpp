@@ -174,8 +174,8 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
 	do {
     state = _readStat1();
 		if((millis()-startTime) > timeout){
+    errorcode = CHIPBUSY;
 			#ifdef RUNDIAGNOSTIC
-			errorcode = CHIPBUSY;
 			_troubleshoot(errorcode);
 			#endif
 			return false;
@@ -199,8 +199,8 @@ bool SPIFlash::_writeEnable(uint32_t timeout) {
        state = _readStat1();
      }
      if((millis()-startTime) > timeout){
-       #ifdef RUNDIAGNOSTIC
        errorcode = CHIPBUSY;
+       #ifdef RUNDIAGNOSTIC
        _troubleshoot(errorcode);
        #endif
        return false;
@@ -282,8 +282,8 @@ bool SPIFlash::_chipID(void) {
     //Serial.println(devID, HEX);
 
     if (manID != WINBOND_MANID && manID != MICROCHIP_MANID){		//If the chip is not a Winbond Chip
+      errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
     	#ifdef RUNDIAGNOSTIC
-    	errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
     	_troubleshoot(errorcode);
     	#endif
     	while(1);
@@ -303,8 +303,8 @@ bool SPIFlash::_chipID(void) {
     	}
     }
     if (capacity == 0) {
+      errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
     	#ifdef RUNDIAGNOSTIC
-    	errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
     	_troubleshoot(errorcode);
     	#endif
     	while(1);
@@ -323,20 +323,21 @@ bool SPIFlash::_chipID(void) {
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
 bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
-	#ifdef RUNDIAGNOSTIC
 	if (capacity == 0) {
-		errorcode = CALLBEGIN;
-		_troubleshoot(errorcode);
+    errorcode = CALLBEGIN;
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot(errorcode);
+    #endif
 	}
-	#endif
+
   for (uint32_t i = 0; i < size; i++) {
     if (address + i >= maxAddress) {
     	if (!pageOverflow) {
-	    	#ifdef RUNDIAGNOSTIC
-	    	errorcode = OUTOFBOUNDS;
-	    	_troubleshoot(errorcode);
-	    	#endif
-	    	return false;					// At end of memory - (!pageOverflow)
+        errorcode = OUTOFBOUNDS;
+        #ifdef RUNDIAGNOSTIC
+        _troubleshoot(errorcode);
+        #endif
+        return false;					// At end of memory - (!pageOverflow)
       }
       else {
         _currentAddress = 0x00;
@@ -358,10 +359,10 @@ bool SPIFlash::_prepRead(uint32_t address, uint32_t size) {
     return false;
   }
 	if (!_addressCheck(address, size)){
-		#ifdef RUNDIAGNOSTIC
-		errorcode = OUTOFBOUNDS;
- 		_troubleshoot(errorcode);
- 		#endif
+    errorcode = OUTOFBOUNDS;
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot(errorcode);
+    #endif
     return false;
   }
 	else {
@@ -437,8 +438,8 @@ bool SPIFlash::_prepWrite(uint32_t address, uint32_t size) {
   #endif
 
   if (!_addressCheck(address, size)) {
-		#ifdef RUNDIAGNOSTIC
 		errorcode = OUTOFBOUNDS;
+		#ifdef RUNDIAGNOSTIC
  		_troubleshoot(errorcode);
  		#endif
  		return false;
@@ -514,11 +515,11 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
 	for (uint16_t i = 0; i < sampleSize; i++) {
 		_beginRead(addresses[i]);
 		if (_readNextByte() != 0xFF) {
-			#ifdef RUNDIAGNOSTIC
-			errorcode = PREVWRITTEN;
- 			_troubleshoot(errorcode);
- 			#endif
-			return false;
+    errorcode = PREVWRITTEN;
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot(errorcode);
+    #endif
+    return false;
 		}
     #if defined (ARDUINO_ARCH_SAM)
     _readNextByte(NO_CONTINUE);
@@ -694,11 +695,11 @@ uint32_t SPIFlash::getJEDECID() {
 // Variant A
 uint32_t SPIFlash::getAddress(uint16_t size) {
 	if (!_addressCheck(currentAddress, size)){
-		#ifdef RUNDIAGNOSTIC
-		errorcode = OUTOFBOUNDS;
- 		_troubleshoot(errorcode);
- 		#endif
- 		return false;
+    errorcode = OUTOFBOUNDS;
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot(errorcode);
+    #endif
+    return false;
 	}
 	else {
 		uint32_t address = currentAddress;
