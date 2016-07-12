@@ -1643,7 +1643,7 @@ bool SPIFlash::eraseSector(uint32_t address) {
 	CHIP_DESELECT
 	#endif
 
-	if(!_notBusy(410L))
+	if(!_notBusy(500L))
 		return false;	//Datasheet says erasing a sector takes 400ms max
 
 		//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
@@ -1681,7 +1681,7 @@ bool SPIFlash::eraseBlock32K(uint32_t address) {
 	CHIP_DESELECT
 	#endif
 
-	if(!_notBusy(410L))
+	if(!_notBusy(1000L))
 	return false;	//Datasheet says erasing a sector takes 400ms max
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
@@ -1719,7 +1719,7 @@ bool SPIFlash::eraseBlock64K(uint32_t address) {
 	CHIP_DESELECT
 	#endif
 
-	if(!_notBusy(410L))
+	if(!_notBusy(1200L))
 		return false;	//Datasheet says erasing a sector takes 400ms max
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
@@ -1745,7 +1745,7 @@ bool SPIFlash::eraseChip(void) {
 	CHIP_DESELECT
 	#endif
 
-	if(!_notBusy(7000L))
+	if(!_notBusy(50000L))
 		return false; //Datasheet says erasing chip takes 6s max
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
@@ -1772,7 +1772,7 @@ bool SPIFlash::suspendProg(void) {
 
 	_delay_us(20);
 
-	if(!_notBusy() || _noSuspend())	//Max suspend Enable time according to datasheet
+	if(!_notBusy(50) || _noSuspend())	//Max suspend Enable time according to datasheet
 		return false;
 	return true;
 }
@@ -1789,7 +1789,7 @@ bool SPIFlash::resumeProg(void) {
 
 	_delay_us(20);
 
-	if(_notBusy() || !_noSuspend())
+	if(_notBusy(10) || !_noSuspend())
 		return false;
 	return true;
 
@@ -1799,14 +1799,14 @@ bool SPIFlash::resumeProg(void) {
 //Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4)
 //In powerDown() the chip will only respond to powerUp()
 bool SPIFlash::powerDown(void) {
-	if(!_notBusy())
+	if(!_notBusy(20))
 		return false;
 
 	_cmd(POWERDOWN, NO_CONTINUE);
 	#if defined (ARDUINO_ARCH_AVR) || defined (ARDUINO_ARCH_ESP8266)
 	CHIP_DESELECT
 	#endif
-	_delay_us(3);							//Max powerDown enable time according to the Datasheet
+	_delay_us(5);							//Max powerDown enable time according to the Datasheet
 
 	uint8_t status1 = _readStat1();
 	uint8_t status2 = _readStat1();
