@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 01/07/2016
+ * Modified by Prajwal Bhattaram - 16/07/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -27,13 +27,13 @@
 //						Common Instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#define	MANID		 0x90
+/*#define	MANID        0x90
 #define PAGEPROG     0x02
 #define READDATA     0x03
-#define FASTREAD	 0x0B
+#define FASTREAD     0x0B
 #define WRITEDISABLE 0x04
 #define READSTAT1    0x05
-#define READSTAT2	 0x35
+#define READSTAT2    0x35
 #define WRITESTAT    0x01
 #define WRITEENABLE  0x06
 #define SECTORERASE  0x20
@@ -45,7 +45,27 @@
 #define JEDECID      0x9f
 #define RELEASE      0xAB
 #define POWERDOWN    0xB9
-#define BLOCK64ERASE 0xD8
+#define BLOCK64ERASE 0xD8*/
+
+const uint8_t	MANID = 0x90;
+const uint8_t PAGEPROG = 0x02;
+const uint8_t READDATA = 0x03;
+const uint8_t FASTREAD = 0x0B;
+const uint8_t WRITEDISABLE = 0x04;
+const uint8_t READSTAT1 = 0x05;
+const uint8_t READSTAT2 = 0x35;
+const uint8_t WRITESTAT = 0x01;
+const uint8_t WRITEENABLE = 0x06;
+const uint8_t SECTORERASE = 0x20;
+const uint8_t BLOCK32ERASE = 0x52;
+const uint8_t CHIPERASE = 0xC7;
+const uint8_t SUSPEND = 0x75;
+const uint8_t ID = 0x90;
+const uint8_t RESUME = 0x7A;
+const uint8_t JEDECID = 0x9F;
+const uint8_t RELEASE = 0xAB;
+const uint8_t POWERDOWN = 0xB9;
+const uint8_t BLOCK64ERASE = 0xD8;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
@@ -62,10 +82,11 @@
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#define BUSY         0x01
-#define WRTEN        0x02
-#define SUS 		 0x40
-#define DUMMYBYTE	 0xEE
+#define BUSY        0x01
+const uint8_t WRTEN = 0x02;
+const uint8_t SUS = 0x40;
+const uint8_t DUMMYBYTE = 0xEE;
+const uint8_t NULLBYTE = 0x00;
 
 #define arrayLen(x)  	(sizeof(x) / sizeof(*x))
 #define lengthOf(x)  	(sizeof(x))/sizeof(byte)

@@ -38,7 +38,7 @@ void setup() {
   Serial.println();
 
   randomSeed(analogRead(A0));
-  ID();
+  getID();
   diagnose();
 }
 

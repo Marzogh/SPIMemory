@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 01/07/2016
+ * Modified by Prajwal Bhattaram - 16/07/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -27,6 +27,7 @@
 #define SPIFLASH_H
 
 #include <Arduino.h>
+#include "defines.h"
 
 class SPIFlash {
 public:
@@ -94,7 +95,7 @@ public:
   bool     readStr(uint32_t address, String &outStr, bool fastRead = false);
   bool     readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
   //-------------------------------------------Write / Read Pages-------------------------------------------//
-  bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
+  bool     writePage(uint16_t page_number, const uint8_t *data_buffer, bool errorCheck = true);
   bool     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
   //------------------------------------------Write / Read Anything-----------------------------------------//
   template <class T> bool writeAnything(uint32_t address, const T& value, bool errorCheck = true);
@@ -116,29 +117,27 @@ public:
   bool     powerUp(void);
   //--------------------------------------------Private functions-------------------------------------------//
 private:
-  void     _troubleshoot(uint8_t error);
+  void     _troubleshoot(void);
   void     _cmd(uint8_t cmd, bool _continue = true);
   void     _endProcess(void);
   void     _errorCodeCheck(void);
-  void     _beginRead(uint32_t address);
-  void     _beginFastRead(uint32_t address);
+  void     _endSPI(void);
+  bool     _prep(uint8_t opcode, uint32_t address, uint32_t size);
+  bool     _prep(uint8_t opcode, uint32_t page_number, uint8_t offset, uint32_t size);
+  bool     _beginSPI(uint8_t opcode);
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
   bool     _notPrevWritten(uint32_t address, uint32_t size = 1);
-  bool     _beginWrite(uint32_t address);
-  bool     _writeNextByte(uint8_t c, bool _continue = true);
   bool     _writeEnable(uint32_t timeout = 10L);
   bool     _writeDisable(void);
   bool     _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
   bool     _chipID(void);
+  bool     _transferAddress(void);
   bool     _addressCheck(uint32_t address, uint32_t size = 1);
-  bool     _prepRead(uint32_t address, uint32_t size);
-  bool     _prepRead(uint16_t page_number, uint8_t offset = 0, uint32_t size = 1);
-  bool     _prepWrite(uint32_t address, uint32_t size);
-  bool     _prepWrite(uint16_t page_number, uint8_t offset = 0, uint32_t size = 1);
+  uint8_t  _nextByte(uint8_t opcode, uint8_t byte = 0x00);
   uint8_t  _readStat1(void);
-  uint8_t  _readNextByte(bool _continue = true);
+  uint8_t  _readStat2(void);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   //-------------------------------------------Private variables------------------------------------------//
@@ -148,6 +147,9 @@ private:
   uint16_t    name;
   uint32_t    capacity, maxPage;
   uint32_t    currentAddress, _currentAddress = 0;
+  #ifdef SPI_HAS_TRANSACTION
+  SPISettings _settings;
+  #endif
   const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
   const uint32_t memSize[11]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
@@ -173,19 +175,15 @@ private:
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {
-  if (!_prepWrite(address, sizeof(value)))
+  if (!_prep(PAGEPROG, address, sizeof(value)))
     return false;
   else {
     const byte* p = (const byte*)(const void*)&value;
-    _beginWrite(_currentAddress);
+    _beginSPI(PAGEPROG);
     for (uint16_t i = 0; i < sizeof(value); i++) {
-      #if defined (__arm__) && defined (__SAM3X8E__)
-        if (i == sizeof(value)-1)
-          _writeNextByte(*p++, false);
-      #endif
-        _writeNextByte(*p++);
+      _nextByte(PAGEPROG, *p++);
     }
-    _endProcess();
+    _endSPI();
   }
 
   if (!errorCheck)
@@ -212,22 +210,19 @@ template <class T> bool SPIFlash::writeAnything(uint16_t page_number, uint8_t of
 //    3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool fastRead) {
-  if (!_prepRead(address, sizeof(value)))
+  if (!_prep(READDATA, address, sizeof(value)))
     return false;
 
     byte* p = (byte*)(void*)&value;
     if(!fastRead)
-      _beginRead(_currentAddress);
+      _beginSPI(READDATA);
     else
-      _beginFastRead(_currentAddress);
+      _beginSPI(FASTREAD);
+
     for (uint16_t i = 0; i < sizeof(value); i++) {
-      #if defined (__arm__) && defined (__SAM3X8E__)
-        if (i == sizeof(value)-1)
-          *p++ = _readNextByte(false);
-      #endif
-      *p++ =_readNextByte();
+      *p++ =_nextByte(READDATA);
     }
-    _endProcess();
+    _endSPI();
     return true;
 }
 // Variant B
@@ -239,30 +234,20 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-if (!_prepRead(address, sizeof(value)) && !_notBusy()) {
+if (/*!_prep(READDATA, address, sizeof(value)) && */!_notBusy()) {
   return false;
 }
 
   const byte* p = (const byte*)(const void*)&value;
-  _beginRead(_currentAddress);
+  _beginSPI(READDATA);
   for(uint16_t i = 0; i < sizeof(value);i++)
   {
-    #if defined (__arm__) && defined (__SAM3X8E__)
-      if (i == sizeof(value)-1) {
-        if (*p++ != _readNextByte(false))
-          return false;
-      }
-      else
-        if (*p++ != _readNextByte())
-          return false;
-    #elif defined (__AVR__)
-      if(*p++ != _readNextByte())
+      if(*p++ != _nextByte(READDATA))
       {
         return false;
       }
-      #endif
   }
-  _endProcess();
+  _endSPI();
   return true;
 }
 
