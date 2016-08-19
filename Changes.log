@@ -6,27 +6,25 @@
 //									Author: Prajwal Bhattaram									   //
 //					  						16.07.2016											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
+Bugs Squashed:
+--> Fixed bug preventing writing to Address 0x00
+--> Fixed bug in _notPrevWritten() which did did not perform a thorough enough check to see if a location had been previously written to.
+--> Fixed errorchecking bug - it now works for all data types - not just byte/char as previously.
+Enhancements & Optimizations:
+--> Added a function 'error()' to enable users to check for errors generated at any point in their program.
+--> Optimized writePage() so it doesn't depend on other functions and so runs faster than before.
+--> Diagnostics.ino now outputs time taken for each function as a part of its and provides additional diagnostic data.
+--> Now have a common set of private functions - _prep(), _beginSPI(), _nextByte() & _endSPI() - to replace _prepWrite(), _prepRead(), _beginRead(), _readNextByte(), _beginWrite(), _writeNextByte() & _endProcess();
+--> Changed the way _addressCheck() works. It now checks all addresses involved in writing the data rather than one address block at a time and returns the correct address to write to in case overflow is enabled. Also, this function is now built into _prep().
+--> Reading and writing using page numbers + offset has been optimised to be faster than before.
+--> Optimized the way address and error checking is done so its more efficient and uses few system resources and runs faster.
+To-do
 --> Need to fix xfer() so it works with all boards
 --> Arduino Zero compatibility in progress
---> Increased speed of executing functions
---> Diagnostics.ino now outputs time taken for each function as a part of its and provides additional diagnostic data
---> Fixed errorchecking bug - it now works for all data types - not just byte/char as previously
---> Optimized writePage()
---> Fixed bug in _notPrevWritten()
---> Fixed bug preventing writing to Address 0x00
---> Changed the way _addressCheck() works. It now checks all addresses involved in writing the data rather than one address block at a time and returns the correct address to write to in case overflow is enabled. Also, this function is now built into _prepRead() and _prepWrite().
---> Reading and writing using page numbers + offset is now much faster than before.
---> Optimized the way address and error checking is done.
---> Now have a common set of functions - _prep(), _beginSPI(), _nextByte() & _endSPI() - to replace _prepWrite(), _prepRead(), _beginRead(), _readNextByte(), _beginWrite(), _writeNextByte() & _endProcess();
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.1 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						19.06.2016											   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
---> Diagnostics.ino now outputs time taken for each function as a part of its readout
---> Fixed errorchecking bug - it now works for all daya types - not just byte/char as previously
---> Added a function 'error()' to enable users to check for errors at any point in their program.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> W25Q256FV support added. (Thanks Stanislav-Povolotsky!)
