@@ -18,6 +18,7 @@ Enhancements & Optimizations:
 --> Changed the way _addressCheck() works. It now checks all addresses involved in writing the data rather than one address block at a time and returns the correct address to write to in case overflow is enabled. Also, this function is now built into _prep().
 --> Reading and writing using page numbers + offset has been optimised to be faster than before.
 --> Optimized the way address and error checking is done so its more efficient and uses few system resources and runs faster.
+--> Using this library with an ESP8266 board defaults to using GPIO15 as the Slave Select - unless something different is explicitly specified in the constructor. 
 To-do
 --> Need to fix xfer() so it works with all boards
 --> Arduino Zero compatibility in progress

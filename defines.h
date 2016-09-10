@@ -95,6 +95,12 @@ const uint8_t NULLBYTE = 0x00;
 #define PASS			0x01
 #define FAIL			0x00
 
+#if defined (ARDUINO_ARCH_ESP8266)
+#define CS 15
+#else
+#define CS SS
+#endif
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     					   List of Error codes						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

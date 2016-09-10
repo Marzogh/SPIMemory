@@ -359,9 +359,9 @@ bool SPIFlash::_chipID(void) {
     uint8_t manID, capID, devID ;
     //_getManId(&manID, &devID);
     _getJedecId(&manID, &capID, &devID);
-    //Serial.println(manID, HEX);
-    //Serial.println(capID, HEX);
-    //Serial.println(devID, HEX);
+    Serial.println(manID, HEX);
+    Serial.println(capID, HEX);
+    Serial.println(devID, HEX);
 
     if (manID != WINBOND_MANID && manID != MICROCHIP_MANID){		//If the chip is not a Winbond Chip
       errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
