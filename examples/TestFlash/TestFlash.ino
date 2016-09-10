@@ -1,10 +1,10 @@
 /*
  *----------------------------------------------------------------------------------------------------------------------------------*
  |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v2.3.1                                                |
+ |                                                      SPIFlash library test v2.4.0                                                |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                                                Marzogh                                                           |
- |                                                              19.06.2016                                                          |
+ |                                                              11.09.2016                                                          |
  |----------------------------------------------------------------------------------------------------------------------------------|
  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
  |                                     *****************************************************************                            |
@@ -68,7 +68,6 @@
 
 #include<SPIFlash.h>
 #include<SPI.h>
-const int cs = 10;
 uint8_t pageBuffer[256];
 String serialCommand;
 char printBuffer[128];
@@ -78,7 +77,7 @@ uint16_t dataInt;
 String inputString, outputString;
 
 
-SPIFlash flash(cs);
+SPIFlash flash;
 
 void setup() {
   delay(10);
@@ -106,12 +105,11 @@ void loop() {
       Serial.println(F("                                                      Function 1 : Get JEDEC ID                                                   "));
       printLine();
       printLine();
-      uint8_t b1, b2;
-      uint16_t b3;
+      uint8_t b1, b2, b3;
       uint32_t JEDEC = flash.getJEDECID();
-      uint16_t ManID = flash.getManID();
-      b1 = (ManID >> 8);
-      b2 = (ManID >> 0);
+      //uint16_t ManID = flash.getManID();
+      b1 = (JEDEC >> 16);
+      b2 = (JEDEC >> 8);
       b3 = (JEDEC >> 0);
       clearprintBuffer();
       sprintf(printBuffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);

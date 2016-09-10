@@ -2,9 +2,27 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.4.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						11.09.2016											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs Squashed:
+--> Fixed bug preventing writing to Address 0x00
+--> Fixed bug in _notPrevWritten() which did did not perform a thorough enough check to see if a location had been previously written to.
+--> Fixed errorchecking bug - it now works for all data types - not just byte/char as previously.
+Enhancements & Optimizations:
+--> Added a function 'error()' to enable users to check for errors generated at any point in their program.
+--> Optimized writePage() so it doesn't depend on other functions and so runs faster than before.
+--> Diagnostics.ino now outputs time taken for each function as a part of its and provides additional diagnostic data.
+--> Now have a common set of private functions - _prep(), _beginSPI(), _nextByte() & _endSPI() - to replace _prepWrite(), _prepRead(), _beginRead(), _readNextByte(), _beginWrite(), _writeNextByte() & _endProcess();
+--> Changed the way _addressCheck() works. It now checks all addresses involved in writing the data rather than one address block at a time and returns the correct address to write to in case overflow is enabled. Also, this function is now built into _prep().
+--> Reading and writing using page numbers + offset has been optimised to be faster than before.
+--> Optimized the way address and error checking is done so its more efficient and uses few system resources and runs faster.
+--> Using this library with an ESP8266 board defaults to using GPIO15 as the Slave Select - unless something different is explicitly specified in the constructor.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.3.1 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						04.06.2016											   //
+//					  						19.06.2016											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> W25Q256FV support added. (Thanks Stanislav-Povolotsky!)

@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.2.3.1
+/* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 19/06/2016
+ * Modified by Prajwal Bhattaram - 11/09/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -27,13 +27,15 @@
 #define SPIFLASH_H
 
 #include <Arduino.h>
+#include "defines.h"
 
 class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------//
-  SPIFlash(uint8_t cs = 10, bool overflow = true);
+  SPIFlash(uint8_t cs = CS, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
-  void     begin();
+  void     begin(void);
+  uint8_t  error();
   uint16_t getManID();
   uint32_t getJEDECID();
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
@@ -50,8 +52,8 @@ public:
   //----------------------------------------Write / Read Byte Arrays----------------------------------------//
   bool     writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck = true);
   bool     writeByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck = true);
-  uint8_t  readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
-  uint8_t  readByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
+  bool     readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
+  bool     readByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
   //-------------------------------------------Write / Read Chars-------------------------------------------//
   bool     writeChar(uint32_t address, int8_t data, bool errorCheck = true);
   bool     writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck = true);
@@ -60,8 +62,8 @@ public:
   //----------------------------------------Write / Read Char Arrays----------------------------------------//
   bool     writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
   bool     writeCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
-  uint8_t  readCharArray(uint32_t address, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
-  uint8_t  readCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
+  bool     readCharArray(uint32_t address, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
+  bool     readCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
   //------------------------------------------Write / Read Shorts------------------------------------------//
   bool     writeShort(uint32_t address, int16_t data, bool errorCheck = true);
   bool     writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck = true);
@@ -93,7 +95,7 @@ public:
   bool     readStr(uint32_t address, String &outStr, bool fastRead = false);
   bool     readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
   //-------------------------------------------Write / Read Pages-------------------------------------------//
-  bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
+  bool     writePage(uint16_t page_number, const uint8_t *data_buffer, bool errorCheck = true);
   bool     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
   //------------------------------------------Write / Read Anything-----------------------------------------//
   template <class T> bool writeAnything(uint32_t address, const T& value, bool errorCheck = true);
@@ -115,43 +117,44 @@ public:
   bool     powerUp(void);
   //--------------------------------------------Private functions-------------------------------------------//
 private:
-  void     _troubleshoot(uint8_t error);
-  void     _cmd(uint8_t cmd, bool _continue = true, uint8_t cs = 0);
+  void     _troubleshoot(void);
+  void     _cmd(uint8_t cmd, bool _continue = true);
   void     _endProcess(void);
   void     _errorCodeCheck(void);
-  void     _beginRead(uint32_t address);
-  void     _beginFastRead(uint32_t address);
+  void     _endSPI(void);
+  bool     _prep(uint8_t opcode, uint32_t address, uint32_t size);
+  bool     _prep(uint8_t opcode, uint32_t page_number, uint8_t offset, uint32_t size);
+  bool     _beginSPI(uint8_t opcode);
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
-  bool     _notPrevWritten(uint32_t address, uint8_t size = 1);
-  bool     _addressCheck(uint32_t address);
-  bool     _beginWrite(uint32_t address);
-  bool     _writeNextByte(uint8_t c, bool _continue = true);
-  bool     _writeEnable(void);
+  bool     _notPrevWritten(uint32_t address, uint32_t size = 1);
+  bool     _writeEnable(uint32_t timeout = 10L);
   bool     _writeDisable(void);
   bool     _getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
   bool     _chipID(void);
+  bool     _transferAddress(void);
+  bool     _addressCheck(uint32_t address, uint32_t size = 1);
+  uint8_t  _nextByte(uint8_t opcode, uint8_t byte = 0x00);
   uint8_t  _readStat1(void);
-  uint8_t  _readNextByte(bool _continue = true);
+  uint8_t  _readStat2(void);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
-  uint32_t _prepRead(uint32_t address);
-  uint32_t _prepRead(uint16_t page_number, uint8_t offset = 0);
-  uint32_t _prepWrite(uint32_t address);
-  uint32_t _prepWrite(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   //-------------------------------------------Private variables------------------------------------------//
   bool        pageOverflow;
   volatile uint8_t *cs_port;
-  uint8_t     cs_mask, csPin, errorcode;
+  uint8_t     cs_mask, csPin, errorcode, state;
   uint16_t    name;
   uint32_t    capacity, maxPage;
-  uint32_t    currentAddress = 1;
-  const uint8_t devType[10]   = {0x5, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18};
-  const uint32_t memSize[10]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
+  uint32_t    currentAddress, _currentAddress = 0;
+  #ifdef SPI_HAS_TRANSACTION
+  SPISettings _settings;
+  #endif
+  const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
+  const uint32_t memSize[11]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
-                                32L * 1024L * 1024L};
-  const uint16_t chipName[10] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256};
+                                32L * 1024L * 1024L, 8L * 1024L * 1024L};
+  const uint16_t chipName[11] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256, 64};
 };
 
 
@@ -172,19 +175,15 @@ private:
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {
-  if (!_prepWrite(address))
+  if (!_prep(PAGEPROG, address, sizeof(value)))
     return false;
   else {
     const byte* p = (const byte*)(const void*)&value;
-    _beginWrite(address);
+    _beginSPI(PAGEPROG);
     for (uint16_t i = 0; i < sizeof(value); i++) {
-      #if defined (__arm__) && defined (__SAM3X8E__)
-        if (i == sizeof(value)-1)
-          _writeNextByte(*p++, false);
-      #endif
-        _writeNextByte(*p++);
+      _nextByte(PAGEPROG, *p++);
     }
-    _endProcess();
+    _endSPI();
   }
 
   if (!errorCheck)
@@ -211,22 +210,19 @@ template <class T> bool SPIFlash::writeAnything(uint16_t page_number, uint8_t of
 //    3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool fastRead) {
-  if (!_prepRead(address))
+  if (!_prep(READDATA, address, sizeof(value)))
     return false;
 
     byte* p = (byte*)(void*)&value;
     if(!fastRead)
-      _beginRead(address);
+      _beginSPI(READDATA);
     else
-      _beginFastRead(address);
+      _beginSPI(FASTREAD);
+
     for (uint16_t i = 0; i < sizeof(value); i++) {
-      #if defined (__arm__) && defined (__SAM3X8E__)
-        if (i == sizeof(value)-1)
-          *p++ = _readNextByte(false);
-      #endif
-      *p++ =_readNextByte();
+      *p++ =_nextByte(READDATA);
     }
-    _endProcess();
+    _endSPI();
     return true;
 }
 // Variant B
@@ -238,29 +234,20 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-if (!_prepRead(address))
-    return false;
+if (/*!_prep(READDATA, address, sizeof(value)) && */!_notBusy()) {
+  return false;
+}
 
   const byte* p = (const byte*)(const void*)&value;
-  _beginRead(address);
+  _beginSPI(READDATA);
   for(uint16_t i = 0; i < sizeof(value);i++)
   {
-    #if defined (__arm__) && defined (__SAM3X8E__)
-      if (i == sizeof(value)-1) {
-        if (*p++ != _readNextByte(false))
-          return false;
-        else
-          return true;
+      if(*p++ != _nextByte(READDATA))
+      {
+        return false;
       }
-      else
-        if (*p++ != _readNextByte())
-          return false;
-    #elif defined (__AVR__)
-    if (*p++ != _readNextByte())
-      return false;
-    #endif
   }
-  _endProcess();
+  _endSPI();
   return true;
 }
 

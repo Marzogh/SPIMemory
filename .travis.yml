@@ -11,6 +11,7 @@ script:
   - build_platform mega
   - build_platform fio
   - build_platform micro
+  - build_platform due
 notifications:
   email:
     on_success: change
