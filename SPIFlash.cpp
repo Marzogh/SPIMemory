@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 16/07/2016
+ * Modified by Prajwal Bhattaram - 11/09/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -24,7 +24,6 @@
  */
 
 #include "SPIFlash.h"
-//#include "defines.h"
 
 #if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266)
  #define _delay_us(us) delayMicroseconds(us)
@@ -359,9 +358,9 @@ bool SPIFlash::_chipID(void) {
     uint8_t manID, capID, devID ;
     //_getManId(&manID, &devID);
     _getJedecId(&manID, &capID, &devID);
-    Serial.println(manID, HEX);
-    Serial.println(capID, HEX);
-    Serial.println(devID, HEX);
+    //Serial.println(manID, HEX);
+    //Serial.println(capID, HEX);
+    //Serial.println(devID, HEX);
 
     if (manID != WINBOND_MANID && manID != MICROCHIP_MANID){		//If the chip is not a Winbond Chip
       errorcode = UNKNOWNCHIP;		//Error code for unidentified chip

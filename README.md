@@ -1,7 +1,7 @@
 
 # SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=v2.4.0-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
-<sup> Download the latest stable release (v2.3.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
+<sup> Download the latest stable release (v2.4.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
 This Arduino library is for use with Winbond serial flash memory chips. In its current form it supports identifying the flash chip and its various features; automatic address allocation and management; reading and writing bytes/chars/ints/longs/floats/Strings from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes/chars; sector, block and chip erase; and powering down for low power operation.
 
@@ -11,7 +11,7 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 #####Arduino IDEs supported
 - IDE v1.5.x
 - IDE v1.6.0-v1.6.5
-- IDE v1.6.9
+- IDE v1.6.9-v1.6.11
 
 #####Boards
 
