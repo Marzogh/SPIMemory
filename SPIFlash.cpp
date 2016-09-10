@@ -861,7 +861,6 @@ int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
 		byte b[sizeof(int16_t)];
 		int16_t s;
 	} data;
-
 	if (!_prep(READDATA, address, sizeof(data.s))) {
     return false;
   }
@@ -1075,7 +1074,6 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRe
   if(!_prep(READDATA, address, PAGESIZE)) {
     return false;
   }
-
   switch (fastRead) {
     case false:
     _beginSPI(READDATA);
@@ -1169,7 +1167,6 @@ bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool
 	uint32_t address = _getAddress(page_number, offset);
 
 	return writeChar(address, data, errorCheck);
-
 }
 
 // Writes an array of bytes starting from a specific location in a page.
@@ -1746,7 +1743,6 @@ bool SPIFlash::powerDown(void) {
 
 //Wakes chip from low power state.
 bool SPIFlash::powerUp(void) {
-
 	_beginSPI(RELEASE);
   _endSPI();
 	_delay_us(3);						    //Max release enable time according to the Datasheet

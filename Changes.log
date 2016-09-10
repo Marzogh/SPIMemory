@@ -34,8 +34,9 @@ Enhancements & Optimizations:
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 --> ESP8266 compatibility added
+--> Compatible with Arduino Fio and Micro
 --> Now compatible with Arduino IDE v1.6.9
---> Squashed bugs in examples
+--> Compatible with Arduino-Makefile. (Thanks Raphael!)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.2.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
