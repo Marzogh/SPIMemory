@@ -233,8 +233,13 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
 
 //Reads/Writes next byte. Call 'n' times to read/write 'n' number of bytes. Should be called after _begin()
 uint8_t SPIFlash::_nextByte(uint8_t opcode, uint8_t data) {
-  (opcode == READDATA) ? return xfer(data) : xfer(data);
-  return true;
+  if (opcode == READDATA) {
+    return xfer(data);
+  }
+  else {
+    xfer(data);
+    return true;
+  }
   /*switch (opcode) {
     case READDATA:
     uint8_t result;
