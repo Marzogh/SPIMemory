@@ -204,5 +204,3 @@ Reads all pages on Flash chip and dumps it to Serial stream. This function is us
  - Then type the command to read all pages into the Serial console. If you use my code from the example file the command is ```read_all_pages```
  - Wait a few seconds before typing ```Ctrl+C``` to end the tail process
  - Check that you have actually recieved all the data by typing ```% cat FlashDump.txt```. This should output the entire textfile into your terminal window.
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Marzogh/spiflash/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
