@@ -80,6 +80,9 @@
         #define xfer(n)   SPI.transfer(n)
 #endif
 
+#ifdef SPI_HAS_TRANSACTION
+SPISettings _settings;
+#endif
 // Constructor
 #if defined (ARDUINO_ARCH_AVR)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
