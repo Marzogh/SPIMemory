@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 16/07/2016
+ * Modified by Prajwal Bhattaram - 11/09/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -24,7 +24,6 @@
  */
 
 #include "SPIFlash.h"
-//#include "defines.h"
 
 #if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266)
  #define _delay_us(us) delayMicroseconds(us)
@@ -884,7 +883,6 @@ int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
 		byte b[sizeof(int16_t)];
 		int16_t s;
 	} data;
-
 	if (!_prep(READDATA, address, sizeof(data.s))) {
     return false;
   }
@@ -1098,7 +1096,6 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRe
   if(!_prep(READDATA, address, PAGESIZE)) {
     return false;
   }
-
   switch (fastRead) {
     case false:
     _beginSPI(READDATA);
@@ -1192,7 +1189,6 @@ bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool
 	uint32_t address = _getAddress(page_number, offset);
 
 	return writeChar(address, data, errorCheck);
-
 }
 
 // Writes an array of bytes starting from a specific location in a page.
@@ -1769,7 +1765,6 @@ bool SPIFlash::powerDown(void) {
 
 //Wakes chip from low power state.
 bool SPIFlash::powerUp(void) {
-
 	_beginSPI(RELEASE);
   _endSPI();
 	_delay_us(3);						    //Max release enable time according to the Datasheet

@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.4.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 16/07/2016
+ * Modified by Prajwal Bhattaram - 11/09/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -94,6 +94,12 @@ const uint8_t NULLBYTE = 0x00;
 #define NO_CONTINUE		0x00
 #define PASS			0x01
 #define FAIL			0x00
+
+#if defined (ARDUINO_ARCH_ESP8266)
+#define CS 15
+#else
+#define CS SS
+#endif
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     					   List of Error codes						  //
