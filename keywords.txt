@@ -12,6 +12,8 @@ SPIFlash	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 begin	KEYWORD2
+setClock  KEYWORD2
+error KEYWORD2
 getJEDECID	KEYWORD2
 getManID	KEYWORD2
 getAddress	KEYWORD2

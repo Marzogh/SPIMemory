@@ -35,6 +35,7 @@ public:
   SPIFlash(uint8_t cs = SS, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin(void);
+  void     setClock(uint32_t clockSpeed);
   uint8_t  error();
   uint16_t getManID();
   uint32_t getJEDECID();
@@ -115,6 +116,7 @@ public:
   bool     resumeProg(void);
   bool     powerDown(void);
   bool     powerUp(void);
+  //-------------------------------------------Public variables---------------------------------------------//
   //--------------------------------------------Private functions-------------------------------------------//
 private:
   void     _troubleshoot(void);
@@ -135,13 +137,14 @@ private:
   bool     _chipID(void);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t address, uint32_t size = 1);
-  uint8_t  _nextByte(uint8_t opcode, uint8_t byte = 0x00);
+  uint8_t  _nextByte(uint8_t opcode, uint8_t byte = NULLBYTE);
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   //-------------------------------------------Private variables------------------------------------------//
   bool        pageOverflow;
+  SPISettings _settings;
   volatile uint8_t *cs_port;
   uint8_t     cs_mask, csPin, errorcode, state;
   uint16_t    name;

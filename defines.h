@@ -75,7 +75,6 @@ const uint8_t BLOCK64ERASE = 0xD8;
   #define WINBOND_MANID		 0xEF
   #define PAGESIZE	 0x100
 
-
 	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define MICROCHIP_MANID		 0xBF
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -83,6 +82,7 @@ const uint8_t BLOCK64ERASE = 0xD8;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define BUSY        0x01
+#define SPI_CLK 0x632EA00       //Hex equivalent of 104MHz
 const uint8_t WRTEN = 0x02;
 const uint8_t SUS = 0x40;
 const uint8_t DUMMYBYTE = 0xEE;

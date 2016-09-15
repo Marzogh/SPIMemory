@@ -2,6 +2,18 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.5.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						16.07.2016											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Enhancements:
+--> Added support for SPI Transactions.
+--> Added function allowing setting SPI clock speeds - call the function '''flash.setClock(uint32_t clockSpeed);''' straight after '''begin();'''.
+--> Made _beginSPI() & _nextByte() shorter and faster.
+--> Replaced SPI.transfer with xfer().
+To-do
+--> Ned to find a way to better identify _notPrevWritten();
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.4.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						16.07.2016											   //

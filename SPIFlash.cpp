@@ -34,19 +34,19 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
-//	   						does not respond   						  //
-//																	  //
-// 		Error codes will be generated and returned on functions		  //
+//                         does not respond                           //
+//                                                                    //
+//      Error codes will be generated and returned on functions       //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define RUNDIAGNOSTIC												  //
+//#define RUNDIAGNOSTIC                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //   Uncomment the code below to increase the speed of the library    //
-//	   				by disabling _notPrevWritten()   				  //
-//																	  //
+//                  by disabling _notPrevWritten()                    //
+//                                                                    //
 // Make sure the sectors being written to have been erased beforehand //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define HIGHSPEED
+//#define HIGHSPEED                                                   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #if defined (ARDUINO_ARCH_AVR)
@@ -153,14 +153,15 @@ bool SPIFlash::_transferAddress(void) {
   #endif
 }
 
-//Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involved writing or reading to/from an address)
+//Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involves writing or reading to/from an address)
 bool SPIFlash::_beginSPI(uint8_t opcode) {
-  switch (opcode) {
+  /*switch (opcode) {
     case READDATA:
-    SPI.setDataMode(SPI_MODE0);
+    /*SPI.setDataMode(SPI_MODE0);
     SPI.setBitOrder(MSBFIRST);
     //SPI.setClockDivider(SPI_CLOCK_DIV4); //Uncomment this if more than one SPI device is presaent on the bus
     SPI.begin();
+    SPI.beginTransaction(_settings);
     CHIP_SELECT
     #ifdef __AVR_ATtiny85__
     (void)xfer(opcode);
@@ -175,6 +176,7 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     SPI.setBitOrder(MSBFIRST);
     //SPI.setClockDivider(SPI_CLOCK_DIV4); //Uncomment this if more than one SPI device is presaent on the bus
     SPI.begin();
+    SPI.beginTransaction(_settings);
     CHIP_SELECT
     #ifdef __AVR_ATtiny85__
     (void)xfer(opcode);
@@ -189,6 +191,7 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     SPI.setBitOrder(MSBFIRST);
     //SPI.setClockDivider(SPI_CLOCK_DIV4); //Uncomment this if more than one SPI device is presaent on the bus
     SPI.begin();
+    SPI.beginTransaction(_settings);
     CHIP_SELECT
     #ifdef __AVR_ATtiny85__
     (void)xfer(opcode);
@@ -203,6 +206,7 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     SPI.setBitOrder(MSBFIRST);
     //SPI.setClockDivider(SPI_CLOCK_DIV4); //Uncomment this if more than one SPI device is presaent on the bus
     SPI.begin();
+    SPI.beginTransaction(_settings);
     CHIP_SELECT
     #ifdef __AVR_ATtiny85__
     (void)xfer(opcode);
@@ -210,6 +214,16 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     SPI.transfer(opcode);
     #endif
     break;
+  }*/
+  SPI.beginTransaction(_settings);
+  CHIP_SELECT
+  //#ifdef __AVR_ATtiny85__
+  (void)xfer(opcode);
+  //#else
+  //SPI.transfer(opcode);
+  //#endif
+  if (opcode == READDATA || opcode == FASTREAD || opcode == PAGEPROG) {
+    _transferAddress();
   }
   return true;
 }
@@ -217,7 +231,9 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
 
 //Reads/Writes next byte. Call 'n' times to read/write 'n' number of bytes. Should be called after _begin()
 uint8_t SPIFlash::_nextByte(uint8_t opcode, uint8_t data) {
-  switch (opcode) {
+  (opcode == READDATA) ? return xfer(data) : xfer(data);
+  return true;
+  /*switch (opcode) {
     case READDATA:
     uint8_t result;
     #ifdef __AVR_ATtiny85__
@@ -240,7 +256,7 @@ uint8_t SPIFlash::_nextByte(uint8_t opcode, uint8_t data) {
     default:
     return false;
     break;
-  }
+  }*/
 }
 
 //Stops all operations. Should be called after all the required data is read/written from repeated _readNextByte()/_nextByte(PAGEPROG, ) calls
@@ -362,6 +378,8 @@ bool SPIFlash::_chipID(void) {
     //Serial.println(manID, HEX);
     //Serial.println(capID, HEX);
     //Serial.println(devID, HEX);
+
+    _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
 
     if (manID != WINBOND_MANID && manID != MICROCHIP_MANID){		//If the chip is not a Winbond Chip
       errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
@@ -554,6 +572,10 @@ void SPIFlash::_troubleshoot() {
 //Identifies chip and establishes parameters
 void SPIFlash::begin(void) {
 	_chipID();
+}
+
+void SPIFlash::setClock(uint32_t clockSpeed) {
+  _settings = SPISettings(clockSpeed, MSBFIRST, SPI_MODE0);
 }
 
 uint8_t SPIFlash::error() {
