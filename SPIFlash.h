@@ -27,6 +27,9 @@
 #define SPIFLASH_H
 
 #include <Arduino.h>
+#ifndef __AVR_ATtiny85__
+  #include <SPI.h>
+#endif
 #include "defines.h"
 
 class SPIFlash {
@@ -96,7 +99,7 @@ public:
   bool     readStr(uint32_t address, String &outStr, bool fastRead = false);
   bool     readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
   //-------------------------------------------Write / Read Pages-------------------------------------------//
-  bool     writePage(uint16_t page_number, const uint8_t *data_buffer, bool errorCheck = true);
+  bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
   bool     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
   //------------------------------------------Write / Read Anything-----------------------------------------//
   template <class T> bool writeAnything(uint32_t address, const T& value, bool errorCheck = true);
@@ -126,6 +129,7 @@ private:
   void     _endSPI(void);
   bool     _prep(uint8_t opcode, uint32_t address, uint32_t size);
   bool     _prep(uint8_t opcode, uint32_t page_number, uint8_t offset, uint32_t size);
+  bool     _startSPIBus(void);
   bool     _beginSPI(uint8_t opcode);
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = 10L);
@@ -143,15 +147,15 @@ private:
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   //-------------------------------------------Private variables------------------------------------------//
-  bool        pageOverflow;
+  bool        pageOverflow, SPIBusState;
   volatile uint8_t *cs_port;
-  uint8_t     cs_mask, csPin, errorcode, state;
+  uint8_t     cs_mask, csPin, errorcode, state, _SPCR, _SPSR;
   uint16_t    name;
   uint32_t    capacity, maxPage, _eraseTime;
   uint32_t    currentAddress, _currentAddress = 0;
-  //#ifdef SPI_HAS_TRANSACTION
-  //SPISettings _settings;
-  //#endif
+  #ifdef SPI_HAS_TRANSACTION
+  SPISettings _settings;
+  #endif
   const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
   const uint32_t memSize[11]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
@@ -181,7 +185,7 @@ template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value
   if (!_prep(PAGEPROG, address, sizeof(value)))
     return false;
   else {
-    const byte* p = (const byte*)(const void*)&value;
+    const uint8_t* p = (const uint8_t*)(const void*)&value;
     _beginSPI(PAGEPROG);
     for (uint16_t i = 0; i < sizeof(value); i++) {
       _nextByte(PAGEPROG, *p++);
@@ -216,7 +220,7 @@ template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool 
   if (!_prep(READDATA, address, sizeof(value)))
     return false;
 
-    byte* p = (byte*)(void*)&value;
+    uint8_t* p = (uint8_t*)(void*)&value;
     if(!fastRead)
       _beginSPI(READDATA);
     else
