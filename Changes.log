@@ -6,13 +6,16 @@
 //									Author: Prajwal Bhattaram									   //
 //					  						16.07.2016											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs Squashed:
+--> Errorchecking on writeByteArray() and writeCharArray() was broken in 2.4.0 and is fixed now.
 Enhancements:
+--> Sped up _beginSPI().
 --> Added support for SPI Transactions.
 --> Added function allowing setting SPI clock speeds - call the function '''flash.setClock(uint32_t clockSpeed);''' straight after '''begin();'''.
 --> Made _beginSPI() & _nextByte() shorter and faster.
 --> Replaced SPI.transfer with xfer().
 --> Added the ability to change Chip Erase wait times depending on the chip (supported).
---> Sped up _beginSPI().
+
 To-do
 --> Need to find a way to better identify _notPrevWritten();
 --> Need to fix up eraseBlock32K, eraseBlock64K and eraseSector times

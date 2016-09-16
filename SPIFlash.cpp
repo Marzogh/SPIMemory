@@ -722,18 +722,13 @@ bool  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
 	if (!_prep(READDATA, address, bufferSize)) {
     return false;
 	}
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
+  if(fastRead) {
     _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
   }
+  else {
+    _beginSPI(READDATA);
+  }
+  
   for (uint16_t a = 0; a < bufferSize; a++) {
     data_buffer[a] = _nextByte(READDATA);
   }
