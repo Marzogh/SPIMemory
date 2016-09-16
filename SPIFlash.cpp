@@ -402,8 +402,9 @@ bool SPIFlash::_chipID(void) {
     for (i = 0; i < sizeof(devType); i++)
     {
     	if (devID == devType[i]) {
-    		capacity = memSize[i];
-    		name = chipName[i];
+        capacity = memSize[i];
+        name = chipName[i];
+        _eraseTime = eraseTime[i];
         //Serial.println(devID, HEX);
         //Serial.println(capacity);
         //Serial.println(name);
@@ -1695,7 +1696,7 @@ bool SPIFlash::eraseChip(void) {
 	_beginSPI(CHIPERASE);
 	_endSPI();
 
-	if(!_notBusy(50000L))
+	if(!_notBusy(_eraseTime))
 		return false; //Datasheet says erasing chip takes 6s max
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0

@@ -11,8 +11,10 @@ Enhancements:
 --> Added function allowing setting SPI clock speeds - call the function '''flash.setClock(uint32_t clockSpeed);''' straight after '''begin();'''.
 --> Made _beginSPI() & _nextByte() shorter and faster.
 --> Replaced SPI.transfer with xfer().
+--> Added the ability to change Chip Erase wait times depending on the chip (supported).
 To-do
---> Ned to find a way to better identify _notPrevWritten();
+--> Need to find a way to better identify _notPrevWritten();
+--> Need to fix up eraseBlock32K, eraseBlock64K and eraseSector times
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.4.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

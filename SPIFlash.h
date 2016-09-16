@@ -147,7 +147,7 @@ private:
   volatile uint8_t *cs_port;
   uint8_t     cs_mask, csPin, errorcode, state;
   uint16_t    name;
-  uint32_t    capacity, maxPage;
+  uint32_t    capacity, maxPage, _eraseTime;
   uint32_t    currentAddress, _currentAddress = 0;
   //#ifdef SPI_HAS_TRANSACTION
   //SPISettings _settings;
@@ -157,6 +157,7 @@ private:
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
                                 32L * 1024L * 1024L, 8L * 1024L * 1024L};
   const uint16_t chipName[11] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256, 64};
+  const uint16_t eraseTime[11] = {1L * 1000L, 2L * 1000L, 2L * 1000L, 4L * 1000L, 6L * 1000L, 10 * 1000L, 15 * 1000L, 100 * 1000L, 200 * 1000L, 400 * 1000L, 50L} //Erase time in milliseconds
 };
 
 
