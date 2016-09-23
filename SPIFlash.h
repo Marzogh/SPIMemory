@@ -120,8 +120,47 @@ public:
   bool     powerDown(void);
   bool     powerUp(void);
   //-------------------------------------------Public variables---------------------------------------------//
-  //--------------------------------------------Private functions-------------------------------------------//
+
 private:
+  //---------------------------------------Arduino Due DMA Functions----------------------------------------//
+  // Disable DMA Controller.
+  void     dmac_disable();
+  // Enable DMA Controller.
+  void     dmac_enable();
+  // Disable DMA Channel.
+  void     dmac_channel_disable(uint32_t ul_num);
+  // Enable DMA Channel.
+  void     dmac_channel_enable(uint32_t ul_num);
+  // Poll for transfer complete.
+  bool     dmac_channel_transfer_done(uint32_t ul_num);
+  // start RX DMA
+  void     dueSPIDmaRX(uint8_t* dst, uint16_t count);
+  void     dueSPIDmaRX(char* dst, uint16_t count);
+  // start TX DMA
+  void     dueSPIDmaTX(const uint8_t* src, uint16_t count);
+  void     dueSPIDmaCharTX(const char* src, uint16_t count);
+
+  void     dueSPIBegin(void);
+  //  initialize SPI controller
+  void     dueSPIInit(uint8_t dueSPIRate);
+  uint8_t  dueSPITransfer(uint8_t b);
+  // SPI receive a byte
+  uint8_t  dueSPIRecByte();
+  // SPI receive multiple bytes
+  uint8_t  dueSPIRecByte(uint8_t* buf, size_t len);
+  // SPI receive a char
+  int8_t  dueSPIRecChar();
+  // SPI receive multiple chars
+  int8_t  dueSPIRecChar(char* buf, size_t len);
+  // SPI send a byte
+  void     dueSPISendByte(uint8_t b);
+  // SPI send multiple bytes
+  void     dueSPISendByte(const uint8_t* buf, size_t len);
+  // SPI send a char
+  void     dueSPISendChar(char b);
+  // SPI send multiple chars
+  void     dueSPISendChar(const char* buf, size_t len);
+  //--------------------------------------------Private functions-------------------------------------------//
   void     _troubleshoot(void);
   void     _cmd(uint8_t cmd, bool _continue = true);
   void     _endProcess(void);

@@ -45,7 +45,15 @@
 //                                                                    //
 // Make sure the sectors being written to have been erased beforehand //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define HIGHSPEED                                                   //
+//#define HIGHSPEED                                                   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//   Uncomment the code below to increase the speed of the library    //
+//        on the Arduino DUE by switching to SPI+DMA                  //
+//                                                                    //
+// Make sure the sectors being written to have been erased beforehand //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#if defined (ARDUINO_ARCH_SAM)                                        //
+//#define DUE_DMA_MODE                                                //
+#endif                                                                //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #if defined (ARDUINO_ARCH_AVR)
@@ -73,16 +81,19 @@
     #define CHIP_DESELECT *cs_port |=  cs_mask;
     #define xfer(n)   SPI.transfer(n)
   #endif
-#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_SAM)
-    //#include <SPI.h>
+#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
     #define CHIP_SELECT   digitalWrite(csPin, LOW);
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
     #define xfer(n)   SPI.transfer(n)
+#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_SAM)
+    #define CHIP_SELECT   digitalWrite(csPin, LOW);
+    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+    #ifdef DUE_DMA_MODE
+    #define xfer   dueSPITransfer
+    #else
+    #define xfer(n)   SPI.transfer(n)
+    #endif
 #endif
-
-//#ifdef SPI_HAS_TRANSACTION
-//SPISettings _settings;
-//#endif
 
 // Constructor
 #if defined (ARDUINO_ARCH_AVR)
@@ -103,6 +114,107 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 }
 #endif
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//        Private functions used by Arduino Due DMA operations        //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+// Disable DMA Controller
+void SPIFlash::dmac_disable() {
+  DMAC->DMAC_EN &= (~DMAC_EN_ENABLE);
+}
+// Enable DMA Controller.
+void SPIFlash::dmac_enable() {
+  DMAC->DMAC_EN = DMAC_EN_ENABLE;
+}
+// Disable DMA Channel
+void SPIFlash::dmac_channel_disable(uint32_t ul_num) {
+  DMAC->DMAC_CHDR = DMAC_CHDR_DIS0 << ul_num;
+}
+// Enable DMA Channel
+void SPIFlash::dmac_channel_enable(uint32_t ul_num) {
+  DMAC->DMAC_CHER = DMAC_CHER_ENA0 << ul_num;
+}
+// Poll for transfer complete
+bool SPIFlash::dmac_channel_transfer_done(uint32_t ul_num) {
+  return (DMAC->DMAC_CHSR & (DMAC_CHSR_ENA0 << ul_num)) ? false : true;
+}
+// start RX DMA
+void SPIFlash::dueSPIDmaRX(uint8_t* dst, uint16_t count) {
+  dmac_channel_disable(SPI_DMAC_RX_CH);
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_SADDR = (uint32_t)&SPI0->SPI_RDR;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_DADDR = (uint32_t)dst;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_DSCR =  0;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_CTRLA = count |
+    DMAC_CTRLA_SRC_WIDTH_BYTE | DMAC_CTRLA_DST_WIDTH_BYTE;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_CTRLB = DMAC_CTRLB_SRC_DSCR |
+    DMAC_CTRLB_DST_DSCR | DMAC_CTRLB_FC_PER2MEM_DMA_FC |
+    DMAC_CTRLB_SRC_INCR_FIXED | DMAC_CTRLB_DST_INCR_INCREMENTING;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_CFG = DMAC_CFG_SRC_PER(SPI_RX_IDX) |
+    DMAC_CFG_SRC_H2SEL | DMAC_CFG_SOD | DMAC_CFG_FIFOCFG_ASAP_CFG;
+  dmac_channel_enable(SPI_DMAC_RX_CH);
+}
+void SPIFlash::dueSPIDmaRX(char* dst, uint16_t count) {
+  dmac_channel_disable(SPI_DMAC_RX_CH);
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_SADDR = (uint32_t)&SPI0->SPI_RDR;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_DADDR = (uint32_t)dst;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_DSCR =  0;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_CTRLA = count |
+    DMAC_CTRLA_SRC_WIDTH_BYTE | DMAC_CTRLA_DST_WIDTH_BYTE;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_CTRLB = DMAC_CTRLB_SRC_DSCR |
+    DMAC_CTRLB_DST_DSCR | DMAC_CTRLB_FC_PER2MEM_DMA_FC |
+    DMAC_CTRLB_SRC_INCR_FIXED | DMAC_CTRLB_DST_INCR_INCREMENTING;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_CFG = DMAC_CFG_SRC_PER(SPI_RX_IDX) |
+    DMAC_CFG_SRC_H2SEL | DMAC_CFG_SOD | DMAC_CFG_FIFOCFG_ASAP_CFG;
+  dmac_channel_enable(SPI_DMAC_RX_CH);
+}
+// start TX DMA
+void SPIFlash::dueSPIDmaTX(const uint8_t* src, uint16_t count) {
+  static uint8_t ff = 0XFF;
+  uint32_t src_incr = DMAC_CTRLB_SRC_INCR_INCREMENTING;
+  if (!src) {
+    src = &ff;
+    src_incr = DMAC_CTRLB_SRC_INCR_FIXED;
+  }
+  dmac_channel_disable(SPI_DMAC_TX_CH);
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_SADDR = (uint32_t)src;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_DADDR = (uint32_t)&SPI0->SPI_TDR;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_DSCR =  0;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_CTRLA = count |
+    DMAC_CTRLA_SRC_WIDTH_BYTE | DMAC_CTRLA_DST_WIDTH_BYTE;
+
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_CTRLB =  DMAC_CTRLB_SRC_DSCR |
+    DMAC_CTRLB_DST_DSCR | DMAC_CTRLB_FC_MEM2PER_DMA_FC |
+    src_incr | DMAC_CTRLB_DST_INCR_FIXED;
+
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_CFG = DMAC_CFG_DST_PER(SPI_TX_IDX) |
+      DMAC_CFG_DST_H2SEL | DMAC_CFG_SOD | DMAC_CFG_FIFOCFG_ALAP_CFG;
+
+  dmac_channel_enable(SPI_DMAC_TX_CH);
+}
+
+void SPIFlash::dueSPIDmaCharTX(const char* src, uint16_t count) {
+  static char ff = 0XFF;
+  uint32_t src_incr = DMAC_CTRLB_SRC_INCR_INCREMENTING;
+  if (!src) {
+    src = &ff;
+    src_incr = DMAC_CTRLB_SRC_INCR_FIXED;
+  }
+  dmac_channel_disable(SPI_DMAC_TX_CH);
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_SADDR = (uint32_t)src;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_DADDR = (uint32_t)&SPI0->SPI_TDR;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_DSCR =  0;
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_CTRLA = count |
+    DMAC_CTRLA_SRC_WIDTH_BYTE | DMAC_CTRLA_DST_WIDTH_BYTE;
+
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_CTRLB =  DMAC_CTRLB_SRC_DSCR |
+    DMAC_CTRLB_DST_DSCR | DMAC_CTRLB_FC_MEM2PER_DMA_FC |
+    src_incr | DMAC_CTRLB_DST_INCR_FIXED;
+
+  DMAC->DMAC_CH_NUM[SPI_DMAC_TX_CH].DMAC_CFG = DMAC_CFG_DST_PER(SPI_TX_IDX) |
+      DMAC_CFG_DST_H2SEL | DMAC_CFG_SOD | DMAC_CFG_FIFOCFG_ALAP_CFG;
+
+  dmac_channel_enable(SPI_DMAC_TX_CH);
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Private functions used by read, write and erase operations     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -145,27 +257,26 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t page_number, uint8_t offset, uint3
 }
 
 bool SPIFlash::_transferAddress(void) {
-  #ifdef __AVR_ATtiny85__
   (void)xfer(_currentAddress >> 16);
   (void)xfer(_currentAddress >> 8);
   (void)xfer(_currentAddress);
-  #else
-  SPI.transfer(_currentAddress >> 16);
-  SPI.transfer(_currentAddress >> 8);
-  SPI.transfer(_currentAddress);
-  #endif
 }
 
-bool SPIFlash::_startSPIBus() {
-  //save current SPI settings
-#ifndef SPI_HAS_TRANSACTION
-  cli();
-#endif
+bool SPIFlash::_startSPIBus(void) {
+#ifdef DUE_DMA_MODE
+  noInterrupts();
+  dueSPIBegin();
+  dueSPIInit(DUE_SPI_CLK);
+#else
 
-#if defined (ARDUINO_ARCH_AVR)
-  _SPCR = SPCR;
-  _SPSR = SPSR;
-#endif
+  #ifndef SPI_HAS_TRANSACTION
+    noInterrupts();
+  #endif
+  //save current SPI settings
+  #if defined (ARDUINO_ARCH_AVR)
+    _SPCR = SPCR;
+    _SPSR = SPSR;
+  #endif
 
   SPI.begin();
   #ifdef SPI_HAS_TRANSACTION
@@ -174,20 +285,21 @@ bool SPIFlash::_startSPIBus() {
   SPI.setDataMode(SPI_MODE0);
   SPI.setBitOrder(MSBFIRST);
   #endif
+#endif
+
   SPIBusState = true;
 }
 
 //Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involves writing or reading to/from an address)
 bool SPIFlash::_beginSPI(uint8_t opcode) {
   if (!SPIBusState) {
+    //Serial.println("Starting SPI Bus");
     _startSPIBus();
   }
   CHIP_SELECT
-  //#ifdef __AVR_ATtiny85__
   (void)xfer(opcode);
-  //#else
-  //SPI.transfer(opcode);
-  //#endif
+  //Serial.print("0x");
+  //Serial.println(opcode, HEX);
   if (opcode == READDATA || opcode == FASTREAD || opcode == PAGEPROG) {
     _transferAddress();
   }
@@ -197,22 +309,28 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
 
 //Reads/Writes next byte. Call 'n' times to read/write 'n' number of bytes. Should be called after _begin()
 uint8_t SPIFlash::_nextByte(uint8_t opcode, uint8_t data) {
-  if (opcode == READDATA) {
-    return xfer(data);
-  }
-  else {
-    xfer(data);
-    return true;
-  }
+  return xfer(data);
 }
 
 //Stops all operations. Should be called after all the required data is read/written from repeated _readNextByte()/_nextByte(PAGEPROG, ) calls
 void SPIFlash::_endSPI(void) {
   CHIP_DESELECT
-  #ifdef SPI_HAS_TRANSACTION
-  SPI.endTransaction();
+  #if defined (ARDUINO_ARCH_SAM)
+    #ifdef DUE_DMA_MODE
+    interrupts();
+    #else
+      #ifdef SPI_HAS_TRANSACTION
+      SPI.endTransaction();
+      #else
+      interrupts();
+      #endif
+    #endif
   #else
-  sei();
+    #ifdef SPI_HAS_TRANSACTION
+    SPI.endTransaction();
+    #else
+    interrupts();
+    #endif
   #endif
 
   #if defined (ARDUINO_ARCH_AVR)
@@ -321,9 +439,9 @@ bool SPIFlash::_getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
   if(!_notBusy())
   	return false;
   _beginSPI(JEDECID);
-	*b1 = SPI.transfer(READDATA);		// manufacturer id
-	*b2 = SPI.transfer(READDATA);		// manufacturer id
-	*b3 = SPI.transfer(READDATA);					// capacity
+	*b1 = xfer(READDATA);		// manufacturer id
+	*b2 = xfer(READDATA);		// manufacturer id
+	*b3 = xfer(READDATA);					// capacity
   _endSPI();
   return true;
 }
@@ -524,6 +642,179 @@ void SPIFlash::_troubleshoot() {
 }
 #endif
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//         Public functions used for Arduino Due DMA Operations       //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+void SPIFlash::dueSPIBegin() {
+  PIO_Configure(
+      g_APinDescription[PIN_SPI_MOSI].pPort,
+      g_APinDescription[PIN_SPI_MOSI].ulPinType,
+      g_APinDescription[PIN_SPI_MOSI].ulPin,
+      g_APinDescription[PIN_SPI_MOSI].ulPinConfiguration);
+  PIO_Configure(
+      g_APinDescription[PIN_SPI_MISO].pPort,
+      g_APinDescription[PIN_SPI_MISO].ulPinType,
+      g_APinDescription[PIN_SPI_MISO].ulPin,
+      g_APinDescription[PIN_SPI_MISO].ulPinConfiguration);
+  PIO_Configure(
+      g_APinDescription[PIN_SPI_SCK].pPort,
+      g_APinDescription[PIN_SPI_SCK].ulPinType,
+      g_APinDescription[PIN_SPI_SCK].ulPin,
+      g_APinDescription[PIN_SPI_SCK].ulPinConfiguration);
+  pmc_enable_periph_clk(ID_SPI0);
+#if USE_SAM3X_DMAC
+  pmc_enable_periph_clk(ID_DMAC);
+  dmac_disable();
+  DMAC->DMAC_GCFG = DMAC_GCFG_ARB_CFG_FIXED;
+  dmac_enable();
+#if USE_SAM3X_BUS_MATRIX_FIX
+  MATRIX->MATRIX_WPMR = 0x4d415400;
+  MATRIX->MATRIX_MCFG[1] = 1;
+  MATRIX->MATRIX_MCFG[2] = 1;
+  MATRIX->MATRIX_SCFG[0] = 0x01000010;
+  MATRIX->MATRIX_SCFG[1] = 0x01000010;
+  MATRIX->MATRIX_SCFG[7] = 0x01000010;
+#endif  // USE_SAM3X_BUS_MATRIX_FIX
+#endif  // USE_SAM3X_DMAC
+}
+//  initialize SPI controller
+void SPIFlash::dueSPIInit(uint8_t dueSPIRate) {
+  Spi* pSpi = SPI0;
+  uint8_t scbr = 255;
+  if (dueSPIRate < 14) {
+    scbr = (2 | (dueSPIRate & 1)) << (dueSPIRate/2);
+  }
+  scbr = dueSPIRate;  //thd
+  //  disable SPI
+  pSpi->SPI_CR = SPI_CR_SPIDIS;
+  // reset SPI
+  pSpi->SPI_CR = SPI_CR_SWRST;
+  // no mode fault detection, set master mode
+  pSpi->SPI_MR = SPI_PCS(SPI_CHIP_SEL) | SPI_MR_MODFDIS | SPI_MR_MSTR;
+  // mode 0, 8-bit,
+  pSpi->SPI_CSR[SPI_CHIP_SEL] = SPI_CSR_SCBR(scbr) | SPI_CSR_NCPHA;
+  // enable SPI
+  pSpi->SPI_CR |= SPI_CR_SPIEN;
+}
+uint8_t SPIFlash::dueSPITransfer(uint8_t b) {
+  Spi* pSpi = SPI0;
+
+  pSpi->SPI_TDR = b;
+  while ((pSpi->SPI_SR & SPI_SR_RDRF) == 0) {}
+  b = pSpi->SPI_RDR;
+  return b;
+}
+// SPI receive a byte
+uint8_t SPIFlash::dueSPIRecByte() {
+  return dueSPITransfer(0XFF);
+}
+// SPI receive multiple bytes
+uint8_t SPIFlash::dueSPIRecByte(uint8_t* buf, size_t len) {
+  Spi* pSpi = SPI0;
+  int rtn = 0;
+#if USE_SAM3X_DMAC
+  // clear overrun error
+  uint32_t s = pSpi->SPI_SR;
+
+  dueSPIDmaRX(buf, len);
+  dueSPIDmaTX(0, len);
+
+  uint32_t m = millis();
+  while (!dmac_channel_transfer_done(SPI_DMAC_RX_CH)) {
+    if ((millis() - m) > SAM3X_DMA_TIMEOUT)  {
+      dmac_channel_disable(SPI_DMAC_RX_CH);
+      dmac_channel_disable(SPI_DMAC_TX_CH);
+      rtn = 2;
+      break;
+    }
+  }
+  if (pSpi->SPI_SR & SPI_SR_OVRES) rtn |= 1;
+#else  // USE_SAM3X_DMAC
+  for (size_t i = 0; i < len; i++) {
+    pSpi->SPI_TDR = 0XFF;
+    while ((pSpi->SPI_SR & SPI_SR_RDRF) == 0) {}
+    buf[i] = pSpi->SPI_RDR;
+  }
+#endif  // USE_SAM3X_DMAC
+  return rtn;
+}
+// SPI receive a char
+int8_t SPIFlash::dueSPIRecChar() {
+  return dueSPITransfer(0XFF);
+}
+// SPI receive multiple chars
+int8_t SPIFlash::dueSPIRecChar(char* buf, size_t len) {
+  Spi* pSpi = SPI0;
+  char rtn = 0;
+#if USE_SAM3X_DMAC
+  // clear overrun error
+  uint32_t s = pSpi->SPI_SR;
+
+  dueSPIDmaRX(buf, len);
+  dueSPIDmaTX(0, len);
+
+  uint32_t m = millis();
+  while (!dmac_channel_transfer_done(SPI_DMAC_RX_CH)) {
+    if ((millis() - m) > SAM3X_DMA_TIMEOUT)  {
+      dmac_channel_disable(SPI_DMAC_RX_CH);
+      dmac_channel_disable(SPI_DMAC_TX_CH);
+      rtn = 2;
+      break;
+    }
+  }
+  if (pSpi->SPI_SR & SPI_SR_OVRES) rtn |= 1;
+#else  // USE_SAM3X_DMAC
+  for (size_t i = 0; i < len; i++) {
+    pSpi->SPI_TDR = 0XFF;
+    while ((pSpi->SPI_SR & SPI_SR_RDRF) == 0) {}
+    buf[i] = pSpi->SPI_RDR;
+  }
+#endif  // USE_SAM3X_DMAC
+  return rtn;
+}
+// SPI send a byte
+void SPIFlash::dueSPISendByte(uint8_t b) {
+  dueSPITransfer(b);
+}
+
+void SPIFlash::dueSPISendByte(const uint8_t* buf, size_t len) {
+  Spi* pSpi = SPI0;
+#if USE_SAM3X_DMAC
+  dueSPIDmaTX(buf, len);
+  while (!dmac_channel_transfer_done(SPI_DMAC_TX_CH)) {}
+#else  // #if USE_SAM3X_DMAC
+  while ((pSpi->SPI_SR & SPI_SR_TXEMPTY) == 0) {}
+  for (size_t i = 0; i < len; i++) {
+    pSpi->SPI_TDR = buf[i];
+    while ((pSpi->SPI_SR & SPI_SR_TDRE) == 0) {}
+  }
+#endif  // #if USE_SAM3X_DMAC
+  while ((pSpi->SPI_SR & SPI_SR_TXEMPTY) == 0) {}
+  // leave RDR empty
+  uint8_t b = pSpi->SPI_RDR;
+}
+// SPI send a char
+void SPIFlash::dueSPISendChar(char b) {
+  dueSPITransfer(b);
+}
+//SPI send multiple chars
+void SPIFlash::dueSPISendChar(const char* buf, size_t len) {
+  Spi* pSpi = SPI0;
+#if USE_SAM3X_DMAC
+  dueSPIDmaCharTX(buf, len);
+  while (!dmac_channel_transfer_done(SPI_DMAC_TX_CH)) {}
+#else  // #if USE_SAM3X_DMAC
+  while ((pSpi->SPI_SR & SPI_SR_TXEMPTY) == 0) {}
+  for (size_t i = 0; i < len; i++) {
+    pSpi->SPI_TDR = buf[i];
+    while ((pSpi->SPI_SR & SPI_SR_TDRE) == 0) {}
+  }
+#endif  // #if USE_SAM3X_DMAC
+  while ((pSpi->SPI_SR & SPI_SR_TXEMPTY) == 0) {}
+  // leave RDR empty
+  char b = pSpi->SPI_RDR;
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Public functions used for read, write and erase operations     //
@@ -531,14 +822,16 @@ void SPIFlash::_troubleshoot() {
 
 //Identifies chip and establishes parameters
 void SPIFlash::begin(void) {
-  #ifdef SPI_HAS_TRANSACTION
-  //Define the settings to be used by the SPI bus
-  _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+  #ifndef DUE_DMA_MODE
+    #ifdef SPI_HAS_TRANSACTION
+    //Define the settings to be used by the SPI bus
+    _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+    #endif
   #endif
   _chipID();
 }
 
-//Allows the setting of a custom clock speed for the SPI bus to communicate witht he chip.
+//Allows the setting of a custom clock speed for the SPI bus to communicate with the chip.
 //Only works if the SPI library in use supports SPI Transactions
 #ifdef SPI_HAS_TRANSACTION
 void SPIFlash::setClock(uint32_t clockSpeed) {
@@ -728,10 +1021,14 @@ bool  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
   else {
     _beginSPI(READDATA);
   }
-  
+
+  #ifndef DUE_DMA_MODE
   for (uint16_t a = 0; a < bufferSize; a++) {
     data_buffer[a] = _nextByte(READDATA);
   }
+  #else
+  dueSPIRecByte(data_buffer, bufferSize);
+  #endif
   _endSPI();
 	return true;
 }
@@ -770,11 +1067,14 @@ bool  SPIFlash::readCharArray(uint32_t address, char *data_buffer, uint16_t buff
     break;
   }
 
+  #ifndef DUE_DMA_MODE
   for (uint16_t a = 0; a < bufferSize; a++) {
-				data_buffer[a] = _nextByte(READDATA);
-		}
-
-	_endSPI();
+    data_buffer[a] = _nextByte(READDATA);
+  }
+  #else
+  dueSPIRecChar(data_buffer, bufferSize);
+  #endif
+  _endSPI();
 	return true;
 }
 // Variant B
@@ -817,10 +1117,13 @@ uint16_t SPIFlash::readWord(uint32_t address, bool fastRead) {
     break;
   }
 
-	for (uint16_t i=0; i < (sizeof(data.I)); i++) {
+  #ifndef DUE_DMA_MODE
+  for (uint16_t i=0; i < (sizeof(data.I)); i++) {
 		data.b[i] = _nextByte(READDATA);
   }
-
+  #else
+  dueSPIRecByte(data.b, (sizeof(data.I)));
+  #endif
   _endSPI();
 	return data.I;
 }
@@ -863,9 +1166,13 @@ int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
     break;
   }
 
+  #ifndef DUE_DMA_MODE
   for (uint16_t i=0; i < (sizeof(data.s)); i++) {
 		data.b[i] = _nextByte(READDATA);
 	}
+  #else
+  dueSPIRecByte(data.b, (sizeof(data.s)));
+  #endif
 	_endSPI();
 	return data.s;
 }
@@ -908,9 +1215,13 @@ uint32_t SPIFlash::readULong(uint32_t address, bool fastRead) {
     default:
     break;
   }
+  #ifndef DUE_DMA_MODE
 	for (uint16_t i=0; i < (sizeof(data.l)); i++) {
 		data.b[i] = _nextByte(READDATA);
 	}
+  #else
+  dueSPIRecByte(data.b, (sizeof(data.l)));
+  #endif
 	_endSPI();
 	return data.l;
 }
@@ -954,10 +1265,13 @@ int32_t SPIFlash::readLong(uint32_t address, bool fastRead) {
     break;
   }
 
+  #ifndef DUE_DMA_MODE
   for (uint16_t i=0; i < (sizeof(data.l)); i++) {
 		data.b[i] = _nextByte(READDATA);
 	}
-
+  #else
+  dueSPIRecByte(data.b, (sizeof(data.l)));
+  #endif
 	_endSPI();
 	return data.l;
 }
@@ -1001,10 +1315,13 @@ float SPIFlash::readFloat(uint32_t address, bool fastRead) {
     default:
     break;
   }
-
+  #ifndef DUE_DMA_MODE
 	for (uint16_t i=0; i < (sizeof(float)); i++) {
 		data.b[i] = _nextByte(READDATA);
 	}
+  #else
+  dueSPIRecByte(data.b, (sizeof(data.f)));
+  #endif
 	_endSPI();
 	return data.f;
 }
@@ -1072,10 +1389,13 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRe
     default:
     break;
   }
-
+  #ifndef DUE_DMA_MODE
 	for (int a = 0; a < PAGESIZE; a++) {
 		data_buffer[a] = _nextByte(READDATA);
 	}
+  #else
+  dueSPIRecByte(data_buffer, PAGESIZE);
+  #endif
 	_endSPI();
 	return true;
 }
@@ -1178,10 +1498,13 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
 		return false;
 
 	_beginSPI(PAGEPROG);
-
+  #ifndef DUE_DMA_MODE
 	for (uint16_t i = 0; i < bufferSize; i++) {
 		_nextByte(PAGEPROG, data_buffer[i]);
 	}
+  #else
+  dueSPISendByte(data_buffer, bufferSize);
+  #endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1232,9 +1555,13 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
 
 	_beginSPI(PAGEPROG);
 
+  #ifndef DUE_DMA_MODE
 	for (uint16_t i = 0; i < bufferSize; i++) {
 		_nextByte(PAGEPROG, data_buffer[i]);
 	}
+  #else
+  dueSPISendChar(data_buffer, bufferSize);
+  #endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1278,9 +1605,13 @@ bool SPIFlash::writeWord(uint32_t address, uint16_t data, bool errorCheck) {
 	var.w = data;
 
 	_beginSPI(PAGEPROG);
+  #ifndef DUE_DMA_MODE
 	for (uint16_t j = 0; j < sizeof(data); j++) {
 		_nextByte(PAGEPROG, var.b[j]);
 	}
+  #else
+  dueSPISendByte(var.b, sizeof(data));
+  #endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1323,9 +1654,13 @@ bool SPIFlash::writeShort(uint32_t address, int16_t data, bool errorCheck) {
 	} var;
 	var.s = data;
 	_beginSPI(PAGEPROG);
+  #ifndef DUE_DMA_MODE
 	for (uint16_t j = 0; j < (sizeof(data)); j++) {
     _nextByte(PAGEPROG, var.b[j]);
 	}
+  #else
+  dueSPISendByte(var.b, sizeof(data));
+  #endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1368,9 +1703,13 @@ bool SPIFlash::writeULong(uint32_t address, uint32_t data, bool errorCheck) {
 	} var;
 	var.l = data;
 	_beginSPI(PAGEPROG);
+  #ifndef DUE_DMA_MODE
 	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_nextByte(PAGEPROG, var.b[j]);
 	}
+  #else
+  dueSPISendByte(var.b, sizeof(data));
+  #endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1413,9 +1752,13 @@ bool SPIFlash::writeLong(uint32_t address, int32_t data, bool errorCheck) {
 	} var;
 	var.l = data;
 	_beginSPI(PAGEPROG);
+  #ifndef DUE_DMA_MODE
 	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_nextByte(PAGEPROG, var.b[j]);
 	}
+  #else
+  dueSPISendByte(var.b, sizeof(data));
+  #endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1458,9 +1801,13 @@ bool SPIFlash::writeFloat(uint32_t address, float data, bool errorCheck) {
 	} var;
 	var.f = data;
 	_beginSPI(PAGEPROG);
+  #ifndef DUE_DMA_MODE
 	for (uint16_t j = 0; j < (sizeof(data)); j++) {
 		_nextByte(PAGEPROG, var.b[j]);
 	}
+  #else
+  dueSPISendByte(var.b, sizeof(data));
+  #endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1510,7 +1857,7 @@ bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
 		return false;
 
   _beginSPI(PAGEPROG);
-
+  #ifndef DUE_DMA_MODE
   for (uint16_t j = 0; j < sizeof(inStrLen); j++) {
     _nextByte(PAGEPROG, var.b[j]);
   }
@@ -1518,6 +1865,10 @@ bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
   for (uint16_t i = 0; i <inStrLen; i++) {
     _nextByte(PAGEPROG, inputChar[i]);
   }
+  #else
+  dueSPISendByte(var.b, sizeof(inStrLen));
+  dueSPISendChar(inputChar, inStrLen);
+  #endif
   //_endSPI();
   CHIP_DESELECT
 
@@ -1559,15 +1910,9 @@ bool SPIFlash::eraseSector(uint32_t address) {
  		return false;
 
 	_beginSPI(SECTORERASE);
-	#ifdef __AVR_ATtiny85__
 	(void)xfer(address >> 16);
 	(void)xfer(address >> 8);
 	(void)xfer(0);
-	#else
- 	SPI.transfer(address >> 16);
- 	SPI.transfer(address >> 8);
- 	SPI.transfer(NULLBYTE);
-	#endif
   _endSPI();
 
 	if(!_notBusy(500L))
@@ -1597,15 +1942,9 @@ bool SPIFlash::eraseBlock32K(uint32_t address) {
  		return false;
   }
   _beginSPI(BLOCK32ERASE);
-	#ifdef __AVR_ATtiny85__
 	(void)xfer(address >> 16);
 	(void)xfer(address >> 8);
 	(void)xfer(0);
-	#else
- 	SPI.transfer(address >> 16);
- 	SPI.transfer(address >> 8);
- 	SPI.transfer(NULLBYTE);
-	#endif
   _endSPI();
 
 	if(!_notBusy(1000L))
@@ -1635,15 +1974,9 @@ bool SPIFlash::eraseBlock64K(uint32_t address) {
  		return false;
   }
   _beginSPI(BLOCK64ERASE);
-	#ifdef __AVR_ATtiny85__
 	(void)xfer(address >> 16);
 	(void)xfer(address >> 8);
 	(void)xfer(0);
-	#else
- 	SPI.transfer(address >> 16);
- 	SPI.transfer(address >> 8);
- 	SPI.transfer(NULLBYTE);
-	#endif
   _endSPI();
 
 	if(!_notBusy(1200L))

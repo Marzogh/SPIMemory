@@ -4,7 +4,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.5.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						16.07.2016											   //
+//					  						16.09.2016											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 Bugs Squashed:
 --> Errorchecking on writeByteArray() and writeCharArray() was broken in 2.4.0 and is fixed now.
@@ -15,10 +15,12 @@ Enhancements:
 --> Made _beginSPI() & _nextByte() shorter and faster.
 --> Replaced SPI.transfer with xfer().
 --> Added the ability to change Chip Erase wait times depending on the chip (supported).
+--> Added special mode for advanced Arduino Due users to read and write large arrays of data at very high speeds - previously reading 60kb of data would take ~108ms - it now takes ~525uS. In this mode, the time between consecutive reads has been reduced to <12ms (needs more work!). This mode can be enabled by uncommenting '''#define DUE_DMA_MODE''' in '''SPIFlash.cpp'''.
 
 To-do
 --> Need to find a way to better identify _notPrevWritten();
 --> Need to fix up eraseBlock32K, eraseBlock64K and eraseSector times
+--> Confirm new Error checking bug in writeCharArray() is fixed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.4.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

@@ -82,7 +82,7 @@ const uint8_t BLOCK64ERASE = 0xD8;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define BUSY        0x01
-#define SPI_CLK 0x632EA00       //Hex equivalent of 104MHz
+#define SPI_CLK 104000000       //Hex equivalent of 104MHz
 const uint8_t WRTEN = 0x02;
 const uint8_t SUS = 0x40;
 const uint8_t DUMMYBYTE = 0xEE;
@@ -101,6 +101,27 @@ const uint8_t NULLBYTE = 0x00;
 #define CS SS
 #endif
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                    Arduino Due DMA definitions                     //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Use SAM3X DMAC if nonzero
+#define USE_SAM3X_DMAC 1
+// Use extra Bus Matrix arbitration fix if nonzero
+#define USE_SAM3X_BUS_MATRIX_FIX 0
+// Time in ms for DMA receive timeout
+#define SAM3X_DMA_TIMEOUT 100
+// chip select register number
+#define SPI_CHIP_SEL 3
+// DMAC receive channel
+#define SPI_DMAC_RX_CH  1
+// DMAC transmit channel
+#define SPI_DMAC_TX_CH  0
+// DMAC Channel HW Interface Number for SPI TX.
+#define SPI_TX_IDX  1
+// DMAC Channel HW Interface Number for SPI RX.
+#define SPI_RX_IDX  2
+// Set DUE SPI clock div (any integer from 2 - 255)
+#define DUE_SPI_CLK 2
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     					   List of Error codes						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

@@ -67,7 +67,6 @@
 
 
 #include<SPIFlash.h>
-#include<SPI.h>
 uint8_t pageBuffer[256];
 String serialCommand;
 char printBuffer[128];
