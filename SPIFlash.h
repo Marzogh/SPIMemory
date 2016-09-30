@@ -183,7 +183,7 @@ private:
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
                                 32L * 1024L * 1024L, 8L * 1024L * 1024L};
   const uint16_t chipName[11] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256, 64};
-  const uint16_t eraseTime[11] = {1L * 1000L, 2L * 1000L, 2L * 1000L, 4L * 1000L, 6L * 1000L, 10 * 1000L, 15 * 1000L, 100 * 1000L, 200 * 1000L, 400 * 1000L, 50L}; //Erase time in milliseconds
+  const uint32_t eraseTime[11] = {1L * 1000L, 2L * 1000L, 2L * 1000L, 4L * 1000L, 6L * 1000L, 10 * 1000L, 15 * 1000L, 100 * 1000L, 200 * 1000L, 400 * 1000L, 50L}; //Erase time in milliseconds
 };
 
 
