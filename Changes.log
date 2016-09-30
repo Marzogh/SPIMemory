@@ -12,11 +12,12 @@ Enhancements:
 --> Calling flash.begin() now instantiates the SPI bus. Comms with other SPI slaves do not need to call SPI.begin() if flash.begin() has already been called first in the user's code.
 --> Sped up _beginSPI().
 --> Added support for SPI Transactions.
---> Added function allowing setting SPI clock speeds - call the function '''flash.setClock(uint32_t clockSpeed);''' straight after '''begin();'''.
+--> Added function allowing setting SPI clock speeds - call the function ```flash.setClock(uint32_t clockSpeed);``` straight after ```begin();```.
 --> Made _beginSPI() & _nextByte() shorter and faster.
 --> Replaced all calls to SPI.transfer() with xfer() to make the code more human readable.
 --> Added the ability to change Chip Erase wait times depending on the chip (supported).
 --> Added an upgrade for Arduino Due users to read and write large arrays of data at very high speeds - previously reading 60kb of data would take ~108ms - it now takes ~525uS. In this mode, the time between consecutive reads has been reduced to <12ms (needs more work!).
+--> Don't need to ```#include <SPI.h>``` in user code anymore. Just including ```#include<SPIFlash.h>``` will do. Examples are now updated.
 
 To-do
 --> Need to find a way to better identify _notPrevWritten();
