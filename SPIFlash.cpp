@@ -46,15 +46,6 @@
 // Make sure the sectors being written to have been erased beforehand //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //#define HIGHSPEED                                                   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//   Uncomment the code below to increase the speed of the library    //
-//        on the Arduino DUE by switching to SPI+DMA                  //
-//                                                                    //
-// Make sure the sectors being written to have been erased beforehand //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#if defined (ARDUINO_ARCH_SAM)                                        //
-#define DUE_DMA_MODE                                                //
-#endif                                                                //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #if defined (ARDUINO_ARCH_AVR)
 	#ifdef __AVR_ATtiny85__
@@ -85,14 +76,10 @@
     #define CHIP_SELECT   digitalWrite(csPin, LOW);
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
     #define xfer(n)   SPI.transfer(n)
-#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_SAM)
+#elif defined (ARDUINO_ARCH_SAM)
     #define CHIP_SELECT   digitalWrite(csPin, LOW);
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-    #ifdef DUE_DMA_MODE
     #define xfer   _dueSPITransfer
-    #else
-    #define xfer(n)   SPI.transfer(n)
-    #endif
 #endif
 
 // Constructor
@@ -449,17 +436,17 @@ bool SPIFlash::_startSPIBus(void) {
     _SPSR = SPSR;
 #endif
 
-#ifndef DUE_DMA_MODE
-  //SPI.begin();
+#if defined (ARDUINO_ARCH_SAM)
+  //_dueSPIBegin();
+  _dueSPIInit(DUE_SPI_CLK);
+#else
+//SPI.begin();
   #ifdef SPI_HAS_TRANSACTION
     SPI.beginTransaction(_settings);
   #else
     SPI.setDataMode(SPI_MODE0);
     SPI.setBitOrder(MSBFIRST);
-  #endif
-#else
-  //_dueSPIBegin();
-  _dueSPIInit(DUE_SPI_CLK);
+    #endif
 #endif
   SPIBusState = true;
 }
@@ -828,10 +815,10 @@ void SPIFlash::_troubleshoot() {
 
 //Identifies chip and establishes parameters
 void SPIFlash::begin(void) {
-#ifndef DUE_DMA_MODE
-  SPI.begin();
-#else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPIBegin();
+#else
+  SPI.begin();
 #endif
 
 #ifdef SPI_HAS_TRANSACTION
@@ -1032,13 +1019,13 @@ bool  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
     _beginSPI(READDATA);
   }
 
-  #ifndef DUE_DMA_MODE
+#if defined (ARDUINO_ARCH_SAM)
+  _dueSPIRecByte(data_buffer, bufferSize);
+#else
   for (uint16_t a = 0; a < bufferSize; a++) {
     data_buffer[a] = _nextByte(READDATA);
   }
-  #else
-  _dueSPIRecByte(data_buffer, bufferSize);
-  #endif
+#endif
   _endSPI();
 	return true;
 }
@@ -1077,13 +1064,13 @@ bool  SPIFlash::readCharArray(uint32_t address, char *data_buffer, uint16_t buff
     break;
   }
 
-  #ifndef DUE_DMA_MODE
+#if defined (ARDUINO_ARCH_SAM)
+  _dueSPIRecChar(data_buffer, bufferSize);
+#else
   for (uint16_t a = 0; a < bufferSize; a++) {
     data_buffer[a] = _nextByte(READDATA);
   }
-  #else
-  _dueSPIRecChar(data_buffer, bufferSize);
-  #endif
+#endif
   _endSPI();
 	return true;
 }
@@ -1127,13 +1114,13 @@ uint16_t SPIFlash::readWord(uint32_t address, bool fastRead) {
     break;
   }
 
-  #ifndef DUE_DMA_MODE
-  for (uint16_t i=0; i < (sizeof(data.I)); i++) {
-		data.b[i] = _nextByte(READDATA);
-  }
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data.b, (sizeof(data.I)));
-  #endif
+#else
+  for (uint16_t i=0; i < (sizeof(data.I)); i++) {
+    data.b[i] = _nextByte(READDATA);
+  }
+#endif
   _endSPI();
 	return data.I;
 }
@@ -1176,13 +1163,13 @@ int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
     break;
   }
 
-  #ifndef DUE_DMA_MODE
-  for (uint16_t i=0; i < (sizeof(data.s)); i++) {
-		data.b[i] = _nextByte(READDATA);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data.b, (sizeof(data.s)));
-  #endif
+#else
+  for (uint16_t i=0; i < (sizeof(data.s)); i++) {
+    data.b[i] = _nextByte(READDATA);
+  }
+#endif
 	_endSPI();
 	return data.s;
 }
@@ -1225,13 +1212,13 @@ uint32_t SPIFlash::readULong(uint32_t address, bool fastRead) {
     default:
     break;
   }
-  #ifndef DUE_DMA_MODE
-	for (uint16_t i=0; i < (sizeof(data.l)); i++) {
-		data.b[i] = _nextByte(READDATA);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data.b, (sizeof(data.l)));
-  #endif
+#else
+  for (uint16_t i=0; i < (sizeof(data.l)); i++) {
+    data.b[i] = _nextByte(READDATA);
+  }
+#endif
 	_endSPI();
 	return data.l;
 }
@@ -1275,13 +1262,13 @@ int32_t SPIFlash::readLong(uint32_t address, bool fastRead) {
     break;
   }
 
-  #ifndef DUE_DMA_MODE
-  for (uint16_t i=0; i < (sizeof(data.l)); i++) {
-		data.b[i] = _nextByte(READDATA);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data.b, (sizeof(data.l)));
-  #endif
+#else
+  for (uint16_t i=0; i < (sizeof(data.l)); i++) {
+    data.b[i] = _nextByte(READDATA);
+  }
+#endif
 	_endSPI();
 	return data.l;
 }
@@ -1325,13 +1312,13 @@ float SPIFlash::readFloat(uint32_t address, bool fastRead) {
     default:
     break;
   }
-  #ifndef DUE_DMA_MODE
-	for (uint16_t i=0; i < (sizeof(float)); i++) {
-		data.b[i] = _nextByte(READDATA);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data.b, (sizeof(data.f)));
-  #endif
+#else
+  for (uint16_t i=0; i < (sizeof(float)); i++) {
+    data.b[i] = _nextByte(READDATA);
+  }
+#endif
 	_endSPI();
 	return data.f;
 }
@@ -1399,13 +1386,13 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRe
     default:
     break;
   }
-  #ifndef DUE_DMA_MODE
-	for (int a = 0; a < PAGESIZE; a++) {
-		data_buffer[a] = _nextByte(READDATA);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data_buffer, PAGESIZE);
-  #endif
+#else
+  for (int a = 0; a < PAGESIZE; a++) {
+    data_buffer[a] = _nextByte(READDATA);
+  }
+#endif
 	_endSPI();
 	return true;
 }
@@ -1508,13 +1495,13 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
 		return false;
 
 	_beginSPI(PAGEPROG);
-  #ifndef DUE_DMA_MODE
-	for (uint16_t i = 0; i < bufferSize; i++) {
-		_nextByte(PAGEPROG, data_buffer[i]);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(data_buffer, bufferSize);
-  #endif
+#else
+  for (uint16_t i = 0; i < bufferSize; i++) {
+    _nextByte(PAGEPROG, data_buffer[i]);
+  }
+#endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1565,13 +1552,13 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
 
 	_beginSPI(PAGEPROG);
 
-  #ifndef DUE_DMA_MODE
-	for (uint16_t i = 0; i < bufferSize; i++) {
-		_nextByte(PAGEPROG, data_buffer[i]);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPISendChar(data_buffer, bufferSize);
-  #endif
+#else
+  for (uint16_t i = 0; i < bufferSize; i++) {
+    _nextByte(PAGEPROG, data_buffer[i]);
+  }
+#endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1615,13 +1602,13 @@ bool SPIFlash::writeWord(uint32_t address, uint16_t data, bool errorCheck) {
 	var.w = data;
 
 	_beginSPI(PAGEPROG);
-  #ifndef DUE_DMA_MODE
-	for (uint16_t j = 0; j < sizeof(data); j++) {
-		_nextByte(PAGEPROG, var.b[j]);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(var.b, sizeof(data));
-  #endif
+#else
+  for (uint16_t j = 0; j < sizeof(data); j++) {
+    _nextByte(PAGEPROG, var.b[j]);
+  }
+#endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1664,13 +1651,13 @@ bool SPIFlash::writeShort(uint32_t address, int16_t data, bool errorCheck) {
 	} var;
 	var.s = data;
 	_beginSPI(PAGEPROG);
-  #ifndef DUE_DMA_MODE
-	for (uint16_t j = 0; j < (sizeof(data)); j++) {
-    _nextByte(PAGEPROG, var.b[j]);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(var.b, sizeof(data));
-  #endif
+#else
+  for (uint16_t j = 0; j < (sizeof(data)); j++) {
+    _nextByte(PAGEPROG, var.b[j]);
+  }
+#endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1713,13 +1700,13 @@ bool SPIFlash::writeULong(uint32_t address, uint32_t data, bool errorCheck) {
 	} var;
 	var.l = data;
 	_beginSPI(PAGEPROG);
-  #ifndef DUE_DMA_MODE
-	for (uint16_t j = 0; j < (sizeof(data)); j++) {
-		_nextByte(PAGEPROG, var.b[j]);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(var.b, sizeof(data));
-  #endif
+#else
+  for (uint16_t j = 0; j < (sizeof(data)); j++) {
+    _nextByte(PAGEPROG, var.b[j]);
+  }
+#endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1762,13 +1749,13 @@ bool SPIFlash::writeLong(uint32_t address, int32_t data, bool errorCheck) {
 	} var;
 	var.l = data;
 	_beginSPI(PAGEPROG);
-  #ifndef DUE_DMA_MODE
-	for (uint16_t j = 0; j < (sizeof(data)); j++) {
-		_nextByte(PAGEPROG, var.b[j]);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(var.b, sizeof(data));
-  #endif
+#else
+  for (uint16_t j = 0; j < (sizeof(data)); j++) {
+    _nextByte(PAGEPROG, var.b[j]);
+  }
+#endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1811,13 +1798,13 @@ bool SPIFlash::writeFloat(uint32_t address, float data, bool errorCheck) {
 	} var;
 	var.f = data;
 	_beginSPI(PAGEPROG);
-  #ifndef DUE_DMA_MODE
-	for (uint16_t j = 0; j < (sizeof(data)); j++) {
-		_nextByte(PAGEPROG, var.b[j]);
-	}
-  #else
+#if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(var.b, sizeof(data));
-  #endif
+#else
+  for (uint16_t j = 0; j < (sizeof(data)); j++) {
+    _nextByte(PAGEPROG, var.b[j]);
+  }
+#endif
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1867,7 +1854,10 @@ bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
 		return false;
 
   _beginSPI(PAGEPROG);
-  #ifndef DUE_DMA_MODE
+#if defined (ARDUINO_ARCH_SAM)
+  _dueSPISendByte(var.b, sizeof(inStrLen));
+  _dueSPISendChar(inputChar, inStrLen);
+#else
   for (uint16_t j = 0; j < sizeof(inStrLen); j++) {
     _nextByte(PAGEPROG, var.b[j]);
   }
@@ -1875,10 +1865,7 @@ bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
   for (uint16_t i = 0; i <inStrLen; i++) {
     _nextByte(PAGEPROG, inputChar[i]);
   }
-  #else
-  _dueSPISendByte(var.b, sizeof(inStrLen));
-  _dueSPISendChar(inputChar, inStrLen);
-  #endif
+#endif
   //_endSPI();
   CHIP_DESELECT
 
