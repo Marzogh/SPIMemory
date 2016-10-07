@@ -122,6 +122,7 @@ public:
   //-------------------------------------------Public variables---------------------------------------------//
 
 private:
+#if defined (ARDUINO_ARCH_SAM)
   //-----------------------------------Private Arduino Due DMA Functions------------------------------------//
   void     _dmac_disable();
   void     _dmac_enable();
@@ -143,6 +144,7 @@ private:
   void     _dueSPISendByte(const uint8_t* buf, size_t len);
   void     _dueSPISendChar(char b);
   void     _dueSPISendChar(const char* buf, size_t len);
+#endif
   //--------------------------------------------Private functions-------------------------------------------//
   void     _troubleshoot(void);
   void     _cmd(uint8_t cmd, bool _continue = true);
@@ -187,7 +189,7 @@ private:
 };
 
 
-  //--------------------------------------------Templates-------------------------------------------//
+//--------------------------------------------Templates-------------------------------------------//
 
 // Writes any type of data to a specific location in the flash memory.
 // Has two variants:

@@ -22,13 +22,12 @@
  * along with the Arduino SPIFlash Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-
+#if defined (ARDUINO_ARCH_SAM)
 #include "SPIFlash.h"
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //        Private functions used by Arduino Due DMA operations        //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#if defined (ARDUINO_ARCH_SAM)
 // Disable DMA Controller
 void SPIFlash::_dmac_disable() {
   DMAC->DMAC_EN &= (~DMAC_EN_ENABLE);
