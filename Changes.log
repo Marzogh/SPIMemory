@@ -18,6 +18,8 @@ Enhancements:
 --> Added the ability to change Chip Erase wait times depending on the chip (supported).
 --> Added an upgrade for Arduino Due users to read and write large arrays of data at very high speeds - previously reading 60kb of data would take ~108ms - it now takes ~525uS. In this mode, the time between consecutive reads has been reduced to <12ms (needs more work!).
 --> Don't need to ```#include <SPI.h>``` in user code anymore. Just including ```#include<SPIFlash.h>``` will do. Examples are now updated.
+--> Now supports SPI.transfer16() & SPI.transfer(*buf, count) along with the standard SPI.transfer(), speeding up the read/write of anything larger than an byte (AVR Boards only)
+--> Reduces the program storage space in the uC's flash (AVR Boards)
 
 To-do
 --> Need to find a way to better identify _notPrevWritten();

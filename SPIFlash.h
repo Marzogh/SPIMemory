@@ -165,7 +165,11 @@ private:
   bool     _chipID(void);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t address, uint32_t size = 1);
-  uint8_t  _nextByte(uint8_t opcode, uint8_t byte = NULLBYTE);
+  uint8_t  _nextByte(uint8_t byte = NULLBYTE);
+  #ifdef ARDUINO_ARCH_AVR
+  uint16_t _nextInt(uint16_t = NULLINT);
+  void     _nextBuf(void *data_buffer, uint32_t size);
+  #endif
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
@@ -212,7 +216,7 @@ template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value
     const uint8_t* p = (const uint8_t*)(const void*)&value;
     _beginSPI(PAGEPROG);
     for (uint16_t i = 0; i < sizeof(value); i++) {
-      _nextByte(PAGEPROG, *p++);
+      _nextByte(*p++);
     }
     _endSPI();
   }
@@ -251,7 +255,7 @@ template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool 
       _beginSPI(FASTREAD);
 
     for (uint16_t i = 0; i < sizeof(value); i++) {
-      *p++ =_nextByte(READDATA);
+      *p++ =_nextByte();
     }
     _endSPI();
     return true;
@@ -273,7 +277,7 @@ if (/*!_prep(READDATA, address, sizeof(value)) && */!_notBusy()) {
   _beginSPI(READDATA);
   for(uint16_t i = 0; i < sizeof(value);i++)
   {
-      if(*p++ != _nextByte(READDATA))
+      if(*p++ != _nextByte())
       {
         return false;
       }

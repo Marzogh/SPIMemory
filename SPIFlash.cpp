@@ -47,7 +47,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //#define HIGHSPEED                                                   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#if defined (ARDUINO_ARCH_AVR)
+#ifdef ARDUINO_ARCH_AVR
 	#ifdef __AVR_ATtiny85__
 		#define CHIP_SELECT   PORTB &= ~cs_mask;
 		#define CHIP_DESELECT PORTB |=  cs_mask;
@@ -71,6 +71,8 @@
     #define CHIP_SELECT   *cs_port &= ~cs_mask;
     #define CHIP_DESELECT *cs_port |=  cs_mask;
     #define xfer(n)   SPI.transfer(n)
+    #define xfer16(a) SPI.transfer16(a)
+    #define xferBuf(x, y) SPI.transfer(x, y)
   #endif
 #elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
     #define CHIP_SELECT   digitalWrite(csPin, LOW);
@@ -196,11 +198,24 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
 //SPI data lines are left open until _endSPI() is called
 
 //Reads/Writes next byte. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
-uint8_t SPIFlash::_nextByte(uint8_t opcode, uint8_t data) {
+uint8_t SPIFlash::_nextByte(uint8_t data) {
   return xfer(data);
 }
 
-//Stops all operations. Should be called after all the required data is read/written from repeated _readNextByte()/_nextByte(PAGEPROG, ) calls
+#ifdef ARDUINO_ARCH_AVR
+//Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
+uint16_t SPIFlash::_nextInt(uint16_t data) {
+  return xfer16(data);
+}
+
+//Reads/Writes next data buffer. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
+void SPIFlash::_nextBuf(void *data_buffer, uint32_t size) {
+  xferBuf(&data_buffer, size);
+}
+
+#endif
+
+//Stops all operations. Should be called after all the required data is read/written from repeated _nextByte() calls
 void SPIFlash::_endSPI(void) {
   CHIP_DESELECT
   /*#if defined (ARDUINO_ARCH_SAM)
@@ -236,7 +251,7 @@ void SPIFlash::_endSPI(void) {
 // Checks if status register 1 can be accessed - used during powerdown and power up and for debugging
 uint8_t SPIFlash::_readStat1(void) {
 	_beginSPI(READSTAT1);
-  uint8_t stat1 = _nextByte(READDATA);
+  uint8_t stat1 = _nextByte();
   //_endSPI();
   CHIP_DESELECT
 	return stat1;
@@ -245,7 +260,7 @@ uint8_t SPIFlash::_readStat1(void) {
 // Checks if status register 2 can be accessed, if yes, reads and returns it
 uint8_t SPIFlash::_readStat2(void) {
   _beginSPI(READSTAT2);
-  uint8_t stat2 = _nextByte(READDATA);
+  uint8_t stat2 = _nextByte();
   _endSPI();
   return stat2;
 }
@@ -319,11 +334,11 @@ bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
 	if(!_notBusy())
 		return false;
 	_beginSPI(MANID);
-  _nextByte(READDATA);
-  _nextByte(READDATA);
-  _nextByte(READDATA);
-  *b1 = _nextByte(READDATA);
-  *b2 = _nextByte(READDATA);
+  _nextByte();
+  _nextByte();
+  _nextByte();
+  *b1 = _nextByte();
+  *b2 = _nextByte();
   _endSPI();
 	return true;
 }
@@ -424,7 +439,7 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
   //_prep(READDATA, address, size);
   _beginSPI(READDATA);
   for (uint16_t i = 0; i < size; i++) {
-    if (_nextByte(READDATA) != 0xFF) {
+    if (_nextByte() != 0xFF) {
       _endSPI();
       return false;
     }
@@ -674,7 +689,7 @@ uint8_t SPIFlash::readByte(uint32_t address, bool fastRead) {
     break;
   }
 
-  data = _nextByte(READDATA);
+  data = _nextByte();
   _endSPI();
   return data;
 }
@@ -713,7 +728,7 @@ int8_t SPIFlash::readChar(uint32_t address, bool fastRead) {
     break;
   }
 
-  data = _nextByte(READDATA);
+  data = _nextByte();
   _endSPI();
   return data;
 }
@@ -748,9 +763,11 @@ bool  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
 
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data_buffer, bufferSize);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data_buffer, bufferSize);
 #else
   for (uint16_t a = 0; a < bufferSize; a++) {
-    data_buffer[a] = _nextByte(READDATA);
+    data_buffer[a] = _nextByte();
   }
 #endif
   _endSPI();
@@ -793,9 +810,11 @@ bool  SPIFlash::readCharArray(uint32_t address, char *data_buffer, uint16_t buff
 
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecChar(data_buffer, bufferSize);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data_buffer, bufferSize);
 #else
   for (uint16_t a = 0; a < bufferSize; a++) {
-    data_buffer[a] = _nextByte(READDATA);
+    data_buffer[a] = _nextByte();
   }
 #endif
   _endSPI();
@@ -819,13 +838,16 @@ bool  SPIFlash::readCharArray(uint16_t page_number, uint8_t offset, char *data_b
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 uint16_t SPIFlash::readWord(uint32_t address, bool fastRead) {
+#ifdef ARDUINO_ARCH_AVR
+  uint16_t data;
+#else
 	union
 	{
 		byte b[sizeof(uint16_t)];
 		uint16_t I;
 	} data;
-
-	if (!_prep(READDATA, address, sizeof(data.I))) {
+#endif
+	if (!_prep(READDATA, address, sizeof(uint16_t))) {
 		return false;
   }
   switch (fastRead) {
@@ -842,14 +864,21 @@ uint16_t SPIFlash::readWord(uint32_t address, bool fastRead) {
   }
 
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPIRecByte(data.b, (sizeof(data.I)));
+  _dueSPIRecByte(data.b, (sizeof(uint16_t)));
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextInt(data);
 #else
-  for (uint16_t i=0; i < (sizeof(data.I)); i++) {
-    data.b[i] = _nextByte(READDATA);
+  for (uint16_t i=0; i < (sizeof(uint16_t)); i++) {
+    data.b[i] = _nextByte();
   }
 #endif
-  _endSPI();
-	return data.I;
+_endSPI();
+
+#if defined (ARDUINO_ARCH_AVR)
+return data;
+#else
+return data.I;
+#endif
 }
 // Variant B
 uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset, bool fastRead) {
@@ -869,12 +898,17 @@ uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset, bool fastRead)
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
+#if defined (ARDUINO_ARCH_AVR)
+  int16_t data;
+#else
 	union
 	{
 		byte b[sizeof(int16_t)];
 		int16_t s;
 	} data;
-	if (!_prep(READDATA, address, sizeof(data.s))) {
+#endif
+
+	if (!_prep(READDATA, address, sizeof(int16_t))) {
     return false;
   }
   switch (fastRead) {
@@ -891,14 +925,21 @@ int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
   }
 
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPIRecByte(data.b, (sizeof(data.s)));
+  _dueSPIRecByte(data.b, (sizeof(int16_t)));
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextInt(data);
 #else
-  for (uint16_t i=0; i < (sizeof(data.s)); i++) {
-    data.b[i] = _nextByte(READDATA);
+  for (uint16_t i=0; i < (sizeof(int16_t)); i++) {
+    data.b[i] = _nextByte();
   }
 #endif
 	_endSPI();
+
+#ifdef ARDUINO_ARCH_AVR
+  return data;
+#else
 	return data.s;
+#endif
 }
 // Variant B
 int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset, bool fastRead) {
@@ -918,13 +959,14 @@ int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset, bool fastRead)
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 uint32_t SPIFlash::readULong(uint32_t address, bool fastRead) {
+  const uint8_t size = (sizeof(uint32_t));
 	union
 	{
-		byte b[sizeof(uint32_t)];
+		uint8_t b[size];
 		uint32_t l;
 	} data;
 
-	if (!_prep(READDATA, address, sizeof(data.l))) {
+	if (!_prep(READDATA, address, size)) {
     return false;
   }
   switch (fastRead) {
@@ -940,10 +982,12 @@ uint32_t SPIFlash::readULong(uint32_t address, bool fastRead) {
     break;
   }
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPIRecByte(data.b, (sizeof(data.l)));
+  _dueSPIRecByte(data.b, size);
+#elif (ARDUINO_ARCH_AVR)
+  _nextBuf(&data.b, size);
 #else
-  for (uint16_t i=0; i < (sizeof(data.l)); i++) {
-    data.b[i] = _nextByte(READDATA);
+  for (uint16_t i=0; i < (size); i++) {
+    data.b[i] = _nextByte();
   }
 #endif
 	_endSPI();
@@ -967,13 +1011,14 @@ uint32_t SPIFlash::readULong(uint16_t page_number, uint8_t offset, bool fastRead
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 int32_t SPIFlash::readLong(uint32_t address, bool fastRead) {
+  const uint8_t size = (sizeof(int32_t));
 	union
 	{
-		byte b[sizeof(int32_t)];
+		byte b[size];
 		int32_t l;
 	} data;
 
-	if (!_prep(READDATA, address, sizeof(data.l))) {
+	if (!_prep(READDATA, address, size)) {
     return false;
   }
   switch (fastRead) {
@@ -990,10 +1035,12 @@ int32_t SPIFlash::readLong(uint32_t address, bool fastRead) {
   }
 
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPIRecByte(data.b, (sizeof(data.l)));
+  _dueSPIRecByte(data.b, (size));
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data.b, size);
 #else
-  for (uint16_t i=0; i < (sizeof(data.l)); i++) {
-    data.b[i] = _nextByte(READDATA);
+  for (uint16_t i=0; i < (size); i++) {
+    data.b[i] = _nextByte();
   }
 #endif
 	_endSPI();
@@ -1017,13 +1064,14 @@ int32_t SPIFlash::readLong(uint16_t page_number, uint8_t offset, bool fastRead) 
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 float SPIFlash::readFloat(uint32_t address, bool fastRead) {
+  const uint8_t size = (sizeof(float));
 	union
 	{
-		byte b[(sizeof(float))];
+		byte b[size];
 		float f;
 	} data;
 
-	if (!_prep(READDATA, address, sizeof(data.f))) {
+	if (!_prep(READDATA, address, size)) {
     return false;
   }
 
@@ -1040,10 +1088,12 @@ float SPIFlash::readFloat(uint32_t address, bool fastRead) {
     break;
   }
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPIRecByte(data.b, (sizeof(data.f)));
+  _dueSPIRecByte(data.b, size);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data.b, size);
 #else
   for (uint16_t i=0; i < (sizeof(float)); i++) {
-    data.b[i] = _nextByte(READDATA);
+    data.b[i] = _nextByte();
   }
 #endif
 	_endSPI();
@@ -1115,9 +1165,11 @@ bool  SPIFlash::readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRe
   }
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPIRecByte(data_buffer, PAGESIZE);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data_buffer, PAGESIZE);
 #else
   for (int a = 0; a < PAGESIZE; a++) {
-    data_buffer[a] = _nextByte(READDATA);
+    data_buffer[a] = _nextByte();
   }
 #endif
 	_endSPI();
@@ -1143,7 +1195,7 @@ bool SPIFlash::writeByte(uint32_t address, uint8_t data, bool errorCheck) {
     return false;
   }
 	_beginSPI(PAGEPROG);
-	_nextByte(PAGEPROG, data);
+	_nextByte(data);
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1184,7 +1236,7 @@ bool SPIFlash::writeChar(uint32_t address, int8_t data, bool errorCheck) {
 		return false;
 
 	_beginSPI(PAGEPROG);
-	_nextByte(PAGEPROG, data);
+	_nextByte(data);
 	//_endSPI();
   CHIP_DESELECT
 
@@ -1224,9 +1276,11 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
 	_beginSPI(PAGEPROG);
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(data_buffer, bufferSize);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data_buffer, bufferSize);
 #else
   for (uint16_t i = 0; i < bufferSize; i++) {
-    _nextByte(PAGEPROG, data_buffer[i]);
+    _nextByte(data_buffer[i]);
   }
 #endif
 	//_endSPI();
@@ -1242,11 +1296,15 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
   	}
 
     _beginSPI(READDATA);
+#if defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data_buffer, bufferSize);
+#else
     for (uint16_t a = 0; a < bufferSize; a++) {
-      if (data_buffer[a] != _nextByte(READDATA)) {
+      if (data_buffer[a] != _nextByte()) {
         return false;
       }
     }
+#endif
     _endSPI();
   	return true;
   }
@@ -1281,9 +1339,11 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
 
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPISendChar(data_buffer, bufferSize);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&data_buffer, bufferSize);
 #else
   for (uint16_t i = 0; i < bufferSize; i++) {
-    _nextByte(PAGEPROG, data_buffer[i]);
+    _nextByte(data_buffer[i]);
   }
 #endif
 	//_endSPI();
@@ -1318,22 +1378,29 @@ bool SPIFlash::writeCharArray(uint16_t page_number, uint8_t offset, char *data_b
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeWord(uint32_t address, uint16_t data, bool errorCheck) {
-	if(!_prep(PAGEPROG, address, sizeof(data)))
-		return false;
+  const uint8_t size = sizeof(data);
 
+	if(!_prep(PAGEPROG, address, size)) {
+    return false;
+  }
+
+#ifndef ARDUINO_ARCH_AVR
 	union
 	{
-		uint8_t b[sizeof(data)];
+		uint8_t b[size];
 		uint16_t w;
 	} var;
 	var.w = data;
+#endif
 
 	_beginSPI(PAGEPROG);
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPISendByte(var.b, sizeof(data));
+  _dueSPISendByte(var.b, size);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextInt(data);
 #else
-  for (uint16_t j = 0; j < sizeof(data); j++) {
-    _nextByte(PAGEPROG, var.b[j]);
+  for (uint16_t j = 0; j < size; j++) {
+    _nextByte(var.b[j]);
   }
 #endif
 	//_endSPI();
@@ -1368,21 +1435,27 @@ bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeShort(uint32_t address, int16_t data, bool errorCheck) {
-	if(!_prep(PAGEPROG, address, sizeof(data)))
-		return false;
-
+  const uint8_t size = sizeof(data);
+	if(!_prep(PAGEPROG, address, size)) {
+    return false;
+  }
+#ifndef ARDUINO_ARCH_AVR
 	union
 	{
-		uint8_t b[sizeof(data)];
+		uint8_t b[size];
 		int16_t s;
 	} var;
 	var.s = data;
+#endif
+
 	_beginSPI(PAGEPROG);
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPISendByte(var.b, sizeof(data));
+  _dueSPISendByte(var.b, size);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextInt(data);
 #else
-  for (uint16_t j = 0; j < (sizeof(data)); j++) {
-    _nextByte(PAGEPROG, var.b[j]);
+  for (uint16_t j = 0; j < (size); j++) {
+    _nextByte(var.b[j]);
   }
 #endif
 	//_endSPI();
@@ -1417,21 +1490,27 @@ bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeULong(uint32_t address, uint32_t data, bool errorCheck) {
-	if(!_prep(PAGEPROG, address, sizeof(data)))
-		return false;
+  const uint8_t size = (sizeof(data));
+
+	if(!_prep(PAGEPROG, address, size)) {
+    return false;
+  }
 
 	union
 	{
-		uint8_t b[sizeof(data)];
+		uint8_t b[size];
 		uint32_t l;
 	} var;
+
 	var.l = data;
 	_beginSPI(PAGEPROG);
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPISendByte(var.b, sizeof(data));
+  _dueSPISendByte(var.b, size);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&var.b, size);
 #else
-  for (uint16_t j = 0; j < (sizeof(data)); j++) {
-    _nextByte(PAGEPROG, var.b[j]);
+  for (uint16_t j = 0; j < size; j++) {
+    _nextByte(var.b[j]);
   }
 #endif
 	//_endSPI();
@@ -1466,21 +1545,27 @@ bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, b
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeLong(uint32_t address, int32_t data, bool errorCheck) {
-	if(!_prep(PAGEPROG, address, sizeof(data)))
-		return false;
+  const uint8_t size = sizeof(data);
+
+	if(!_prep(PAGEPROG, address, size)) {
+    return false;
+  }
 
 	union
 	{
-		uint8_t b[sizeof(data)];
+		uint8_t b[size];
 		int32_t l;
 	} var;
 	var.l = data;
+
 	_beginSPI(PAGEPROG);
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPISendByte(var.b, sizeof(data));
+  _dueSPISendByte(var.b, size);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&var.b, size);
 #else
-  for (uint16_t j = 0; j < (sizeof(data)); j++) {
-    _nextByte(PAGEPROG, var.b[j]);
+  for (uint16_t j = 0; j < size; j++) {
+    _nextByte(var.b[j]);
   }
 #endif
 	//_endSPI();
@@ -1515,6 +1600,8 @@ bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, boo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeFloat(uint32_t address, float data, bool errorCheck) {
+  const uint8_t size = (sizeof(data));
+
 	if(!_prep(PAGEPROG, address, sizeof(data)))
 		return false;
 
@@ -1524,12 +1611,15 @@ bool SPIFlash::writeFloat(uint32_t address, float data, bool errorCheck) {
 		float f;
 	} var;
 	var.f = data;
+
 	_beginSPI(PAGEPROG);
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(var.b, sizeof(data));
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextBuf(&var.b, size);
 #else
   for (uint16_t j = 0; j < (sizeof(data)); j++) {
-    _nextByte(PAGEPROG, var.b[j]);
+    _nextByte(var.b[j]);
   }
 #endif
 	//_endSPI();
@@ -1584,13 +1674,16 @@ bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPISendByte(var.b, sizeof(inStrLen));
   _dueSPISendChar(inputChar, inStrLen);
+#elif defined (ARDUINO_ARCH_AVR)
+  _nextInt(inStrLen);
+  _nextBuf(&inputChar, inStrLen);
 #else
   for (uint16_t j = 0; j < sizeof(inStrLen); j++) {
-    _nextByte(PAGEPROG, var.b[j]);
+    _nextByte(var.b[j]);
   }
 
   for (uint16_t i = 0; i <inStrLen; i++) {
-    _nextByte(PAGEPROG, inputChar[i]);
+    _nextByte(inputChar[i]);
   }
 #endif
   //_endSPI();

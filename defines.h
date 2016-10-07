@@ -87,6 +87,7 @@ const uint8_t WRTEN = 0x02;
 const uint8_t SUS = 0x40;
 const uint8_t DUMMYBYTE = 0xEE;
 const uint8_t NULLBYTE = 0x00;
+const uint16_t NULLINT = 0x0000;
 
 #define arrayLen(x)  	(sizeof(x) / sizeof(*x))
 #define lengthOf(x)  	(sizeof(x))/sizeof(byte)
