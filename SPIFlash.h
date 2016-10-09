@@ -32,6 +32,8 @@
 #endif
 #include "defines.h"
 
+#define LIBVER 250
+
 class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------//
