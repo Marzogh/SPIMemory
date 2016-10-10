@@ -47,7 +47,7 @@ void clearprintBuffer(uint8_t *bufPtr)
 {
   for (uint8_t i = 0; i < 128; i++) {
     //printBuffer[i] = 0;
-    bufPtr = 0;
+    *bufPtr++ = 0;
   }
 }
 
