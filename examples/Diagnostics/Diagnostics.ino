@@ -43,7 +43,7 @@ void loop() {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Serial Print Functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-void clearprintBuffer(uint8_t *bufPtr)
+void clearprintBuffer(char *bufPtr)
 {
   for (uint8_t i = 0; i < 128; i++) {
     //printBuffer[i] = 0;
