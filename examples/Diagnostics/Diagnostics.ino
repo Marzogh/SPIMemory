@@ -17,11 +17,6 @@
 
 #include<SPIFlash.h>
 
-#define WINBOND     0xEF
-#define MICROCHIP   0xBF
-
-char printBuffer[128];
-
 SPIFlash flash;
 
 void setup() {
@@ -48,15 +43,19 @@ void loop() {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Serial Print Functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-void clearprintBuffer()
+void clearprintBuffer(uint8_t *bufPtr)
 {
   for (uint8_t i = 0; i < 128; i++) {
-    printBuffer[i] = 0;
+    //printBuffer[i] = 0;
+    bufPtr = 0;
   }
 }
 
 void printLine() {
-  Serial.println(F("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
+  for (uint8_t i = 0; i < 177; i++) {
+    Serial.print(F("-"));
+  }
+  Serial.println();
 }
 
 void printPass() {
