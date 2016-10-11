@@ -23,8 +23,10 @@ void getID() {
   }
   Serial.print(F("Library version"));
 #ifdef LIBVER
+  uint8_t _ver, _subver, _bugfix;
+  flash.libver(_ver, _subver, _bugfix);
   clearprintBuffer(&printBuffer[1]);
-  sprintf(printBuffer, ": %d.%d.%d", LIBVER, LIBSUBVER, BUGFIXVER);
+  sprintf(printBuffer, ": %d.%d.%d", _ver, _subver, _bugfix);
   Serial.println(printBuffer);
 #else
   Serial.println(F("< 2.5.0"));

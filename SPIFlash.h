@@ -26,13 +26,27 @@
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
 
+#ifdef ARDUINO_ARCH_SAM
+#include <malloc.h>
+#include <stdlib.h>
+#include <stdio.h>
+#endif
 #include <Arduino.h>
 #ifndef __AVR_ATtiny85__
   #include <SPI.h>
 #endif
 #include "defines.h"
 
-#define LIBVER 250
+#define LIBVER 2
+#define LIBSUBVER 5
+#define BUGFIXVER 0
+
+#if defined (ARDUINO_ARCH_SAM)
+  extern char _end;
+  extern "C" char *sbrk(int i);
+  //char *ramstart=(char *)0x20070000;
+  //char *ramend=(char *)0x20088000;
+#endif
 
 class SPIFlash {
 public:
@@ -41,15 +55,16 @@ public:
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin(void);
   void     setClock(uint32_t clockSpeed);
-  uint8_t  error();
-  uint16_t getManID();
-  uint32_t getJEDECID();
+  bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
+  uint8_t  error(void);
+  uint16_t getManID(void);
+  uint32_t getJEDECID(void);
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
   uint32_t getAddress(uint16_t size);
-  uint16_t getChipName();
+  uint16_t getChipName(void);
   uint16_t sizeofStr(String &inputStr);
-  uint32_t getCapacity();
-  uint32_t getMaxPage();
+  uint32_t getCapacity(void);
+  uint32_t getMaxPage(void);
   //-------------------------------------------Write / Read Bytes-------------------------------------------//
   bool     writeByte(uint32_t address, uint8_t data, bool errorCheck = true);
   bool     writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck = true);
@@ -108,6 +123,8 @@ public:
   template <class T> bool writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
   template <class T> bool readAnything(uint32_t address, T& value, bool fastRead = false);
   template <class T> bool readAnything(uint16_t page_number, uint8_t offset, T& value, bool fastRead = false);
+  template <class T> bool update(uint32_t address, const T& value, bool errorCheck = true);
+  template <class T> bool update(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
   //--------------------------------------------Erase functions---------------------------------------------//
   bool     eraseSector(uint32_t address);
   bool     eraseSector(uint16_t page_number, uint8_t offset);
@@ -121,13 +138,17 @@ public:
   bool     resumeProg(void);
   bool     powerDown(void);
   bool     powerUp(void);
+  //-------------------------------------Public Arduino Due Functions---------------------------------------//
+#if defined (ARDUINO_ARCH_SAM)
+  uint32_t dueFreeRAM(void);
+#endif
   //-------------------------------------------Public variables---------------------------------------------//
 
 private:
 #if defined (ARDUINO_ARCH_SAM)
-  //-----------------------------------Private Arduino Due DMA Functions------------------------------------//
-  void     _dmac_disable();
-  void     _dmac_enable();
+  //-------------------------------------Private Arduino Due Functions--------------------------------------//
+  void     _dmac_disable(void);
+  void     _dmac_enable(void);
   void     _dmac_channel_disable(uint32_t ul_num);
   void     _dmac_channel_enable(uint32_t ul_num);
   bool     _dmac_channel_transfer_done(uint32_t ul_num);
@@ -138,9 +159,9 @@ private:
   void     _dueSPIBegin(void);
   void     _dueSPIInit(uint8_t dueSckDivisor);
   uint8_t  _dueSPITransfer(uint8_t b);
-  uint8_t  _dueSPIRecByte();
+  uint8_t  _dueSPIRecByte(void);
   uint8_t  _dueSPIRecByte(uint8_t* buf, size_t len);
-  int8_t   _dueSPIRecChar();
+  int8_t   _dueSPIRecChar(void);
   int8_t   _dueSPIRecChar(char* buf, size_t len);
   void     _dueSPISendByte(uint8_t b);
   void     _dueSPISendByte(const uint8_t* buf, size_t len);
@@ -183,9 +204,9 @@ private:
   uint16_t    name;
   uint32_t    capacity, maxPage, _eraseTime;
   uint32_t    currentAddress, _currentAddress = 0;
-  #ifdef SPI_HAS_TRANSACTION
+#ifdef SPI_HAS_TRANSACTION
   SPISettings _settings;
-  #endif
+#endif
   const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
   const uint32_t memSize[11]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
                                 2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
@@ -201,7 +222,7 @@ private:
 // Has two variants:
 //  A. Takes two arguments -
 //    1. address --> Any address from 0 to maxAddress
-//    2. T& value --> Variable to return data into
+//    2. T& value --> Variable to write data from
 //    4. errorCheck --> Turned on by default. Checks for writing errors
 //  B. Takes three arguments -
 //    1. page --> Any page number from 0 to maxPage
@@ -268,6 +289,60 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
   uint32_t address = _getAddress(page_number, offset);
   return readAnything(address, value, fastRead);
 }
+
+#if defined (ARDUINO_ARCH_SAM)
+
+// Writes any type of data to a specific location in the flash memory.
+// Has two variants:
+//  A. Takes two arguments -
+//    1. address --> Any address from 0 to maxAddress
+//    2. T& value --> Variable to return data into
+//    4. errorCheck --> Turned on by default. Checks for writing errors
+//  B. Takes three arguments -
+//    1. page --> Any page number from 0 to maxPage
+//    2. offset --> Any offset within the page - from 0 to 255
+//    3. const T& value --> Variable with the data to be written
+//    4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can write to any memory location - even if it has been previously written
+//        to. This function only works with the Arduino Due (AVR boards do not have enough SRAM
+//        for the minimum 4kb Sector Erase.) The size limit of the data that can be updated through
+//        this function depends on the amount of free SRAM. If calling the function is crashing your
+//        run the dueFreeRAM() function to see how much free SRAM is available at that point
+// Variant A
+template <class T> bool SPIFlash::update(uint32_t address, const T& value, bool errorCheck) {
+  uint32_t size = sizeof(value);
+  if (size >= dueFreeRAM()) {
+    errorcode = LOWRAM;
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot();
+    #endif
+  }
+  if (!_prep(UPDATE, address, size))
+    return false;
+  else {
+    uint
+
+
+    const uint8_t* p = (const uint8_t*)(const void*)&value;
+    _beginSPI(PAGEPROG);
+    for (uint16_t i = 0; i < sizeof(value); i++) {
+      _nextByte(*p++);
+    }
+    _endSPI();
+  }
+
+  if (!errorCheck)
+    return true;
+  else
+    return _writeErrorCheck(address, value);
+}
+// Variant B
+template <class T> bool SPIFlash::update(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck) {
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, value, errorCheck);
+}
+
+#endif
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {

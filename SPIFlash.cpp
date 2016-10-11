@@ -45,7 +45,8 @@
 //                                                                    //
 // Make sure the sectors being written to have been erased beforehand //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define HIGHSPEED                                                   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//#define HIGHSPEED                                                   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #ifdef ARDUINO_ARCH_AVR
 	#ifdef __AVR_ATtiny85__
@@ -122,6 +123,26 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t address, uint32_t size) {
       return false;
     }
     #endif
+    return true;
+    break;
+
+
+    case UPDATE:
+    if (!pageOverflow) {
+      #define ONESHOT
+      pageOverflow = !pageOverflow;
+    }
+    if (!_addressCheck(address, size)) {
+      return false;
+    }
+    #ifdef ONESHOT
+    pageOverflow = !pageOverflow;
+    #undef ONESHOT
+    #endif
+
+    if(!_notBusy() || !_writeEnable()){
+      return false;
+    }
     return true;
     break;
 
@@ -451,7 +472,7 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
 
 #ifdef RUNDIAGNOSTIC
 //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
-void SPIFlash::_troubleshoot() {
+void SPIFlash::_troubleshoot(void) {
 
 	switch (errorcode) {
 		case SUCCESS:
@@ -538,6 +559,21 @@ void SPIFlash::_troubleshoot() {
 		#endif
 		break;
 
+		case LOWRAM:
+ 		#if defined (ARDUINO_ARCH_AVR)
+ 		Serial.print("Error code: 0x0");
+		Serial.println(LOWRAM, HEX);
+		#else
+ 		Serial.println("You are running low on SRAM. Please optimise your program for better RAM usage");
+    #if defined (ARDUINO_ARCH_SAM)
+    Serial.print("Current Free SRAM: ");
+    Serial.println(_dueFreeRAM());
+    #endif
+  Serial.print("If you are still facing issues, ");
+ 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
+		#endif
+		break;
+
 		default:
 		#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega32U4__) || defined (__AVR_ATtiny85__)
  		Serial.print("Error code: 0x");
@@ -578,28 +614,36 @@ void SPIFlash::setClock(uint32_t clockSpeed) {
 }
 #endif
 
-uint8_t SPIFlash::error() {
+uint8_t SPIFlash::error(void) {
 	return errorcode;
 }
 
 //Returns capacity of chip
-uint32_t SPIFlash::getCapacity() {
+uint32_t SPIFlash::getCapacity(void) {
 	return capacity;
 }
 
 //Returns maximum number of pages
-uint32_t SPIFlash::getMaxPage() {
+uint32_t SPIFlash::getMaxPage(void) {
 	return maxPage;
 }
 
 
 //Returns identifying name of the chip
-uint16_t SPIFlash::getChipName() {
+uint16_t SPIFlash::getChipName(void) {
 	return name;
 }
 
+//Returns the library version as a string
+bool SPIFlash::libver(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
+  *b1 = LIBVER;
+  *b2 = LIBSUBVER;
+  *b3 = BUGFIXVER;
+  return true;
+}
+
 //Checks for and initiates the chip by requesting the Manufacturer ID which is returned as a 16 bit int
-uint16_t SPIFlash::getManID() {
+uint16_t SPIFlash::getManID(void) {
 	uint8_t b1, b2;
     _getManId(&b1, &b2);
     uint32_t id = b1;
@@ -608,7 +652,7 @@ uint16_t SPIFlash::getManID() {
 }
 
 //Checks for and initiates the chip by requesting JEDEC ID which is returned as a 32 bit int
-uint32_t SPIFlash::getJEDECID() {
+uint32_t SPIFlash::getJEDECID(void) {
 	uint8_t b1, b2, b3;
     _getJedecId(&b1, &b2, &b3);
     uint32_t id = b1;
