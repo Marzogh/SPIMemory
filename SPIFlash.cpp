@@ -126,26 +126,6 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t address, uint32_t size) {
     return true;
     break;
 
-
-    case UPDATE:
-    if (!pageOverflow) {
-      #define ONESHOT
-      pageOverflow = !pageOverflow;
-    }
-    if (!_addressCheck(address, size)) {
-      return false;
-    }
-    #ifdef ONESHOT
-    pageOverflow = !pageOverflow;
-    #undef ONESHOT
-    #endif
-
-    if(!_notBusy() || !_writeEnable()){
-      return false;
-    }
-    return true;
-    break;
-
     default:
     if (!_addressCheck(address, size)) {
       return false;

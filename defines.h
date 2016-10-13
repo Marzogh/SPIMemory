@@ -47,26 +47,6 @@
 #define POWERDOWN    0xB9
 #define BLOCK64ERASE 0xD8
 
-/*const uint8_t	MANID = 0x90;
-const uint8_t PAGEPROG = 0x02;
-const uint8_t READDATA = 0x03;
-const uint8_t FASTREAD = 0x0B;
-const uint8_t WRITEDISABLE = 0x04;
-const uint8_t READSTAT1 = 0x05;
-const uint8_t READSTAT2 = 0x35;
-const uint8_t WRITESTAT = 0x01;
-const uint8_t WRITEENABLE = 0x06;
-const uint8_t SECTORERASE = 0x20;
-const uint8_t BLOCK32ERASE = 0x52;
-const uint8_t CHIPERASE = 0xC7;
-const uint8_t SUSPEND = 0x75;
-const uint8_t ID = 0x90;
-const uint8_t RESUME = 0x7A;
-const uint8_t JEDECID = 0x9F;
-const uint8_t RELEASE = 0xAB;
-const uint8_t POWERDOWN = 0xB9;
-const uint8_t BLOCK64ERASE = 0xD8;*/
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -83,7 +63,6 @@ const uint8_t BLOCK64ERASE = 0xD8;*/
 
 #define BUSY          0x01
 #define SPI_CLK       104000000       //Hex equivalent of 104MHz
-#define UPDATE        0xFA
 #define WRTEN         0x02
 #define SUS           0x40
 #define DUMMYBYTE     0xEE

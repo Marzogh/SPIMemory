@@ -123,8 +123,6 @@ public:
   template <class T> bool writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
   template <class T> bool readAnything(uint32_t address, T& value, bool fastRead = false);
   template <class T> bool readAnything(uint16_t page_number, uint8_t offset, T& value, bool fastRead = false);
-  template <class T> bool update(uint32_t address, const T& value, bool errorCheck = true);
-  template <class T> bool update(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
   //--------------------------------------------Erase functions---------------------------------------------//
   bool     eraseSector(uint32_t address);
   bool     eraseSector(uint16_t page_number, uint8_t offset);
@@ -289,60 +287,6 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
   uint32_t address = _getAddress(page_number, offset);
   return readAnything(address, value, fastRead);
 }
-
-#if defined (ARDUINO_ARCH_SAM)
-
-// Writes any type of data to a specific location in the flash memory.
-// Has two variants:
-//  A. Takes two arguments -
-//    1. address --> Any address from 0 to maxAddress
-//    2. T& value --> Variable to return data into
-//    4. errorCheck --> Turned on by default. Checks for writing errors
-//  B. Takes three arguments -
-//    1. page --> Any page number from 0 to maxPage
-//    2. offset --> Any offset within the page - from 0 to 255
-//    3. const T& value --> Variable with the data to be written
-//    4. errorCheck --> Turned on by default. Checks for writing errors
-// WARNING: You can write to any memory location - even if it has been previously written
-//        to. This function only works with the Arduino Due (AVR boards do not have enough SRAM
-//        for the minimum 4kb Sector Erase.) The size limit of the data that can be updated through
-//        this function depends on the amount of free SRAM. If calling the function is crashing your
-//        run the dueFreeRAM() function to see how much free SRAM is available at that point
-// Variant A
-template <class T> bool SPIFlash::update(uint32_t address, const T& value, bool errorCheck) {
-  uint32_t size = sizeof(value);
-  if (size >= dueFreeRAM()) {
-    errorcode = LOWRAM;
-    #ifdef RUNDIAGNOSTIC
-    _troubleshoot();
-    #endif
-  }
-  if (!_prep(UPDATE, address, size))
-    return false;
-  else {
-    uint
-
-
-    const uint8_t* p = (const uint8_t*)(const void*)&value;
-    _beginSPI(PAGEPROG);
-    for (uint16_t i = 0; i < sizeof(value); i++) {
-      _nextByte(*p++);
-    }
-    _endSPI();
-  }
-
-  if (!errorCheck)
-    return true;
-  else
-    return _writeErrorCheck(address, value);
-}
-// Variant B
-template <class T> bool SPIFlash::update(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, value, errorCheck);
-}
-
-#endif
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
