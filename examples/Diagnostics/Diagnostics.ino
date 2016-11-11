@@ -52,7 +52,7 @@ void clearprintBuffer(char *bufPtr)
 }
 
 void printLine() {
-  for (uint8_t i = 0; i < 177; i++) {
+  for (uint8_t i = 0; i < 230; i++) {
     Serial.print(F("-"));
   }
   Serial.println();

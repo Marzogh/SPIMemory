@@ -1,68 +1,68 @@
 /*
- *----------------------------------------------------------------------------------------------------------------------------------*
- |                                                            Winbond Flash                                                         |
- |                                                      SPIFlash library test v2.4.0                                                |
- |----------------------------------------------------------------------------------------------------------------------------------|
- |                                                                Marzogh                                                           |
- |                                                              11.09.2016                                                          |
- |----------------------------------------------------------------------------------------------------------------------------------|
- |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
- |                                     *****************************************************************                            |
- |                                                                                                                                  |
- |                     # Please pick from the following commands and type the command number into the Serial console #              |
- |    For example - to write a byte of data, you would have to use the write_byte function - so type '3' into the serial console.   |
- |                                                    --------------------------------                                              |
- |                                                                                                                                  |
- |  1. getID                                                                                                                        |
- |   '1' gets the JEDEC ID of the chip                                                                                              |
- |                                                                                                                                  |
- |  2. writeByte [page] [offset] [byte]                                                                                             |
- |   '2' followed by '100' and then by '20' and then by '224' writes the byte 224 to page 100 position 20                           |
- |                                                                                                                                  |
- |  3. readByte [page] [offset]                                                                                                     |
- |   '3' followed by '100' and then by '20' returns the byte from page 100 position 20                                              |
- |                                                                                                                                  |
- |  4. writeWord [page] [offset]                                                                                                    |
- |   '4' followed by '55' and then by '35' and then by '633' writes the int 633 to page 5 position 35                               |
- |                                                                                                                                  |
- |  5. readWord [page] [offset]                                                                                                     |
- |   '5' followed by '200' and then by '30' returns the int from page 200 position 30                                               |
- |                                                                                                                                  |
- |  6. writeStr [page] [offset] [inputString]                                                                                       |
- |   '6' followed by '345' and then by '65' and then by 'Test String 1!' writes the String 'Test String 1! to page 345 position 65  |
- |                                                                                                                                  |
- |  7. readStr [page] [offset] [outputString]                                                                                       |
- |   '7' followed by '2050' and then by '73' reds the String from page 2050 position 73 into the outputString                       |
- |                                                                                                                                  |
- |  8. writePage [page]                                                                                                             |
- |   '8' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
- |                                                                                                                                  |
- |  9. printPage [page]                                                                                                             |
- |   '9' followed by 33 reads & prints page 33. To just read a page to a data buffer, refer                                         |
- |    to 'ReadMe.md' in the library folder.                                                                                         |
- |                                                                                                                                  |
- |  10. printAllPages                                                                                                               |
- |   '10' reads all 4096 pages and outputs them to the serial console                                                               |
- |   This function is to extract data from a flash chip onto a computer as a text file.                                             |
- |   Refer to 'Read me.md' in the library for details.                                                                              |
- |                                                                                                                                  |
- |  11. Erase 4KB sector                                                                                                            |
- |   '11'  followed by 2 erases a 4KB sector containing the page to be erased                                                       |
- |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
- |                                                                                                                                  |
- |  12. Erase 32KB block                                                                                                            |
- |   '12'  followed by 2 erases a 32KB block containing the page to be erased                                                       |
- |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
- |                                                                                                                                  |
- |  13. Erase 64KB block                                                                                                            |
- |   '13'  followed by 2 erases a 64KB block containing the page to be erased                                                       |
- |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
- |                                                                                                                                  |
- |  14. Erase Chip                                                                                                                  |
- |   '14' erases the entire chip                                                                                                    |
- |                                                                                                                                  |
- ^----------------------------------------------------------------------------------------------------------------------------------^
- */
+  ----------------------------------------------------------------------------------------------------------------------------------
+  |                                                            Winbond Flash                                                         |
+  |                                                      SPIFlash library test v2.4.0                                                |
+  |----------------------------------------------------------------------------------------------------------------------------------|
+  |                                                                Marzogh                                                           |
+  |                                                              11.09.2016                                                          |
+  |----------------------------------------------------------------------------------------------------------------------------------|
+  |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
+  |                                     *****************************************************************                            |
+  |                                                                                                                                  |
+  |                     # Please pick from the following commands and type the command number into the Serial console #              |
+  |    For example - to write a byte of data, you would have to use the write_byte function - so type '3' into the serial console.   |
+  |                                                    --------------------------------                                              |
+  |                                                                                                                                  |
+  |  1. getID                                                                                                                        |
+  |   '1' gets the JEDEC ID of the chip                                                                                              |
+  |                                                                                                                                  |
+  |  2. writeByte [page] [offset] [byte]                                                                                             |
+  |   '2' followed by '100' and then by '20' and then by '224' writes the byte 224 to page 100 position 20                           |
+  |                                                                                                                                  |
+  |  3. readByte [page] [offset]                                                                                                     |
+  |   '3' followed by '100' and then by '20' returns the byte from page 100 position 20                                              |
+  |                                                                                                                                  |
+  |  4. writeWord [page] [offset]                                                                                                    |
+  |   '4' followed by '55' and then by '35' and then by '633' writes the int 633 to page 5 position 35                               |
+  |                                                                                                                                  |
+  |  5. readWord [page] [offset]                                                                                                     |
+  |   '5' followed by '200' and then by '30' returns the int from page 200 position 30                                               |
+  |                                                                                                                                  |
+  |  6. writeStr [page] [offset] [inputString]                                                                                       |
+  |   '6' followed by '345' and then by '65' and then by 'Test String 1!' writes the String 'Test String 1! to page 345 position 65  |
+  |                                                                                                                                  |
+  |  7. readStr [page] [offset] [outputString]                                                                                       |
+  |   '7' followed by '2050' and then by '73' reds the String from page 2050 position 73 into the outputString                       |
+  |                                                                                                                                  |
+  |  8. writePage [page]                                                                                                             |
+  |   '8' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
+  |                                                                                                                                  |
+  |  9. printPage [page]                                                                                                             |
+  |   '9' followed by 33 reads & prints page 33. To just read a page to a data buffer, refer                                         |
+  |    to 'ReadMe.md' in the library folder.                                                                                         |
+  |                                                                                                                                  |
+  |  10. printAllPages                                                                                                               |
+  |   '10' reads all 4096 pages and outputs them to the serial console                                                               |
+  |   This function is to extract data from a flash chip onto a computer as a text file.                                             |
+  |   Refer to 'Read me.md' in the library for details.                                                                              |
+  |                                                                                                                                  |
+  |  11. Erase 4KB sector                                                                                                            |
+  |   '11'  followed by 2 erases a 4KB sector containing the page to be erased                                                       |
+  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
+  |                                                                                                                                  |
+  |  12. Erase 32KB block                                                                                                            |
+  |   '12'  followed by 2 erases a 32KB block containing the page to be erased                                                       |
+  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
+  |                                                                                                                                  |
+  |  13. Erase 64KB block                                                                                                            |
+  |   '13'  followed by 2 erases a 64KB block containing the page to be erased                                                       |
+  |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
+  |                                                                                                                                  |
+  |  14. Erase Chip                                                                                                                  |
+  |   '14' erases the entire chip                                                                                                    |
+  |                                                                                                                                  |
+  ^----------------------------------------------------------------------------------------------------------------------------------^
+*/
 
 
 
@@ -75,6 +75,10 @@ uint8_t offset, dataByte;
 uint16_t dataInt;
 String inputString, outputString;
 
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+// Required for Serial on Zero based boards
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
 
 SPIFlash flash;
 
