@@ -12,6 +12,9 @@ SPIFlash	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 begin	KEYWORD2
+setClock  KEYWORD2
+error KEYWORD2
+libver  KEYWORD2
 getJEDECID	KEYWORD2
 getManID	KEYWORD2
 getAddress	KEYWORD2
@@ -29,7 +32,6 @@ readLong	KEYWORD2
 readULong	KEYWORD2
 readFloat	KEYWORD2
 readStr 	KEYWORD2
-readPage	KEYWORD2
 readAnything	KEYWORD2
 writeByte	KEYWORD2
 writeByteArray	KEYWORD2
@@ -41,7 +43,6 @@ writeLong	KEYWORD2
 writeULong	KEYWORD2
 writeFloat	KEYWORD2
 writeStr	KEYWORD2
-writePage	KEYWORD2
 writeAnything	KEYWORD2
 eraseSector	KEYWORD2
 eraseBlock32K	KEYWORD2

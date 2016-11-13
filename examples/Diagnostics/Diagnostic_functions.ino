@@ -2,10 +2,10 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                            Diagnostic_functions.ino                                                           |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 2.4.0                                                                     |
+  |                                                                   v 2.5.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  01.07.2016                                                                   |
+  |                                                                  13.11.2016                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -16,8 +16,27 @@
 */
 
 void getID() {
+  char printBuffer[128];
   printLine();
-  Serial.println(F("                                                                               Get ID                                                                 "));
+  for (uint8_t i = 0; i < 68; i++) {
+    Serial.print(F(" "));
+  }
+  Serial.print(F("SPIFlash Library version"));
+#ifdef LIBVER
+  uint8_t _ver, _subver, _bugfix;
+  flash.libver(&_ver, &_subver, &_bugfix);
+  clearprintBuffer(&printBuffer[1]);
+  sprintf(printBuffer, ": %d.%d.%d", _ver, _subver, _bugfix);
+  Serial.println(printBuffer);
+#else
+  Serial.println(F("< 2.5.0"));
+#endif
+  printLine();
+
+  for (uint8_t i = 0; i < 80; i++) {
+    Serial.print(F(" "));
+  }
+  Serial.println(F("Get ID"));
   printLine();
   uint8_t b1, b2;
   uint16_t b3;
@@ -29,75 +48,83 @@ void getID() {
   b2 = (JEDEC >> 8);
   b3 = (JEDEC >> 0);
 
+#define WINBOND     0xEF
+#define MICROCHIP   0xBF
+
   if (b1 == WINBOND) {
     //---------------------------------------------------------------------------------------------//
     //--------------------------Prints the name of the Flash chip in use---------------------------//
     //---------------------------------------------------------------------------------------------//
-    Serial.print(F("                                                                          Winbond "));
+    for (uint8_t i = 0; i < 76; i++) {
+      Serial.print(F(" "));
+    }
+    Serial.print(F("Winbond "));
     if (_name < 80) {
       if (_name == 05) {
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
         sprintf(printBuffer, "W25X%02d**", _name);
         Serial.println(printBuffer);
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
       }
       else if (_name % 10 == 0) {
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
         sprintf(printBuffer, "W25X%02d**", _name);
         Serial.println(printBuffer);
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
       }
       else {
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
         sprintf(printBuffer, "W25Q%02d**", _name);
         Serial.println(printBuffer);
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
       }
     }
     else {
-      clearprintBuffer();
+      clearprintBuffer(&printBuffer[1]);
       sprintf(printBuffer, "W25Q%02d**", _name);
       Serial.println(printBuffer);
-      clearprintBuffer();
+      clearprintBuffer(&printBuffer[1]);
     }
   }
   else if (b1 == MICROCHIP) {
-    Serial.print(F("                                                                        Microchip "));
+    for (uint8_t i = 0; i < 72; i++) {
+      Serial.print(F(" "));
+    }
+    Serial.print(F("Microchip "));
     if (_name < 80) {
       if (_name == 05) {
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
         sprintf(printBuffer, "W25X%02d**", _name);
         Serial.println(printBuffer);
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
       }
       else if (_name % 10 == 0) {
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
         sprintf(printBuffer, "W25X%02d**", _name);
         Serial.println(printBuffer);
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
       }
       else {
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
         sprintf(printBuffer, "W25Q%02d**", _name);
         Serial.println(printBuffer);
-        clearprintBuffer();
+        clearprintBuffer(&printBuffer[1]);
       }
     }
     else {
-      clearprintBuffer();
+      clearprintBuffer(&printBuffer[1]);
       sprintf(printBuffer, "W25Q%02d**", _name);
       Serial.println(printBuffer);
-      clearprintBuffer();
+      clearprintBuffer(&printBuffer[1]);
     }
   }
   printLine();
   //---------------------------------------------------------------------------------------------//
 
-  clearprintBuffer();
+  clearprintBuffer(&printBuffer[1]);
   sprintf(printBuffer, "\t\t\tJEDEC ID: %04lxh", JEDEC);
   Serial.println(printBuffer);
-  clearprintBuffer();
-  //sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %02xh\n\t\t\tMaximum pages: %lu", b1, b2, b3, maxPage);
+  clearprintBuffer(&printBuffer[1]);
   sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu bytes\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
   Serial.println(printBuffer);
 }
@@ -112,11 +139,15 @@ bool checkPage(uint8_t *data_buffer) {
 
 void diagnose() {
   printLine();
-  Serial.println(F("                                                                              Data Check                                                              "));
+  for (uint8_t i = 0; i < 79; i++) {
+    Serial.print(F(" "));
+  }
+  Serial.println(F("Data Check"));
   printLine();
 
   Serial.println(F("\tData Written\t||\tData Read\t||\tResult\t\t||\tWrite Time\t||\tRead Time\t||\tWrite Time\t||\tFast Read Time"));
-  Serial.println(F("\t\t\t||\t\t\t||\t\t\t||\t\t\t||\t\t\t||\t(No Error Chk)\t||"));
+  Serial.print(F("\t\t\t||\t\t\t||\t\t\t||\t\t\t||\t\t\t||"));
+  Serial.println(F("\t(No Error Chk)\t||"));
   printLine();
   byteDiag();
   charDiag();
@@ -129,6 +160,7 @@ void diagnose() {
   structDiag();
   pageDiag();
   powerFuncDiag();
+
 }
 
 void byteDiag(void) {
@@ -507,8 +539,9 @@ void floatDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   addr = random(0, 0xFFFFF);
   startTime = micros();
-  flash.writeFloat(addr, _float);
-  wTime = micros() - startTime;
+  if (flash.writeFloat(addr, _float)) {
+    wTime = micros() - startTime;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                         Read                                                                        //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -533,8 +566,9 @@ void floatDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   addr = random(0, 0xFFFFF);
   startTime = micros();
-  flash.writeFloat(addr, _float, false);
-  wTime = micros() - startTime;
+  if (flash.writeFloat(addr, _float, false)) {
+    wTime = micros() - startTime;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                      Fast Read                                                                      //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -567,14 +601,16 @@ void stringDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   addr = random(0, 0xFFFFF);
   startTime = micros();
-  flash.writeStr(addr, _string);
-  wTime = micros() - startTime;
+  if (flash.writeStr(addr, _string)) {
+    wTime = micros() - startTime;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                         Read                                                                        //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   startTime = micros();
-  flash.readStr(addr, _str);
-  rTime = micros() - startTime;
+  if (flash.readStr(addr, _str)) {
+    rTime = micros() - startTime;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                     Print Result                                                                    //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -593,14 +629,16 @@ void stringDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   addr = random(0, 0xFFFFF);
   startTime = micros();
-  flash.writeStr(addr, _string, false);
-  wTime = micros() - startTime;
+  if (flash.writeStr(addr, _string, false)) {
+    wTime = micros() - startTime;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                      Fast Read                                                                      //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   startTime = micros();
-  flash.readStr(addr, _str, true);
-  rTime = micros() - startTime;
+  if (flash.readStr(addr, _str, true)) {
+    rTime = micros() - startTime;
+  }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                     Print Result                                                                    //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -694,9 +732,9 @@ void pageDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   float startTime;
   uint32_t addr, wTime, rTime;
-  uint8_t pageBuffer[256];
+  uint8_t pageBuffer[PAGESIZE];
 
-  for (int i = 0; i < 256; ++i) {
+  for (int i = 0; i < PAGESIZE; ++i) {
     pageBuffer[i] = i;
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -704,30 +742,45 @@ void pageDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   addr = random(0, flash.getMaxPage());
   startTime = micros();
-  flash.writePage(addr, pageBuffer);
+  while (!flash.writeByteArray(addr, pageBuffer, PAGESIZE));
   wTime = micros() - startTime;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                 Read & Print Result                                                                 //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  for (int i = 0; i < 256; ++i) {
+  for (int i = 0; i < PAGESIZE; ++i) {
     pageBuffer[i] = 0;
   }
   startTime = micros();
   printTab(1, 0);
-  Serial.print(F("0 - 255"));
+  Serial.print(F("0 - "));
+  Serial.print(PAGESIZE - 1);
   printTab(2, 1);
   startTime = micros();
-  if (flash.readPage(addr, pageBuffer)) {
-    rTime = micros() - startTime;
-    Serial.print(F("0 - 255"));
+
+  flash.readByteArray(addr, pageBuffer, PAGESIZE);
+  rTime = micros() - startTime;
+  bool _pass;
+  for (uint16_t i = 0; i < 256; i++) {
+    if (pageBuffer [i] != i) {
+      _pass = false;
+      break;
+    }
+    else {
+      _pass = true;
+    }
   }
-  else
-    Serial.print(F("Unknown"));
-  printTab(2, 1);
-  if (checkPage(pageBuffer))
+
+  if (_pass) {
+    Serial.print(F("0 - "));
+    Serial.print(PAGESIZE - 1);
+    printTab(2, 1);
     printPass();
-  else
+  }
+  else {
+    Serial.print(F("Unknown"));
+    printTab(2, 1);
     printFail();
+  }
   printTime(wTime, rTime);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                   Write (No Error)                                                                  //
@@ -737,7 +790,7 @@ void pageDiag(void) {
   }
   addr = random(0, flash.getMaxPage());
   startTime = micros();
-  flash.writePage(addr, pageBuffer, false);
+  flash.writeByteArray(addr, pageBuffer, PAGESIZE, false);
   wTime = micros() - startTime;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                Fast Read & Print Result                                                             //
@@ -746,9 +799,8 @@ void pageDiag(void) {
     pageBuffer[i] = 0;
   }
   startTime = micros();
-  if (flash.readPage(addr, pageBuffer)) {
-    rTime = micros() - startTime;
-  }
+  flash.readByteArray(addr, pageBuffer, PAGESIZE, true);
+  rTime = micros() - startTime;
   printTime(wTime, rTime);
   Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -761,10 +813,14 @@ void powerFuncDiag(void) {
   float wTime;
 
   printLine();
-  Serial.println(F("                                                                        Check Other Functions                                                        "));
+  for (uint8_t i = 0; i < 72; i++) {
+    Serial.print(" ");
+  }
+  Serial.println(F("Check Other Functions"));
   printLine();
   Serial.println(F("\t\t\t\t\tFunction\t\t||\t\tResult\t\t\t||\t\tTime"));
   printLine();
+  Serial.flush();
 
   uint32_t capacity = flash.getCapacity();
   if (!Serial)
@@ -808,10 +864,10 @@ void powerFuncDiag(void) {
   Serial.println();
 
   printTab(5, 0);
-  Serial.print(F("sectorErase"));
+  Serial.print(F("eraseSector"));
   wTime = micros();
   printTab(2, 2);
-  if (flash.eraseSector(stringAddress1) && flash.eraseSector(stringAddress2) && flash.eraseSector(stringAddress3)) {
+  if (flash.eraseSector(stringAddress1)) {
     wTime = micros() - wTime;
     printPass();
   }
@@ -824,7 +880,39 @@ void powerFuncDiag(void) {
   Serial.println();
 
   printTab(5, 0);
-  Serial.print(F("chipErase"));
+  Serial.print(F("eraseBlock32K"));
+  wTime = micros();
+  printTab(2, 2);
+  if (flash.eraseBlock32K(stringAddress2)) {
+    wTime = micros() - wTime;
+    printPass();
+  }
+  else {
+    printFail();
+  }
+  wTime = wTime / 3;
+  printTab(3, 2);
+  printTimer(wTime);
+  Serial.println();
+
+  printTab(5, 0);
+  Serial.print(F("eraseBlock64K"));
+  wTime = micros();
+  printTab(2, 2);
+  if (flash.eraseBlock64K(stringAddress3)) {
+    wTime = micros() - wTime;
+    printPass();
+  }
+  else {
+    printFail();
+  }
+  wTime = wTime / 3;
+  printTab(3, 2);
+  printTimer(wTime);
+  Serial.println();
+
+  printTab(5, 0);
+  Serial.print(F("eraseChip"));
   printTab(2, 2);
   wTime = micros();
   if (flash.eraseChip()) {

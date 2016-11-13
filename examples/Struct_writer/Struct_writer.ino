@@ -2,10 +2,10 @@
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                               Struct_writer.ino                                                               |
 |                                                               SPIFlash library                                                                |
-|                                                                   v 2.3.0                                                                     |
+|                                                                   v 2.5.0                                                                     |
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                                    Marzogh                                                                    |
-|                                                                  04.06.2016                                                                   |
+|                                                                  30.09.2016                                                                   |
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                                                                                                               |
 |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
@@ -17,7 +17,6 @@
 */
 
 #include<SPIFlash.h>
-#include<SPI.h>
 
 /*
  * Uncomment the #define below if you would like real world readings.
@@ -56,7 +55,7 @@ void setup() {
   Serial.println();
   Serial.println();
 
-  
+
   uint16_t pageNo = random(0, 4095);
   uint8_t offset = random(0, 255);
 
@@ -76,7 +75,7 @@ void setup() {
     Serial.println ("Data write successful");
   else
     Serial.println ("Data write failed");
-    
+
   Serial.println(configuration.lux);
   Serial.println(configuration.vOut);
   Serial.println(configuration.RLDR);
@@ -123,6 +122,3 @@ void readLDR()
   configuration.lux = (500 / configuration.RLDR);
 }
 #endif
-
-
-

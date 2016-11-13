@@ -5,13 +5,13 @@ before_install:
 script:
   #- build_main_platforms
   - build_platform uno
-  - build_platform leonardo
+  - build_platform due
   #- build_platform zero
   - build_platform esp8266
+  - build_platform leonardo
   - build_platform mega
   - build_platform fio
   - build_platform micro
-  - build_platform due
 notifications:
   email:
     on_success: change

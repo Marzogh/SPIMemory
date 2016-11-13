@@ -1,7 +1,7 @@
 void commandList() {
   Serial.println(F("-----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("                                                            Winbond Flash                                                          "));
-  Serial.println(F("                                                      SPIFlash library test v2.2.0                                                 "));
+  Serial.println(F("                                                      SPIFlash library test v2.5.0                                                 "));
   Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("                                                                Marzogh                                                            "));
   Serial.println(F("                                                              24.11.2015                                                           "));
