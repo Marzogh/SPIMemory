@@ -55,11 +55,7 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 }
 #elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_SAM)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
-#if defined (ARDUINO_ARCH_ESP8266)
-  csPin = 15;
-#else
   csPin = cs;
-#endif
   pageOverflow = overflow;
   pinMode(csPin, OUTPUT);
 }

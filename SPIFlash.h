@@ -91,7 +91,7 @@
 class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------//
-  SPIFlash(uint8_t cs = SS, bool overflow = true);
+  SPIFlash(uint8_t cs = CS, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin(void);
   void     setClock(uint32_t clockSpeed);
