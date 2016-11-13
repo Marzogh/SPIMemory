@@ -742,7 +742,7 @@ void pageDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   addr = random(0, flash.getMaxPage());
   startTime = micros();
-  flash.writeByteArray(addr, pageBuffer, PAGESIZE);
+  while (!flash.writeByteArray(addr, pageBuffer, PAGESIZE));
   wTime = micros() - startTime;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                 Read & Print Result                                                                 //

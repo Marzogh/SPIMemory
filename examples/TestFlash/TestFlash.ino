@@ -296,10 +296,10 @@ void loop() {
       }
       page = Serial.parseInt();
       Serial.println(page);
-      for (int i = 0; i < 256; ++i) {
+      for (uint16_t i = 0; i < PAGESIZE; ++i) {
         pageBuffer[i] = i;
       }
-      if (flash.writePage(page, pageBuffer)) {
+      if (flash.writeByteArray(page, 0, &pageBuffer[0], PAGESIZE)) {
         clearprintBuffer();
         sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
         Serial.println(printBuffer);
@@ -531,8 +531,8 @@ void printPage(uint16_t page_number, uint8_t outputType) {
   sprintf(buffer, "Reading page (%04x)", page_number);
   Serial.println(buffer);
 
-  uint8_t data_buffer[256];
-  flash.readPage(page_number, data_buffer);
+  uint8_t data_buffer[PAGESIZE];
+  flash.readByteArray(page_number, 0, &data_buffer[0], PAGESIZE);
   _printPageBytes(data_buffer, outputType);
 }
 
@@ -547,7 +547,7 @@ void printAllPages(uint8_t outputType) {
 
   uint32_t maxPage = flash.getMaxPage();
   for (int a = 0; a < maxPage; a++) {
-    flash.readPage(a, data_buffer);
+    flash.readByteArray(a, 0, &data_buffer[0], 256);
     _printPageBytes(data_buffer, outputType);
   }
 }

@@ -185,7 +185,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPIRecByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_AVR)
-      SPI.transfer(&(*data_buffer), size);
+      SPI.transfer(&data_buffer[0], size);
     #else
       for (uint16_t i = 0; i < size; i++) {
         *_dataAddr = xfer(NULLBYTE);
@@ -1190,7 +1190,20 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
     return true;
   }
   else {
-    return _writeErrorCheck(address, data_buffer);
+    if (!_notBusy()) {
+      return false;
+    }
+    _currentAddress = address;
+    CHIP_SELECT
+    _nextByte(READDATA);
+    _transferAddress();
+    for (uint16_t j = 0; j < bufferSize; j++) {
+      if (_nextByte(NULLBYTE) != data_buffer[j]) {
+        return false;
+      }
+    }
+    _endSPI();
+    return true;
   }
 }
 // Variant B
@@ -1251,7 +1264,20 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
     return true;
   }
   else {
-    return _writeErrorCheck(address, data_buffer);
+    if (!_notBusy()) {
+      return false;
+    }
+    _currentAddress = address;
+    CHIP_SELECT
+    _nextByte(READDATA);
+    _transferAddress();
+    for (uint16_t j = 0; j < bufferSize; j++) {
+      if (_nextByte(NULLBYTE) != data_buffer[j]) {
+        return false;
+      }
+    }
+    _endSPI();
+    return true;
   }
 }
 // Variant B
