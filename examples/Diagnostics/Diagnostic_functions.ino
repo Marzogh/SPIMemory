@@ -5,7 +5,7 @@
   |                                                                   v 2.5.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  10.10.2016                                                                   |
+  |                                                                  13.11.2016                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -18,10 +18,10 @@
 void getID() {
   char printBuffer[128];
   printLine();
-  for (uint8_t i = 0; i < 70; i++) {
+  for (uint8_t i = 0; i < 68; i++) {
     Serial.print(F(" "));
   }
-  Serial.print(F("Library version"));
+  Serial.print(F("SPIFlash Library version"));
 #ifdef LIBVER
   uint8_t _ver, _subver, _bugfix;
   flash.libver(&_ver, &_subver, &_bugfix);
@@ -33,7 +33,7 @@ void getID() {
 #endif
   printLine();
 
-  for (uint8_t i = 0; i < 78; i++) {
+  for (uint8_t i = 0; i < 80; i++) {
     Serial.print(F(" "));
   }
   Serial.println(F("Get ID"));
@@ -55,7 +55,7 @@ void getID() {
     //---------------------------------------------------------------------------------------------//
     //--------------------------Prints the name of the Flash chip in use---------------------------//
     //---------------------------------------------------------------------------------------------//
-    for (uint8_t i = 0; i < 74; i++) {
+    for (uint8_t i = 0; i < 76; i++) {
       Serial.print(F(" "));
     }
     Serial.print(F("Winbond "));
@@ -158,8 +158,7 @@ void diagnose() {
   floatDiag();
   stringDiag();
   structDiag();
-  //pageDiag();
-  //delay(2000);
+  pageDiag();
   powerFuncDiag();
 
 }
@@ -733,9 +732,9 @@ void pageDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   float startTime;
   uint32_t addr, wTime, rTime;
-  uint8_t pageBuffer[256];
+  uint8_t pageBuffer[PAGESIZE];
 
-  for (int i = 0; i < 256; ++i) {
+  for (int i = 0; i < PAGESIZE; ++i) {
     pageBuffer[i] = i;
   }
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -743,21 +742,22 @@ void pageDiag(void) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   addr = random(0, flash.getMaxPage());
   startTime = micros();
-  flash.writePage(addr, pageBuffer);
+  flash.writeByteArray(addr, pageBuffer, PAGESIZE);
   wTime = micros() - startTime;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                 Read & Print Result                                                                 //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  for (int i = 0; i < 256; ++i) {
+  for (int i = 0; i < PAGESIZE; ++i) {
     pageBuffer[i] = 0;
   }
   startTime = micros();
   printTab(1, 0);
-  Serial.print(F("0 - 255"));
+  Serial.print(F("0 - "));
+  Serial.print(PAGESIZE - 1);
   printTab(2, 1);
   startTime = micros();
 
-  flash.readPage(addr, pageBuffer);
+  flash.readByteArray(addr, pageBuffer, PAGESIZE);
   rTime = micros() - startTime;
   bool _pass;
   for (uint16_t i = 0; i < 256; i++) {
@@ -771,7 +771,8 @@ void pageDiag(void) {
   }
 
   if (_pass) {
-    Serial.print(F("0 - 255"));
+    Serial.print(F("0 - "));
+    Serial.print(PAGESIZE - 1);
     printTab(2, 1);
     printPass();
   }
@@ -789,7 +790,7 @@ void pageDiag(void) {
   }
   addr = random(0, flash.getMaxPage());
   startTime = micros();
-  flash.writePage(addr, pageBuffer, false);
+  flash.writeByteArray(addr, pageBuffer, PAGESIZE, false);
   wTime = micros() - startTime;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //                                                                Fast Read & Print Result                                                             //
@@ -798,7 +799,7 @@ void pageDiag(void) {
     pageBuffer[i] = 0;
   }
   startTime = micros();
-  flash.readPage(addr, pageBuffer, true);
+  flash.readByteArray(addr, pageBuffer, PAGESIZE, true);
   rTime = micros() - startTime;
   printTime(wTime, rTime);
   Serial.println();

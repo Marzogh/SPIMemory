@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.5.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 24/09/2016
+ * Modified by Prajwal Bhattaram - 13/11/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -115,6 +115,7 @@
  #define CANTENWRITE  0x06
  #define PREVWRITTEN  0x07
  #define LOWRAM       0x08
+ #define NOSUSPEND    0x09
  #define UNKNOWNERROR 0xFF
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

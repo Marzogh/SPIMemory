@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.2.5.0
  * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 30/09/2016
+ * Modified by Prajwal Bhattaram - 13/11/2016
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -26,16 +26,56 @@
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
 
-#ifdef ARDUINO_ARCH_SAM
-#include <malloc.h>
-#include <stdlib.h>
-#include <stdio.h>
+#if defined (ARDUINO_ARCH_SAM)
+  #include <malloc.h>
+  #include <stdlib.h>
+  #include <stdio.h>
 #endif
 #include <Arduino.h>
 #ifndef __AVR_ATtiny85__
   #include <SPI.h>
 #endif
 #include "defines.h"
+
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266)
+ #define _delay_us(us) delayMicroseconds(us)
+#else
+ #include <util/delay.h>
+#endif
+
+#ifdef ARDUINO_ARCH_AVR
+	#ifdef __AVR_ATtiny85__
+		#define CHIP_SELECT   PORTB &= ~cs_mask;
+		#define CHIP_DESELECT PORTB |=  cs_mask;
+		#define SPIBIT                      \
+		  USICR = ((1<<USIWM0)|(1<<USITC)); \
+		  USICR = ((1<<USIWM0)|(1<<USITC)|(1<<USICLK));
+		static uint8_t xfer(uint8_t n) {
+			USIDR = n;
+			SPIBIT
+			SPIBIT
+			SPIBIT
+			SPIBIT
+			SPIBIT
+			SPIBIT
+			SPIBIT
+			SPIBIT
+			return USIDR;
+		}
+  #else
+    #define CHIP_SELECT   *cs_port &= ~cs_mask;
+    #define CHIP_DESELECT *cs_port |=  cs_mask;
+    #define xfer(n)   SPI.transfer(n)
+  #endif
+#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
+    #define CHIP_SELECT   digitalWrite(csPin, LOW);
+    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+    #define xfer(n)   SPI.transfer(n)
+#elif defined (ARDUINO_ARCH_SAM)
+    #define CHIP_SELECT   digitalWrite(csPin, LOW);
+    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+    #define xfer   _dueSPITransfer
+#endif
 
 #define LIBVER 2
 #define LIBSUBVER 5
@@ -51,7 +91,7 @@
 class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------//
-  SPIFlash(uint8_t cs = CS, bool overflow = true);
+  SPIFlash(uint8_t cs = SS, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin(void);
   void     setClock(uint32_t clockSpeed);
@@ -115,9 +155,6 @@ public:
   bool     writeStr(uint16_t page_number, uint8_t offset, String &inputStr, bool errorCheck = true);
   bool     readStr(uint32_t address, String &outStr, bool fastRead = false);
   bool     readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead = false);
-  //-------------------------------------------Write / Read Pages-------------------------------------------//
-  bool     writePage(uint16_t page_number, uint8_t *data_buffer, bool errorCheck = true);
-  bool     readPage(uint16_t page_number, uint8_t *data_buffer, bool fastRead = false);
   //------------------------------------------Write / Read Anything-----------------------------------------//
   template <class T> bool writeAnything(uint32_t address, const T& value, bool errorCheck = true);
   template <class T> bool writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck = true);
@@ -186,11 +223,10 @@ private:
   bool     _chipID(void);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t address, uint32_t size = 1);
-  uint8_t  _nextByte(uint8_t byte = NULLBYTE);
-  #ifdef ARDUINO_ARCH_AVR
+  uint8_t  _nextByte(uint8_t data = NULLBYTE);
+  uint8_t  _nextByte(uint8_t opcode, uint8_t data);
   uint16_t _nextInt(uint16_t = NULLINT);
-  void     _nextBuf(void *data_buffer, uint32_t size);
-  #endif
+  void     _nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size);
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
@@ -213,7 +249,6 @@ private:
   const uint32_t eraseTime[11] = {1L * 1000L, 2L * 1000L, 2L * 1000L, 4L * 1000L, 6L * 1000L, 10 * 1000L, 15 * 1000L, 100 * 1000L, 200 * 1000L, 400 * 1000L, 50L}; //Erase time in milliseconds
 };
 
-
 //--------------------------------------------Templates-------------------------------------------//
 
 // Writes any type of data to a specific location in the flash memory.
@@ -231,21 +266,55 @@ private:
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value, bool errorCheck) {
-  if (!_prep(PAGEPROG, address, sizeof(value)))
+  if (!_prep(PAGEPROG, address, sizeof(value))) {
     return false;
-  else {
-    const uint8_t* p = (const uint8_t*)(const void*)&value;
-    _beginSPI(PAGEPROG);
-    for (uint16_t i = 0; i < sizeof(value); i++) {
-      _nextByte(*p++);
-    }
-    _endSPI();
   }
+  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
+  uint16_t length = sizeof(value);
 
-  if (!errorCheck)
+  //if (maxBytes > length) {
+    uint32_t writeBufSz;
+    uint16_t data_offset = 0;
+    const uint8_t* p = ((const uint8_t*)(const void*)&value);
+
+    _startSPIBus();
+    while (length > 0)
+    {
+      writeBufSz = (length<=maxBytes) ? length : maxBytes;
+
+      if(!_notBusy() || !_writeEnable()){
+        return false;
+      }
+
+      CHIP_SELECT
+      (void)xfer(PAGEPROG);
+      _transferAddress();
+
+      for (uint16_t i = 0; i < writeBufSz; ++i) {
+        _nextByte(*p++);
+      }
+      _currentAddress += writeBufSz;
+      data_offset += writeBufSz;
+      length -= writeBufSz;
+      maxBytes = 256;   // Now we can do up to 256 bytes per loop
+      CHIP_DESELECT
+    }
+  /*}
+  else {
+    uint32_t size = sizeof(value);
+    _beginSPI(PAGEPROG);
+    _nextBuf(PAGEPROG, (uint8_t*)&value, size);
+    Serial.print("...");
+    CHIP_DESELECT
+  }*/
+
+  if (!errorCheck) {
+    _endSPI();
     return true;
-  else
+  }
+  else {
     return _writeErrorCheck(address, value);
+  }
 }
 // Variant B
 template <class T> bool SPIFlash::writeAnything(uint16_t page_number, uint8_t offset, const T& value, bool errorCheck) {
@@ -274,12 +343,11 @@ template <class T> bool SPIFlash::readAnything(uint32_t address, T& value, bool 
       _beginSPI(READDATA);
     else
       _beginSPI(FASTREAD);
-
-    for (uint16_t i = 0; i < sizeof(value); i++) {
-      *p++ =_nextByte();
-    }
-    _endSPI();
-    return true;
+  for (uint16_t i = 0; i < sizeof(value); i++) {
+    *p++ =_nextByte();
+  }
+  _endSPI();
+  return true;
 }
 // Variant B
 template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t offset, T& value, bool fastRead)
@@ -290,22 +358,29 @@ template <class T> bool SPIFlash::readAnything(uint16_t page_number, uint8_t off
 
 // Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t address, const T& value) {
-if (/*!_prep(READDATA, address, sizeof(value)) && */!_notBusy()) {
+if (!_prep(READDATA, address, sizeof(value)) && !_notBusy()) {
   return false;
 }
 
-  const byte* p = (const byte*)(const void*)&value;
+  const uint8_t* p = (const uint8_t*)(const void*)&value;
   _beginSPI(READDATA);
+  uint8_t _v;
   for(uint16_t i = 0; i < sizeof(value);i++)
   {
-      if(*p++ != _nextByte())
-      {
-        return false;
-      }
+#if defined (ARDUINO_ARCH_SAM)
+    if(*p++ != _dueSPIRecByte())
+    {
+      return false;
+    }
+#else
+    if(*p++ != _nextByte())
+    {
+      return false;
+    }
+#endif
   }
   _endSPI();
   return true;
 }
-
 
 #endif // _SPIFLASH_H_
