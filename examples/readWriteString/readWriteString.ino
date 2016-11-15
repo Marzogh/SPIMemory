@@ -17,16 +17,25 @@
 int strPage, strSize;
 byte strOffset;
 
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+// Required for Serial on Zero based boards
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
+
 SPIFlash flash;
 
 bool readSerialStr(String &inputStr);
 
 void setup() {
+  //delay(5000);
   Serial.begin(115200);
+#if defined (ARDUINO_SAMD_ZERO) || (__AVR_ATmega32U4__)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
 
   flash.begin();
 
-  //Serial.println(F("Please type the string into the console"));
+  Serial.println(F("Please type the string into the console"));
   randomSeed(analogRead(A0));
   strPage = random(0, 4095);
   strOffset = random(0, 255);
