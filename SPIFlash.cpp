@@ -53,7 +53,7 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
   pageOverflow = overflow;
   pinMode(csPin, OUTPUT);
 }
-#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_SAM)
+#else
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
   csPin = cs;
   pageOverflow = overflow;
@@ -111,18 +111,19 @@ bool SPIFlash::_startSPIBus(void) {
 #ifndef SPI_HAS_TRANSACTION
     noInterrupts();
 #endif
-  //save current SPI settings
-#if defined (ARDUINO_ARCH_AVR)
-    _SPCR = SPCR;
-    _SPSR = SPSR;
-#endif
 
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPIInit(DUE_SPI_CLK);
 #else
+  #if defined (ARDUINO_ARCH_AVR)
+    //save current SPI settings
+      _SPCR = SPCR;
+      _SPSR = SPSR;
+  #endif
   #ifdef SPI_HAS_TRANSACTION
     SPI.beginTransaction(_settings);
   #else
+    SPI.setClockDivider(SPI_CLOCK_DIV_4)
     SPI.setDataMode(SPI_MODE0);
     SPI.setBitOrder(MSBFIRST);
     #endif
@@ -174,7 +175,7 @@ uint8_t SPIFlash::_nextByte(uint8_t data) {
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
   //return xfer16(data);
-  SPI.transfer16(data);
+  return SPI.transfer16(data);
 }
 
 //Reads/Writes next data buffer. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()

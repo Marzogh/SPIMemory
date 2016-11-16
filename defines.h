@@ -71,12 +71,19 @@
 #define NO_CONTINUE   0x00
 #define PASS          0x01
 #define FAIL          0x00
+#if defined (SIMBLEE)
+#define BUSY_TIMEOUT  100L
+#else
+#define BUSY_TIMEOUT  10L
+#endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
 #define maxAddress    capacity
 
 #if defined (ARDUINO_ARCH_ESP8266)
 #define CS 15
+#elif defined (ARDUINO_ARCH_SAMD)
+#define CS 10
 #else
 #define CS SS
 #endif
