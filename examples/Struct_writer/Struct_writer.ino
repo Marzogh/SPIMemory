@@ -1,33 +1,42 @@
 /*
-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
-|                                                               Struct_writer.ino                                                               |
-|                                                               SPIFlash library                                                                |
-|                                                                   v 2.5.0                                                                     |
-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
-|                                                                    Marzogh                                                                    |
-|                                                                  30.09.2016                                                                   |
-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
-|                                                                                                                                               |
-|                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
-|        Uncomment #define SENSOR below to get real world readings. Real world readings require a Light dependant resistor hooked up to A0.     |
-|                   For information on how to hook up an LDR to an Arduino, please refer to Adafruit's excellent tutorial at                    |
-|                                          https://learn.adafruit.com/photocells/using-a-photocell                                              |
-|                                                                                                                                               |
-|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+  |                                                               Struct_writer.ino                                                               |
+  |                                                               SPIFlash library                                                                |
+  |                                                                   v 2.5.0                                                                     |
+  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+  |                                                                    Marzogh                                                                    |
+  |                                                                  16.11.2016                                                                   |
+  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+  |                                                                                                                                               |
+  |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
+  |        Uncomment #define SENSOR below to get real world readings. Real world readings require a Light dependant resistor hooked up to A0.     |
+  |                   For information on how to hook up an LDR to an Arduino, please refer to Adafruit's excellent tutorial at                    |
+  |                                          https://learn.adafruit.com/photocells/using-a-photocell                                              |
+  |                                                                                                                                               |
+  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 
 #include<SPIFlash.h>
 
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+// Required for Serial on Zero based boards
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
+
+#if defined (SIMBLEE)
+#define BAUD_RATE 250000
+#else
+#define BAUD_RATE 115200
+#endif
+
 /*
- * Uncomment the #define below if you would like real world readings.
- * For real world readings, hook up a light dependant resistor to A0.
- *
- */
+   Uncomment the #define below if you would like real world readings.
+   For real world readings, hook up a light dependant resistor to A1.
+
+*/
 //#define SENSOR
 
-#ifdef SENSOR
-const int LDR = A0;
-#endif
+const int LDR = 1;
 
 
 
@@ -44,9 +53,11 @@ struct Configuration {
 Configuration configuration;
 
 void setup() {
-  Serial.begin(115200);
-  flash.begin();
-  randomSeed(analogRead(A0));
+  Serial.begin(BAUD_RATE);
+#if defined (ARDUINO_SAMD_ZERO) || (__AVR_ATmega32U4__)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
+  randomSeed(analogRead(LDR));
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
@@ -54,6 +65,7 @@ void setup() {
   }
   Serial.println();
   Serial.println();
+  flash.begin();
 
 
   uint16_t pageNo = random(0, 4095);
@@ -109,7 +121,7 @@ void setup() {
 }
 
 void loop() {
-delay(1000);
+  delay(1000);
 }
 
 #ifdef SENSOR
