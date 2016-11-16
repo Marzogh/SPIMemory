@@ -113,7 +113,7 @@ bool SPIFlash::_startSPIBus(void) {
 #endif
 
 #if defined (ARDUINO_ARCH_SAM)
-  _dueSPIInit(DUE_SPI_CLK)
+  _dueSPIInit(DUE_SPI_CLK);
 #else
   #if defined (ARDUINO_ARCH_AVR)
     //save current SPI settings
