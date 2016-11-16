@@ -17,10 +17,24 @@
 
 #include<SPIFlash.h>
 
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+// Required for Serial on Zero based boards
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
+
+#if defined (SIMBLEE)
+#define BAUD_RATE 250000
+#else
+#define BAUD_RATE 115200
+#endif
+
 SPIFlash flash;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(BAUD_RATE);
+#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
@@ -31,7 +45,7 @@ void setup() {
   Serial.println();
   Serial.println();
 
-  randomSeed(analogRead(A0));
+  randomSeed(analogRead(1));
   getID();
   diagnose();
 }
