@@ -5,7 +5,7 @@
 |                                                                   v 2.5.0                                                                     |
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                                    Marzogh                                                                    |
-|                                                                  30.09.2016                                                                   |
+|                                                                  16.11.2016                                                                   |
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 |                                                                                                                                               |
 |                                  This program shows the method to use the getAddress() function to automate                                   |
@@ -15,6 +15,17 @@
 |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 #include<SPIFlash.h>
+
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+// Required for Serial on Zero based boards
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
+
+#if defined (SIMBLEE)
+#define BAUD_RATE 250000
+#else
+#define BAUD_RATE 115200
+#endif
 
 #define arrayLen(x) sizeof(x)/sizeof(x[0])
 uint32_t strAddr[3], floatAddr[2], byteAddr[4];
@@ -36,7 +47,7 @@ void getAddresses();
 void writeData();
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(BAUD_RATE);
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {

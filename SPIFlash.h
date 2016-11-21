@@ -37,7 +37,7 @@
 #endif
 #include "defines.h"
 
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266)
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE)
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>
@@ -67,14 +67,14 @@
     #define CHIP_DESELECT *cs_port |=  cs_mask;
     #define xfer(n)   SPI.transfer(n)
   #endif
-#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
-    #define CHIP_SELECT   digitalWrite(csPin, LOW);
-    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-    #define xfer(n)   SPI.transfer(n)
 #elif defined (ARDUINO_ARCH_SAM)
     #define CHIP_SELECT   digitalWrite(csPin, LOW);
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
     #define xfer   _dueSPITransfer
+#else //#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
+  #define CHIP_SELECT   digitalWrite(csPin, LOW);
+  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+  #define xfer(n)   SPI.transfer(n)
 #endif
 
 #define LIBVER 2
@@ -214,7 +214,7 @@ private:
   bool     _startSPIBus(void);
   bool     _beginSPI(uint8_t opcode);
   bool     _noSuspend(void);
-  bool     _notBusy(uint32_t timeout = 10L);
+  bool     _notBusy(uint32_t timeout = BUSY_TIMEOUT);
   bool     _notPrevWritten(uint32_t address, uint32_t size = 1);
   bool     _writeEnable(uint32_t timeout = 10L);
   bool     _writeDisable(void);
