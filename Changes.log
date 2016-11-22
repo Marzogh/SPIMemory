@@ -4,10 +4,11 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.6.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						13.11.2016											   //
+//					  						22.11.2016											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 Enhancements:
 --> Added support for the Simblee module
+--> Compatible with the ESP32 core for Arduino as of commit 67fd652 (https://github.com/espressif/arduino-esp32/tree/67fd6521777a16e406639a0eb0d113bf2e896f97). The ESP32 core currently does not support analogRead and so randomSeed(AnalogRead(A0)) cannot be used. Also, for some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.5.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
