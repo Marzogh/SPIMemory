@@ -35,8 +35,13 @@
 
 */
 //#define SENSOR
-
-const int LDR = 1;
+#if defined (SIMBLEE)
+#define BAUD_RATE 250000
+#define LDR 1
+#else
+#define BAUD_RATE 115200
+#define LDR A0
+#endif
 
 
 
@@ -57,7 +62,11 @@ void setup() {
 #if defined (ARDUINO_SAMD_ZERO) || (__AVR_ATmega32U4__)
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
+  #if defined (ARDUINO_ARCH_ESP32)
+  randomSeed(65535537);
+#else
   randomSeed(analogRead(LDR));
+#endif
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
