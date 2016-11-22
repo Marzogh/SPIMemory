@@ -23,8 +23,9 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - Arduino Mega
 - Arduino Due
 - ESP8266 Boards (On the Arduino IDE)
+- ESP32 Boards - BETA (On the Arduino IDE with the esp32 core at commit 67fd652)
 - ATTiny85
-- Simblee Boards (In the Arduino IDE)
+- Simblee Boards (On the Arduino IDE)
 
 ####Installation
 
