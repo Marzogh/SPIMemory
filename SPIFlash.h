@@ -26,6 +26,23 @@
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//     Uncomment the code below to run a diagnostic if your flash 	  //
+//                         does not respond                           //
+//                                                                    //
+//      Error codes will be generated and returned on functions       //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//#define RUNDIAGNOSTIC                                               //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//   Uncomment the code below to increase the speed of the library    //
+//                  by disabling _notPrevWritten()                    //
+//                                                                    //
+// Make sure the sectors being written to have been erased beforehand //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//#define HIGHSPEED                                                   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 #if defined (ARDUINO_ARCH_SAM)
   #include <malloc.h>
   #include <stdlib.h>
@@ -93,7 +110,7 @@ public:
   //----------------------------------------------Constructor-----------------------------------------------//
   SPIFlash(uint8_t cs = CS, bool overflow = true);
   //----------------------------------------Initial / Chip Functions----------------------------------------//
-  void     begin(void);
+  void     begin(uint32_t _sz = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  error(void);
@@ -242,11 +259,10 @@ private:
   SPISettings _settings;
 #endif
   const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
-  const uint32_t memSize[11]  = {64L * 1024L, 128L * 1024L, 256L * 1024L, 512L * 1024L, 1L * 1024L * 1024L,
-                                2L * 1024L * 1024L, 4L * 1024L * 1024L, 8L * 1024L * 1024L, 16L * 1024L * 1024L,
-                                32L * 1024L * 1024L, 8L * 1024L * 1024L};
+  const uint32_t memSize[11]  = {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M,
+                                16L * M, 32L * M, 8L * M};
   const uint16_t chipName[11] = {05, 10, 20, 40, 80, 16, 32, 64, 128, 256, 64};
-  const uint32_t eraseTime[11] = {1L * 1000L, 2L * 1000L, 2L * 1000L, 4L * 1000L, 6L * 1000L, 10 * 1000L, 15 * 1000L, 100 * 1000L, 200 * 1000L, 400 * 1000L, 50L}; //Erase time in milliseconds
+  const uint32_t eraseTime[11] = {1L * S, 2L * S, 2L * S, 4L * S, 6L * S, 10 * S, 15 * S, 100 * S, 200 * S, 400 * S, 50L}; //Erase time in milliseconds
 };
 
 //--------------------------------------------Templates-------------------------------------------//

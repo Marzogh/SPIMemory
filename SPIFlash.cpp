@@ -25,23 +25,6 @@
 
 #include "SPIFlash.h"
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     Uncomment the code below to run a diagnostic if your flash 	  //
-//                         does not respond                           //
-//                                                                    //
-//      Error codes will be generated and returned on functions       //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define RUNDIAGNOSTIC                                               //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//   Uncomment the code below to increase the speed of the library    //
-//                  by disabling _notPrevWritten()                    //
-//                                                                    //
-// Make sure the sectors being written to have been erased beforehand //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define HIGHSPEED                                                   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
 // Constructor
 #if defined (ARDUINO_ARCH_AVR)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
@@ -337,7 +320,8 @@ bool SPIFlash::_getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
 
 //Identifies the chip
 bool SPIFlash::_chipID(void) {
-	//Get Manfucturer/Device ID so the library can identify the chip
+  if (!capacity) {
+    //Get Manfucturer/Device ID so the library can identify the chip
     uint8_t manID, capID, devID ;
     //_getManId(&manID, &devID);
     _getJedecId(&manID, &capID, &devID);
@@ -375,15 +359,13 @@ bool SPIFlash::_chipID(void) {
     	#endif
     	while(1);
     }
-
    	maxPage = capacity/PAGESIZE;
-
-   	/*#ifdef RUNDIAGNOSTIC
-    char buffer[64];
-    sprintf(buffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %lu\nmaxPage: %d", manID, devID, capacity, maxPage);
-    Serial.println(buffer);
-    #endif*/
     return true;
+  }
+  else {
+    // If a custom chip size is defined
+    return true;
+  }
 }
 
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
@@ -429,146 +411,15 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
   return true;
 }
 
-#ifdef RUNDIAGNOSTIC
-//Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
-void SPIFlash::_troubleshoot(void) {
-
-	switch (errorcode) {
-		case SUCCESS:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(SUCCESS, HEX);
-		#else
-		Serial.println("Action completed successfully");
-		#endif
-		break;
-
- 		case CALLBEGIN:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(CALLBEGIN, HEX);
-		#else
- 		Serial.println("*constructor_of_choice*.begin() was not called in void setup()");
-		#endif
-		break;
-
-		case UNKNOWNCHIP:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-   Serial.print("manID: 0x"); Serial.println(manID, HEX);
-   Serial.print("capID: 0x");Serial.println(capID, HEX);
-   Serial.print("devID: 0x");Serial.println(devID, HEX);
-		Serial.println(UNKNOWNCHIP, HEX);
-		#else
-		Serial.println("Unable to identify chip. Are you sure this is a Winbond Flash chip");
-   Serial.print("manID: 0x"); Serial.println(manID, HEX);
-   Serial.print("capID: 0x");Serial.println(capID, HEX);
-   Serial.print("devID: 0x");Serial.println(devID, HEX);
- 		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with your chip type and I will try to add support to your chip");
-		#endif
-
-		break;
-
- 		case UNKNOWNCAP:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(UNKNOWNCAP, HEX);
-		#else
- 		Serial.println("Unable to identify capacity.");
- 		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with your chip type and I will work on adding support to your chip");
-		#endif
-		break;
-
- 		case CHIPBUSY:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(CHIPBUSY, HEX);
-		#else
- 		Serial.println("Chip is busy.");
- 		Serial.println("Make sure all pins have been connected properly");
- 		Serial.print("If it still doesn't work, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
-		#endif
-		break;
-
- 		case OUTOFBOUNDS:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(OUTOFBOUNDS, HEX);
-		#else
- 		Serial.println("Page overflow has been disabled and the address called exceeds the memory");
-		#endif
-		break;
-
- 		case CANTENWRITE:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(CANTENWRITE, HEX);
-		#else
- 		Serial.println("Unable to Enable Writing to chip.");
- 		Serial.println("Please make sure the HOLD & WRITEPROTECT pins are connected properly to VCC & GND respectively");
- 		Serial.print("If you are still facing issues, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
-		#endif
-		break;
-
-		case PREVWRITTEN:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(PREVWRITTEN, HEX);
-		#else
- 		Serial.println("This sector already contains data.");
- 		Serial.println("Please make sure the sectors being written to are erased.");
- 		Serial.print("If you are still facing issues, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
-		#endif
-		break;
-
-		case LOWRAM:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(LOWRAM, HEX);
-		#else
- 		Serial.println("You are running low on SRAM. Please optimise your program for better RAM usage");
-    #if defined (ARDUINO_ARCH_SAM)
-    Serial.print("Current Free SRAM: ");
-    Serial.println(_dueFreeRAM());
-    #endif
-  Serial.print("If you are still facing issues, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
-		#endif
-		break;
-
-    case NOSUSPEND:
- 		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x0");
-		Serial.println(NOSUSPEND, HEX);
-		#else
- 		Serial.println("Unable to suspend operation.");
-    Serial.print("If you are unable to resolve this problem, ");
- 		Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
-		#endif
-		break;
-
-		default:
-		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
- 		Serial.print("Error code: 0x");
-		Serial.println(UNKNOWNERROR, HEX);
-		#else
-		Serial.println("Unknown error");
- 		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
-		#endif
-		break;
-	}
-}
-#endif
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Public functions used for read, write and erase operations     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Identifies chip and establishes parameters
-void SPIFlash::begin(void) {
+void SPIFlash::begin(uint32_t _sz) {
+  if (_sz) {
+    capacity = _sz/8;
+  }
 #if defined (ARDUINO_ARCH_SAM)
   _dueSPIBegin();
 #else
@@ -1789,7 +1640,7 @@ bool SPIFlash::eraseBlock32K(uint32_t address) {
 	_nextByte(0);
   _endSPI();
 
-	if(!_notBusy(1000L))
+	if(!_notBusy(1*S))
 	return false;	//Datasheet says erasing a sector takes 400ms max
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
