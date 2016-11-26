@@ -37,7 +37,7 @@
 #endif
 #include "defines.h"
 
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE)
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32)
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>

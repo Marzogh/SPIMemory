@@ -455,9 +455,15 @@ void SPIFlash::_troubleshoot(void) {
 		case UNKNOWNCHIP:
  		#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
  		Serial.print("Error code: 0x0");
+   Serial.print("manID: 0x"); Serial.println(manID, HEX);
+   Serial.print("capID: 0x");Serial.println(capID, HEX);
+   Serial.print("devID: 0x");Serial.println(devID, HEX);
 		Serial.println(UNKNOWNCHIP, HEX);
 		#else
 		Serial.println("Unable to identify chip. Are you sure this is a Winbond Flash chip");
+   Serial.print("manID: 0x"); Serial.println(manID, HEX);
+   Serial.print("capID: 0x");Serial.println(capID, HEX);
+   Serial.print("devID: 0x");Serial.println(devID, HEX);
  		Serial.println("Please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with your chip type and I will try to add support to your chip");
 		#endif
 

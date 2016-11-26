@@ -24,8 +24,10 @@
 
 #if defined (SIMBLEE)
 #define BAUD_RATE 250000
+#define RANDPIN 1
 #else
 #define BAUD_RATE 115200
+#define RANDPIN A0
 #endif
 
 SPIFlash flash;
@@ -45,7 +47,11 @@ void setup() {
   Serial.println();
   Serial.println();
 
-  randomSeed(analogRead(1));
+#if defined (ARDUINO_ARCH_ESP32)
+  randomSeed(65535537);
+#else
+  randomSeed(analogRead(RANDPIN));
+#endif
   getID();
   diagnose();
 }
