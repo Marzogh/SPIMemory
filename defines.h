@@ -117,7 +117,6 @@
 #endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
-#define maxAddress    capacity
 #define K             1024L
 #define M             K * K
 #define S             1000L
@@ -165,6 +164,7 @@
  #define PREVWRITTEN  0x07
  #define LOWRAM       0x08
  #define NOSUSPEND    0x09
+ #define UNSUPPORTED  0x0A
  #define UNKNOWNERROR 0xFF
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

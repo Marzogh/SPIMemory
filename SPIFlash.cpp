@@ -307,13 +307,13 @@ bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
 }
 
 //Checks for presence of chip by requesting JEDEC ID
-bool SPIFlash::_getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
+bool SPIFlash::_getJedecId(void) {
   if(!_notBusy())
   	return false;
   _beginSPI(JEDECID);
-	*b1 = _nextByte(NULLBYTE);		// manufacturer id
-	*b2 = _nextByte(NULLBYTE);		// manufacturer id
-	*b3 = _nextByte(NULLBYTE);		// capacity
+	manID = _nextByte(NULLBYTE);		// manufacturer id
+	capID = _nextByte(NULLBYTE);		// manufacturer id
+	devID = _nextByte(NULLBYTE);		// capacity
   _endSPI();
   return true;
 }
@@ -321,18 +321,16 @@ bool SPIFlash::_getJedecId(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
 //Identifies the chip
 bool SPIFlash::_chipID(void) {
   if (!capacity) {
+    supportedChip = true;
     //Get Manfucturer/Device ID so the library can identify the chip
-    uint8_t manID, capID, devID ;
-    //_getManId(&manID, &devID);
-    _getJedecId(&manID, &capID, &devID);
-
-    //Serial.println(manID, HEX);
-    //Serial.println(capID, HEX);
-    //Serial.println(devID, HEX);
+    _getJedecId();
 
     if (manID != WINBOND_MANID && manID != MICROCHIP_MANID){		//If the chip is not a Winbond Chip
       errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
     	#ifdef RUNDIAGNOSTIC
+      Serial.print("manID: 0x"); Serial.println(manID, HEX);
+      Serial.print("capID: 0x");Serial.println(capID, HEX);
+      Serial.print("devID: 0x");Serial.println(devID, HEX);
     	_troubleshoot();
     	#endif
     	while(1);
@@ -340,30 +338,28 @@ bool SPIFlash::_chipID(void) {
 
     //Check flash memory type and identify capacity
     uint8_t i;
-    //capacity & chip name
+    //capacity
     for (i = 0; i < sizeof(devType); i++)
     {
     	if (devID == devType[i]) {
-        capacity = memSize[i];
-        name = chipName[i];
+        capacity = (memSize[i] / 8);
         _eraseTime = eraseTime[i];
-        //Serial.println(devID, HEX);
-        //Serial.println(capacity);
-        //Serial.println(name);
     	}
     }
-    if (capacity == 0) {
+    if (!capacity && supportedChip) {
       errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
     	#ifdef RUNDIAGNOSTIC
     	_troubleshoot();
     	#endif
     	while(1);
     }
-   	maxPage = capacity/PAGESIZE;
+   	//maxPage = capacity/PAGESIZE;
     return true;
   }
   else {
-    // If a custom chip size is defined
+  // If a custom chip size is defined
+    supportedChip = false;
+    _getJedecId();
     return true;
   }
 }
@@ -371,7 +367,7 @@ bool SPIFlash::_chipID(void) {
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
 bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
-	if (capacity == 0) {
+	if (!capacity) {
     errorcode = CALLBEGIN;
     #ifdef RUNDIAGNOSTIC
     _troubleshoot();
@@ -379,7 +375,7 @@ bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
 	}
 
   for (uint32_t i = 0; i < size; i++) {
-    if (address + i >= maxAddress) {
+    if (address + i >= capacity) {
     	if (!pageOverflow) {
         errorcode = OUTOFBOUNDS;
         #ifdef RUNDIAGNOSTIC
@@ -420,12 +416,7 @@ void SPIFlash::begin(uint32_t _sz) {
   if (_sz) {
     capacity = _sz/8;
   }
-#if defined (ARDUINO_ARCH_SAM)
-  _dueSPIBegin();
-#else
-  SPI.begin();
-#endif
-
+  BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
   _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
@@ -452,13 +443,7 @@ uint32_t SPIFlash::getCapacity(void) {
 
 //Returns maximum number of pages
 uint32_t SPIFlash::getMaxPage(void) {
-	return maxPage;
-}
-
-
-//Returns identifying name of the chip
-uint16_t SPIFlash::getChipName(void) {
-	return name;
+	return (capacity / PAGESIZE);
 }
 
 //Returns the library version as a string
@@ -480,11 +465,9 @@ uint16_t SPIFlash::getManID(void) {
 
 //Checks for and initiates the chip by requesting JEDEC ID which is returned as a 32 bit int
 uint32_t SPIFlash::getJEDECID(void) {
-	uint8_t b1, b2, b3;
-    _getJedecId(&b1, &b2, &b3);
-    uint32_t id = b1;
-    id = (id << 8)|(b2 << 0);
-    id = (id << 8)|(b3 << 0);
+    uint32_t id = manID;
+    id = (id << 8)|(capID << 0);
+    id = (id << 8)|(devID << 0);
     return id;
 }
 
@@ -503,8 +486,6 @@ uint32_t SPIFlash::getAddress(uint16_t size) {
 	}
 	else {
 		uint32_t address = currentAddress;
-		/*Serial.print("Current Address: ");
-		Serial.println(currentAddress);*/
 		currentAddress+=size;
 		return address;
 	}
@@ -519,14 +500,9 @@ bool SPIFlash::getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset)
 
 //Function for returning the size of the string (only to be used for the getAddress() function)
 uint16_t SPIFlash::sizeofStr(String &inputStr) {
-	//uint16_t inStrLen = inputStr.length() + 1;
-	uint16_t size;
-
-	//inputStr.toCharArray(inputChar, inStrLen);
-
-	//size=(sizeof(char)*inStrLen);
+  uint16_t size;
   size = (sizeof(char)*(inputStr.length()+1));
-	size+=sizeof(inputStr.length()+1/*inStrLen*/);
+  size+=sizeof(inputStr.length()+1);
 
 	return size;
 }
@@ -534,7 +510,7 @@ uint16_t SPIFlash::sizeofStr(String &inputStr) {
 // Reads a byte of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
@@ -573,7 +549,7 @@ uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset, bool fastRead) 
 // Reads a char of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
@@ -610,7 +586,7 @@ int8_t SPIFlash::readChar(uint16_t page_number, uint8_t offset, bool fastRead) {
 
 // Reads an array of bytes starting from a specific location in a page.// Has two variants:
 //	A. Takes three arguments
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes four arguments
@@ -642,7 +618,7 @@ bool  SPIFlash::readByteArray(uint16_t page_number, uint8_t offset, uint8_t *dat
 
 // Reads an array of chars starting from a specific location in a page.// Has two variants:
 //	A. Takes three arguments
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes four arguments
@@ -675,7 +651,7 @@ bool  SPIFlash::readCharArray(uint16_t page_number, uint8_t offset, char *data_b
 // Reads an unsigned int of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
@@ -718,7 +694,7 @@ uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset, bool fastRead)
 // Reads a signed int of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
@@ -762,7 +738,7 @@ int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset, bool fastRead)
 // Reads an unsigned long of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
@@ -806,7 +782,7 @@ uint32_t SPIFlash::readULong(uint16_t page_number, uint8_t offset, bool fastRead
 // Reads a signed long of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
@@ -850,7 +826,7 @@ int32_t SPIFlash::readLong(uint16_t page_number, uint8_t offset, bool fastRead) 
 // Reads a signed long of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
@@ -895,7 +871,7 @@ float SPIFlash::readFloat(uint16_t page_number, uint8_t offset, bool fastRead) {
 // Reads a string from a specific location on a page.
 // Has two variants:
 //	A. Takes three arguments
-//		1. address --> Any address from 0 to maxAddress
+//		1. address --> Any address from 0 to capacity
 //		2. outputString --> String variable to write the output to
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes four arguments
@@ -927,7 +903,7 @@ bool SPIFlash::readStr(uint16_t page_number, uint8_t offset, String &outStr, boo
 // Writes a byte of data to a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> One byte of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -965,7 +941,7 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 // Writes a char of data to a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> One char of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1003,7 +979,7 @@ bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool
 // Writes an array of bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> An array of bytes to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1074,7 +1050,7 @@ bool SPIFlash::writeByteArray(uint16_t page_number, uint8_t offset, uint8_t *dat
 // Writes an array of bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> An array of chars to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1148,7 +1124,7 @@ bool SPIFlash::writeCharArray(uint16_t page_number, uint8_t offset, char *data_b
 // Writes an unsigned int as two bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> One unsigned int of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1220,7 +1196,7 @@ bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bo
 // Writes a signed int as two bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> One signed int of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1291,7 +1267,7 @@ bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bo
 // Writes an unsigned long as four bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> One unsigned long of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1364,7 +1340,7 @@ bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, b
 // Writes a signed long as four bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> One signed long of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1437,7 +1413,7 @@ bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, boo
 // Writes a float as four bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to maxAddress
+//  	1. address --> Any address - from 0 to capacity
 //  	2. data --> One float of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -1509,7 +1485,7 @@ bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool
 // Reads a string from a specific location on a page.
 // Has two variants:
 //	A. Takes two arguments -
-//  	1. address --> Any address from 0 to maxAddress
+//  	1. address --> Any address from 0 to capacity
 //		2. inputString --> String variable to write the data from
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -

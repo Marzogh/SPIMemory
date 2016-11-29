@@ -42,82 +42,12 @@ void getID() {
   uint16_t b3;
   uint32_t JEDEC = flash.getJEDECID();
   uint32_t maxPage = flash.getMaxPage();
-  uint16_t _name = flash.getChipName();
   uint32_t capacity = flash.getCapacity();
   b1 = (JEDEC >> 16);
   b2 = (JEDEC >> 8);
   b3 = (JEDEC >> 0);
 
-#define WINBOND     0xEF
-#define MICROCHIP   0xBF
-
-  if (b1 == WINBOND) {
-    //---------------------------------------------------------------------------------------------//
-    //--------------------------Prints the name of the Flash chip in use---------------------------//
-    //---------------------------------------------------------------------------------------------//
-    for (uint8_t i = 0; i < 76; i++) {
-      Serial.print(F(" "));
-    }
-    Serial.print(F("Winbond "));
-    if (_name < 80) {
-      if (_name == 05) {
-        clearprintBuffer(&printBuffer[1]);
-        sprintf(printBuffer, "W25X%02d**", _name);
-        Serial.println(printBuffer);
-        clearprintBuffer(&printBuffer[1]);
-      }
-      else if (_name % 10 == 0) {
-        clearprintBuffer(&printBuffer[1]);
-        sprintf(printBuffer, "W25X%02d**", _name);
-        Serial.println(printBuffer);
-        clearprintBuffer(&printBuffer[1]);
-      }
-      else {
-        clearprintBuffer(&printBuffer[1]);
-        sprintf(printBuffer, "W25Q%02d**", _name);
-        Serial.println(printBuffer);
-        clearprintBuffer(&printBuffer[1]);
-      }
-    }
-    else {
-      clearprintBuffer(&printBuffer[1]);
-      sprintf(printBuffer, "W25Q%02d**", _name);
-      Serial.println(printBuffer);
-      clearprintBuffer(&printBuffer[1]);
-    }
-  }
-  else if (b1 == MICROCHIP) {
-    for (uint8_t i = 0; i < 72; i++) {
-      Serial.print(F(" "));
-    }
-    Serial.print(F("Microchip "));
-    if (_name < 80) {
-      if (_name == 05) {
-        clearprintBuffer(&printBuffer[1]);
-        sprintf(printBuffer, "W25X%02d**", _name);
-        Serial.println(printBuffer);
-        clearprintBuffer(&printBuffer[1]);
-      }
-      else if (_name % 10 == 0) {
-        clearprintBuffer(&printBuffer[1]);
-        sprintf(printBuffer, "W25X%02d**", _name);
-        Serial.println(printBuffer);
-        clearprintBuffer(&printBuffer[1]);
-      }
-      else {
-        clearprintBuffer(&printBuffer[1]);
-        sprintf(printBuffer, "W25Q%02d**", _name);
-        Serial.println(printBuffer);
-        clearprintBuffer(&printBuffer[1]);
-      }
-    }
-    else {
-      clearprintBuffer(&printBuffer[1]);
-      sprintf(printBuffer, "W25Q%02d**", _name);
-      Serial.println(printBuffer);
-      clearprintBuffer(&printBuffer[1]);
-    }
-  }
+  
   printLine();
   //---------------------------------------------------------------------------------------------//
 
