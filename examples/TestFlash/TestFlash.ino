@@ -4,7 +4,7 @@
   |                                                      SPIFlash library test v2.4.0                                                |
   |----------------------------------------------------------------------------------------------------------------------------------|
   |                                                                Marzogh                                                           |
-  |                                                              11.09.2016                                                          |
+  |                                                              16.11.2016                                                          |
   |----------------------------------------------------------------------------------------------------------------------------------|
   |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
   |                                     *****************************************************************                            |
@@ -80,11 +80,17 @@ String inputString, outputString;
 #define Serial SERIAL_PORT_USBVIRTUAL
 #endif
 
+#if defined (SIMBLEE)
+#define BAUD_RATE 250000
+#else
+#define BAUD_RATE 115200
+#endif
+
 SPIFlash flash;
 
 void setup() {
   delay(10);
-  Serial.begin(115200);
+  Serial.begin(BAUD_RATE);
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {

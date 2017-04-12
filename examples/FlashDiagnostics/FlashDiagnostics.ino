@@ -17,21 +17,48 @@
 
 #include<SPIFlash.h>
 
+//Define a flash memory size (if using non-Winbond memory) according to the list in defines.h
+#define CHIPSIZE MB64
+
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+// Required for Serial on Zero based boards
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
+
+#if defined (SIMBLEE)
+#define BAUD_RATE 250000
+#define RANDPIN 1
+#else
+#define BAUD_RATE 115200
+#define RANDPIN A0
+#endif
+
 SPIFlash flash;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(BAUD_RATE);
+#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
   }
   Serial.println();
+#if defined (CHIPSIZE)
+  flash.begin(CHIPSIZE); //use flash.begin(CHIPSIZE) if using non-Winbond flash (Refer to '#define CHIPSIZE' above)
+#else
   flash.begin();
+#endif
   Serial.println();
   Serial.println();
 
-  randomSeed(analogRead(A0));
+#if defined (ARDUINO_ARCH_ESP32)
+  randomSeed(65535537);
+#else
+  randomSeed(analogRead(RANDPIN));
+#endif
   getID();
   diagnose();
 }

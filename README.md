@@ -1,5 +1,5 @@
 
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=esp32-compat-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
 <sup> Download the latest stable release (v2.5.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
@@ -23,7 +23,9 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - Arduino Mega
 - Arduino Due
 - ESP8266 Boards (On the Arduino IDE)
+- ESP32 Boards - BETA (On the Arduino IDE with the esp32 core at commit 67fd652)
 - ATTiny85
+- Simblee Boards (On the Arduino IDE)
 
 ####Installation
 

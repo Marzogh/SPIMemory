@@ -5,7 +5,7 @@
   |                                                                   v 2.5.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  30.09.2016                                                                   |
+  |                                                                  16.11.2016                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program shows the method of reading a string from the console and saving it to flash memory                       |
@@ -17,30 +17,46 @@
 int strPage, strSize;
 byte strOffset;
 
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+// Required for Serial on Zero based boards
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
+
+#if defined (SIMBLEE)
+#define BAUD_RATE 250000
+#define RANDPIN 1
+#else
+#define BAUD_RATE 115200
+#define RANDPIN A0
+#endif
+
 SPIFlash flash;
 
 bool readSerialStr(String &inputStr);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(BAUD_RATE);
+#if defined (ARDUINO_SAMD_ZERO) || (__AVR_ATmega32U4__)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
 
   flash.begin();
 
-  //Serial.println(F("Please type the string into the console"));
-  randomSeed(analogRead(A0));
+#if defined (ARDUINO_ARCH_ESP32)
+  randomSeed(65535537);
+#else
+  randomSeed(analogRead(RANDPIN));
+#endif
   strPage = random(0, 4095);
   strOffset = random(0, 255);
   String inputString = "This is a test String";
-  //while (!readSerialStr(inputString));
-  if (flash.writeStr(strPage, strOffset, inputString)) {
-    //delay(250);
-    Serial.print(F("Written string: "));
-    Serial.print(inputString);
-    Serial.print(F(" to page "));
-    Serial.print(strPage);
-    Serial.print(F(", at offset "));
-    Serial.println(strOffset);
-  }
+  flash.writeStr(strPage, strOffset, inputString);
+  Serial.print(F("Written string: "));
+  Serial.print(inputString);
+  Serial.print(F(" to page "));
+  Serial.print(strPage);
+  Serial.print(F(", at offset "));
+  Serial.println(strOffset);
   String outputString = "";
   if (flash.readStr(strPage, strOffset, outputString)) {
     Serial.print(F("Read string: "));
