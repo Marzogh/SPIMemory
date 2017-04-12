@@ -131,7 +131,7 @@
   #endif
   break;
 
-    case SUSPEND:
+    case NOSUSPEND:
   #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
     _printErrorCode();
   #else
