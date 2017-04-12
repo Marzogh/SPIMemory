@@ -213,7 +213,6 @@ void SPIFlash::_endSPI(void) {
 uint8_t SPIFlash::_readStat1(void) {
 	_beginSPI(READSTAT1);
   uint8_t stat1 = _nextByte();
-  //_endSPI();
   CHIP_DESELECT
 	return stat1;
 }
@@ -222,17 +221,29 @@ uint8_t SPIFlash::_readStat1(void) {
 uint8_t SPIFlash::_readStat2(void) {
   _beginSPI(READSTAT2);
   uint8_t stat2 = _nextByte();
-  _endSPI();
+  CHIP_DESELECT
   return stat2;
 }
 
 // Checks the erase/program suspend flag before enabling/disabling a program/erase suspend operation
 bool SPIFlash::_noSuspend(void) {
-	if(_readStat2() & SUS) {
-    errorcode = NOSUSPEND;
-		return false;
+  switch (manID) {
+    case WINBOND_MANID:
+    if(_readStat2() & SUS) {
+      errorcode = SUSPEND;
+  		return false;
+    }
+  	return true;
+    break;
+
+    case MICROCHIP_MANID:
+    if(_readStat1() & WSE || _readStat1() & WSP) {
+      errorcode = SUSPEND;
+  		return false;
+    }
+  	return true;
   }
-	return true;
+
 }
 
 // Polls the status register 1 until busy flag is cleared or timeout
@@ -258,7 +269,6 @@ bool SPIFlash::_writeEnable(uint32_t timeout) {
   if (!(state & WRTEN)) {
     do {
       _beginSPI(WRITEENABLE);
-      //_endSPI();
       CHIP_DESELECT
       state = _readStat1();
       if((millis()-startTime) > timeout) {
@@ -280,7 +290,7 @@ bool SPIFlash::_writeEnable(uint32_t timeout) {
 // Erase Security Register and Program Security register
 bool SPIFlash::_writeDisable(void) {
 	_beginSPI(WRITEDISABLE);
-  _endSPI();
+  CHIP_DESELECT
 	return true;
 }
 
@@ -302,7 +312,7 @@ bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
   _nextByte();
   *b1 = _nextByte();
   *b2 = _nextByte();
-  _endSPI();
+  CHIP_DESELECT
 	return true;
 }
 
@@ -314,12 +324,33 @@ bool SPIFlash::_getJedecId(void) {
 	manID = _nextByte(NULLBYTE);		// manufacturer id
 	capID = _nextByte(NULLBYTE);		// manufacturer id
 	devID = _nextByte(NULLBYTE);		// capacity
-  _endSPI();
+  CHIP_DESELECT
   return true;
+}
+
+bool SPIFlash::_checkSFDP(void) {
+  uint32_t _sfdp = 0x00000000;
+  _beginSPI(READSFDP);
+  _currentAddress = 0x00;
+  _transferAddress();
+  _nextByte(DUMMYBYTE);
+  for (uint8_t i = 0; i < 4; i++) {
+    _sfdp += (_nextByte() << (8*i));
+  }
+  CHIP_DESELECT
+  if (_sfdp = 0x50444653) {
+    //Serial.print("_sfdp: ");
+    //Serial.println(_sfdp, HEX);
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 //Identifies the chip
 bool SPIFlash::_chipID(void) {
+  _checkSFDP();
   if (!capacity) {
     supportedChip = true;
     //Get Manfucturer/Device ID so the library can identify the chip
@@ -353,7 +384,6 @@ bool SPIFlash::_chipID(void) {
     	#endif
     	while(1);
     }
-   	//maxPage = capacity/PAGESIZE;
     return true;
   }
   else {
@@ -394,15 +424,13 @@ bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
 }
 
 bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
-  //_prep(READDATA, address, size);
   _beginSPI(READDATA);
   for (uint16_t i = 0; i < size; i++) {
     if (_nextByte() != 0xFF) {
-      _endSPI();
+      CHIP_DESELECT;
       return false;
     }
   }
-  //_endSPI();
   CHIP_DESELECT
   return true;
 }
@@ -415,6 +443,7 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
 void SPIFlash::begin(uint32_t _sz) {
   if (_sz) {
     capacity = _sz/8;
+    _eraseTime = _sz/KB64;
   }
   BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
@@ -1671,7 +1700,6 @@ bool SPIFlash::eraseChip(void) {
 
 	_beginSPI(CHIPERASE);
 	_endSPI();
-
 	if(!_notBusy(_eraseTime))
 		return false; //Datasheet says erasing chip takes 6s max
 

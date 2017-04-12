@@ -121,7 +121,7 @@ public:
   uint32_t getJEDECID(void);
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
   uint32_t getAddress(uint16_t size);
-  uint16_t getChipName(void);
+  //uint16_t getChipName(void);
   uint16_t sizeofStr(String &inputStr);
   uint32_t getCapacity(void);
   uint32_t getMaxPage(void);
@@ -239,6 +239,7 @@ private:
   bool     _writeDisable(void);
   bool     _getJedecId(void);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
+  bool     _checkSFDP(void);
   bool     _chipID(void);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t address, uint32_t size = 1);
@@ -261,7 +262,7 @@ private:
   const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
   const uint32_t memSize[11]  = {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M,
                                 16L * M, 32L * M, 8L * M};
-  const uint32_t eraseTime[11] = {1L * S, 2L * S, 2L * S, 4L * S, 6L * S, 10 * S, 15 * S, 100 * S, 200 * S, 400 * S, 50L}; //Erase time in milliseconds
+  const uint32_t eraseTime[11] = {1L * S, 2L * S, 2L * S, 4L * S, 6L * S, 10L * S, 15L * S, 100L * S, 200L * S, 400L * S, 50L}; //Erase time in milliseconds
 };
 
 //--------------------------------------------Templates-------------------------------------------//
@@ -390,6 +391,10 @@ if (!_prep(READDATA, address, sizeof(value)) && !_notBusy()) {
 #else
     if(*p++ != _nextByte())
     {
+      errorcode = ERRORCHKFAIL;
+    #ifdef RUNDIAGNOSTIC
+      _troubleshoot();
+    #endif
       return false;
     }
 #endif

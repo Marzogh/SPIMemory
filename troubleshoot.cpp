@@ -131,7 +131,7 @@
   #endif
   break;
 
-    case NOSUSPEND:
+    case SUSPEND:
   #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
     _printErrorCode();
   #else
@@ -147,6 +147,14 @@
     Serial.println("This function is not supported by the current flash IC.");
     _printSupportLink();
   #endif
+
+  case ERRORCHKFAIL:
+#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
+  _printErrorCode();
+#else
+  Serial.println("Write Function has failed errorcheck.");
+  _printSupportLink();
+#endif
 
     default:
   #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)

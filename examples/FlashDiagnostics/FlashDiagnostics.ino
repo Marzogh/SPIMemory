@@ -18,7 +18,7 @@
 #include<SPIFlash.h>
 
 //Define a flash memory size (if using non-Winbond memory) according to the list in defines.h
-#define CHIPSIZE MB8
+#define CHIPSIZE MB64
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -46,7 +46,11 @@ void setup() {
     Serial.print(F("."));
   }
   Serial.println();
-  flash.begin(CHIPSIZE); //use flash.begin(CHIPSIZE) if using non-Winbond flash (Refer to '#define CHIPSIZE' above
+#if defined (CHIPSIZE)
+  flash.begin(CHIPSIZE); //use flash.begin(CHIPSIZE) if using non-Winbond flash (Refer to '#define CHIPSIZE' above)
+#else
+  flash.begin();
+#endif
   Serial.println();
   Serial.println();
 

@@ -46,6 +46,7 @@
 #define RELEASE      0xAB
 #define POWERDOWN    0xB9
 #define BLOCK64ERASE 0xD8
+#define READSFDP     0x5A
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
@@ -104,6 +105,8 @@
 #endif
 #define WRTEN         0x02
 #define SUS           0x40
+#define WSE           0x04
+#define WSP           0x08
 #define DUMMYBYTE     0xEE
 #define NULLBYTE      0x00
 #define NULLINT       0x0000
@@ -163,8 +166,9 @@
  #define CANTENWRITE  0x06
  #define PREVWRITTEN  0x07
  #define LOWRAM       0x08
- #define NOSUSPEND    0x09
+ #define SUSPEND      0x09
  #define UNSUPPORTED  0x0A
+ #define ERRORCHKFAIL 0x0B
  #define UNKNOWNERROR 0xFF
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

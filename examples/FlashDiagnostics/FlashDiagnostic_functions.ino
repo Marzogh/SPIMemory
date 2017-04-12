@@ -47,7 +47,7 @@ void getID() {
   b2 = (JEDEC >> 8);
   b3 = (JEDEC >> 0);
 
-  
+
   printLine();
   //---------------------------------------------------------------------------------------------//
 
@@ -766,10 +766,11 @@ void powerFuncDiag(void) {
     wTime = micros();
     if (flash.powerDown()) {
       wTime = micros() - wTime;
-      if (!flash.writeStr(stringAddress2, _string))
-        printPass();
-      else
-        printFail();
+      printPass();
+    }
+    else {
+      wTime = micros() - wTime;
+      printFail();
     }
   }
   printTab(3, 2);
