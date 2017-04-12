@@ -123,10 +123,10 @@
     _printErrorCode();
   #else
     Serial.println("You are running low on SRAM. Please optimise your program for better RAM usage");
-    #if defined (ARDUINO_ARCH_SAM)
+    /*#if defined (ARDUINO_ARCH_SAM)
       Serial.print("Current Free SRAM: ");
       Serial.println(freeRAM());
-    #endif
+    #endif*/
     _printSupportLink();
   #endif
   break;
