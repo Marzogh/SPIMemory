@@ -46,7 +46,43 @@
 #define RELEASE      0xAB
 #define POWERDOWN    0xB9
 #define BLOCK64ERASE 0xD8
+#define READSFDP     0x5A
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                     General size definitions                       //
+//            B = Bytes; KB = Kilo bits; MB = Mega bits               //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define B1            1L
+#define B2            2L
+#define B4            4L
+#define B8            8L
+#define B16           16L
+#define B32           32L
+#define B64           64L
+#define B80           80L
+#define B128          128L
+#define B256          256L
+#define B512          512L
+#define KB1           B1 * K
+#define KB2           B2 * K
+#define KB4           B4 * K
+#define KB8           B8 * K
+#define KB16          B16 * K
+#define KB32          B32 * K
+#define KB64          B64 * K
+#define KB128         B128 * K
+#define KB256         B256 * K
+#define KB512         B512 * K
+#define MB1           B1 * M
+#define MB2           B2 * M
+#define MB4           B4 * M
+#define MB8           B8 * M
+#define MB16          B16 * M
+#define MB32          B32 * M
+#define MB64          B64 * M
+#define MB128         B128 * M
+#define MB256         B256 * M
+#define MB512         B512 * M
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -69,6 +105,8 @@
 #endif
 #define WRTEN         0x02
 #define SUS           0x40
+#define WSE           0x04
+#define WSP           0x08
 #define DUMMYBYTE     0xEE
 #define NULLBYTE      0x00
 #define NULLINT       0x0000
@@ -82,7 +120,9 @@
 #endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
-#define maxAddress    capacity
+#define K             1024L
+#define M             K * K
+#define S             1000L
 
 #if defined (ARDUINO_ARCH_ESP8266)
 #define CS 15
@@ -126,7 +166,9 @@
  #define CANTENWRITE  0x06
  #define PREVWRITTEN  0x07
  #define LOWRAM       0x08
- #define NOSUSPEND    0x09
+ #define NOSUSPEND      0x09
+ #define UNSUPPORTED  0x0A
+ #define ERRORCHKFAIL 0x0B
  #define UNKNOWNERROR 0xFF
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
