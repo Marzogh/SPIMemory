@@ -36,12 +36,6 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
   pageOverflow = overflow;
   pinMode(csPin, OUTPUT);
 }
-#else
-SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
-  csPin = cs;
-  pageOverflow = overflow;
-  pinMode(csPin, OUTPUT);
-}
 #elif defined (BOARD_RTL8195A)
 SPIFlash::SPIFlash(PinName cs, bool overflow) {
   // Adding Low level HAL API to initialize the Chip select pinMode
@@ -52,6 +46,12 @@ SPIFlash::SPIFlash(PinName cs, bool overflow) {
   gpio_mode(&csPin, PullNone);
   gpio_write(&csPin, 1);
   pageOverflow = overflow;
+}
+#else
+SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
+  csPin = cs;
+  pageOverflow = overflow;
+  pinMode(csPin, OUTPUT);
 }
 #endif
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

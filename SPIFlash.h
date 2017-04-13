@@ -125,6 +125,7 @@ extern "C" {
     #define CHIP_SELECT   gpio_write(&csPin, 0);
     #define CHIP_DESELECT gpio_write(&csPin, 1);
     #define xfer(n)   SPI.transfer(n)
+    #define BEGIN_SPI SPI.begin();
 #else //#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
