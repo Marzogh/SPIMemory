@@ -1,6 +1,7 @@
 /* Arduino SPIFlash Library v.2.5.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 13/11/2016
+ * Modified by @boseji <salearj@hotmail.com> - 02/03/17
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -42,29 +43,27 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //#define HIGHSPEED                                                   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#include <Arduino.h>
+#include "defines.h"
 
 #if defined (ARDUINO_ARCH_SAM)
   #include <malloc.h>
   #include <stdlib.h>
   #include <stdio.h>
 #endif
-#include <Arduino.h>
+
 #ifndef __AVR_ATtiny85__
   #include <SPI.h>
 #endif
-#include "defines.h"
 
 #if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A)
-// Included the Definition for RTL8195A also @boseji <salearj@hotmail.com> 2nd March 2017
-
+// RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>
 #endif
-
+// Includes specific to RTL8195A to access GPIO HAL - @boseji <salearj@hotmail.com> 02.03.17
 #if defined (BOARD_RTL8195A)
-    // Specific Includes needed for RTL8195A to access GPIO HAL
-    // @boseji <salearj@hotmail.com> 2nd March 2017
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -75,17 +74,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-// Declaration of the Default Chip select pin name
-//
-//  Note: This has been shifted due to a bug identified 
-//    in the HAL layer SPI driver 
-//    @ref http://www.amebaiot.com/en/questions/forum/facing-issues-with-spi-interface-to-w25q32/
-//
-//  Note: Please use any pin other than GPIOC_0 which is the D10 marked in the kit
-//
-// @boseji <salearj@hotmail.com> 2nd March 2017
-#define CS_PIN_RTL8195A PC_4
 
 #endif
 
@@ -119,9 +107,8 @@ extern "C" {
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
     #define xfer   _dueSPITransfer
     #define BEGIN_SPI _dueSPIBegin();
+// Specific access configuration for Chip select pin - @boseji <salearj@hotmail.com> 02.03.17
 #elif defined (BOARD_RTL8195A)
-    // Specific access configuration for Chip select pin
-    // @boseji <salearj@hotmail.com> 2nd March 2017
     #define CHIP_SELECT   gpio_write(&csPin, 0);
     #define CHIP_DESELECT gpio_write(&csPin, 1);
     #define xfer(n)   SPI.transfer(n)
@@ -146,13 +133,12 @@ extern "C" {
 
 class SPIFlash {
 public:
-  //----------------------------------------------Constructor-----------------------------------------------//
+  //----------------------------------------------Constructor-----------------------------------------------
+  //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
   #if !defined (BOARD_RTL8195A)
   SPIFlash(uint8_t cs = CS, bool overflow = true);
   #else
-  // New Constructor to Accept the PinNames as a Chip select Parameter
-  // @boseji <salearj@hotmail.com> 2nd March 2017
-  SPIFlash(PinName cs = CS_PIN_RTL8195A, bool overflow = true);
+  SPIFlash(PinName cs = CS, bool overflow = true);
   #endif
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin(uint32_t _sz = 0);
@@ -299,8 +285,7 @@ private:
   #if !defined (BOARD_RTL8195A)
   uint8_t     csPin;
   #else
-  // Object declaration for the GPIO HAL type for Chip Select pin
-  // @boseji <salearj@hotmail.com> 2nd March 2017
+  // Object declaration for the GPIO HAL type for csPin - @boseji <salearj@hotmail.com> 02.03.17
   gpio_t      csPin;
   #endif
   uint8_t     cs_mask, errorcode, state, _SPCR, _SPSR, manID, capID, devID;
