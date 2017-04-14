@@ -128,6 +128,16 @@
 #define CS 15
 #elif defined (ARDUINO_ARCH_SAMD)
 #define CS 10
+/*********************************************************************************************
+// Declaration of the Default Chip select pin name for RTL8195A
+// Note: This has been shifted due to a bug identified in the HAL layer SPI driver
+// @ref http://www.amebaiot.com/en/questions/forum/facing-issues-with-spi-interface-to-w25q32/
+// Note: Please use any pin other than GPIOC_0 which is the D10 marked in the kit
+// Original edit by @boseji <salearj@hotmail.com> 02.03.17
+// Modified by Prajwal Bhattaram <marzogh@icloud.com> 14.4.17
+**********************************************************************************************/
+#elif defined (BOARD_RTL8195A)
+#define CS PC_4
 #else
 #define CS SS
 #endif
