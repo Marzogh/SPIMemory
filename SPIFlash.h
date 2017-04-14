@@ -54,10 +54,39 @@
 #endif
 #include "defines.h"
 
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32)
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A)
+// Included the Definition for RTL8195A also @boseji <salearj@hotmail.com> 2nd March 2017
+
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>
+#endif
+
+#if defined (BOARD_RTL8195A)
+    // Specific Includes needed for RTL8195A to access GPIO HAL
+    // @boseji <salearj@hotmail.com> 2nd March 2017
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "gpio_api.h"
+#include "PinNames.h"
+
+#ifdef __cplusplus
+}
+#endif
+
+// Declaration of the Default Chip select pin name
+//
+//  Note: This has been shifted due to a bug identified 
+//    in the HAL layer SPI driver 
+//    @ref http://www.amebaiot.com/en/questions/forum/facing-issues-with-spi-interface-to-w25q32/
+//
+//  Note: Please use any pin other than GPIOC_0 which is the D10 marked in the kit
+//
+// @boseji <salearj@hotmail.com> 2nd March 2017
+#define CS_PIN_RTL8195A PC_4
+
 #endif
 
 #ifdef ARDUINO_ARCH_AVR
@@ -90,6 +119,13 @@
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
     #define xfer   _dueSPITransfer
     #define BEGIN_SPI _dueSPIBegin();
+#elif defined (BOARD_RTL8195A)
+    // Specific access configuration for Chip select pin
+    // @boseji <salearj@hotmail.com> 2nd March 2017
+    #define CHIP_SELECT   gpio_write(&csPin, 0);
+    #define CHIP_DESELECT gpio_write(&csPin, 1);
+    #define xfer(n)   SPI.transfer(n)
+    #define BEGIN_SPI SPI.begin();
 #else //#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
@@ -111,7 +147,13 @@
 class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------//
+  #if !defined (BOARD_RTL8195A)
   SPIFlash(uint8_t cs = CS, bool overflow = true);
+  #else
+  // New Constructor to Accept the PinNames as a Chip select Parameter
+  // @boseji <salearj@hotmail.com> 2nd March 2017
+  SPIFlash(PinName cs = CS_PIN_RTL8195A, bool overflow = true);
+  #endif
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   void     begin(uint32_t _sz = 0);
   void     setClock(uint32_t clockSpeed);
@@ -251,9 +293,17 @@ private:
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   //-------------------------------------------Private variables------------------------------------------//
+
   bool        pageOverflow, SPIBusState, supportedChip;
   volatile uint8_t *cs_port;
-  uint8_t     cs_mask, csPin, errorcode, state, _SPCR, _SPSR, manID, capID, devID;
+  #if !defined (BOARD_RTL8195A)
+  uint8_t     csPin;
+  #else
+  // Object declaration for the GPIO HAL type for Chip Select pin
+  // @boseji <salearj@hotmail.com> 2nd March 2017
+  gpio_t      csPin;
+  #endif
+  uint8_t     cs_mask, errorcode, state, _SPCR, _SPSR, manID, capID, devID;
   uint32_t    capacity, _eraseTime;
   uint32_t    currentAddress, _currentAddress = 0;
 #ifdef SPI_HAS_TRANSACTION
