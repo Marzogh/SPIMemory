@@ -50,7 +50,7 @@ SPIFlash flash;
 
 struct Configuration {
   float lux;
-  float vOut;                   // Voltage ouput from potential divider to Anolg input
+  float vOut;                   // Voltage ouput from potential divider to Analog input
   float RLDR;                   // Resistance calculation of potential divider with LDR
   bool light;
   uint8_t adc;
