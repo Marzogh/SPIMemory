@@ -1,6 +1,8 @@
-/* Arduino SPIFlash Library v.2.5.0
- * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 14/11/2016
+/* Arduino SPIFlash Library v.2.6.0
+ * Copyright (C) 2017 by Prajwal Bhattaram
+ * Created by Prajwal Bhattaram - 14/11/2016
+ * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
+ * Modified by Prajwal Bhattaram - 14/04/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -77,7 +79,7 @@
     Serial.println("Unable to identify chip. Are you sure this chip is supported?");
     _printSupportLink();
   #endif
-  Serial.println("Chip details:")
+  Serial.println("Chip details:");
     Serial.print("manufacturer ID: 0x"); Serial.println(_chip.manufacturerID, HEX);
     Serial.print("capacity ID: 0x");Serial.println(_chip.memoryTypeID, HEX);
     Serial.print("device ID: 0x");Serial.println(_chip.capacityID, HEX);
@@ -144,11 +146,11 @@
   #endif
     break;
 
-    case NOSUSPEND:
+    case SYSSUSPEND:
   #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
     _printErrorCode();
   #else
-    Serial.println("Unable to suspend operation.");
+    Serial.println("Unable to suspend/resume operation.");
     _printSupportLink();
   #endif
     break;
