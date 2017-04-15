@@ -12,6 +12,7 @@ script:
   - build_platform mega
   - build_platform fio
   - build_platform micro
+  - build_platform rtl8195a
 notifications:
   email:
     on_success: change
