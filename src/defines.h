@@ -1,6 +1,7 @@
-/* Arduino SPIFlash Library v.2.5.0
- * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 13/11/2016
+/* Arduino SPIFlash Library v.2.6.0
+ * Copyright (C) 2017 by Prajwal Bhattaram
+ * Created by Prajwal Bhattaram - 19/05/2015
+ * Modified by Prajwal Bhattaram - 14/04/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -104,7 +105,7 @@
 #define SPI_CLK       104000000       //Hex equivalent of 104MHz
 #endif
 #define WRTEN         0x02
-#define SUS           0x40
+#define SUS           0x80
 #define WSE           0x04
 #define WSP           0x08
 #define DUMMYBYTE     0xEE
@@ -128,6 +129,8 @@
 #define CS 15
 #elif defined (ARDUINO_ARCH_SAMD)
 #define CS 10
+#elif defined __AVR_ATtiny85__
+#define CS 5
 /*********************************************************************************************
 // Declaration of the Default Chip select pin name for RTL8195A
 // Note: This has been shifted due to a bug identified in the HAL layer SPI driver
@@ -176,7 +179,7 @@
  #define CANTENWRITE  0x06
  #define PREVWRITTEN  0x07
  #define LOWRAM       0x08
- #define NOSUSPEND    0x09
+ #define SYSSUSPEND    0x09
  #define UNSUPPORTED  0x0A
  #define ERRORCHKFAIL 0x0B
  #define NORESPONSE   0x0C

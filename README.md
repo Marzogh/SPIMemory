@@ -1,13 +1,14 @@
 
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=esp32-compat-w.i.p)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
+# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
 ### Arduino library for Winbond Flash Memory Chips
-<sup> Download the latest stable release (v2.5.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
+<sup> Download the latest stable release (v2.6.0) from <a href = "https://github.com/Marzogh/SPIFlash/releases/latest">here</a>. Please report any bugs in issues.</sup>
 
 This Arduino library is for use with Winbond serial flash memory chips. In its current form it supports identifying the flash chip and its various features; automatic address allocation and management; reading and writing bytes/chars/ints/longs/floats/Strings from and to various locations; reading and writing pages of bytes; continous reading/writing of data from/to arrays of bytes/chars; sector, block and chip erase; and powering down for low power operation.
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
 #### Compatibility
+
 ##### Arduino IDEs supported
 - IDE v1.5.x
 - IDE v1.6.0-v1.6.5
@@ -24,7 +25,6 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - Arduino Due
 - ESP8266 Boards (On the Arduino IDE)
 - ESP32 Boards - BETA (On the Arduino IDE with the esp32 core at commit 67fd652)
-- ATTiny85
 - Simblee Boards (On the Arduino IDE)
 
 #### Installation
@@ -185,26 +185,12 @@ Puts device in low power state. Useful for battery powered operations. Typical c
 	- 0x06	CANTENWRITE		Unable to _writeEnable. Check wiring/chip.
 	- 0x07	OUTOFMEM			Pagenumber outside maximum.
 	- 0x08	OUTOFPAGE			Offset is outside page.
-	- 0x09	NOSUSPEND   	Unable to suspend operation
+	- 0x09	NOSUSPEND   	Unable to suspend/resume operation
 	- 0x0A	UNSUPPORTED 	This function is not supported by the current flash chip.
 	- 0x0B	ERRORCHKFAIL	The Write function has failed error check.
 	- 0x0C	NORESPONSE		The flash chip is not responding. Check your wiring.
 	- 0xFE	UNKNOWNERROR	Unknown error. Please raise issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred
 <hr>
-##### Deprecated functions
-
-The following functions are deprecated to enable compatibility with other AVR chips.
-`printPage();`
-`printAllPages()`
-`readSerialStr()`
-
-They can be used by uncommenting them in the SPIFlash.cpp file. However, be warned, this particular block of code has only been tested with the Arduino	IDE (1.6.5) and only with 8-bit ATMega based Arduino boards and will not be supported any further.
-
-###### printPage(page_number, outputType)
-Reads a page worth of data into a data buffer array for further useand prints to a Serial stream at 115200 baud by default. (The baudrate can be changed by calling ```Serial.begin()``` at a different baudrate in ``` void setup()```)Setting an outputType of 1 enables output in hexadecimal while an outputType of 2 enables output in decimal, CSV - over Serial.
-
-###### printAllPages()
-Reads all pages on Flash chip and dumps it to Serial stream. This function is useful when extracting data from a flash chip onto a computer as a text file.
 
 ###### How to get data off Flash memory via Serial
 <sub>(Works only for Unix based Operating Systems)</sub>

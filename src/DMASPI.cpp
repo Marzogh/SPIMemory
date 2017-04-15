@@ -1,6 +1,7 @@
-/* Arduino SPIFlash Library v.2.5.0
- * Copyright (C) 2015 by Prajwal Bhattaram
- * Modified by Prajwal Bhattaram - 30/09/2016
+/* Arduino SPIFlash Library v.2.6.0
+ * Copyright (C) 2017 by Prajwal Bhattaram
+ * Created by Prajwal Bhattaram - 30/09/2016
+ * Modified by Prajwal Bhattaram - 14/04/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
