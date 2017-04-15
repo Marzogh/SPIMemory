@@ -7,15 +7,15 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
-####Compatibility
-#####Arduino IDEs supported
+#### Compatibility
+##### Arduino IDEs supported
 - IDE v1.5.x
 - IDE v1.6.0-v1.6.5
 - IDE v1.6.9-v1.6.12
 
-#####Boards
+##### Boards
 
-######Completely supported
+###### Completely supported
 - Arduino Uno
 - Arduino Leonardo
 - Arduino Micro
@@ -25,14 +25,14 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - ESP8266 Boards (On the Arduino IDE)
 - ATTiny85
 
-####Installation
+#### Installation
 
-#####Option 1
+##### Option 1
 - Click on the 'Download zip' button to the right.
 - Unzip the archive and rename resulting folder to 'SPIFlash'
 - Move the folder to your libraries folder (~/sketches/libraries)
 
-#####Option 2
+##### Option 2
 - Open the Arduino IDE.
 - Go to Sketch > Include Library > Manage libraries.
 - Search for SPIFlash.
@@ -50,6 +50,7 @@ Also make sure to include ```flash.begin()``` in ```void setup()```. This enable
 
 The library enables the following functions:
 <hr>
+
 ##### Primary commands
 ###### begin()
 Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly.
@@ -78,8 +79,10 @@ Use this function to find the size of a String to use as the argument in getAddr
 
 size = sizeof(variable) can be used for all types of data but String objects.
 <hr>
+
 ###### All read/write commands can take a 32-bit address variable in the place of the 16-bit page number & 8-bit offset variables.
 <hr>
+
 ##### Read commands
 All read commands take a last boolean argument 'fastRead'. This argument defaults to FALSE, but when set to TRUE carries out the Fast Read instruction so data can be read at up to the memory's maximum frequency.
 
@@ -107,6 +110,7 @@ Reads a page worth of data into a data buffer array for further use. ```uint8_t 
 ###### readAnything(page_number, offset, value)
 Reads _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data to, as arguments.
 <hr>
+
 ##### Write commands
 All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
 
@@ -132,6 +136,7 @@ Writes a page worth of data into a data buffer array for further use. ```uint8_t
 ###### writeAnything(page_number, offset, value)
 Writes _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data from, as arguments.
 <hr>
+
 ##### Continuous read/write commands
 All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
 
@@ -144,6 +149,7 @@ Reads an array of chars starting from a specific location in a page. Takes the p
 ###### writeCharArray(page_number, offset, *data_buffer, bufferSize)
 Writes an array of chars starting from a specific location in a page. Takes the page number (0-maxPage), offset of data byte within page (0-255), a data_buffer - i.e. an array of chars to be written to the flash memory - and size of the array as arguments. ```char data_buffer[n];``` The data buffer **must** be an array of 'n' **chars**. The number of chars - 'n' - is determined by the amount of RAM available on the Arduino board.
 <hr>
+
 ##### Erase commands
 All erase commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
 ###### eraseSector(page_number, offset)
@@ -158,18 +164,21 @@ Erases one 64KB block - 256 pages - containing the page to be erased. The blocks
 ###### eraseChip()
 Erases entire chip. Use with care.
 <hr>
+
 ##### Suspend/Resume commands
 ###### suspendProg()
 Suspends current Block Erase/Sector Erase/Page Program. Does not suspend chipErase(). Page Program, Write Status Register, Erase instructions are not allowed. Erase suspend is only allowed during Block/Sector erase. Program suspend is only allowed during Page/Quad Page Program
 ###### resumeProg()
 Resumes previously suspended Block Erase/Sector Erase/Page Program.
 <hr>
+
 ##### Power operation commands
 ###### powerDown()
 Puts device in low power state. Useful for battery powered operations. Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4). In powerDown() the chip will only respond to powerUp()
 ###### powerUp()
 //Wakes chip from low power state.
 <hr>
+
 ##### Error codes explained
 	- 0x00	SUCCESS 		Operation successful.
 	- 0x01	CALLBEGIN		Please make sure .begin() has been called in setup().
@@ -181,6 +190,7 @@ Puts device in low power state. Useful for battery powered operations. Typical c
 	- 0x07	OUTOFMEM		Pagenumber outside maximum.
 	- 0x08	OUTOFPAGE		Offset is outside page.
 <hr>
+
 ##### Deprecated functions
 
 The following functions are deprecated to enable compatibility with other AVR chips.
