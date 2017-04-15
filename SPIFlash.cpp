@@ -36,6 +36,15 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
   pageOverflow = overflow;
   pinMode(csPin, OUTPUT);
 }
+// Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
+#elif defined (BOARD_RTL8195A)
+SPIFlash::SPIFlash(PinName cs, bool overflow) {
+  gpio_init(&csPin, cs);
+  gpio_dir(&csPin, PIN_OUTPUT);
+  gpio_mode(&csPin, PullNone);
+  gpio_write(&csPin, 1);
+  pageOverflow = overflow;
+}
 #else
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
   csPin = cs;
@@ -227,7 +236,7 @@ uint8_t SPIFlash::_readStat2(void) {
 
 // Checks the erase/program suspend flag before enabling/disabling a program/erase suspend operation
 bool SPIFlash::_noSuspend(void) {
-  switch (manID) {
+  switch (_chip.manufacturerID) {
     case WINBOND_MANID:
     if(_readStat2() & SUS) {
       errorcode = SUSPEND;
@@ -318,29 +327,41 @@ bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
 
 //Checks for presence of chip by requesting JEDEC ID
 bool SPIFlash::_getJedecId(void) {
-  if(!_notBusy())
+  if(!_notBusy()) {
   	return false;
+  }
   _beginSPI(JEDECID);
-	manID = _nextByte(NULLBYTE);		// manufacturer id
-	capID = _nextByte(NULLBYTE);		// manufacturer id
-	devID = _nextByte(NULLBYTE);		// capacity
+	_chip.manufacturerID = _nextByte(NULLBYTE);		// manufacturer id
+	_chip.memoryTypeID = _nextByte(NULLBYTE);		// memory type
+	_chip.capacityID = _nextByte(NULLBYTE);		// capacity
   CHIP_DESELECT
-  return true;
+  if (!_chip.manufacturerID || !_chip.memoryTypeID || !_chip.capacityID) {
+    return false;
+  }
+  else {
+    errorcode = NORESPONSE;
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot();
+    #endif
+    return true;
+  }
 }
 
-bool SPIFlash::_checkSFDP(void) {
-  uint32_t _sfdp = 0x00000000;
+bool SPIFlash::_getSFDP(void) {
+  if(!_notBusy()) {
+  	return false;
+  }
   _beginSPI(READSFDP);
   _currentAddress = 0x00;
   _transferAddress();
   _nextByte(DUMMYBYTE);
   for (uint8_t i = 0; i < 4; i++) {
-    _sfdp += (_nextByte() << (8*i));
+    _chip.sfdp += (_nextByte() << (8*i));
   }
   CHIP_DESELECT
-  if (_sfdp = 0x50444653) {
-    //Serial.print("_sfdp: ");
-    //Serial.println(_sfdp, HEX);
+  if (_chip.sfdp = 0x50444653) {
+    //Serial.print("_chip.sfdp: ");
+    //Serial.println(_chip.sfdp, HEX);
     return true;
   }
   else {
@@ -350,54 +371,53 @@ bool SPIFlash::_checkSFDP(void) {
 
 //Identifies the chip
 bool SPIFlash::_chipID(void) {
-  _checkSFDP();
-  if (!capacity) {
-    supportedChip = true;
-    //Get Manfucturer/Device ID so the library can identify the chip
-    _getJedecId();
+  //Get Manfucturer/Device ID so the library can identify the chip
+  _getSFDP();
+  _getJedecId();
 
-    if (manID != WINBOND_MANID && manID != MICROCHIP_MANID){		//If the chip is not a Winbond Chip
-      errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
-    	#ifdef RUNDIAGNOSTIC
-      Serial.print("manID: 0x"); Serial.println(manID, HEX);
-      Serial.print("capID: 0x");Serial.println(capID, HEX);
-      Serial.print("devID: 0x");Serial.println(devID, HEX);
-    	_troubleshoot();
-    	#endif
-    	while(1);
-    }
-
-    //Check flash memory type and identify capacity
-    uint8_t i;
-    //capacity
-    for (i = 0; i < sizeof(devType); i++)
-    {
-    	if (devID == devType[i]) {
-        capacity = (memSize[i] / 8);
-        _eraseTime = eraseTime[i];
-    	}
-    }
-    if (!capacity && supportedChip) {
-      errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
-    	#ifdef RUNDIAGNOSTIC
-    	_troubleshoot();
-    	#endif
-    	while(1);
+  // If no capacity is defined in user code
+  if (!_chip.capacity) {
+    _chip.supported = _chip.manufacturerID;
+    if (_chip.supported == WINBOND_MANID || _chip.supported == MICROCHIP_MANID) {
+      //Identify capacity
+      for (uint8_t i = 0; i < sizeof(_capID); i++)
+      {
+        if (_chip.capacityID == _capID[i]) {
+           _chip.capacity = (memSize[i]);
+           _chip.eraseTime = eraseTime[i];
+         }
+       }
+       if (!_chip.capacity) {
+         errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
+    	    #ifdef RUNDIAGNOSTIC
+    	     _troubleshoot();
+    	     #endif
+    	     while(1);
     }
     return true;
   }
+  }
   else {
   // If a custom chip size is defined
-    supportedChip = false;
+    _chip.supported = false;
+    _getSFDP();
     _getJedecId();
     return true;
+  }
+
+  if (!_chip.supported) { //If the chip is not officially supported
+    errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot();
+    #endif
+    //while(1);         //Enable this if usercode is not meant to be run on unsupported chips
   }
 }
 
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
 bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
-	if (!capacity) {
+	if (!_chip.eraseTime) {
     errorcode = CALLBEGIN;
     #ifdef RUNDIAGNOSTIC
     _troubleshoot();
@@ -405,7 +425,7 @@ bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
 	}
 
   for (uint32_t i = 0; i < size; i++) {
-    if (address + i >= capacity) {
+    if (address + i >= _chip.capacity) {
     	if (!pageOverflow) {
         errorcode = OUTOFBOUNDS;
         #ifdef RUNDIAGNOSTIC
@@ -420,7 +440,7 @@ bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
     }
   }
   _currentAddress = address;
-  return true;				// Not at end of memory if (address < capacity)
+  return true;				// Not at end of memory if (address < _chip.capacity)
 }
 
 bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
@@ -440,10 +460,11 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Identifies chip and establishes parameters
-void SPIFlash::begin(uint32_t _sz) {
-  if (_sz) {
-    capacity = _sz/8;
-    _eraseTime = _sz/KB64;
+void SPIFlash::begin(uint32_t _chipSize) {
+  if (_chipSize) {
+    _chip.capacity = _chipSize/8;
+    _chip.eraseTime = _chipSize/KB64;
+    _chip.supported = false;
   }
   BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
@@ -467,12 +488,12 @@ uint8_t SPIFlash::error(void) {
 
 //Returns capacity of chip
 uint32_t SPIFlash::getCapacity(void) {
-	return capacity;
+	return _chip.capacity;
 }
 
 //Returns maximum number of pages
 uint32_t SPIFlash::getMaxPage(void) {
-	return (capacity / PAGESIZE);
+	return (_chip.capacity / PAGESIZE);
 }
 
 //Returns the library version as a string
@@ -492,11 +513,11 @@ uint16_t SPIFlash::getManID(void) {
     return id;
 }
 
-//Checks for and initiates the chip by requesting JEDEC ID which is returned as a 32 bit int
+//Returns JEDEC ID which is returned as a 32 bit int
 uint32_t SPIFlash::getJEDECID(void) {
-    uint32_t id = manID;
-    id = (id << 8)|(capID << 0);
-    id = (id << 8)|(devID << 0);
+    uint32_t id = _chip.manufacturerID;
+    id = (id << 8)|(_chip.memoryTypeID << 0);
+    id = (id << 8)|(_chip.capacityID << 0);
     return id;
 }
 
@@ -1700,7 +1721,7 @@ bool SPIFlash::eraseChip(void) {
 
 	_beginSPI(CHIPERASE);
 	_endSPI();
-	if(!_notBusy(_eraseTime))
+	if(!_notBusy(_chip.eraseTime))
 		return false; //Datasheet says erasing chip takes 6s max
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0

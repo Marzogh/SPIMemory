@@ -7,15 +7,15 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 
 - For details of the Winbond Flash chips compatible with this library please refer to the Excel spreadsheet in the Extras folder.
 
-####Compatibility
-#####Arduino IDEs supported
+#### Compatibility
+##### Arduino IDEs supported
 - IDE v1.5.x
 - IDE v1.6.0-v1.6.5
 - IDE v1.6.9-v1.6.12
 
-#####Boards
+##### Boards
 
-######Completely supported
+###### Completely supported
 - Arduino Uno
 - Arduino Leonardo
 - Arduino Micro
@@ -27,14 +27,14 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - ATTiny85
 - Simblee Boards (On the Arduino IDE)
 
-####Installation
+#### Installation
 
-#####Option 1
+##### Option 1
 - Click on the 'Download zip' button to the right.
 - Unzip the archive and rename resulting folder to 'SPIFlash'
 - Move the folder to your libraries folder (~/sketches/libraries)
 
-#####Option 2
+##### Option 2
 - Open the Arduino IDE.
 - Go to Sketch > Include Library > Manage libraries.
 - Search for SPIFlash.
@@ -86,6 +86,7 @@ size = sizeof(variable) can be used for all types of data but String objects.
 All read commands take a last boolean argument 'fastRead'. This argument defaults to FALSE, but when set to TRUE carries out the Fast Read instruction so data can be read at up to the memory's maximum frequency.
 
 All read commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
+
 ###### readAnything(page_number, offset, value)
 Reads _any type of variable/struct_ (any sized value) from a specific location on a page. Takes the page number (0-maxPage), the offset of the data within page (0-255) and the variable/struct to write the data back to, as arguments.
 ###### readByte(page_number, offset)
@@ -113,6 +114,7 @@ Reads _any type of variable/struct_ (any sized value) from a specific location o
 All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
 
 All write commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
+
 ###### writeByte(page, offset, data)
 Writes a byte of data to a specific location on a page. Takes the page number (0-maxPage), offset of data byte within page (0-255) and one byte of data as arguments.
 ###### writeChar(page_number, offset, data)
@@ -148,6 +150,7 @@ Writes an array of chars starting from a specific location in a page. Takes the 
 <hr>
 ##### Erase commands
 All erase commands can take a 32-bit address variable instead of the 16-bit page number & 8-bit offset variables
+
 ###### eraseSector(page_number, offset)
 Erases one 4KB sector - 16 pages - containing the page to be erased. The sectors are numbered 0 - 255 containing 16 pages each.
 Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255, and so on...
@@ -173,15 +176,20 @@ Puts device in low power state. Useful for battery powered operations. Typical c
 //Wakes chip from low power state.
 <hr>
 ##### Error codes explained
-	- 0x00	SUCCESS 		Operation successful.
-	- 0x01	CALLBEGIN		Please make sure .begin() has been called in setup().
-	- 0x02	UNKNOWNCHIP	Unknown chip manufacturer.
+	- 0x00	SUCCESS 			Operation successful.
+	- 0x01	CALLBEGIN			Please make sure .begin() has been called in setup().
+	- 0x02	UNKNOWNCHIP		Unknown chip manufacturer.
 	- 0x03	UNKNOWNCAP		Unknown chip capacity.
-	- 0x04	CHIPBUSY		Chip busy.
-	- 0x05	OUTOFBOUNDS	Address out of bounds. Please check if .begin() has been called in setup().
+	- 0x04	CHIPBUSY			Chip busy.
+	- 0x05	OUTOFBOUNDS		Address out of bounds. Please check if .begin() has been called in setup().
 	- 0x06	CANTENWRITE		Unable to _writeEnable. Check wiring/chip.
-	- 0x07	OUTOFMEM		Pagenumber outside maximum.
-	- 0x08	OUTOFPAGE		Offset is outside page.
+	- 0x07	OUTOFMEM			Pagenumber outside maximum.
+	- 0x08	OUTOFPAGE			Offset is outside page.
+	- 0x09	NOSUSPEND   	Unable to suspend operation
+	- 0x0A	UNSUPPORTED 	This function is not supported by the current flash chip.
+	- 0x0B	ERRORCHKFAIL	The Write function has failed error check.
+	- 0x0C	NORESPONSE		The flash chip is not responding. Check your wiring.
+	- 0xFE	UNKNOWNERROR	Unknown error. Please raise issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred
 <hr>
 ##### Deprecated functions
 

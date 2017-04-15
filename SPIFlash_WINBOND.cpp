@@ -22,7 +22,7 @@
  * along with the Arduino SPIFlash Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#if defined (WINBOND_FLASH)
+#if (_winbond)
 
 #include "SPIFlash.h"
 

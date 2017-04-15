@@ -1,6 +1,7 @@
 /* Arduino SPIFlash Library v.2.5.0
  * Copyright (C) 2015 by Prajwal Bhattaram
  * Modified by Prajwal Bhattaram - 13/11/2016
+ * Modified by @boseji <salearj@hotmail.com> - 02/03/17
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -42,22 +43,38 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //#define HIGHSPEED                                                   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#include <Arduino.h>
+#include "defines.h"
 
 #if defined (ARDUINO_ARCH_SAM)
   #include <malloc.h>
   #include <stdlib.h>
   #include <stdio.h>
 #endif
-#include <Arduino.h>
+
 #ifndef __AVR_ATtiny85__
   #include <SPI.h>
 #endif
-#include "defines.h"
 
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32)
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A)
+// RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
  #define _delay_us(us) delayMicroseconds(us)
 #else
  #include <util/delay.h>
+#endif
+// Includes specific to RTL8195A to access GPIO HAL - @boseji <salearj@hotmail.com> 02.03.17
+#if defined (BOARD_RTL8195A)
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "gpio_api.h"
+#include "PinNames.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 
 #ifdef ARDUINO_ARCH_AVR
@@ -90,6 +107,12 @@
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
     #define xfer   _dueSPITransfer
     #define BEGIN_SPI _dueSPIBegin();
+// Specific access configuration for Chip select pin - @boseji <salearj@hotmail.com> 02.03.17
+#elif defined (BOARD_RTL8195A)
+    #define CHIP_SELECT   gpio_write(&csPin, 0);
+    #define CHIP_DESELECT gpio_write(&csPin, 1);
+    #define xfer(n)   SPI.transfer(n)
+    #define BEGIN_SPI SPI.begin();
 #else //#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
@@ -110,10 +133,15 @@
 
 class SPIFlash {
 public:
-  //----------------------------------------------Constructor-----------------------------------------------//
+  //----------------------------------------------Constructor-----------------------------------------------
+  //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
+  #if !defined (BOARD_RTL8195A)
   SPIFlash(uint8_t cs = CS, bool overflow = true);
+  #else
+  SPIFlash(PinName cs = CS, bool overflow = true);
+  #endif
   //----------------------------------------Initial / Chip Functions----------------------------------------//
-  void     begin(uint32_t _sz = 0);
+  void     begin(uint32_t _chipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  error(void);
@@ -239,7 +267,7 @@ private:
   bool     _writeDisable(void);
   bool     _getJedecId(void);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
-  bool     _checkSFDP(void);
+  bool     _getSFDP(void);
   bool     _chipID(void);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t address, uint32_t size = 1);
@@ -251,15 +279,33 @@ private:
   uint32_t _getAddress(uint16_t page_number, uint8_t offset = 0);
   template <class T> bool _writeErrorCheck(uint32_t address, const T& value);
   //-------------------------------------------Private variables------------------------------------------//
-  bool        pageOverflow, SPIBusState, supportedChip;
+  #ifdef SPI_HAS_TRANSACTION
+    SPISettings _settings;
+  #endif
   volatile uint8_t *cs_port;
-  uint8_t     cs_mask, csPin, errorcode, state, _SPCR, _SPSR, manID, capID, devID;
-  uint32_t    capacity, _eraseTime;
+
+  #if !defined (BOARD_RTL8195A)
+  uint8_t     csPin;
+  #else
+  // Object declaration for the GPIO HAL type for csPin - @boseji <salearj@hotmail.com> 02.03.17
+  gpio_t      csPin;
+  #endif
+
+  bool        pageOverflow, SPIBusState;
+  uint8_t     cs_mask, errorcode, state, _SPCR, _SPSR;
+  struct      chipID {
+                uint8_t manufacturerID;
+                uint8_t memoryTypeID;
+                uint8_t capacityID;
+                uint16_t supported;
+                uint32_t sfdp;
+                uint32_t capacity;
+                uint32_t eraseTime;
+              };
+              chipID _chip;
+  //uint32_t    _capacity, _eraseTime;
   uint32_t    currentAddress, _currentAddress = 0;
-#ifdef SPI_HAS_TRANSACTION
-  SPISettings _settings;
-#endif
-  const uint8_t devType[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
+  const uint8_t _capID[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
   const uint32_t memSize[11]  = {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M,
                                 16L * M, 32L * M, 8L * M};
   const uint32_t eraseTime[11] = {1L * S, 2L * S, 2L * S, 4L * S, 6L * S, 10L * S, 15L * S, 100L * S, 200L * S, 400L * S, 50L}; //Erase time in milliseconds
