@@ -1783,12 +1783,15 @@ bool SPIFlash::powerDown(void) {
 
 	_beginSPI(POWERDOWN);
   _endSPI();
-	_delay_us(5);              //Max powerDown enable time according to the Datasheet
+
+  //#if defined (SIMBLEE)
+	//_delay_us(15);              //Max powerDown enable time according to the Datasheet
+  //#else
+  _delay_us(5);
+  //#endif
 
   _beginSPI(WRITEENABLE);
   CHIP_DESELECT
-  //state = _readStat1();
-  //_endSPI();
   if (_readStat1() & WRTEN) {
     _endSPI();
     return false;
@@ -1805,8 +1808,14 @@ bool SPIFlash::powerUp(void) {
   _endSPI();
 	_delay_us(3);						    //Max release enable time according to the Datasheet
 
-	if (_readStat1() == 0xFF) {
+  _beginSPI(WRITEENABLE);
+  CHIP_DESELECT
+  if (_readStat1() & WRTEN) {
+    _endSPI();
+    return true;
+  }
+  else {
+
     return false;
   }
-	return true;
 }

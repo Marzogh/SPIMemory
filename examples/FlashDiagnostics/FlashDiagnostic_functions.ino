@@ -762,7 +762,7 @@ void powerFuncDiag(void) {
   printTab(5, 0);
   Serial.print(F("powerDown"));
   printTab(2, 2);
-  if (flash.writeStr(stringAddress1, _string)) {
+  //if (flash.writeStr(stringAddress1, _string)) {
     wTime = micros();
     if (flash.powerDown()) {
       wTime = micros() - wTime;
@@ -772,7 +772,7 @@ void powerFuncDiag(void) {
       wTime = micros() - wTime;
       printFail();
     }
-  }
+  //}
   printTab(3, 2);
   printTimer(wTime);
   Serial.println();
@@ -783,13 +783,13 @@ void powerFuncDiag(void) {
   wTime = micros();
   if (flash.powerUp()) {
     wTime = micros() - wTime;
-    if (flash.writeStr(stringAddress3, _string)) {
+    //if (flash.writeStr(stringAddress3, _string)) {
       printPass();
     }
     else {
       printFail();
     }
-  }
+  //}
   printTab(3, 2);
   printTimer(wTime);
   Serial.println();
