@@ -4,7 +4,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.6.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						15.04.2017											   //
+//					  						16.04.2017											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 Bugs Squashed:
 --> Fixed issue with reading status register 2 and the Suspend operation where the library was not checking the suspend status correctly.
