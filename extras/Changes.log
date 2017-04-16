@@ -15,7 +15,7 @@ Deletions:
 
 New Boards supported:
 --> RTL8195A compatibility tested and enabled by @boseji <salearj@hotmail.com> on 02.03.17. Code modified to fit with the library structure by Prajwal Bhattaram on 14.04.17.
---> Compatible with the ESP32 core for Arduino as of commit 67fd652 (https://github.com/espressif/arduino-esp32/tree/67fd6521777a16e406639a0eb0d113bf2e896f97). The ESP32 core currently does not support analogRead and so randomSeed(AnalogRead(A0)) cannot be used. Also, for some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz.
+--> Compatible with the ESP32 core for Arduino as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/7d0968c10dc540709d69a28eab2457075c1e4fa8">7d0968c</a> on 16.04.2017. The ESP32 core currently does not support analogRead and so randomSeed(AnalogRead(A0)) cannot be used. Also, for some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz.
 --> Added support for the Simblee module.
 
 Enhancements:

@@ -123,6 +123,7 @@ bool SPIFlash::_startSPIBus(void) {
     #endif
 #endif
   SPIBusState = true;
+  return true;
 }
 
 //Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involves writing or reading to/from an address)
@@ -341,13 +342,13 @@ bool SPIFlash::_getJedecId(void) {
 	_chip.capacityID = _nextByte(NULLBYTE);		// capacity
   CHIP_DESELECT
   if (!_chip.manufacturerID || !_chip.memoryTypeID || !_chip.capacityID) {
-    return false;
-  }
-  else {
     errorcode = NORESPONSE;
     #ifdef RUNDIAGNOSTIC
     _troubleshoot();
     #endif
+    return false;
+  }
+  else {
     return true;
   }
 }
@@ -1784,11 +1785,7 @@ bool SPIFlash::powerDown(void) {
 	_beginSPI(POWERDOWN);
   _endSPI();
 
-  //#if defined (SIMBLEE)
-	//_delay_us(15);              //Max powerDown enable time according to the Datasheet
-  //#else
   _delay_us(5);
-  //#endif
 
   _beginSPI(WRITEENABLE);
   CHIP_DESELECT

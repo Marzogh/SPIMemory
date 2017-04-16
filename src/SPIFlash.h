@@ -339,7 +339,9 @@ template <class T> bool SPIFlash::writeAnything(uint32_t address, const T& value
     uint16_t data_offset = 0;
     const uint8_t* p = ((const uint8_t*)(const void*)&value);
 
-    _startSPIBus();
+    if (!SPIBusState) {
+      _startSPIBus();
+    }
     while (length > 0)
     {
       writeBufSz = (length<=maxBytes) ? length : maxBytes;
