@@ -20,7 +20,6 @@ getManID	KEYWORD2
 getAddress	KEYWORD2
 getCapacity	KEYWORD2
 getMaxPage	KEYWORD2
-getChipName KEYWORD2
 sizeofStr	KEYWORD2
 readByte	KEYWORD2
 readByteArray	KEYWORD2
@@ -57,5 +56,3 @@ powerDown	KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
-devType		KEYWORD3
-memsize		KEYWORD3
