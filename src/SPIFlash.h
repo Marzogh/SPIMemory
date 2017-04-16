@@ -142,10 +142,10 @@ public:
   SPIFlash(PinName cs = CS, bool overflow = true);
   #endif
   //----------------------------------------Initial / Chip Functions----------------------------------------//
-  void     begin(uint32_t _chipSize = 0);
+  bool     begin(uint32_t _chipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
-  uint8_t  error(void);
+  uint8_t  error(bool verbosity = false);
   uint16_t getManID(void);
   uint32_t getJEDECID(void);
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
