@@ -1,11 +1,11 @@
 /*
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
-  |                                                                Diagnostics.ino                                                                |
+  |                                                             FlashDiagnostics.ino                                                              |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 2.5.0                                                                     |
+  |                                                                   v 2.6.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  30.09.2016                                                                   |
+  |                                                                  16.04.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -16,6 +16,9 @@
 */
 
 #include<SPIFlash.h>
+
+//Define a flash memory size (if using non-Winbond memory) according to the list in defines.h
+//#define CHIPSIZE MB64
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -43,7 +46,11 @@ void setup() {
     Serial.print(F("."));
   }
   Serial.println();
+#if defined (CHIPSIZE)
+  flash.begin(CHIPSIZE); //use flash.begin(CHIPSIZE) if using non-Winbond flash (Refer to '#define CHIPSIZE' above)
+#else
   flash.begin();
+#endif
   Serial.println();
   Serial.println();
 
