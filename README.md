@@ -57,6 +57,7 @@ Also make sure to include ```flash.begin(CHIPSIZE*)``` in ```void setup()```. Th
 
 The library enables the following functions:
 <hr>
+
 ##### Primary commands
 
 ###### begin(_chipsize*)
