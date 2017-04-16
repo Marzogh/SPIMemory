@@ -176,7 +176,7 @@ Resumes previously suspended Block Erase/Sector Erase/Page Program.
 ###### powerDown()
 Puts device in low power state. Useful for battery powered operations. Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4). In powerDown() the chip will only respond to powerUp()
 ###### powerUp()
-//Wakes chip from low power state.
+Wakes chip from low power state.
 <hr>
 
 ##### Error codes explained
