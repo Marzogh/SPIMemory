@@ -9,10 +9,11 @@ script:
   #- build_platform zero
   - build_platform esp8266
   - build_platform leonardo
+  - build_platform rtl8195a
+  - build_platform simblee
   - build_platform mega
   - build_platform fio
   - build_platform micro
-  - build_platform rtl8195a
 notifications:
   email:
     on_success: change

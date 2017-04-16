@@ -123,6 +123,7 @@ bool SPIFlash::_startSPIBus(void) {
     #endif
 #endif
   SPIBusState = true;
+  return true;
 }
 
 //Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involves writing or reading to/from an address)
@@ -341,13 +342,13 @@ bool SPIFlash::_getJedecId(void) {
 	_chip.capacityID = _nextByte(NULLBYTE);		// capacity
   CHIP_DESELECT
   if (!_chip.manufacturerID || !_chip.memoryTypeID || !_chip.capacityID) {
-    return false;
-  }
-  else {
     errorcode = NORESPONSE;
     #ifdef RUNDIAGNOSTIC
     _troubleshoot();
     #endif
+    return false;
+  }
+  else {
     return true;
   }
 }
@@ -378,7 +379,9 @@ bool SPIFlash::_getSFDP(void) {
 bool SPIFlash::_chipID(void) {
   //Get Manfucturer/Device ID so the library can identify the chip
   _getSFDP();
-  _getJedecId();
+  if (!_getJedecId()) {
+    return false;
+  }
 
   // If no capacity is defined in user code
   if (!_chip.capacity) {
@@ -392,14 +395,14 @@ bool SPIFlash::_chipID(void) {
           _chip.eraseTime = _eraseTime[i];
         }
       }
-      if (!_chip.capacity) {
-        errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
-        #ifdef RUNDIAGNOSTIC
-        _troubleshoot();
-        #endif
-        while(1);
-      }
       return true;
+    }
+    else {
+      errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
+      #ifdef RUNDIAGNOSTIC
+      _troubleshoot();
+      #endif
+      return false;
     }
   }
   else {
@@ -418,11 +421,18 @@ bool SPIFlash::_chipID(void) {
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
 bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
+  if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot();
+    #endif
+    return false;
+  }
 	if (!_chip.eraseTime) {
     errorcode = CALLBEGIN;
     #ifdef RUNDIAGNOSTIC
     _troubleshoot();
     #endif
+    return false;
 	}
 
   for (uint32_t i = 0; i < size; i++) {
@@ -461,7 +471,7 @@ bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Identifies chip and establishes parameters
-void SPIFlash::begin(uint32_t _chipSize) {
+bool SPIFlash::begin(uint32_t _chipSize) {
   if (_chipSize) {
     _chip.capacity = _chipSize/8;
   }
@@ -470,7 +480,12 @@ void SPIFlash::begin(uint32_t _chipSize) {
   //Define the settings to be used by the SPI bus
   _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
 #endif
-  _chipID();
+  if(!_chipID()) {
+    #ifdef RUNDIAGNOSTIC
+    _troubleshoot();
+    #endif
+    return false;
+  }
 }
 
 //Allows the setting of a custom clock speed for the SPI bus to communicate with the chip.
@@ -481,8 +496,14 @@ void SPIFlash::setClock(uint32_t clockSpeed) {
 }
 #endif
 
-uint8_t SPIFlash::error(void) {
-	return errorcode;
+uint8_t SPIFlash::error(bool _verbosity) {
+  if (!_verbosity) {
+    return errorcode;
+  }
+  else {
+    _troubleshoot();
+    return errorcode;
+  }
 }
 
 //Returns capacity of chip
@@ -1783,12 +1804,11 @@ bool SPIFlash::powerDown(void) {
 
 	_beginSPI(POWERDOWN);
   _endSPI();
-	_delay_us(5);              //Max powerDown enable time according to the Datasheet
+
+  _delay_us(5);
 
   _beginSPI(WRITEENABLE);
   CHIP_DESELECT
-  //state = _readStat1();
-  //_endSPI();
   if (_readStat1() & WRTEN) {
     _endSPI();
     return false;
@@ -1805,8 +1825,14 @@ bool SPIFlash::powerUp(void) {
   _endSPI();
 	_delay_us(3);						    //Max release enable time according to the Datasheet
 
-	if (_readStat1() == 0xFF) {
+  _beginSPI(WRITEENABLE);
+  CHIP_DESELECT
+  if (_readStat1() & WRTEN) {
+    _endSPI();
+    return true;
+  }
+  else {
+
     return false;
   }
-	return true;
 }

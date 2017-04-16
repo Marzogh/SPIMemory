@@ -4,7 +4,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.6.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						15.04.2017											   //
+//					  						16.04.2017											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 Bugs Squashed:
 --> Fixed issue with reading status register 2 and the Suspend operation where the library was not checking the suspend status correctly.
@@ -15,15 +15,22 @@ Deletions:
 
 New Boards supported:
 --> RTL8195A compatibility tested and enabled by @boseji <salearj@hotmail.com> on 02.03.17. Code modified to fit with the library structure by Prajwal Bhattaram on 14.04.17.
---> Compatible with the ESP32 core for Arduino as of commit 67fd652 (https://github.com/espressif/arduino-esp32/tree/67fd6521777a16e406639a0eb0d113bf2e896f97). The ESP32 core currently does not support analogRead and so randomSeed(AnalogRead(A0)) cannot be used. Also, for some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz.
+--> Compatible with the ESP32 core for Arduino as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/7d0968c10dc540709d69a28eab2457075c1e4fa8">7d0968c</a> on 16.04.2017. The ESP32 core currently does not support analogRead and so randomSeed(AnalogRead(A0)) cannot be used. Also, for some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz.
 --> Added support for the Simblee module.
 
 Enhancements:
+--> flash.error() now takes an optional argument 'VERBOSE'. By default the verbosity argument  is set to 'false' and calling flash.error() still returns the latest error code as an unsigned byte. However, running flash.error(VERBOSE) will not only return the latest error code, but will also print it to serial. This - especially in boards with resources to spare - will result in a detailed error report printed to serial.
+--> flash.begin() now returns a boolean value to indicate establishment of successful comms with the flash chip. Usercode can be made more efficient now by calling ```if (!flash.begin()) { Serial.println(flash.error(VERBOSE)); }``` to identify a problem as soon as the library code is run.
+--> The internal _addressCheck() function now locks up usercode with appropriate error codes if
+				a) flash.begin() has not been called (or)
+				b) There is a possible issue with the wiring - i.e. the flash chip is non-responsive (or)
+				c) If the chip's capacity either cannot be identified & the user has not defined a chipSize in flash.begin().
+--> Fixed powerDown() to be more efficient. The chip now powers down much faster than before.
 --> Added a new error code. Library can now detect non-responsive chips - bad wiring or otherwise.
 --> Streamlined variables to make code structure better.
 --> Changed library structure to enable the addition of multi-flash compatibility in the near future.
 --> moved `#define RUNDIAGNOSTIC` & `#define HIGHSPEED` to SPIFlash.h from SPIFlash.cpp.
---> Now works with other Winbond modules (not in the official supported module list) (beta) by taking the flash memory size in bits as an argument in flash.begin('CHIPSIZE');
+--> Now works with other Winbond modules (not in the official supported module list) (beta) by taking the flash memory size in bits as an argument in flash.begin(_chipSize);
 --> Formatted code to be better human readable.
 --> Changed the internal _troubleshoot() function to use fewer resources.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

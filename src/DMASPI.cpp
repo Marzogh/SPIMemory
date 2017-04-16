@@ -2,6 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 30/09/2016
  * Modified by Prajwal Bhattaram - 14/04/2017
+ * Original code from @manitou48 <https://github.com/manitou48/DUEZoo/blob/master/dmaspi.ino>
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading

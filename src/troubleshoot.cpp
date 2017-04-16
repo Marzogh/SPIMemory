@@ -27,7 +27,6 @@
 
  #include "SPIFlash.h"
 
- #ifdef RUNDIAGNOSTIC
  //Subfunctions for troubleshooting function
  void SPIFlash::_printErrorCode(void) {
    Serial.print("Error code: 0x");
@@ -89,7 +88,7 @@
   #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
     _printErrorCode();
   #else
-    Serial.println("Unable to identify capacity. Please define a `CAPACITY` constant and include it in flash.begin(CAPACITY).");
+    Serial.println("Unable to identify capacity. Is this chip officially supported? If not, please define a `CAPACITY` constant and include it in flash.begin(CAPACITY).");
     _printSupportLink();
   #endif
     break;
@@ -183,4 +182,3 @@
   break;
  	}
  }
- #endif

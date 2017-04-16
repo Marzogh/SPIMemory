@@ -114,6 +114,9 @@
 #define NO_CONTINUE   0x00
 #define PASS          0x01
 #define FAIL          0x00
+#define NOOVERFLOW    false
+#define NOERRCHK      false
+#define VERBOSE       true
 #if defined (SIMBLEE)
 #define BUSY_TIMEOUT  100L
 #else
@@ -179,7 +182,7 @@
  #define CANTENWRITE  0x06
  #define PREVWRITTEN  0x07
  #define LOWRAM       0x08
- #define SYSSUSPEND    0x09
+ #define SYSSUSPEND   0x09
  #define UNSUPPORTED  0x0A
  #define ERRORCHKFAIL 0x0B
  #define NORESPONSE   0x0C

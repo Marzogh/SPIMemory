@@ -2,10 +2,10 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                               Struct_writer.ino                                                               |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 2.5.0                                                                     |
+  |                                                                   v 2.6.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  16.11.2016                                                                   |
+  |                                                                  16.04.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
@@ -77,8 +77,7 @@ void setup() {
   flash.begin();
 
 
-  uint16_t pageNo = random(0, 4095);
-  uint8_t offset = random(0, 255);
+  uint32_t _addr = random(0, 1677215);
 
 #ifndef SENSOR
   configuration.lux = 98.43;
@@ -92,7 +91,7 @@ void setup() {
   readLDR();
 #endif
 
-  if (flash.writeAnything(pageNo, offset, configuration))
+  if (flash.writeAnything(_addr, configuration))
     Serial.println ("Data write successful");
   else
     Serial.println ("Data write failed");
@@ -117,8 +116,8 @@ void setup() {
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
   Serial.println();
-  flash.readAnything(pageNo, offset, configuration);
-  flash.eraseSector(pageNo, 0);
+  flash.readAnything(_addr, configuration);
+  flash.eraseSector(_addr, 0);
 
   Serial.println("After reading");
   Serial.println(configuration.lux);
