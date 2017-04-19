@@ -2,15 +2,17 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                               Struct_writer.ino                                                               |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 2.6.0                                                                     |
+  |                                                                   v 2.7.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  16.04.2017                                                                   |
+  |                                                                  19.04.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
   | This particular program is designed to test the library with an ATTiny85 chip. Follow the steps below to make sure the test runs as it should |
-  |
+  |                         1. Compile and run this program on an ATTiny85 board to which an SPIFlash memory has been wired in.                   |
+  |                     2. Swap Flash chip over to another supported board (with Serial IO) and compile and run this program again                |
+  |                                   3. Check serial output to see if data has been written/read properly.                                       |
   |                                                                                                                                               |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
