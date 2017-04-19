@@ -27,7 +27,8 @@
 
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
-
+//ATTiny85 does not have enough pins to support Serial. So, the basic troubleshooting functions of this library are not applicable. It is up to the end user to come up with a diagnostic routine for the ATTiny85.
+#ifndef __AVR_ATtiny85__
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
 //                         does not respond                           //
@@ -36,6 +37,8 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //#define RUNDIAGNOSTIC                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#endif
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //   Uncomment the code below to increase the speed of the library    //
 //                  by disabling _notPrevWritten()                    //
@@ -85,18 +88,8 @@ extern "C" {
 		#define SPIBIT                      \
 		  USICR = ((1<<USIWM0)|(1<<USITC)); \
 		  USICR = ((1<<USIWM0)|(1<<USITC)|(1<<USICLK));
-		static uint8_t xfer(uint8_t n) {
-			USIDR = n;
-			SPIBIT
-			SPIBIT
-			SPIBIT
-			SPIBIT
-			SPIBIT
-			SPIBIT
-			SPIBIT
-			SPIBIT
-			return USIDR;
-		}
+    #define BEGIN_SPI _tinySPIbegin();
+    #define xfer _tinySPItransfer
   #else
     #define CHIP_SELECT   *cs_port &= ~cs_mask;
     #define CHIP_DESELECT *cs_port |=  cs_mask;
@@ -150,7 +143,6 @@ public:
   uint32_t getJEDECID(void);
   bool     getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset);
   uint32_t getAddress(uint16_t size);
-  //uint16_t getChipName(void);
   uint16_t sizeofStr(String &inputStr);
   uint32_t getCapacity(void);
   uint32_t getMaxPage(void);
@@ -222,11 +214,11 @@ public:
   bool     resumeProg(void);
   bool     powerDown(void);
   bool     powerUp(void);
-  //-------------------------------------Public Arduino Due Functions---------------------------------------//
+  //-------------------------------------Public Arduino Due Functions-------------------------------------//
 //#if defined (ARDUINO_ARCH_SAM)
   //uint32_t freeRAM(void);
 //#endif
-  //-------------------------------------------Public variables---------------------------------------------//
+  //-------------------------------------------Public variables-------------------------------------//
 
 private:
 #if defined (ARDUINO_ARCH_SAM)
@@ -252,7 +244,12 @@ private:
   void     _dueSPISendChar(char b);
   void     _dueSPISendChar(const char* buf, size_t len);
 #endif
-  //--------------------------------------------Private functions-------------------------------------------//
+//-------------------------------------Private ATTiny85 Functions-------------------------------------//
+#if defined (__AVR_ATtiny85__)
+  static uint8_t _tinySPItransfer(uint8_t _data);
+  void     _tinySPIbegin();
+#endif
+  //----------------------------------------Private functions----------------------------------------//
   void     _troubleshoot(void);
   void     _printErrorCode(void);
   void     _printSupportLink(void);
@@ -283,15 +280,13 @@ private:
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
   #endif
-  volatile uint8_t *cs_port;
-
   #if !defined (BOARD_RTL8195A)
   uint8_t     csPin;
   #else
   // Object declaration for the GPIO HAL type for csPin - @boseji <salearj@hotmail.com> 02.03.17
   gpio_t      csPin;
   #endif
-
+  volatile uint8_t *cs_port;
   bool        pageOverflow, SPIBusState;
   uint8_t     cs_mask, errorcode, state, _SPCR, _SPSR;
   struct      chipID {
