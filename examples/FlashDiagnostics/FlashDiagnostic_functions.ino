@@ -15,6 +15,7 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 
+#if !defined (__AVR_ATtiny85__)
 void getID() {
   char printBuffer[128];
   printLine();
@@ -754,7 +755,7 @@ void powerFuncDiag(void) {
 
   uint32_t capacity = flash.getCapacity();
   if (!Serial)
-    Serial.begin(115200);
+    Serial.begin(BAUD_RATE);
   uint32_t stringAddress1 = random(0, capacity);
   uint32_t stringAddress2 = random(0, capacity);
   uint32_t stringAddress3 = random(0, capacity);
@@ -861,3 +862,290 @@ void powerFuncDiag(void) {
 
   printLine();
 }
+
+void tinyResult(void) {
+  
+}
+#endif
+
+
+//************************************************************************************************//
+//                                                                                                //
+//                                    Non-board specific code                                     //
+//                                                                                                //
+//************************************************************************************************//
+
+bool prevWritten() {
+  uint8_t _state = flash.readByte(0x00);
+  if (_state != 0xFF) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+
+//************************************************************************************************//
+
+//************************************************************************************************//
+//                                                                                                //
+//                                   If using an ATTiny85 board                                   //
+//                                                                                                //
+//************************************************************************************************//
+#if defined (__AVR_ATtiny85__)
+
+void setWrittenStatus(void) {
+  uint8_t _data;
+  _data = PASS;
+/*#if defined (__AVR_ATtiny85__)
+  _data |= ATTINY85;
+#endif*/
+  addr = flash.getAddress(sizeof(_data));
+  flash.writeByte(addr, _data);
+}
+
+void saveResults() {
+  if (!prevWritten()) {
+    setWrittenStatus();
+  }
+  addr = flash.getAddress(sizeof(_status));
+  flash.writeByte(addr, _status);
+}
+
+void setTest(uint8_t _t) {
+  _test |= _t;
+}
+
+void intDiag() {
+  //Set variables
+  word _data, _d;
+  _data = 4520;
+  setTest(INT);
+
+  //Test & time Write function
+  if (flash.writeWord(addr, _data)) {
+    _status |= iW;
+  }
+  else
+  {
+    _status &= !iW;
+  }
+
+
+  //Test & time Read function
+  _d = flash.readWord(addr);
+  if (_d == _data) {
+    _status |= iR;
+  }
+  else
+  {
+    _status &= !iR;
+  }
+
+  //Erase the sector previously written to
+  flash.eraseSector(addr);
+}
+
+void floatDiag() {
+  //Set variables
+  float _data, _d;
+  _data = 3.1412;
+  setTest(FLOAT);
+
+  //Test & time Write function
+  if (flash.writeFloat(addr, _data)) {
+    _status |= fW;
+  }
+  else
+  {
+    _status &= !fW;
+  }
+
+
+  //Test & time Read function
+  _d = flash.readFloat(addr);
+  if (_d == _data) {
+    _status |= fR;
+  }
+  else
+  {
+    _status &= !fR;
+  }
+
+  //Erase the sector previously written to
+  flash.eraseSector(addr);
+}
+
+void structDiag() {
+  //Set variables
+  struct Configuration {                  // Voltage ouput fR;om potential divider to Analog input
+    float RLDR;                   // Resistance calculation of potential divider with LDR
+    bool light;
+    uint8_t adc;
+  };
+  Configuration _data, _d;
+  _data.RLDR = 89.32;
+  _data.light = true;
+  _data.adc = 5;
+  setTest(STRUCT);
+
+  //Test & time Write function
+  if (flash.writeAnything(addr, _data)) {
+    _status |= scW;
+  }
+  else
+  {
+    _status &= !scW;
+  }
+
+  //Test & time Read function
+  if (flash.readAnything(addr, _d)) {
+    if (_d.RLDR == _data.RLDR && _d.light == _data.light && _d.adc == _data.adc) {
+      _status |= scR;
+    }
+    else
+    {
+      _status &= !scR;
+    }
+  }
+  else {
+    _status &= !scR;
+  }
+
+  //Erase the sector previously written to
+  flash.eraseSector(addr);
+}
+
+void stringDiag() {
+  //Set variables
+  String _d = "";
+  String _data = "1Ab# D";
+  setTest(STRING);
+
+  //Test & time Write function
+  if (flash.writeStr(addr, _data)) {
+    _status |= sgW;
+  }
+  else
+  {
+    _status &= !sgW;
+  }
+
+
+  //Test & time Read function
+  if (flash.readStr(addr, _d)) {
+    if (_d == _data) {
+      _status |= sgR;
+    }
+    else
+    {
+      _status &= !sgR;
+    }
+    //Erase the sector previously written to
+    flash.eraseSector(addr);
+  }
+}
+
+void arrayDiag() {
+  //Set variables
+  uint8_t _data[20], _d[20];
+  setTest(ARRAY);
+
+  for (uint8_t i = 0; i < 21; i++) {
+    _data[i] = i;
+  }
+
+  //Test & time Write function
+  if (flash.writeByteArray(addr, _data, 20)) {
+    _status |= aW;
+  }
+  else
+  {
+    _status &= !aW;
+  }
+
+
+  //Test & time Read function
+  if (flash.readByteArray(addr, _d, 20)) {
+    for (uint8_t i = 0; i < 21; i++)
+      if (_d[i] != _data[i]) {
+        _status &= aR;
+        break;
+      }
+    _status |= aR;
+  }
+  //Erase the sector previously written to
+  flash.eraseSector(addr);
+}
+
+void eraseDiag() {
+  setTest(ERASE);
+
+  //Test & time eraseBlock32K function
+  if (flash.eraseBlock32K(addr)) {
+    _status |= eB;
+  }
+  else
+  {
+    _status &= !eB;
+  }
+
+  //Test & time eraseChip function
+  if (flash.eraseChip()) {
+    _status |= eC;
+  }
+  else
+  {
+    _status &= !eC;
+  }
+}
+
+void powerDiag() {
+  setTest(ERASE);
+
+  //Test & time powerDown function
+  if (flash.powerDown()) {
+    _status |= pOFF;
+  }
+  else
+  {
+    _status &= !pOFF;
+  }
+
+  //Test & time powerUp function
+  if (flash.powerUp()) {
+    _status |= pON;
+  }
+  else
+  {
+    _status &= !pON;
+  }
+}
+
+void diagnose(void) {
+  addr = random(0x0000, 0xFFFF);
+#if defined INTTEST
+  intDiag();
+#endif
+#if defined FLOATTEST
+  floatDiag();
+#endif
+#if defined STRUCTTEST
+  structDiag();
+#endif
+#if defined STRINGTEST
+  stringDiag();
+#endif
+#if defined ARRAYTEST
+  arrayDiag();
+#endif
+#if defined ERASETEST
+  eraseDiag();
+#endif
+#if defined POWERTEST
+  powerDiag();
+#endif
+}
+
+#endif
