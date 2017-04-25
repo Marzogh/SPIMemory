@@ -864,7 +864,17 @@ void powerFuncDiag(void) {
 }
 
 void tinyResult(void) {
-  
+  uint16_t _stat;
+  uint32_t addr = getAddress(sizeof(dataPacket));
+  flash.readAnything(addr, dataPacket);
+
+  //If INTTEST was run
+  if (dataPacket.test & INT) {
+    Serial.print(F("Integer Test\t\t\t\t"));
+    if (dataPacket.Status & iW) {
+      printPass()
+    }
+  }
 }
 #endif
 
@@ -897,10 +907,8 @@ bool prevWritten() {
 
 void setWrittenStatus(void) {
   uint8_t _data;
-  _data = PASS;
-/*#if defined (__AVR_ATtiny85__)
+  _data |= PASS;
   _data |= ATTINY85;
-#endif*/
   addr = flash.getAddress(sizeof(_data));
   flash.writeByte(addr, _data);
 }
@@ -909,12 +917,12 @@ void saveResults() {
   if (!prevWritten()) {
     setWrittenStatus();
   }
-  addr = flash.getAddress(sizeof(_status));
-  flash.writeByte(addr, _status);
+  addr = flash.getAddress(sizeof(dataPacket));
+  flash.writeAnything(addr, dataPacket);
 }
 
 void setTest(uint8_t _t) {
-  _test |= _t;
+  dataPacket.test |= _t;
 }
 
 void intDiag() {
@@ -925,22 +933,22 @@ void intDiag() {
 
   //Test & time Write function
   if (flash.writeWord(addr, _data)) {
-    _status |= iW;
+    dataPacket.Status |= iW;
   }
   else
   {
-    _status &= !iW;
+    dataPacket.Status &= !iW;
   }
 
 
   //Test & time Read function
   _d = flash.readWord(addr);
   if (_d == _data) {
-    _status |= iR;
+    dataPacket.Status |= iR;
   }
   else
   {
-    _status &= !iR;
+    dataPacket.Status &= !iR;
   }
 
   //Erase the sector previously written to
@@ -955,22 +963,22 @@ void floatDiag() {
 
   //Test & time Write function
   if (flash.writeFloat(addr, _data)) {
-    _status |= fW;
+    dataPacket.Status |= fW;
   }
   else
   {
-    _status &= !fW;
+    dataPacket.Status &= !fW;
   }
 
 
   //Test & time Read function
   _d = flash.readFloat(addr);
   if (_d == _data) {
-    _status |= fR;
+    dataPacket.Status |= fR;
   }
   else
   {
-    _status &= !fR;
+    dataPacket.Status &= !fR;
   }
 
   //Erase the sector previously written to
@@ -992,25 +1000,25 @@ void structDiag() {
 
   //Test & time Write function
   if (flash.writeAnything(addr, _data)) {
-    _status |= scW;
+    dataPacket.Status |= scW;
   }
   else
   {
-    _status &= !scW;
+    dataPacket.Status &= !scW;
   }
 
   //Test & time Read function
   if (flash.readAnything(addr, _d)) {
     if (_d.RLDR == _data.RLDR && _d.light == _data.light && _d.adc == _data.adc) {
-      _status |= scR;
+      dataPacket.Status |= scR;
     }
     else
     {
-      _status &= !scR;
+      dataPacket.Status &= !scR;
     }
   }
   else {
-    _status &= !scR;
+    dataPacket.Status &= !scR;
   }
 
   //Erase the sector previously written to
@@ -1025,22 +1033,22 @@ void stringDiag() {
 
   //Test & time Write function
   if (flash.writeStr(addr, _data)) {
-    _status |= sgW;
+    dataPacket.Status |= sgW;
   }
   else
   {
-    _status &= !sgW;
+    dataPacket.Status &= !sgW;
   }
 
 
   //Test & time Read function
   if (flash.readStr(addr, _d)) {
     if (_d == _data) {
-      _status |= sgR;
+      dataPacket.Status |= sgR;
     }
     else
     {
-      _status &= !sgR;
+      dataPacket.Status &= !sgR;
     }
     //Erase the sector previously written to
     flash.eraseSector(addr);
@@ -1058,11 +1066,11 @@ void arrayDiag() {
 
   //Test & time Write function
   if (flash.writeByteArray(addr, _data, 20)) {
-    _status |= aW;
+    dataPacket.Status |= aW;
   }
   else
   {
-    _status &= !aW;
+    dataPacket.Status &= !aW;
   }
 
 
@@ -1070,10 +1078,10 @@ void arrayDiag() {
   if (flash.readByteArray(addr, _d, 20)) {
     for (uint8_t i = 0; i < 21; i++)
       if (_d[i] != _data[i]) {
-        _status &= aR;
+        dataPacket.Status &= aR;
         break;
       }
-    _status |= aR;
+    dataPacket.Status |= aR;
   }
   //Erase the sector previously written to
   flash.eraseSector(addr);
@@ -1084,20 +1092,20 @@ void eraseDiag() {
 
   //Test & time eraseBlock32K function
   if (flash.eraseBlock32K(addr)) {
-    _status |= eB;
+    dataPacket.Status |= eB;
   }
   else
   {
-    _status &= !eB;
+    dataPacket.Status &= !eB;
   }
 
   //Test & time eraseChip function
   if (flash.eraseChip()) {
-    _status |= eC;
+    dataPacket.Status |= eC;
   }
   else
   {
-    _status &= !eC;
+    dataPacket.Status &= !eC;
   }
 }
 
@@ -1106,20 +1114,20 @@ void powerDiag() {
 
   //Test & time powerDown function
   if (flash.powerDown()) {
-    _status |= pOFF;
+    dataPacket.Status |= pOFF;
   }
   else
   {
-    _status &= !pOFF;
+    dataPacket.Status &= !pOFF;
   }
 
   //Test & time powerUp function
   if (flash.powerUp()) {
-    _status |= pON;
+    dataPacket.Status |= pON;
   }
   else
   {
-    _status &= !pON;
+    dataPacket.Status &= !pON;
   }
 }
 
@@ -1146,6 +1154,7 @@ void diagnose(void) {
 #if defined POWERTEST
   powerDiag();
 #endif
+saveResults();
 }
 
 #endif
