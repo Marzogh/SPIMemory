@@ -1,11 +1,11 @@
 /*
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
-  |                                                          FlashDiagnostic_functions.ino                                                        |
+  |                                                            NonAttiny_functions.ino                                                            |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 2.6.0                                                                     |
+  |                                                                   v 2.7.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  13.11.2016                                                                   |
+  |                                                                  26.04.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -16,6 +16,92 @@
 */
 
 #if !defined (__AVR_ATtiny85__)
+void startup(void) {
+  Serial.begin(BAUD_RATE);
+#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
+  Serial.print(F("Initialising Flash memory"));
+  for (int i = 0; i < 10; ++i)
+  {
+    Serial.print(F("."));
+  }
+  Serial.println();
+#if defined (CHIPSIZE)
+  flash.begin(CHIPSIZE); //use flash.begin(CHIPSIZE) if using non-Winbond flash (Refer to '#define CHIPSIZE' above)
+#else
+  flash.begin();
+#endif
+  Serial.println();
+  Serial.println();
+
+#if defined (ARDUINO_ARCH_ESP32)
+  randomSeed(65535537);
+#else
+  randomSeed(analogRead(RANDPIN));
+#endif
+}
+
+void clearprintBuffer(char *bufPtr)
+{
+  for (uint8_t i = 0; i < 128; i++) {
+    //printBuffer[i] = 0;
+    *bufPtr++ = 0;
+  }
+}
+
+void printLine() {
+  for (uint8_t i = 0; i < 230; i++) {
+    Serial.print(F("-"));
+  }
+  Serial.println();
+}
+
+void printPass() {
+  Serial.print(F("Pass"));
+}
+
+void printFail() {
+  Serial.print(F("Fail"));
+}
+
+void printTab(uint8_t a, uint8_t b) {
+  for (uint8_t i = 0; i < a; i++) {
+    Serial.print(F("\t"));
+  }
+  if (b > 0) {
+    Serial.print("||");
+    for (uint8_t i = 0; i < b; i++) {
+      Serial.print(F("\t"));
+    }
+  }
+}
+
+void printTime(uint32_t _wTime, uint32_t _rTime) {
+  printTab(2, 1);
+  printTimer(_wTime);
+  printTab(2, 1);
+  printTimer(_rTime);
+}
+
+void printTimer(uint32_t _us) {
+
+  if (_us > 1000000) {
+    float _s = _us / (float)1000000;
+    Serial.print(_s, 4);
+    Serial.print(" s");
+  }
+  else if (_us > 10000) {
+    float _ms = _us / (float)1000;
+    Serial.print(_ms, 4);
+    Serial.print(" ms");
+  }
+  else {
+    Serial.print(_us);
+    Serial.print(F(" us"));
+  }
+}
+
 void getID() {
   char printBuffer[128];
   printLine();
@@ -68,40 +154,72 @@ bool checkPage(uint8_t *data_buffer) {
   return true;
 }
 
-void diagnose() {
-  uint16_t _stat;
-  uint32_t addr = getAddress(sizeof(dataPacket));
-  flash.readAnything(addr, dataPacket);
-  
-  printLine();
-  for (uint8_t i = 0; i < 79; i++) {
-    Serial.print(F(" "));
-  }
-  Serial.println(F("Data Check"));
-  printLine();
+void printHeader(uint8_t _t) {
+  if (_t == DATA_FUNCTION && data_header == false) {
+    printLine();
 
-  Serial.println(F("\tData Type\t||\tWrite Check\t||\tRead Check\t"));
-  printLine();
-  if (dataPacket.test & INT) {
-    intDiag();
+    for (uint8_t i = 0; i < 79; i++) {
+      Serial.print(F(" "));
+    }
+    Serial.println(F("Data Check"));
+    printLine();
+
+    Serial.println(F("\tData Type\t||\tWrite Check\t||\tRead Check\t"));
+    printLine();
+
+    data_header = true;
   }
-  if (dataPacket.test & FLOAT) {
-    floatDiag();
+  if (_t == OTHER_FUNCTION && power_header == false) {
+    printLine();
+
+    for (uint8_t i = 0; i < 74; i++) {
+      Serial.print(F(" "));
+    }
+    Serial.println(F("Other Function Check"));
+    printLine();
+
+    Serial.println(F("\tTest Type\t||\tStatus"));
+    printLine();
+
+    power_header = true;
   }
-  if (dataPacket.test & STRING) {
-    stringDiag();
+}
+void diagnose() {
+  getID();
+
+  uint16_t _stat;
+  if (prevWritten) {
+    if (dataPacket.test & INT) {
+      printHeader(DATA_FUNCTION);
+      intDiag();
+    }
+    if (dataPacket.test & FLOAT) {
+      printHeader(DATA_FUNCTION);
+      floatDiag();
+    }
+    if (dataPacket.test & STRING) {
+      printHeader(DATA_FUNCTION);
+      stringDiag();
+    }
+    if (dataPacket.test & STRUCT) {
+      printHeader(DATA_FUNCTION);
+      structDiag();
+    }
+    if (dataPacket.test & ARRAY) {
+      printHeader(DATA_FUNCTION);
+      arrayDiag();
+    }
+    if (dataPacket.test & ERASE) {
+      printHeader(OTHER_FUNCTION);
+      eraseDiag();
+    }
+    if (dataPacket.test & POWER) {
+      printHeader(OTHER_FUNCTION);
+      powerDiag();
+    }
   }
-  if (dataPacket.test & STRUCT) {
-    structDiag();
-  }
-  if (dataPacket.test & ARRAY) {
-    arrayDiag();
-  }
-  if (dataPacket.test & ERASE) {
-    eraseDiag();
-  }
-  if (dataPacket.test & POWER) {
-    powerDiag();
+  else {
+    Serial.println(F("No data found on chip. Please run this sketch on a an ATTiny85 connected to this flash chip first"));
   }
 }
 
@@ -133,6 +251,7 @@ void intDiag(void) {
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //-----------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -166,6 +285,7 @@ void floatDiag(void) {
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //-----------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -199,6 +319,7 @@ void stringDiag(void) {
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //-----------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -232,6 +353,7 @@ void structDiag(void) {
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //-----------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -265,6 +387,7 @@ void arrayDiag(void) {
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //-----------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -274,30 +397,31 @@ void eraseDiag(void) {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  //                                                                       Integer                                                                       //
+  //                                                                   Erase Block                                                                       //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   printTab(1, 0);
-  Serial.print(F("Erase"));
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  //                                                                        Write                                                                        //
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+  Serial.print(F("Erase Block"));
   printTab(2, 1);
-  if (dataPacket.Status & eW) {
+  if (dataPacket.Status & eB) {
     printPass();
   }
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  //                                                                         Read                                                                        //
+  //                                                                    Erase Chip                                                                       //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+  printTab(1, 0);
+  Serial.print(F("Erase Chip"));
   printTab(2, 1);
-  if (dataPacket.Status & eR) {
+  if (dataPacket.Status & eC) {
     printPass();
   }
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //-----------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -307,313 +431,33 @@ void powerDiag(void) {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  //                                                                       Integer                                                                       //
+  //                                                                    Power on                                                                         //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   printTab(1, 0);
-  Serial.print(F("Integer"));
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  //                                                                        Write                                                                        //
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+  Serial.print(F("Power off"));
   printTab(2, 1);
-  if (dataPacket.Status & pW) {
+  if (dataPacket.Status & pOFF) {
     printPass();
   }
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  //                                                                         Read                                                                        //
+  //                                                                    Power off                                                                        //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+  printTab(1, 0);
+  Serial.print(F("Power on"));
   printTab(2, 1);
-  if (dataPacket.Status & pR) {
+  if (dataPacket.Status & pON) {
     printPass();
   }
   else {
     printFail();
   }
+  Serial.println();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //-----------------------------------------------------------------------------------------------------------------------------------------------------//
 }
-#endif
-
-
-//************************************************************************************************//
-//                                                                                                //
-//                                    Non-board specific code                                     //
-//                                                                                                //
-//************************************************************************************************//
-
-bool prevWritten() {
-  uint8_t _state = flash.readByte(0x00);
-  if (_state != 0xFF) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-
-//************************************************************************************************//
-
-//************************************************************************************************//
-//                                                                                                //
-//                                   If using an ATTiny85 board                                   //
-//                                                                                                //
-//************************************************************************************************//
-#if defined (__AVR_ATtiny85__)
-
-void setWrittenStatus(void) {
-  uint8_t _data;
-  _data |= PASS;
-  _data |= ATTINY85;
-  addr = flash.getAddress(sizeof(_data));
-  flash.writeByte(addr, _data);
-}
-
-void saveResults() {
-  if (!prevWritten()) {
-    setWrittenStatus();
-  }
-  addr = flash.getAddress(sizeof(dataPacket));
-  flash.writeAnything(addr, dataPacket);
-}
-
-void setTest(uint8_t _t) {
-  dataPacket.test |= _t;
-}
-
-void intDiag() {
-  //Set variables
-  word _data, _d;
-  _data = 4520;
-  setTest(INT);
-
-  //Test & time Write function
-  if (flash.writeWord(addr, _data)) {
-    dataPacket.Status |= iW;
-  }
-  else
-  {
-    dataPacket.Status &= !iW;
-  }
-
-
-  //Test & time Read function
-  _d = flash.readWord(addr);
-  if (_d == _data) {
-    dataPacket.Status |= iR;
-  }
-  else
-  {
-    dataPacket.Status &= !iR;
-  }
-
-  //Erase the sector previously written to
-  flash.eraseSector(addr);
-}
-
-void floatDiag() {
-  //Set variables
-  float _data, _d;
-  _data = 3.1412;
-  setTest(FLOAT);
-
-  //Test & time Write function
-  if (flash.writeFloat(addr, _data)) {
-    dataPacket.Status |= fW;
-  }
-  else
-  {
-    dataPacket.Status &= !fW;
-  }
-
-
-  //Test & time Read function
-  _d = flash.readFloat(addr);
-  if (_d == _data) {
-    dataPacket.Status |= fR;
-  }
-  else
-  {
-    dataPacket.Status &= !fR;
-  }
-
-  //Erase the sector previously written to
-  flash.eraseSector(addr);
-}
-
-void structDiag() {
-  //Set variables
-  struct Configuration {                  // Voltage ouput fR;om potential divider to Analog input
-    float RLDR;                   // Resistance calculation of potential divider with LDR
-    bool light;
-    uint8_t adc;
-  };
-  Configuration _data, _d;
-  _data.RLDR = 89.32;
-  _data.light = true;
-  _data.adc = 5;
-  setTest(STRUCT);
-
-  //Test & time Write function
-  if (flash.writeAnything(addr, _data)) {
-    dataPacket.Status |= scW;
-  }
-  else
-  {
-    dataPacket.Status &= !scW;
-  }
-
-  //Test & time Read function
-  if (flash.readAnything(addr, _d)) {
-    if (_d.RLDR == _data.RLDR && _d.light == _data.light && _d.adc == _data.adc) {
-      dataPacket.Status |= scR;
-    }
-    else
-    {
-      dataPacket.Status &= !scR;
-    }
-  }
-  else {
-    dataPacket.Status &= !scR;
-  }
-
-  //Erase the sector previously written to
-  flash.eraseSector(addr);
-}
-
-void stringDiag() {
-  //Set variables
-  String _d = "";
-  String _data = "1Ab# D";
-  setTest(STRING);
-
-  //Test & time Write function
-  if (flash.writeStr(addr, _data)) {
-    dataPacket.Status |= sgW;
-  }
-  else
-  {
-    dataPacket.Status &= !sgW;
-  }
-
-
-  //Test & time Read function
-  if (flash.readStr(addr, _d)) {
-    if (_d == _data) {
-      dataPacket.Status |= sgR;
-    }
-    else
-    {
-      dataPacket.Status &= !sgR;
-    }
-    //Erase the sector previously written to
-    flash.eraseSector(addr);
-  }
-}
-
-void arrayDiag() {
-  //Set variables
-  uint8_t _data[20], _d[20];
-  setTest(ARRAY);
-
-  for (uint8_t i = 0; i < 21; i++) {
-    _data[i] = i;
-  }
-
-  //Test & time Write function
-  if (flash.writeByteArray(addr, _data, 20)) {
-    dataPacket.Status |= aW;
-  }
-  else
-  {
-    dataPacket.Status &= !aW;
-  }
-
-
-  //Test & time Read function
-  if (flash.readByteArray(addr, _d, 20)) {
-    for (uint8_t i = 0; i < 21; i++)
-      if (_d[i] != _data[i]) {
-        dataPacket.Status &= aR;
-        break;
-      }
-    dataPacket.Status |= aR;
-  }
-  //Erase the sector previously written to
-  flash.eraseSector(addr);
-}
-
-void eraseDiag() {
-  setTest(ERASE);
-
-  //Test & time eraseBlock32K function
-  if (flash.eraseBlock32K(addr)) {
-    dataPacket.Status |= eB;
-  }
-  else
-  {
-    dataPacket.Status &= !eB;
-  }
-
-  //Test & time eraseChip function
-  if (flash.eraseChip()) {
-    dataPacket.Status |= eC;
-  }
-  else
-  {
-    dataPacket.Status &= !eC;
-  }
-}
-
-void powerDiag() {
-  setTest(ERASE);
-
-  //Test & time powerDown function
-  if (flash.powerDown()) {
-    dataPacket.Status |= pOFF;
-  }
-  else
-  {
-    dataPacket.Status &= !pOFF;
-  }
-
-  //Test & time powerUp function
-  if (flash.powerUp()) {
-    dataPacket.Status |= pON;
-  }
-  else
-  {
-    dataPacket.Status &= !pON;
-  }
-}
-
-void diagnose(void) {
-  addr = random(0x0000, 0xFFFF);
-#if defined INTTEST
-  intDiag();
-#endif
-#if defined FLOATTEST
-  floatDiag();
-#endif
-#if defined STRUCTTEST
-  structDiag();
-#endif
-#if defined STRINGTEST
-  stringDiag();
-#endif
-#if defined ARRAYTEST
-  arrayDiag();
-#endif
-#if defined ERASETEST
-  eraseDiag();
-#endif
-#if defined POWERTEST
-  powerDiag();
-#endif
-saveResults();
-}
-
 #endif
