@@ -35,7 +35,7 @@
 //                                                                    //
 //      Error codes will be generated and returned on functions       //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define RUNDIAGNOSTIC                                               //
+#define RUNDIAGNOSTIC                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #endif
 
@@ -300,10 +300,10 @@ private:
               };
               chipID _chip;
   uint32_t    currentAddress, _currentAddress = 0;
-  const uint8_t _capID[11]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43};
-  const uint32_t _memSize[11]  = {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M,
-                                16L * M, 32L * M, 8L * M};
-  const uint32_t _eraseTime[11] = {1L * S, 2L * S, 2L * S, 4L * S, 6L * S, 10L * S, 15L * S, 100L * S, 200L * S, 400L * S, 50L}; //Erase time in milliseconds
+  const uint8_t _capID[12]   = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B};
+  const uint32_t _memSize[12]  = {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M,
+                                16L * M, 32L * M, 8L * M, 8L * M};
+  const uint32_t _eraseTime[12] = {1L * S, 2L * S, 2L * S, 4L * S, 6L * S, 10L * S, 15L * S, 100L * S, 200L * S, 400L * S, 50L * S, 50L * S}; //Erase time in milliseconds
 };
 
 //--------------------------------------------Templates-------------------------------------------//
