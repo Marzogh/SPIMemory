@@ -27,6 +27,7 @@
 
  #include "SPIFlash.h"
 
+ #if !defined (__AVR_ATtiny85__)
  //Subfunctions for troubleshooting function
  void SPIFlash::_printErrorCode(void) {
    Serial.print("Error code: 0x");
@@ -182,3 +183,4 @@
   break;
  	}
  }
+ #endif

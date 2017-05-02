@@ -27,6 +27,7 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - Arduino Mega
 - Arduino Micro
 - Arduino Fio
+- Attiny85 Boards
 
 ###### In BETA
 - ESP32 Boards (Tested on the Sparkfun ESP32 thing) The library is known to work with the ESP32 core as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/7d0968c10dc540709d69a28eab2457075c1e4fa8">7d0968c</a> on 16.04.2017. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
