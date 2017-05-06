@@ -104,6 +104,7 @@
 #define SPI_CLK       20000000
 #else
 #define SPI_CLK       104000000       //Hex equivalent of 104MHz
+//#define SPI_CLK       4000000       //Hex equivalent of 104MHz
 #endif
 #define WRTEN         0x02
 #define SUS           0x80
