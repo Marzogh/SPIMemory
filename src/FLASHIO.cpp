@@ -34,10 +34,7 @@
 bool SPIFlash::_prep(uint8_t opcode, uint32_t address, uint32_t size) {
   switch (opcode) {
     case PAGEPROG:
-    if (!_addressCheck(address, size)) {
-      return false;
-    }
-    if(!_notBusy() || !_writeEnable()){
+    if (!_addressCheck(address, size) || !_notBusy() || !_writeEnable()) {
       return false;
     }
     #ifndef HIGHSPEED
@@ -49,10 +46,7 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t address, uint32_t size) {
     break;
 
     default:
-    if (!_addressCheck(address, size)) {
-      return false;
-    }
-    if (!_notBusy()){
+    if (!_addressCheck(address, size) || !_notBusy()){
       return false;
     }
     return true;
@@ -66,10 +60,17 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t page_number, uint8_t offset, uint3
   return _prep(opcode, address, size);
 }
 
-bool SPIFlash::_transferAddress(void) {
-  _nextByte(_currentAddress >> 16);
-  _nextByte(_currentAddress >> 8);
-  _nextByte(_currentAddress);
+bool SPIFlash::_transferAddress(uint32_t _addr) {
+  if (!_addr) {
+    _nextByte(_currentAddress >> 16);
+    _nextByte(_currentAddress >> 8);
+    _nextByte(_currentAddress);
+  }
+  else {
+    _nextByte(_addr >> 16);
+    _nextByte(_addr >> 8);
+    _nextByte(_addr);
+  }
 }
 
 bool SPIFlash::_startSPIBus(void) {
@@ -447,7 +448,7 @@ bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
 
 bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
   _beginSPI(READDATA);
-  for (uint16_t i = 0; i < size; i++) {
+  for (uint32_t i = 0; i < size; i++) {
     if (_nextByte() != 0xFF) {
       CHIP_DESELECT;
       return false;

@@ -178,31 +178,13 @@ uint16_t SPIFlash::sizeofStr(String &inputStr) {
 // Variant A
 uint8_t SPIFlash::readByte(uint32_t address, bool fastRead) {
   uint8_t data;
-
-	if (!_prep(READDATA, address, sizeof(data))) {
-		return false;
-  }
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
-    _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
-  }
-  data = _nextByte();
-  _endSPI();
+  readAnything(address, data, fastRead);
   return data;
 }
 // Variant B
 uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readByte(address, fastRead);
+  uint32_t address = _getAddress(page_number, offset);
+  return readByte(address, fastRead);
 }
 
 // Reads a char of data from a specific location in a page.
@@ -216,31 +198,14 @@ uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset, bool fastRead) 
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 int8_t SPIFlash::readChar(uint32_t address, bool fastRead) {
-	int8_t data;
-	if (!_prep(READDATA, address, sizeof(data))) {
-		return false;
-  }
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
-    _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
-  }
-  data = _nextByte();
-  _endSPI();
+  int8_t data;
+  readAnything(address, data, fastRead);
   return data;
 }
 // Variant B
 int8_t SPIFlash::readChar(uint16_t page_number, uint8_t offset, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readChar(address, fastRead);
+  uint32_t address = _getAddress(page_number, offset);
+  return readChar(address, fastRead);
 }
 
 // Reads an array of bytes starting from a specific location in a page.// Has two variants:
@@ -318,36 +283,14 @@ bool  SPIFlash::readCharArray(uint16_t page_number, uint8_t offset, char *data_b
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 uint16_t SPIFlash::readWord(uint32_t address, bool fastRead) {
-  const uint8_t size = sizeof(uint16_t);
-	union
-	{
-		uint8_t b[size];
-		uint16_t I;
-	} data;
-	if (!_prep(READDATA, address, size)) {
-		return false;
-  }
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
-    _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
-  }
-  _nextBuf(READDATA, &data.b[0], size);
-  _endSPI();
-  return data.I;
+  uint16_t data;
+  readAnything(address, data, fastRead);
+  return data;
 }
 // Variant B
 uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readWord(address, fastRead);
+  uint32_t address = _getAddress(page_number, offset);
+  return readWord(address, fastRead);
 }
 
 // Reads a signed int of data from a specific location in a page.
@@ -361,37 +304,14 @@ uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset, bool fastRead)
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
-  const uint8_t size = sizeof(int16_t);
-	union
-	{
-		byte b[size];
-		int16_t s;
-	} data;
-
-	if (!_prep(READDATA, address, size)) {
-    return false;
-  }
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
-    _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
-  }
-  _nextBuf(READDATA, &data.b[0], size);
-  _endSPI();
-  return data.s;
+  int16_t data;
+  readAnything(address, data, fastRead);
+  return data;
 }
 // Variant B
 int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readShort(address, fastRead);
+  uint32_t address = _getAddress(page_number, offset);
+  return readShort(address, fastRead);
 }
 
 // Reads an unsigned long of data from a specific location in a page.
@@ -405,37 +325,14 @@ int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset, bool fastRead)
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 uint32_t SPIFlash::readULong(uint32_t address, bool fastRead) {
-  const uint8_t size = (sizeof(uint32_t));
-	union
-	{
-		uint8_t b[size];
-		uint32_t l;
-	} data;
-
-	if (!_prep(READDATA, address, size)) {
-    return false;
-  }
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
-    _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
-  }
-  _nextBuf(READDATA, &data.b[0], size);
-  _endSPI();
-  return data.l;
+  uint32_t data;
+  readAnything(address, data, fastRead);
+  return data;
 }
 // Variant B
 uint32_t SPIFlash::readULong(uint16_t page_number, uint8_t offset, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readULong(address, fastRead);
+  uint32_t address = _getAddress(page_number, offset);
+  return readULong(address, fastRead);
 }
 
 // Reads a signed long of data from a specific location in a page.
@@ -449,37 +346,14 @@ uint32_t SPIFlash::readULong(uint16_t page_number, uint8_t offset, bool fastRead
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 int32_t SPIFlash::readLong(uint32_t address, bool fastRead) {
-  const uint8_t size = (sizeof(int32_t));
-	union
-	{
-		byte b[size];
-		int32_t l;
-	} data;
-
-	if (!_prep(READDATA, address, size)) {
-    return false;
-  }
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
-    _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
-  }
-  _nextBuf(READDATA, &data.b[0], size);
-  _endSPI();
-  return data.l;
+  int32_t data;
+  readAnything(address, data, fastRead);
+  return data;
 }
 // Variant B
 int32_t SPIFlash::readLong(uint16_t page_number, uint8_t offset, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readLong(address, fastRead);
+  uint32_t address = _getAddress(page_number, offset);
+  return readLong(address, fastRead);
 }
 
 // Reads a signed long of data from a specific location in a page.
@@ -493,38 +367,14 @@ int32_t SPIFlash::readLong(uint16_t page_number, uint8_t offset, bool fastRead) 
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
 float SPIFlash::readFloat(uint32_t address, bool fastRead) {
-  const uint8_t size = (sizeof(float));
-	union
-	{
-		byte b[size];
-		float f;
-	} data;
-
-	if (!_prep(READDATA, address, size)) {
-    return false;
-  }
-
-  switch (fastRead) {
-    case false:
-    _beginSPI(READDATA);
-    break;
-
-    case true:
-    _beginSPI(FASTREAD);
-    break;
-
-    default:
-    break;
-  }
-  _nextBuf(READDATA, &data.b[0], size);
-  _endSPI();
-  return data.f;
+  float data;
+  readAnything(address, data, fastRead);
+  return data;
 }
 // Variant B
 float SPIFlash::readFloat(uint16_t page_number, uint8_t offset, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readFloat(address, fastRead);
+  uint32_t address = _getAddress(page_number, offset);
+  return readFloat(address, fastRead);
 }
 
 // Reads a string from a specific location on a page.
@@ -574,27 +424,12 @@ bool SPIFlash::readStr(uint16_t page_number, uint8_t offset, String &outStr, boo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeByte(uint32_t address, uint8_t data, bool errorCheck) {
-  if(!_prep(PAGEPROG, address, sizeof(data))) {
-    return false;
-  }
-
-  _beginSPI(PAGEPROG);
-  _nextByte(data);
-  CHIP_DESELECT
-
-		if (!errorCheck) {
-      _endSPI();
-      return true;
-  }
-	else {
-		return _writeErrorCheck(address, data);
-  }
+  return writeAnything(address, data, errorCheck);
 }
 // Variant B
 bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeByte(address, data, errorCheck);
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, data, errorCheck);
 }
 
 // Writes a char of data to a specific location in a page.
@@ -612,27 +447,12 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeChar(uint32_t address, int8_t data, bool errorCheck) {
-  if(!_prep(PAGEPROG, address, sizeof(data))) {
-    return false;
-  }
-
-  _beginSPI(PAGEPROG);
-  _nextByte(data);
-  CHIP_DESELECT
-
-		if (!errorCheck) {
-      _endSPI();
-      return true;
-  }
-	else {
-		return _writeErrorCheck(address, data);
-  }
+  return writeAnything(address, data, errorCheck);
 }
 // Variant B
 bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeChar(address, data, errorCheck);
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, data, errorCheck);
 }
 
 // Writes an array of bytes starting from a specific location in a page.
@@ -654,28 +474,36 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
     return false;
   }
   uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  uint16_t length = bufferSize;
-  uint16_t writeBufSz;
-  uint16_t data_offset = 0;
 
-  while (length > 0)
-  {
-    writeBufSz = (length<=maxBytes) ? length : maxBytes;
-
-    if(!_notBusy() || !_writeEnable()){
-      return false;
-    }
-
+  if (bufferSize <= maxBytes) {
     _beginSPI(PAGEPROG);
-
-    for (uint16_t i = 0; i < writeBufSz; ++i) {
-      _nextByte(data_buffer[data_offset + i]);
-    }
-    _currentAddress += writeBufSz;
-    data_offset += writeBufSz;
-    length -= writeBufSz;
-    maxBytes = 256;   // Now we can do up to 256 bytes per loop
+    _nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
     CHIP_DESELECT
+  }
+  else {
+    uint16_t length = bufferSize;
+    uint16_t writeBufSz;
+    uint16_t data_offset = 0;
+
+    while (length > 0)
+    {
+      writeBufSz = (length<=maxBytes) ? length : maxBytes;
+
+      if(!_notBusy() || !_writeEnable()){
+        return false;
+      }
+
+      _beginSPI(PAGEPROG);
+      for (uint16_t i = 0; i < writeBufSz; ++i) {
+        _nextByte(data_buffer[data_offset + i]);
+      }
+      CHIP_DESELECT
+
+      _currentAddress += writeBufSz;
+      data_offset += writeBufSz;
+      length -= writeBufSz;
+      maxBytes = 256;   // Now we can do up to 256 bytes per loop
+    }
   }
 
   if (!errorCheck) {
@@ -792,61 +620,12 @@ bool SPIFlash::writeCharArray(uint16_t page_number, uint8_t offset, char *data_b
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeWord(uint32_t address, uint16_t data, bool errorCheck) {
-  const uint8_t size = sizeof(uint16_t);
-
-	if(!_prep(PAGEPROG, address, size)) {
-    return false;
-  }
-
-	union
-	{
-		uint8_t b[size];
-		uint16_t w;
-	} var;
-	var.w = data;
-
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  if (maxBytes > size) {
-    _beginSPI(PAGEPROG);
-    _nextBuf(PAGEPROG, &var.b[0], size);
-    CHIP_DESELECT
-  }
-  else {
-    uint16_t writeBufSz;
-    uint16_t data_offset = 0;
-    uint16_t _sz = size;
-
-    while (_sz > 0)
-    {
-      writeBufSz = (_sz<=maxBytes) ? _sz : maxBytes;
-      if(!_notBusy() || !_writeEnable()){
-        return false;
-      }
-
-      _beginSPI(PAGEPROG);
-      for (uint16_t i = 0; i < writeBufSz; ++i) {
-        _nextByte(var.b[data_offset + i]);
-      }
-      _currentAddress += writeBufSz;
-      data_offset += writeBufSz;
-      _sz -= writeBufSz;
-      maxBytes = 256;   // Now we can do up to 256 bytes per loop
-      CHIP_DESELECT
-    }
-  }
-
-		if (!errorCheck) {
-      _endSPI();
-      return true;
-  }
-	else
-		return _writeErrorCheck(address, data);
+  return writeAnything(address, data, errorCheck);
 }
 // Variant B
 bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeWord(address, data, errorCheck);
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, data, errorCheck);
 }
 
 // Writes a signed int as two bytes starting from a specific location in a page.
@@ -864,60 +643,12 @@ bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeShort(uint32_t address, int16_t data, bool errorCheck) {
-  const uint8_t size = sizeof(data);
-	if(!_prep(PAGEPROG, address, size)) {
-    return false;
-  }
-
-	union
-	{
-		uint8_t b[size];
-		int16_t s;
-	} var;
-	var.s = data;
-
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  if (maxBytes > size) {
-    _beginSPI(PAGEPROG);
-    _nextBuf(PAGEPROG, &var.b[0], size);
-    CHIP_DESELECT
-  }
-  else {
-    uint16_t writeBufSz;
-    uint16_t data_offset = 0;
-    uint16_t _sz = size;
-
-    while (_sz > 0)
-    {
-      writeBufSz = (_sz<=maxBytes) ? _sz : maxBytes;
-      if(!_notBusy() || !_writeEnable()){
-        return false;
-      }
-
-      _beginSPI(PAGEPROG);
-      for (uint16_t i = 0; i < writeBufSz; ++i) {
-        _nextByte(var.b[data_offset + i]);
-      }
-      _currentAddress += writeBufSz;
-      data_offset += writeBufSz;
-      _sz -= writeBufSz;
-      maxBytes = 256;   // Now we can do up to 256 bytes per loop
-      CHIP_DESELECT
-    }
-  }
-
-	if (!errorCheck) {
-    _endSPI();
-    return true;
-  }
-	else
-		return _writeErrorCheck(address, data);
+  return writeAnything(address, data, errorCheck);
 }
 // Variant B
 bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeShort(address, data, errorCheck);
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, data, errorCheck);
 }
 
 // Writes an unsigned long as four bytes starting from a specific location in a page.
@@ -935,62 +666,12 @@ bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeULong(uint32_t address, uint32_t data, bool errorCheck) {
-  const uint8_t size = (sizeof(data));
-
-	if(!_prep(PAGEPROG, address, size)) {
-    return false;
-  }
-
-	union
-	{
-		uint8_t b[size];
-		uint32_t l;
-	} var;
-  var.l = data;
-
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  if (maxBytes > size) {
-    _beginSPI(PAGEPROG);
-    _nextBuf(PAGEPROG, &var.b[0], size);
-    CHIP_DESELECT
-  }
-  else {
-    uint16_t writeBufSz;
-    uint16_t data_offset = 0;
-    uint16_t _sz = size;
-
-    while (_sz > 0)
-    {
-      writeBufSz = (_sz<=maxBytes) ? _sz : maxBytes;
-      if(!_notBusy() || !_writeEnable()){
-        return false;
-      }
-
-      _beginSPI(PAGEPROG);
-      for (uint16_t i = 0; i < writeBufSz; ++i) {
-        _nextByte(var.b[data_offset + i]);
-      }
-      _currentAddress += writeBufSz;
-      data_offset += writeBufSz;
-      _sz -= writeBufSz;
-      maxBytes = 256;   // Now we can do up to 256 bytes per loop
-      CHIP_DESELECT
-    }
-  }
-
-	if (!errorCheck){
-    _endSPI();
-		return true;
-  }
-	else {
-		return _writeErrorCheck(address, data);
-  }
+  return writeAnything(address, data, errorCheck);
 }
 // Variant B
 bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeULong(address, data, errorCheck);
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, data, errorCheck);
 }
 
 // Writes a signed long as four bytes starting from a specific location in a page.
@@ -1008,62 +689,12 @@ bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, b
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeLong(uint32_t address, int32_t data, bool errorCheck) {
-const uint8_t size = sizeof(data);
-
-	if(!_prep(PAGEPROG, address, size)) {
-    return false;
-  }
-
-  union
-  {
-    uint8_t b[size];
-    int32_t l;
-  } var;
-  var.l = data;
-
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  if (maxBytes > size) {
-    _beginSPI(PAGEPROG);
-    _nextBuf(PAGEPROG, &var.b[0], size);
-    CHIP_DESELECT
-  }
-  else {
-    uint16_t writeBufSz;
-    uint16_t data_offset = 0;
-    uint16_t _sz = size;
-
-    while (_sz > 0)
-    {
-      writeBufSz = (_sz<=maxBytes) ? _sz : maxBytes;
-      if(!_notBusy() || !_writeEnable()){
-        return false;
-      }
-
-      _beginSPI(PAGEPROG);
-      for (uint16_t i = 0; i < writeBufSz; ++i) {
-        _nextByte(var.b[data_offset + i]);
-      }
-      _currentAddress += writeBufSz;
-      data_offset += writeBufSz;
-      _sz -= writeBufSz;
-      maxBytes = 256;   // Now we can do up to 256 bytes per loop
-      CHIP_DESELECT
-    }
-  }
-
-	if (!errorCheck){
-    _endSPI();
-		return true;
-  }
-	else {
-		return _writeErrorCheck(address, data);
-  }
+  return writeAnything(address, data, errorCheck);
 }
 // Variant B
 bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeLong(address, data, errorCheck);
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, data, errorCheck);
 }
 
 // Writes a float as four bytes starting from a specific location in a page.
@@ -1081,61 +712,12 @@ bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, boo
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
 bool SPIFlash::writeFloat(uint32_t address, float data, bool errorCheck) {
-  const uint8_t size = (sizeof(data));
-
-  if(!_prep(PAGEPROG, address, size)) {
-    return false;
-  }
-  union
-  {
-    uint8_t b[size];
-    float f;
-  } var;
-  var.f = data;
-
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  if (maxBytes > size) {
-    _beginSPI(PAGEPROG);
-    _nextBuf(PAGEPROG, &var.b[0], size);
-    CHIP_DESELECT
-  }
-  else {
-    uint16_t writeBufSz;
-    uint16_t data_offset = 0;
-    uint16_t _sz = size;
-
-    while (_sz > 0)
-    {
-      writeBufSz = (_sz<=maxBytes) ? _sz : maxBytes;
-      if(!_notBusy() || !_writeEnable()){
-        return false;
-      }
-
-      _beginSPI(PAGEPROG);
-      for (uint16_t i = 0; i < writeBufSz; ++i) {
-        _nextByte(var.b[data_offset + i]);
-      }
-      _currentAddress += writeBufSz;
-      data_offset += writeBufSz;
-      _sz -= writeBufSz;
-      maxBytes = 256;   // Now we can do up to 256 bytes per loop
-      CHIP_DESELECT
-    }
-  }
-
-  if (!errorCheck) {
-    _endSPI();
-    return true;
-  }
-  else {
-    return _writeErrorCheck(address, data);
-  }
+  return writeAnything(address, data, errorCheck);
 }
 // Variant B
 bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeFloat(address, data, errorCheck);
+  uint32_t address = _getAddress(page_number, offset);
+  return writeAnything(address, data, errorCheck);
 }
 
 // Reads a string from a specific location on a page.
@@ -1235,9 +817,7 @@ bool SPIFlash::eraseSector(uint32_t address) {
  		return false;
 
 	_beginSPI(SECTORERASE);
-	_nextByte(address >> 16);
-	_nextByte(address >> 8);
-	_nextByte(0);
+	_transferAddress(address);
   _endSPI();
 
 	if(!_notBusy(500L))
@@ -1267,9 +847,7 @@ bool SPIFlash::eraseBlock32K(uint32_t address) {
  		return false;
   }
   _beginSPI(BLOCK32ERASE);
-	_nextByte(address >> 16);
-	_nextByte(address >> 8);
-	_nextByte(0);
+	_transferAddress(address);
   _endSPI();
 
 	if(!_notBusy(1*S))
@@ -1299,9 +877,7 @@ bool SPIFlash::eraseBlock64K(uint32_t address) {
  		return false;
   }
   _beginSPI(BLOCK64ERASE);
-	_nextByte(address >> 16);
-	_nextByte(address >> 8);
-	_nextByte(0);
+	_transferAddress(address);
   _endSPI();
 
 	if(!_notBusy(1200L))
