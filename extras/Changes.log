@@ -20,6 +20,7 @@ New Boards supported:
 -->
 
 Enhancements:
+--> Library now works with Microchip flash memory. (Further optimizations required)
 --> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):
 
 	Improvements in speed in v3.0.0 when compared to v2.7.0 (values in percentage of time v3.0.0 is faster than v2.7.0)
