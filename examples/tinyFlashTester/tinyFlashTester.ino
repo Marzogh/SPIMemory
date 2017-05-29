@@ -5,7 +5,7 @@
   |                                                                   v 2.7.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  29.05.2017                                                                   |
+  |                                                                  19.04.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
@@ -19,11 +19,7 @@
 
 #include<SPIFlash.h>
 
-#if defined (__AVR_ATtiny85__)
-SPIFlash flash(3);
-#else
 SPIFlash flash;
-#endif
 
 struct Configuration {
   float lux;
@@ -35,33 +31,17 @@ struct Configuration {
 Configuration configuration;
 
 void setup() {
-  pinMode(1, OUTPUT);
-  digitalWrite(1, HIGH);
-  delay(5000);
   flash.begin();
   uint32_t _addr = 34235;
 
+#if defined (__AVR_ATtiny85__)
   configuration.lux = 98.43;
   configuration.vOut = 4.84;
   configuration.RLDR = 889.32;
   configuration.light = true;
   configuration.adc = 5;
-
-#if defined (__AVR_ATtiny85__)
-  digitalWrite(1, LOW);
-  delay(2000);
-  digitalWrite(1, HIGH);
-  delay(2000);
-  flash.eraseSector(_addr, 0);
   flash.writeAnything(_addr, configuration);
-  digitalWrite(1, LOW);
-  delay(2000);
-  digitalWrite(1, HIGH);
-  delay(2000);
-  digitalWrite(1, LOW);
-  delay(2000);
 #else
-  Serial.begin(115200);
   Serial.println("Data Written to flash was: ");
   Serial.println(configuration.lux);
   Serial.println(configuration.vOut);
@@ -74,7 +54,7 @@ void setup() {
   configuration.light = 0;
   configuration.adc = 0;
   flash.readAnything(_addr, configuration);
-  //flash.eraseSector(_addr, 0);
+  flash.eraseSector(_addr, 0);
   Serial.println("After reading");
   Serial.println(configuration.lux);
   Serial.println(configuration.vOut);
@@ -87,13 +67,3 @@ void setup() {
 
 void loop() {
 }
-
-void _blink(uint8_t pin, uint8_t times) {
-  for (uint8_t i = 0; i < times; i++) {
-    digitalWrite(pin, HIGH);
-    delay(1000);
-    digitalWrite(pin, LOW);
-    delay(1000);
-  }
-}
-
