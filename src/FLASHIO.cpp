@@ -30,23 +30,32 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Double checks all parameters before calling a read or write. Comes in two variants
-//Variant A: Takes address and returns the address if true, else returns false. Throws an error if there is a problem.
-bool SPIFlash::_prep(uint8_t opcode, uint32_t address, uint32_t size) {
+//Takes address and returns the address if true, else returns false. Throws an error if there is a problem.
+bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
   switch (opcode) {
     case PAGEPROG:
-    if (!_addressCheck(address, size) || !_notBusy() || !_writeEnable()) {
+    #ifndef HIGHSPEED
+    if(!_addressCheck(_addr, size) || !_notBusy() || !_writeEnable() || !_notPrevWritten(_addr, size)) {
       return false;
     }
-    #ifndef HIGHSPEED
-    if(!_notPrevWritten(address, size)) {
+    #else
+    if (!_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
       return false;
     }
     #endif
     return true;
     break;
 
+    case ERASEFUNC:
+    _currentAddress = _addr;
+    if(!_notBusy()||!_writeEnable()) {
+      return false;
+    }
+    return true;
+    break;
+
     default:
-    if (!_addressCheck(address, size) || !_notBusy()){
+    if (!_addressCheck(_addr, size) || !_notBusy()){
       return false;
     }
     return true;
@@ -54,23 +63,11 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t address, uint32_t size) {
   }
 }
 
-//Variant B: Take the opcode, page number, offset and size of data block as arguments
-bool SPIFlash::_prep(uint8_t opcode, uint32_t page_number, uint8_t offset, uint32_t size) {
-  uint32_t address = _getAddress(page_number, offset);
-  return _prep(opcode, address, size);
-}
-
-bool SPIFlash::_transferAddress(uint32_t _addr) {
-  if (!_addr) {
-    _nextByte(_currentAddress >> 16);
-    _nextByte(_currentAddress >> 8);
-    _nextByte(_currentAddress);
-  }
-  else {
-    _nextByte(_addr >> 16);
-    _nextByte(_addr >> 8);
-    _nextByte(_addr);
-  }
+// Transfer Address.
+bool SPIFlash::_transferAddress(void) {
+  _nextByte(_currentAddress >> 16);
+  _nextByte(_currentAddress >> 8);
+  _nextByte(_currentAddress);
 }
 
 bool SPIFlash::_startSPIBus(void) {
@@ -109,12 +106,6 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
   }
   CHIP_SELECT
   switch (opcode) {
-    case FASTREAD:
-    _nextByte(opcode);
-    _nextByte(DUMMYBYTE);
-    _transferAddress();
-    break;
-
     case READDATA:
     _nextByte(opcode);
     _transferAddress();
@@ -124,6 +115,23 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     _nextByte(opcode);
     _transferAddress();
     break;
+
+    case FASTREAD:
+    _nextByte(opcode);
+    _nextByte(DUMMYBYTE);
+    _transferAddress();
+
+    case SECTORERASE:
+    _nextByte(opcode);
+    _transferAddress();
+
+    case BLOCK32ERASE:
+    _nextByte(opcode);
+    _transferAddress();
+
+    case BLOCK64ERASE:
+    _nextByte(opcode);
+    _transferAddress();
 
     default:
     _nextByte(opcode);
@@ -135,11 +143,11 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
 
 //Reads/Writes next byte. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint8_t SPIFlash::_nextByte(uint8_t data) {
-#if defined (ARDUINO_ARCH_SAM)
-  return _dueSPITransfer(data);
-#else
+//#if defined (ARDUINO_ARCH_SAM)
+//  return _dueSPITransfer(data);
+//#else
   return xfer(data);
-#endif
+//#endif
 }
 
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
@@ -203,7 +211,7 @@ void SPIFlash::_endSPI(void) {
   SPIBusState = false;
 }
 
-// Checks if status register 1 can be accessed - used during powerdown and power up and for debugging
+// Checks if status register 1 can be accessed - used to check chip status, during powerdown and power up and for debugging
 uint8_t SPIFlash::_readStat1(void) {
 	_beginSPI(READSTAT1);
   uint8_t stat1 = _nextByte();
@@ -225,7 +233,7 @@ bool SPIFlash::_noSuspend(void) {
   switch (_chip.manufacturerID) {
     case WINBOND_MANID:
     if(_readStat2() & SUS) {
-      errorcode = SYSSUSPEND;
+      _troubleshoot(SYSSUSPEND);
   		return false;
     }
   	return true;
@@ -233,7 +241,7 @@ bool SPIFlash::_noSuspend(void) {
 
     case MICROCHIP_MANID:
     if(_readStat1() & WSE || _readStat1() & WSP) {
-      errorcode = SYSSUSPEND;
+      _troubleshoot(SYSSUSPEND);
   		return false;
     }
   	return true;
@@ -243,16 +251,13 @@ bool SPIFlash::_noSuspend(void) {
 
 // Polls the status register 1 until busy flag is cleared or timeout
 bool SPIFlash::_notBusy(uint32_t timeout) {
+  _delay_us(WINBOND_WRITE_DELAY);
 	uint32_t startTime = millis();
 
 	do {
     state = _readStat1();
 		if((millis()-startTime) > timeout){
-      errorcode = CHIPBUSY;
-			#ifdef RUNDIAGNOSTIC
-			_troubleshoot();
-			#endif
-      _endSPI();
+      _troubleshoot(CHIPBUSY);
 			return false;
 		}
 	} while(state & BUSY);
@@ -262,21 +267,17 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
 //Enables writing to chip by setting the WRITEENABLE bit
 bool SPIFlash::_writeEnable(uint32_t timeout) {
   uint32_t startTime = millis();
-  if (!(state & WRTEN)) {
+  //if (!(state & WRTEN)) {
     do {
       _beginSPI(WRITEENABLE);
       CHIP_DESELECT
       state = _readStat1();
       if((millis()-startTime) > timeout) {
-        errorcode = CANTENWRITE;
-        #ifdef RUNDIAGNOSTIC
-        _troubleshoot();
-        #endif
-        _endSPI();
+        _troubleshoot(CANTENWRITE);
         return false;
-       }
-     } while (!(state & WRTEN));
-  }
+      }
+     } while (!(state & WRTEN)) ;
+  //}
   return true;
 }
 
@@ -289,14 +290,6 @@ bool SPIFlash::_writeDisable(void) {
 	_beginSPI(WRITEDISABLE);
   CHIP_DESELECT
 	return true;
-}
-
-//Gets address from page number and offset. Takes two arguments:
-// 1. page_number --> Any page number from 0 to maxPage
-// 2. offset --> Any offset within the page - from 0 to 255
-uint32_t SPIFlash::_getAddress(uint16_t page_number, uint8_t offset) {
-	uint32_t address = page_number;
-	return ((address << 8) + offset);
 }
 
 //Checks the device ID to establish storage parameters
@@ -324,10 +317,7 @@ bool SPIFlash::_getJedecId(void) {
 	_chip.capacityID = _nextByte(NULLBYTE);		// capacity
   CHIP_DESELECT
   if (!_chip.manufacturerID || !_chip.memoryTypeID || !_chip.capacityID) {
-    errorcode = NORESPONSE;
-    #ifdef RUNDIAGNOSTIC
-    _troubleshoot();
-    #endif
+    _troubleshoot(NORESPONSE);
     return false;
   }
   else {
@@ -339,8 +329,8 @@ bool SPIFlash::_getSFDP(void) {
   if(!_notBusy()) {
   	return false;
   }
-  _beginSPI(READSFDP);
   _currentAddress = 0x00;
+  _beginSPI(READSFDP);
   _transferAddress();
   _nextByte(DUMMYBYTE);
   for (uint8_t i = 0; i < 4; i++) {
@@ -390,10 +380,7 @@ bool SPIFlash::_chipID(void) {
       return true;
     }
     else {
-      errorcode = UNKNOWNCAP;		//Error code for unidentified capacity
-      #ifdef RUNDIAGNOSTIC
-      _troubleshoot();
-      #endif
+      _troubleshoot(UNKNOWNCAP); //Error code for unidentified capacity
       return false;
     }
   }
@@ -401,10 +388,7 @@ bool SPIFlash::_chipID(void) {
     // If a custom chip size is defined
     _chip.eraseTime = _chip.capacity/KB8;
     _chip.supported = false;// This chip is not officially supported
-    errorcode = UNKNOWNCHIP;		//Error code for unidentified chip
-    #ifdef RUNDIAGNOSTIC
-    _troubleshoot();
-    #endif
+    _troubleshoot(UNKNOWNCHIP); //Error code for unidentified chip
     //while(1);         //Enable this if usercode is not meant to be run on unsupported chips
   }
   return true;
@@ -412,41 +396,32 @@ bool SPIFlash::_chipID(void) {
 
 //Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
-bool SPIFlash::_addressCheck(uint32_t address, uint32_t size) {
+bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
   if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
-    #ifdef RUNDIAGNOSTIC
-    _troubleshoot();
-    #endif
     return false;
   }
 	if (!_chip.eraseTime) {
-    errorcode = CALLBEGIN;
-    #ifdef RUNDIAGNOSTIC
-    _troubleshoot();
-    #endif
+    _troubleshoot(CALLBEGIN);
     return false;
 	}
 
-  for (uint32_t i = 0; i < size; i++) {
-    if (address + i >= _chip.capacity) {
-    	if (!pageOverflow) {
-        errorcode = OUTOFBOUNDS;
-        #ifdef RUNDIAGNOSTIC
-        _troubleshoot();
-        #endif
-        return false;					// At end of memory - (!pageOverflow)
-      }
-      else {
-        _currentAddress = 0x00;
-        return true;					// At end of memory - (pageOverflow)
-      }
+  //for (uint32_t i = 0; i < size; i++) {
+  if (_addr + size >= _chip.capacity) {
+    if (!pageOverflow) {
+      _troubleshoot(OUTOFBOUNDS);
+      return false;					// At end of memory - (!pageOverflow)
+    }
+    else {
+      _currentAddress = 0x00;
+      return true;					// At end of memory - (pageOverflow)
     }
   }
-  _currentAddress = address;
+  //}
+  _currentAddress = _addr;
   return true;				// Not at end of memory if (address < _chip.capacity)
 }
 
-bool SPIFlash::_notPrevWritten(uint32_t address, uint32_t size) {
+bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
   _beginSPI(READDATA);
   for (uint32_t i = 0; i < size; i++) {
     if (_nextByte() != 0xFF) {

@@ -54,6 +54,7 @@ struct Configuration {
   float RLDR;                   // Resistance calculation of potential divider with LDR
   bool light;
   uint8_t adc;
+  uint8_t arr[8];
 };
 Configuration configuration;
 
@@ -85,6 +86,9 @@ void setup() {
   configuration.RLDR = 889.32;
   configuration.light = true;
   configuration.adc = 5;
+  for (uint8_t i = 0; i < 8; i++) {
+    configuration.arr[i] = i;
+  }
 #endif
 
 #ifdef SENSOR
@@ -101,13 +105,20 @@ void setup() {
   Serial.println(configuration.RLDR);
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
-
+  for (uint8_t i = 0; i < 8; i++) {
+    Serial.print(configuration.arr[i]);
+    Serial.print(", ");
+  }
+  Serial.println();
   Serial.println("Saved!");
   configuration.lux = 0;
   configuration.vOut = 0;
   configuration.RLDR = 0;
   configuration.light = 0;
   configuration.adc = 0;
+  for (uint8_t i = 0; i < 8; i++) {
+    configuration.arr[i] = 0;
+  }
   Serial.println();
   Serial.println("Local values set to 0");
   Serial.println(configuration.lux);
@@ -115,6 +126,11 @@ void setup() {
   Serial.println(configuration.RLDR);
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
+  for (uint8_t i = 0; i < 8; i++) {
+    Serial.print(configuration.arr[i]);
+    Serial.print(", ");
+  }
+  Serial.println();
   Serial.println();
   flash.readAnything(_addr, configuration);
   flash.eraseSector(_addr, 0);
@@ -125,6 +141,11 @@ void setup() {
   Serial.println(configuration.RLDR);
   Serial.println(configuration.light);
   Serial.println(configuration.adc);
+  for (uint8_t i = 0; i < 8; i++) {
+    Serial.print(configuration.arr[i]);
+    Serial.print(", ");
+  }
+  Serial.println();
 
 }
 

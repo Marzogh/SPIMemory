@@ -1,8 +1,8 @@
-/* Arduino SPIFlash Library v.2.7.0
+/* Arduino SPIFlash Library v.3.0.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 02/05/2017
+ * Modified by Prajwal Bhattaram - 17/05/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -60,21 +60,16 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Identifies chip and establishes parameters
-bool SPIFlash::begin(uint32_t _chipSize) {
-  if (_chipSize) {
-    _chip.capacity = _chipSize/8;
-  }
+bool SPIFlash::begin(void) {
+#ifdef CHIPSIZE
+    _chip.capacity = CHIPSIZE/8;
+#endif
   BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
   _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
 #endif
-  if(!_chipID()) {
-    #ifdef RUNDIAGNOSTIC
-    _troubleshoot();
-    #endif
-    return false;
-  }
+  return _chipID();
 }
 
 //Allows the setting of a custom clock speed for the SPI bus to communicate with the chip.
@@ -90,7 +85,7 @@ uint8_t SPIFlash::error(bool _verbosity) {
     return errorcode;
   }
   else {
-    _troubleshoot();
+    _troubleshoot(errorcode, PRINTOVERRIDE);
     return errorcode;
   }
 }
@@ -136,25 +131,15 @@ uint32_t SPIFlash::getJEDECID(void) {
 // All addresses in the in the sketch must be obtained via this function or not at all.
 // Variant A
 uint32_t SPIFlash::getAddress(uint16_t size) {
-	if (!_addressCheck(currentAddress, size)){
-    errorcode = OUTOFBOUNDS;
-    #ifdef RUNDIAGNOSTIC
-    _troubleshoot();
-    #endif
+  if (!_addressCheck(currentAddress, size)){
+    _troubleshoot(OUTOFBOUNDS);
     return false;
 	}
 	else {
-		uint32_t address = currentAddress;
+		uint32_t _addr = currentAddress;
 		currentAddress+=size;
-		return address;
+		return _addr;
 	}
-}
-// Variant B
-bool SPIFlash::getAddress(uint16_t size, uint16_t &page_number, uint8_t &offset) {
-	uint32_t address = getAddress(size);
-	offset = (address >> 0);
-	page_number = (address >> 8);
-	return true;
 }
 
 //Function for returning the size of the string (only to be used for the getAddress() function)
@@ -169,48 +154,40 @@ uint16_t SPIFlash::sizeofStr(String &inputStr) {
 // Reads a byte of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
 //  	2. offset --> Any offset within the page - from 0 to 255
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-uint8_t SPIFlash::readByte(uint32_t address, bool fastRead) {
+uint8_t SPIFlash::readByte(uint32_t _addr, bool fastRead) {
   uint8_t data;
-  readAnything(address, data, fastRead);
+  uint8_t _sizeofdata = sizeof(data);
+  _read(_addr, data, _sizeofdata, fastRead);
   return data;
-}
-// Variant B
-uint8_t SPIFlash::readByte(uint16_t page_number, uint8_t offset, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readByte(address, fastRead);
 }
 
 // Reads a char of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
 //  	2. offset --> Any offset within the page - from 0 to 255
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-int8_t SPIFlash::readChar(uint32_t address, bool fastRead) {
+int8_t SPIFlash::readChar(uint32_t _addr, bool fastRead) {
   int8_t data;
-  readAnything(address, data, fastRead);
+  uint8_t _sizeofdata = sizeof(data);
+  _read(_addr, data, _sizeofdata, fastRead);
   return data;
-}
-// Variant B
-int8_t SPIFlash::readChar(uint16_t page_number, uint8_t offset, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readChar(address, fastRead);
 }
 
 // Reads an array of bytes starting from a specific location in a page.// Has two variants:
 //	A. Takes three arguments
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes four arguments
@@ -219,8 +196,8 @@ int8_t SPIFlash::readChar(uint16_t page_number, uint8_t offset, bool fastRead) {
 //		3. data_buffer --> The array of bytes to be read from the flash memory - starting at the offset on the page indicated
 //		4. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-bool  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead) {
-	if (!_prep(READDATA, address, bufferSize)) {
+bool  SPIFlash::readByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead) {
+	if (!_prep(READDATA, _addr, bufferSize)) {
     return false;
 	}
   if(fastRead) {
@@ -233,16 +210,10 @@ bool  SPIFlash::readByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
   _endSPI();
 	return true;
 }
-// Variant B
-bool  SPIFlash::readByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readByteArray(address, data_buffer, bufferSize, fastRead);
-}
 
 // Reads an array of chars starting from a specific location in a page.// Has two variants:
 //	A. Takes three arguments
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes four arguments
@@ -251,8 +222,8 @@ bool  SPIFlash::readByteArray(uint16_t page_number, uint8_t offset, uint8_t *dat
 //		3. data_buffer --> The array of bytes to be read from the flash memory - starting at the offset on the page indicated
 //		4. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-bool  SPIFlash::readCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool fastRead) {
-  if (!_prep(READDATA, address, bufferSize)) {
+bool  SPIFlash::readCharArray(uint32_t _addr, char *data_buffer, uint16_t bufferSize, bool fastRead) {
+  if (!_prep(READDATA, _addr, bufferSize)) {
     return false;
 	}
   if(fastRead) {
@@ -265,122 +236,96 @@ bool  SPIFlash::readCharArray(uint32_t address, char *data_buffer, uint16_t buff
   _endSPI();
 	return true;
 }
-// Variant B
-bool  SPIFlash::readCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool fastRead) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return readCharArray(address, data_buffer, bufferSize, fastRead);
-}
 
 // Reads an unsigned int of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
 //  	2. offset --> Any offset within the page - from 0 to 255
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-uint16_t SPIFlash::readWord(uint32_t address, bool fastRead) {
+uint16_t SPIFlash::readWord(uint32_t _addr, bool fastRead) {
   uint16_t data;
-  readAnything(address, data, fastRead);
+  uint8_t _sizeofdata = sizeof(data);
+  _read(_addr, data, _sizeofdata, fastRead);
   return data;
-}
-// Variant B
-uint16_t SPIFlash::readWord(uint16_t page_number, uint8_t offset, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readWord(address, fastRead);
 }
 
 // Reads a signed int of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
 //  	2. offset --> Any offset within the page - from 0 to 255
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-int16_t SPIFlash::readShort(uint32_t address, bool fastRead) {
+int16_t SPIFlash::readShort(uint32_t _addr, bool fastRead) {
   int16_t data;
-  readAnything(address, data, fastRead);
+  uint8_t _sizeofdata = sizeof(data);
+  _read(_addr, data, _sizeofdata, fastRead);
   return data;
-}
-// Variant B
-int16_t SPIFlash::readShort(uint16_t page_number, uint8_t offset, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readShort(address, fastRead);
 }
 
 // Reads an unsigned long of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any _addr from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
 //  	2. offset --> Any offset within the page - from 0 to 255
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-uint32_t SPIFlash::readULong(uint32_t address, bool fastRead) {
+uint32_t SPIFlash::readULong(uint32_t _addr, bool fastRead) {
   uint32_t data;
-  readAnything(address, data, fastRead);
+  uint8_t _sizeofdata = sizeof(data);
+  _read(_addr, data, _sizeofdata, fastRead);
   return data;
-}
-// Variant B
-uint32_t SPIFlash::readULong(uint16_t page_number, uint8_t offset, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readULong(address, fastRead);
 }
 
 // Reads a signed long of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any _addr from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
 //  	2. offset --> Any offset within the page - from 0 to 255
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-int32_t SPIFlash::readLong(uint32_t address, bool fastRead) {
+int32_t SPIFlash::readLong(uint32_t _addr, bool fastRead) {
   int32_t data;
-  readAnything(address, data, fastRead);
+  uint8_t _sizeofdata = sizeof(data);
+  _read(_addr, data, _sizeofdata, fastRead);
   return data;
-}
-// Variant B
-int32_t SPIFlash::readLong(uint16_t page_number, uint8_t offset, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readLong(address, fastRead);
 }
 
 // Reads a signed long of data from a specific location in a page.
 // Has two variants:
 //	A. Takes two arguments -
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes three arguments -
 //  	1. page --> Any page number from 0 to maxPage
 //  	2. offset --> Any offset within the page - from 0 to 255
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 // Variant A
-float SPIFlash::readFloat(uint32_t address, bool fastRead) {
+float SPIFlash::readFloat(uint32_t _addr, bool fastRead) {
   float data;
-  readAnything(address, data, fastRead);
+  uint8_t _sizeofdata = sizeof(data);
+  _read(_addr, data, _sizeofdata, fastRead);
   return data;
-}
-// Variant B
-float SPIFlash::readFloat(uint16_t page_number, uint8_t offset, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readFloat(address, fastRead);
 }
 
 // Reads a string from a specific location on a page.
 // Has two variants:
 //	A. Takes three arguments
-//		1. address --> Any address from 0 to capacity
+//		1. _addr --> Any address from 0 to capacity
 //		2. outputString --> String variable to write the output to
 //		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 //	B. Takes four arguments
@@ -391,28 +336,15 @@ float SPIFlash::readFloat(uint16_t page_number, uint8_t offset, bool fastRead) {
 // This function first reads a short from the address to figure out the size of the String object stored and
 // then reads the String object data
 // Variant A
-bool SPIFlash::readStr(uint32_t address, String &outStr, bool fastRead) {
-  uint16_t strLen;
-  //_delay_us(20);
-  strLen = readWord(address);
-  address+=(sizeof(strLen));
-  char outputChar[strLen];
-
-  readCharArray(address, outputChar, strLen, fastRead);
-
-  outStr = String(outputChar);
-  return true;
-}
-// Variant B
-bool SPIFlash::readStr(uint16_t page_number, uint8_t offset, String &outStr, bool fastRead) {
-  uint32_t address = _getAddress(page_number, offset);
-  return readStr(address, outStr, fastRead);
+bool SPIFlash::readStr(uint32_t _addr, String &outStr, bool fastRead) {
+  uint8_t _sizeofdata = sizeof(outStr);
+  return _read(_addr, outStr, _sizeofdata, fastRead);
 }
 
 // Writes a byte of data to a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> One byte of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -423,19 +355,15 @@ bool SPIFlash::readStr(uint16_t page_number, uint8_t offset, String &outStr, boo
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeByte(uint32_t address, uint8_t data, bool errorCheck) {
-  return writeAnything(address, data, errorCheck);
-}
-// Variant B
-bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, data, errorCheck);
+bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(data);
+  return _write(_addr, data, _sizeofdata, errorCheck);
 }
 
 // Writes a char of data to a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> One char of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -446,19 +374,15 @@ bool SPIFlash::writeByte(uint16_t page_number, uint8_t offset, uint8_t data, boo
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeChar(uint32_t address, int8_t data, bool errorCheck) {
-  return writeAnything(address, data, errorCheck);
-}
-// Variant B
-bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, data, errorCheck);
+bool SPIFlash::writeChar(uint32_t _addr, int8_t data, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(data);
+  return _write(_addr, data, _sizeofdata, errorCheck);
 }
 
 // Writes an array of bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> An array of bytes to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -469,14 +393,16 @@ bool SPIFlash::writeChar(uint16_t page_number, uint8_t offset, int8_t data, bool
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck) {
-  if (!_prep(PAGEPROG, address, bufferSize)) {
+bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck) {
+  if (!_prep(PAGEPROG, _addr, bufferSize)) {
     return false;
   }
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
+  uint16_t maxBytes = PAGESIZE-(_addr % PAGESIZE);  // Force the first set of bytes to stay within the first page
 
   if (bufferSize <= maxBytes) {
-    _beginSPI(PAGEPROG);
+    CHIP_SELECT
+    _nextByte(PAGEPROG);
+    _transferAddress();
     _nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
     CHIP_DESELECT
   }
@@ -485,15 +411,12 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
     uint16_t writeBufSz;
     uint16_t data_offset = 0;
 
-    while (length > 0)
-    {
+    do {
       writeBufSz = (length<=maxBytes) ? length : maxBytes;
 
-      if(!_notBusy() || !_writeEnable()){
-        return false;
-      }
-
-      _beginSPI(PAGEPROG);
+      CHIP_SELECT
+      _nextByte(PAGEPROG);
+      _transferAddress();
       for (uint16_t i = 0; i < writeBufSz; ++i) {
         _nextByte(data_buffer[data_offset + i]);
       }
@@ -503,7 +426,12 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
       data_offset += writeBufSz;
       length -= writeBufSz;
       maxBytes = 256;   // Now we can do up to 256 bytes per loop
-    }
+
+      if(!_notBusy() || !_writeEnable()){
+        return false;
+      }
+
+    } while (length > 0);
   }
 
   if (!errorCheck) {
@@ -514,12 +442,12 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
     if (!_notBusy()) {
       return false;
     }
-    _currentAddress = address;
+    _currentAddress = _addr;
     CHIP_SELECT
     _nextByte(READDATA);
     _transferAddress();
     for (uint16_t j = 0; j < bufferSize; j++) {
-      if (_nextByte(NULLBYTE) != data_buffer[j]) {
+      if (_nextByte() != data_buffer[j]) {
         return false;
       }
     }
@@ -527,17 +455,11 @@ bool SPIFlash::writeByteArray(uint32_t address, uint8_t *data_buffer, uint16_t b
     return true;
   }
 }
-// Variant B
-bool SPIFlash::writeByteArray(uint16_t page_number, uint8_t offset, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeByteArray(address, data_buffer, bufferSize, errorCheck);
-}
 
 // Writes an array of bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> An array of chars to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -548,33 +470,45 @@ bool SPIFlash::writeByteArray(uint16_t page_number, uint8_t offset, uint8_t *dat
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t bufferSize, bool errorCheck) {
-  uint16_t writeBufSz;
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  uint16_t data_offset = 0;
-  uint16_t length = bufferSize;
-  if (!_prep(PAGEPROG, address, bufferSize)) {
+bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, uint16_t bufferSize, bool errorCheck) {
+  if (!_prep(PAGEPROG, _addr, bufferSize)) {
     return false;
   }
+  uint16_t maxBytes = PAGESIZE-(_addr % PAGESIZE);  // Force the first set of bytes to stay within the first page
 
-  while (length > 0)
-  {
-    writeBufSz = (length<=maxBytes) ? length : maxBytes;
-
-    if(!_notBusy() || !_writeEnable()){
-      return false;
-    }
-
-    _beginSPI(PAGEPROG);
-
-    for (uint16_t i = 0; i < writeBufSz; ++i) {
-      _nextByte(data_buffer[data_offset + i]);
-    }
-    _currentAddress += writeBufSz;
-    data_offset += writeBufSz;
-    length -= writeBufSz;
-    maxBytes = 256;   // Now we can do up to 256 bytes per loop
+  if (bufferSize <= maxBytes) {
+    CHIP_SELECT
+    _nextByte(PAGEPROG);
+    _transferAddress();
+    _nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
     CHIP_DESELECT
+  }
+  else {
+    uint16_t length = bufferSize;
+    uint16_t writeBufSz;
+    uint16_t data_offset = 0;
+
+    do {
+      writeBufSz = (length<=maxBytes) ? length : maxBytes;
+
+      CHIP_SELECT
+      _nextByte(PAGEPROG);
+      _transferAddress();
+      for (uint16_t i = 0; i < writeBufSz; ++i) {
+        _nextByte(data_buffer[data_offset + i]);
+      }
+      CHIP_DESELECT
+
+      _currentAddress += writeBufSz;
+      data_offset += writeBufSz;
+      length -= writeBufSz;
+      maxBytes = 256;   // Now we can do up to 256 bytes per loop
+
+      if(!_notBusy() || !_writeEnable()){
+        return false;
+      }
+
+    } while (length > 0);
   }
 
   if (!errorCheck) {
@@ -585,12 +519,12 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
     if (!_notBusy()) {
       return false;
     }
-    _currentAddress = address;
+    _currentAddress = _addr;
     CHIP_SELECT
     _nextByte(READDATA);
     _transferAddress();
     for (uint16_t j = 0; j < bufferSize; j++) {
-      if (_nextByte(NULLBYTE) != data_buffer[j]) {
+      if (_nextByte() != data_buffer[j]) {
         return false;
       }
     }
@@ -598,17 +532,11 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
     return true;
   }
 }
-// Variant B
-bool SPIFlash::writeCharArray(uint16_t page_number, uint8_t offset, char *data_buffer, uint16_t bufferSize, bool errorCheck) {
-	uint32_t address = _getAddress(page_number, offset);
-
-	return writeCharArray(address, data_buffer, bufferSize, errorCheck);
-}
 
 // Writes an unsigned int as two bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> One unsigned int of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -619,19 +547,15 @@ bool SPIFlash::writeCharArray(uint16_t page_number, uint8_t offset, char *data_b
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeWord(uint32_t address, uint16_t data, bool errorCheck) {
-  return writeAnything(address, data, errorCheck);
-}
-// Variant B
-bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, data, errorCheck);
+bool SPIFlash::writeWord(uint32_t _addr, uint16_t data, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(data);
+  return _write(_addr, data, _sizeofdata, errorCheck);
 }
 
 // Writes a signed int as two bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> One signed int of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -642,19 +566,15 @@ bool SPIFlash::writeWord(uint16_t page_number, uint8_t offset, uint16_t data, bo
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeShort(uint32_t address, int16_t data, bool errorCheck) {
-  return writeAnything(address, data, errorCheck);
-}
-// Variant B
-bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, data, errorCheck);
+bool SPIFlash::writeShort(uint32_t _addr, int16_t data, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(data);
+  return _write(_addr, data, _sizeofdata, errorCheck);
 }
 
 // Writes an unsigned long as four bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> One unsigned long of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -665,19 +585,15 @@ bool SPIFlash::writeShort(uint16_t page_number, uint8_t offset, int16_t data, bo
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeULong(uint32_t address, uint32_t data, bool errorCheck) {
-  return writeAnything(address, data, errorCheck);
-}
-// Variant B
-bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, data, errorCheck);
+bool SPIFlash::writeULong(uint32_t _addr, uint32_t data, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(data);
+  return _write(_addr, data, _sizeofdata, errorCheck);
 }
 
 // Writes a signed long as four bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> One signed long of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -688,19 +604,15 @@ bool SPIFlash::writeULong(uint16_t page_number, uint8_t offset, uint32_t data, b
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeLong(uint32_t address, int32_t data, bool errorCheck) {
-  return writeAnything(address, data, errorCheck);
-}
-// Variant B
-bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, data, errorCheck);
+bool SPIFlash::writeLong(uint32_t _addr, int32_t data, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(data);
+  return _write(_addr, data, _sizeofdata, errorCheck);
 }
 
 // Writes a float as four bytes starting from a specific location in a page.
 // Has two variants:
 //	A. Takes three arguments -
-//  	1. address --> Any address - from 0 to capacity
+//  	1. _addr --> Any address - from 0 to capacity
 //  	2. data --> One float of data to be written to a particular location on a page
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -711,19 +623,15 @@ bool SPIFlash::writeLong(uint16_t page_number, uint8_t offset, int32_t data, boo
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 // Variant A
-bool SPIFlash::writeFloat(uint32_t address, float data, bool errorCheck) {
-  return writeAnything(address, data, errorCheck);
-}
-// Variant B
-bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeAnything(address, data, errorCheck);
+bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(data);
+  return _write(_addr, data, _sizeofdata, errorCheck);
 }
 
 // Reads a string from a specific location on a page.
 // Has two variants:
 //	A. Takes two arguments -
-//  	1. address --> Any address from 0 to capacity
+//  	1. _addr --> Any address from 0 to capacity
 //		2. inputString --> String variable to write the data from
 //		3. errorCheck --> Turned on by default. Checks for writing errors
 //	B. Takes four arguments -
@@ -736,75 +644,10 @@ bool SPIFlash::writeFloat(uint16_t page_number, uint8_t offset, float data, bool
 // This function first writes the size of the string as an unsigned int to the address to figure out the size of the String object stored and
 // then writes the String object data. Therefore it takes up two bytes more than the size of the String itself.
 // Variant A
-bool SPIFlash::writeStr(uint32_t address, String &inputStr, bool errorCheck) {
-  uint16_t inStrLen = inputStr.length() +1;
-  if(!_prep(PAGEPROG, address, inStrLen)) {
-    return false;
-  }
-
-  const uint16_t size = sizeof(inStrLen);
-  union
-  {
-    uint8_t b[size];
-    uint16_t w;
-  } var;
-
-  var.w = inStrLen;
-  char inputChar[inStrLen];
-  inputStr.toCharArray(inputChar, inStrLen);
-  uint16_t maxBytes = PAGESIZE-(address % PAGESIZE);  // Force the first set of bytes to stay within the first page
-  if (maxBytes > inStrLen) {
-    _beginSPI(PAGEPROG);
-    _nextBuf(PAGEPROG, &var.b[0], size);
-    _nextBuf(PAGEPROG, (uint8_t*)&inputChar, inStrLen);
-    CHIP_DESELECT
-  }
-  else {
-    uint16_t writeBufSz;
-      uint16_t data_offset = 0;
-    bool strLenWritten = false;
-
-    while (inStrLen > 0)
-    {
-      writeBufSz = (inStrLen<=maxBytes) ? inStrLen : maxBytes;
-      if(!_notBusy() || !_writeEnable()){
-        return false;
-      }
-
-      _beginSPI(PAGEPROG);
-      for (uint16_t i = 0; i < writeBufSz; ++i) {
-        if(!strLenWritten) {
-          for (uint8_t j = 0; j < size; j++) {
-            _nextByte(var.b[j]);
-          }
-          strLenWritten = true;
-        }
-        _nextByte(inputChar[data_offset + i]);
-      }
-      _currentAddress += writeBufSz;
-      data_offset += writeBufSz;
-      inStrLen -= writeBufSz;
-      maxBytes = 256;   // Now we can do up to 256 bytes per loop
-      CHIP_DESELECT
-    }
-  }
-
-  if (!errorCheck) {
-    _endSPI();
-    return true;
-  }
-  else {
-    String tempStr;
-    readStr(address, tempStr);
-    return inputStr.equals(tempStr);
-  }
+bool SPIFlash::writeStr(uint32_t _addr, String &inputStr, bool errorCheck) {
+  uint8_t _sizeofdata = sizeof(inputStr);
+  return _write(_addr, inputStr, _sizeofdata, errorCheck);
 }
-// Variant B
-bool SPIFlash::writeStr(uint16_t page_number, uint8_t offset, String &inputStr, bool errorCheck) {
-  uint32_t address = _getAddress(page_number, offset);
-  return writeStr(address, inputStr, errorCheck);
-}
-
 
 //Erases one 4k sector. Has two variants:
 //	A. Takes the address as the argument and erases the sector containing the address.
@@ -812,16 +655,16 @@ bool SPIFlash::writeStr(uint16_t page_number, uint8_t offset, String &inputStr, 
 //	The sectors are numbered 0 - 255 containing 16 pages each.
 //			Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255
 // Variant A
-bool SPIFlash::eraseSector(uint32_t address) {
-	if(!_notBusy()||!_writeEnable())
- 		return false;
-
-	_beginSPI(SECTORERASE);
-	_transferAddress(address);
+bool SPIFlash::eraseSector(uint32_t _addr) {
+  if (!_prep(ERASEFUNC, _addr)) {
+    return false;
+  }
+  _beginSPI(SECTORERASE);   //The address is transferred as a part of this function
   _endSPI();
 
-	if(!_notBusy(500L))
-		return false;	//Datasheet says erasing a sector takes 400ms max
+	if(!_notBusy(500L)) {
+    return false;	//Datasheet says erasing a sector takes 400ms max
+  }
 
 		//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
 		// i.e. to write disable state upon the following conditions:
@@ -830,11 +673,6 @@ bool SPIFlash::eraseSector(uint32_t address) {
 
 	return true;
 }
-// Variant B
-bool SPIFlash::eraseSector(uint16_t page_number, uint8_t offset) {
-	uint32_t address = _getAddress(page_number, offset);
-	return eraseSector(address);
-}
 
 //Erases one 32k block. Has two variants:
 //	A. Takes the address as the argument and erases the block containing the address.
@@ -842,16 +680,16 @@ bool SPIFlash::eraseSector(uint16_t page_number, uint8_t offset) {
 //	The blocks are numbered 0 - 31 containing 128 pages each.
 // 			Page 0-127 --> Block 0; Page 128-255 --> Block 1;......Page 3968-4095 --> Block 31
 // Variant A
-bool SPIFlash::eraseBlock32K(uint32_t address) {
-	if(!_notBusy()||!_writeEnable()) {
- 		return false;
+bool SPIFlash::eraseBlock32K(uint32_t _addr) {
+  if (!_prep(ERASEFUNC, _addr)) {
+    return false;
   }
   _beginSPI(BLOCK32ERASE);
-	_transferAddress(address);
   _endSPI();
 
-	if(!_notBusy(1*S))
-	return false;	//Datasheet says erasing a sector takes 400ms max
+	if(!_notBusy(1*S)) {
+    return false;	//Datasheet says erasing a sector takes 400ms max
+  }
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
 	// i.e. to write disable state upon the following conditions:
@@ -859,11 +697,6 @@ bool SPIFlash::eraseBlock32K(uint32_t address) {
 	// Erase Security Register and Program Security register
 
 	return true;
-}
-// Variant B
-bool SPIFlash::eraseBlock32K(uint16_t page_number, uint8_t offset) {
-	uint32_t address = _getAddress(page_number, offset);
-	return eraseBlock32K(address);
 }
 
 //Erases one 64k block. Has two variants:
@@ -872,16 +705,17 @@ bool SPIFlash::eraseBlock32K(uint16_t page_number, uint8_t offset) {
 //	The blocks are numbered 0 - 15 containing 256 pages each.
 // 				Page 0-255 --> Block 0; Page 256-511 --> Block 1;......Page 3840-4095 --> Block 15
 //	Variant A
-bool SPIFlash::eraseBlock64K(uint32_t address) {
-	if(!_notBusy()||!_writeEnable()) {
- 		return false;
+bool SPIFlash::eraseBlock64K(uint32_t _addr) {
+  if (!_prep(ERASEFUNC, _addr)) {
+    return false;
   }
+
   _beginSPI(BLOCK64ERASE);
-	_transferAddress(address);
   _endSPI();
 
-	if(!_notBusy(1200L))
-		return false;	//Datasheet says erasing a sector takes 400ms max
+	if(!_notBusy(1200L)) {
+    return false;	//Datasheet says erasing a sector takes 400ms max
+  }
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
 	// i.e. to write disable state upon the following conditions:
@@ -889,11 +723,6 @@ bool SPIFlash::eraseBlock64K(uint32_t address) {
 	// Erase Security Register and Program Security register
 
 	return true;
-}
-//	Variant B
-bool SPIFlash::eraseBlock64K(uint16_t page_number, uint8_t offset) {
-	uint32_t address = _getAddress(page_number, offset);
-	return eraseBlock64K(address);
 }
 
 //Erases whole chip. Think twice before using.
@@ -903,8 +732,9 @@ bool SPIFlash::eraseChip(void) {
 
 	_beginSPI(CHIPERASE);
 	_endSPI();
-	if(!_notBusy(_chip.eraseTime))
-		return false; //Datasheet says erasing chip takes 6s max
+	if(!_notBusy(_chip.eraseTime)) {
+    return false; //Datasheet says erasing chip takes 6s max
+  }
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
 	// i.e. to write disable state upon the following conditions:

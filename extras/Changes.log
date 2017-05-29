@@ -2,6 +2,46 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.0.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						11.05.2017											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs Squashed:
+-->
+
+Deprecations:
+--> flash.begin() no longer takes any variable as an argument. To define a custom CHIPSIZE to use the library with an unsupported chip - refer to 'Enhancements -> 5'
+--> The library no longer supports using the page number + offset combination instead of addresses. If your code requires you to use a page number + offset combination, use the following code to help
+													address = (pagenumber << 8) + offset.
+													_____________________________________
+												 (32 bit) |     (16 bit)     | (8 bit)
+
+New Boards supported:
+-->
+
+Enhancements:
+--> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):
+
+	Improvements in speed in v3.0.0 when compared to v2.7.0 (values in percentage of time v3.0.0 is faster than v2.7.0)
+				(+) writeByte																		-> +3%
+				(+) writeChar 																	-> +6%
+				(+) writeWord																		-> +3%
+				(+) writeShort 																	-> +5%
+				(+) writeULong 																	-> +7%
+				(+) writeLong | readLong												-> +7%	 |   +7%
+				(+) writeFloat																	-> +7%
+				(+) writeStr | readStr													-> +57%  |   +61%
+				(+) writeAnything | readAnything (struct)				-> +25%  |   +20%
+				(+) writeByteArray | readByteArray (256 bytes)	-> +18%  |   +45%
+				(+) eraseSector																	-> +99%
+				(+) eraseBlock32K																-> +99.4%
+				(+) eraseBlock64K																-> +99.5%
+				(+) eraseChip																		-> +12%
+--> All functions except the Byte/Char Array Read/Write functions now call an internal _write/_read function.
+--> Restructured the internal _troubleshoot() function to be better human readable and easier to compile.
+--> Users can define RUNDIAGNOSTIC or HIGHSPEED in their code to access the library's special modes. No requirement to modify the library any more.
+--> No need to include CHIPSIZE in flash.begin() any more. Just defining CHIPSIZE in user code as one of the standard sizes as in defines.h will be enough. (Refer to 'Deprecations -> 1' above)
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						17.04.2017											   //
