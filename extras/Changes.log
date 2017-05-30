@@ -10,7 +10,7 @@ Bugs Squashed:
 -->
 
 Deprecations:
---> flash.begin() no longer takes any variable as an argument. To define a custom CHIPSIZE to use the library with an unsupported chip - refer to 'Enhancements -> 5'
+--> flash.begin() no longer takes any variable as an argument. To define a custom CHIPSIZE to use the library with an unsupported chip - refer to 'Enhancements -> 6'
 --> The library no longer supports using the page number + offset combination instead of addresses. If your code requires you to use a page number + offset combination, use the following code to help
 													address = (pagenumber << 8) + offset.
 													_____________________________________
