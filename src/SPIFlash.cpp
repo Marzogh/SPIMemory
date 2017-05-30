@@ -480,7 +480,7 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, uint16_t buffer
     CHIP_SELECT
     _nextByte(PAGEPROG);
     _transferAddress();
-    _nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
+    _nextBuf(PAGEPROG, (uint8_t*) &data_buffer[0], bufferSize);
     CHIP_DESELECT
   }
   else {
