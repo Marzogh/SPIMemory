@@ -54,7 +54,7 @@ void setup() {
   configuration.light = 0;
   configuration.adc = 0;
   flash.readAnything(_addr, configuration);
-  flash.eraseSector(_addr, 0);
+  flash.eraseSector(_addr);
   Serial.println("After reading");
   Serial.println(configuration.lux);
   Serial.println(configuration.vOut);
