@@ -24,6 +24,7 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - Arduino Zero
 - ESP8266 Boards (On the Arduino IDE)
 - Simblee Boards (On the Arduino IDE)
+- RTL8195A (tested and enabled by @boseji on 02.03.17)
 - Arduino Mega
 - Arduino Micro
 - Arduino Fio
