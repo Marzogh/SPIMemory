@@ -33,7 +33,7 @@
 #define RANDPIN A0
 #endif
 
-SPIFlash flash;
+SPIFlash flash(33);
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -53,12 +53,7 @@ void setup() {
 #endif
   Serial.println();
   Serial.println();
-
-#if defined (ARDUINO_ARCH_ESP32)
-  randomSeed(65535537);
-#else
   randomSeed(analogRead(RANDPIN));
-#endif
   getID();
   diagnose();
 }

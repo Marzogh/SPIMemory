@@ -44,7 +44,7 @@ void setup() {
 
   flash.begin();
 
-#if defined (ARDUINO_ARCH_ESP32) || defined __AVR_ATtiny85__
+#if defined __AVR_ATtiny85__
   randomSeed(65535537);
 #else
   randomSeed(analogRead(RANDPIN));

@@ -16,7 +16,11 @@ New Boards supported:
 --> Arduino Zero now fully supported.
 
 Enhancements:
--->
+--> Compatible with the ESP32 core for Arduino as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/9618eec19ea470bb59b9a25ebeb8c0c516ca89cc">9618eec</a> on 02.08.2017. For some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz.
+NOTE: ESP32 boards usually have an SPIFlash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example
+```
+SPIFlash flash(33);
+```
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.6.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

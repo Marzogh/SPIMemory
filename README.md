@@ -30,7 +30,13 @@ This Arduino library is for use with Winbond serial flash memory chips. In its c
 - Attiny85 Boards
 
 ###### In BETA
-- ESP32 Boards (Tested on the Sparkfun ESP32 thing) The library is known to work with the ESP32 core as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/7d0968c10dc540709d69a28eab2457075c1e4fa8">7d0968c</a> on 16.04.2017. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
+- Compatible with the ESP32 core for Arduino as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/9618eec19ea470bb59b9a25ebeb8c0c516ca89cc">9618eec</a> on 02.08.2017. For some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz.
+
+- ESP32 Boards (Tested on the Adafruit Esp32 Feather) The library is known to work with the ESP32 core as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/9618eec19ea470bb59b9a25ebeb8c0c516ca89cc">9618eec</a> on 02.08.2017. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
+NOTE: ESP32 boards usually have an SPIFlash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example
+```
+SPIFlash flash(33);
+```
 
 #### Installation
 
