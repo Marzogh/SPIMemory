@@ -33,7 +33,7 @@
 #define RANDPIN A0
 #endif
 
-SPIFlash flash(33);
+SPIFlash flash;
 
 void setup() {
   Serial.begin(BAUD_RATE);
