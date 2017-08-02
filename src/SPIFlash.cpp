@@ -1,8 +1,8 @@
-/* Arduino SPIFlash Library v.2.6.0
+/* Arduino SPIFlash Library v.2.7.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 14/04/2017
+ * Modified by Prajwal Bhattaram - 02/08/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -102,25 +102,29 @@ bool SPIFlash::_transferAddress(void) {
 }
 
 bool SPIFlash::_startSPIBus(void) {
-#ifndef SPI_HAS_TRANSACTION
-    noInterrupts();
-#endif
-
-#if defined (ARDUINO_ARCH_SAM)
-  _dueSPIInit(DUE_SPI_CLK);
-#else
-  #if defined (ARDUINO_ARCH_AVR)
-    //save current SPI settings
-      _SPCR = SPCR;
-      _SPSR = SPSR;
+#ifndef __AVR_ATtiny85__
+  #ifndef SPI_HAS_TRANSACTION
+      noInterrupts();
   #endif
-  #ifdef SPI_HAS_TRANSACTION
-    SPI.beginTransaction(_settings);
+
+  #if defined (ARDUINO_ARCH_SAM)
+    _dueSPIInit(DUE_SPI_CLK);
   #else
-    SPI.setClockDivider(SPI_CLOCK_DIV_4)
-    SPI.setDataMode(SPI_MODE0);
-    SPI.setBitOrder(MSBFIRST);
+    #if defined (ARDUINO_ARCH_AVR)
+      //save current SPI settings
+        _SPCR = SPCR;
+        _SPSR = SPSR;
     #endif
+    #ifdef SPI_HAS_TRANSACTION
+      SPI.beginTransaction(_settings);
+    #else
+      SPI.setClockDivider(SPI_CLOCK_DIV_4)
+      SPI.setDataMode(SPI_MODE0);
+      SPI.setBitOrder(MSBFIRST);
+      #endif
+  #endif
+#else
+
 #endif
   SPIBusState = true;
   return true;
@@ -129,7 +133,6 @@ bool SPIFlash::_startSPIBus(void) {
 //Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involves writing or reading to/from an address)
 bool SPIFlash::_beginSPI(uint8_t opcode) {
   if (!SPIBusState) {
-    //Serial.println("Starting SPI Bus");
     _startSPIBus();
   }
   CHIP_SELECT
@@ -169,8 +172,15 @@ uint8_t SPIFlash::_nextByte(uint8_t data) {
 
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
-  //return xfer16(data);
-  return SPI.transfer16(data);
+  #ifndef __AVR_ATtiny85__
+    return SPI.transfer16(data);
+  #else
+    uint16_t _data;
+    _data = xfer(data >> 0);
+    data = (_data << 8);
+    _data += xfer(data >> 8);
+    return _data;
+  #endif
 }
 
 //Reads/Writes next data buffer. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
@@ -180,7 +190,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     case READDATA:
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPIRecByte(&(*data_buffer), size);
-    #elif defined (ARDUINO_ARCH_AVR)
+    #elif defined (ARDUINO_ARCH_AVR) && !defined (__AVR_ATtiny85__)
       SPI.transfer(&data_buffer[0], size);
     #else
       for (uint16_t i = 0; i < size; i++) {
@@ -193,7 +203,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     case PAGEPROG:
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPISendByte(&(*data_buffer), size);
-    #elif defined (ARDUINO_ARCH_AVR)
+    #elif defined (ARDUINO_ARCH_AVR) && !defined (__AVR_ATtiny85__)
       SPI.transfer(&(*data_buffer), size);
     #else
       for (uint16_t i = 0; i < size; i++) {
@@ -214,7 +224,7 @@ void SPIFlash::_endSPI(void) {
   interrupts();
   #endif
 
-  #if defined (ARDUINO_ARCH_AVR)
+  #if defined (ARDUINO_ARCH_AVR) && !defined (__AVR_ATtiny85__)
   SPCR = _SPCR;
   SPSR = _SPSR;
   #endif
@@ -1152,10 +1162,7 @@ bool SPIFlash::writeCharArray(uint32_t address, char *data_buffer, uint16_t buff
 
     for (uint16_t i = 0; i < writeBufSz; ++i) {
       _nextByte(data_buffer[data_offset + i]);
-      Serial.print(data_buffer[data_offset + i]);
-      Serial.print(", ");
     }
-    Serial.println();
     _currentAddress += writeBufSz;
     data_offset += writeBufSz;
     length -= writeBufSz;

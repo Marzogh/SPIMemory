@@ -53,12 +53,7 @@ void setup() {
 #endif
   Serial.println();
   Serial.println();
-
-#if defined (ARDUINO_ARCH_ESP32)
-  randomSeed(65535537);
-#else
   randomSeed(analogRead(RANDPIN));
-#endif
   getID();
   diagnose();
 }
