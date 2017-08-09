@@ -53,9 +53,7 @@
   #include <stdio.h>
 #endif
 
-#ifndef __AVR_ATtiny85__
   #include <SPI.h>
-#endif
 
 #if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A)
 // RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
@@ -79,31 +77,21 @@ extern "C" {
 #endif
 
 #ifdef ARDUINO_ARCH_AVR
-	#ifdef __AVR_ATtiny85__
-		#define CHIP_SELECT   PORTB &= ~cs_mask;
-		#define CHIP_DESELECT PORTB |=  cs_mask;
-		#define SPIBIT                      \
-		  USICR = ((1<<USIWM0)|(1<<USITC)); \
-		  USICR = ((1<<USIWM0)|(1<<USITC)|(1<<USICLK));
-    #define BEGIN_SPI _tinySPIbegin();
-    #define xfer _tinySPItransfer
-  #else
-    #define CHIP_SELECT   *cs_port &= ~cs_mask;
-    #define CHIP_DESELECT *cs_port |=  cs_mask;
-    #define xfer(n)   SPI.transfer(n)
-    #define BEGIN_SPI SPI.begin();
-  #endif
+  #define CHIP_SELECT   *cs_port &= ~cs_mask;
+  #define CHIP_DESELECT *cs_port |=  cs_mask;
+  #define xfer(n)   SPI.transfer(n)
+  #define BEGIN_SPI SPI.begin();
 #elif defined (ARDUINO_ARCH_SAM)
-    #define CHIP_SELECT   digitalWrite(csPin, LOW);
-    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-    #define xfer   _dueSPITransfer
-    #define BEGIN_SPI _dueSPIBegin();
+  #define CHIP_SELECT   digitalWrite(csPin, LOW);
+  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+  #define xfer   _dueSPITransfer
+  #define BEGIN_SPI _dueSPIBegin();
 // Specific access configuration for Chip select pin - @boseji <salearj@hotmail.com> 02.03.17
 #elif defined (BOARD_RTL8195A)
-    #define CHIP_SELECT   gpio_write(&csPin, 0);
-    #define CHIP_DESELECT gpio_write(&csPin, 1);
-    #define xfer(n)   SPI.transfer(n)
-    #define BEGIN_SPI SPI.begin();
+  #define CHIP_SELECT   gpio_write(&csPin, 0);
+  #define CHIP_DESELECT gpio_write(&csPin, 1);
+  #define xfer(n)   SPI.transfer(n)
+  #define BEGIN_SPI SPI.begin();
 #else //#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
@@ -216,11 +204,6 @@ private:
   void     _dueSPISendByte(const uint8_t* buf, size_t len);
   void     _dueSPISendChar(char b);
   void     _dueSPISendChar(const char* buf, size_t len);
-#endif
-//-------------------------------------Private ATTiny85 Functions-------------------------------------//
-#if defined (__AVR_ATtiny85__)
-  static uint8_t _tinySPItransfer(uint8_t _data);
-  void     _tinySPIbegin();
 #endif
   //----------------------------------------Private functions----------------------------------------//
   void     _troubleshoot(uint8_t _code, bool printoverride = false);

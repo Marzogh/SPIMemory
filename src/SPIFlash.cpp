@@ -31,9 +31,6 @@
 #if defined (ARDUINO_ARCH_AVR)
 SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
   csPin = cs;
-#ifndef __AVR_ATtiny85__
-  cs_port = portOutputRegister(digitalPinToPort(csPin));
-#endif
   cs_mask = digitalPinToBitMask(csPin);
   pageOverflow = overflow;
   pinMode(csPin, OUTPUT);

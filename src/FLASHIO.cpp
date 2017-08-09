@@ -71,7 +71,6 @@ bool SPIFlash::_transferAddress(void) {
 }
 
 bool SPIFlash::_startSPIBus(void) {
-#ifndef __AVR_ATtiny85__
   #ifndef SPI_HAS_TRANSACTION
       noInterrupts();
   #endif
@@ -92,9 +91,6 @@ bool SPIFlash::_startSPIBus(void) {
       SPI.setBitOrder(MSBFIRST);
       #endif
   #endif
-#else
-
-#endif
   SPIBusState = true;
   return true;
 }
@@ -152,15 +148,7 @@ uint8_t SPIFlash::_nextByte(uint8_t data) {
 
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
-  #ifndef __AVR_ATtiny85__
     return SPI.transfer16(data);
-  #else
-    uint16_t _data;
-    _data = xfer(data >> 0);
-    data = (_data << 8);
-    _data += xfer(data >> 8);
-    return _data;
-  #endif
 }
 
 //Reads/Writes next data buffer. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
@@ -170,7 +158,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     case READDATA:
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPIRecByte(&(*data_buffer), size);
-    #elif defined (ARDUINO_ARCH_AVR) && !defined (__AVR_ATtiny85__)
+    #elif defined (ARDUINO_ARCH_AVR)
       SPI.transfer(&data_buffer[0], size);
     #else
       for (uint16_t i = 0; i < size; i++) {
@@ -183,7 +171,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     case PAGEPROG:
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPISendByte(&(*data_buffer), size);
-    #elif defined (ARDUINO_ARCH_AVR) && !defined (__AVR_ATtiny85__)
+    #elif defined (ARDUINO_ARCH_AVR)
       SPI.transfer(&(*data_buffer), size);
     #else
       for (uint16_t i = 0; i < size; i++) {
@@ -204,7 +192,7 @@ void SPIFlash::_endSPI(void) {
   interrupts();
   #endif
 
-  #if defined (ARDUINO_ARCH_AVR) && !defined (__AVR_ATtiny85__)
+  #if defined (ARDUINO_ARCH_AVR)
   SPCR = _SPCR;
   SPSR = _SPSR;
   #endif

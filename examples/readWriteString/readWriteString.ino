@@ -34,37 +34,27 @@ SPIFlash flash;
 bool readSerialStr(String &inputStr);
 
 void setup() {
-#ifndef __AVR_ATtiny85__
   Serial.begin(BAUD_RATE);
-#endif
 #if defined (ARDUINO_SAMD_ZERO) || (__AVR_ATmega32U4__)
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
 
   flash.begin();
 
-#if defined __AVR_ATtiny85__
-  randomSeed(65535537);
-#else
   randomSeed(analogRead(RANDPIN));
-#endif
   strAddr = random(0, flash.getCapacity());
   String inputString = "This is a test String";
   flash.writeStr(strAddr, inputString);
-#ifndef __AVR_ATtiny85__
   Serial.print(F("Written string: "));
   Serial.println(inputString);
   Serial.print(F("To address: "));
   Serial.println(strAddr);
-#endif
   String outputString = "";
   if (flash.readStr(strAddr, outputString)) {
-#ifndef __AVR_ATtiny85__
     Serial.print(F("Read string: "));
     Serial.println(outputString);
     Serial.print(F("From address: "));
     Serial.println(strAddr);
-#endif
   }
   while (!flash.eraseSector(strAddr));
 }
@@ -73,7 +63,6 @@ void loop() {
 
 }
 
-#ifndef __AVR_ATtiny85__
 //Reads a string from Serial
 bool readSerialStr(String &inputStr) {
   if (!Serial)
@@ -85,4 +74,3 @@ bool readSerialStr(String &inputStr) {
   }
   return false;
 }
-#endif

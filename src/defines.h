@@ -138,8 +138,6 @@
 #define CS 15
 #elif defined (ARDUINO_ARCH_SAMD)
 #define CS 10
-#elif defined __AVR_ATtiny85__
-#define CS 5
 /*********************************************************************************************
 // Declaration of the Default Chip select pin name for RTL8195A
 // Note: This has been shifted due to a bug identified in the HAL layer SPI driver

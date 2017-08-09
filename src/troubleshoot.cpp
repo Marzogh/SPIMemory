@@ -27,8 +27,6 @@
 
 #include "SPIFlash.h"
 
-//ATTiny85 does not have enough pins to support Serial. So, the basic troubleshooting functions of this library are not applicable. It is up to the end user to come up with a diagnostic routine for the ATTiny85.
-#if !defined (__AVR_ATtiny85__)
 //Subfunctions for troubleshooting function
 void SPIFlash::_printErrorCode(void) {
   Serial.print("Error code: 0x");
@@ -129,6 +127,3 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
   #endif
   }
 }
-#else //If compiled for ATTiny85 based platform - empty function to prevent compile errors
-void troubleshoot(uint8_t _code, bool printoverride) {}
-#endif    //End of ATTiny85 code limitation
