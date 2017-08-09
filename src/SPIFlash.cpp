@@ -30,22 +30,24 @@
 // Constructor
 //If board has multiple SPI interfaces, this constructor lets the user choose between them
 // Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
-#if !defined (BOARD_RTL8195A)
+#if defined (ARDUINO_ARCH_SAMD)
 SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
   _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
   csPin = cs;
-#if defined (ARDUINO_ARCH_AVR)
-  cs_mask = digitalPinToBitMask(csPin);
-#endif
   pinMode(csPin, OUTPUT);
 }
-#else
-SPIFlash::SPIFlash(PinName cs, SPIClass *spiinterface) {
-  _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
+#elif defined (BOARD_RTL8195A)
+SPIFlash::SPIFlash(PinName cs) {
   gpio_init(&csPin, cs);
   gpio_dir(&csPin, PIN_OUTPUT);
   gpio_mode(&csPin, PullNone);
   gpio_write(&csPin, 1);
+}
+#else
+SPIFlash::SPIFlash(uint8_t cs) {
+  csPin = cs;
+  cs_mask = digitalPinToBitMask(csPin);
+  pinMode(csPin, OUTPUT);
 }
 #endif
 
@@ -59,9 +61,6 @@ bool SPIFlash::begin(void) {
 #if defined (CHIPSIZE)
     _chip.capacity = CHIPSIZE;
 #endif
-
-Serial.print("CHIPSIZE: ");
-Serial.println(_chip.capacity);
   BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
@@ -725,20 +724,22 @@ bool SPIFlash::eraseBlock64K(uint32_t _addr) {
 
 //Erases whole chip. Think twice before using.
 bool SPIFlash::eraseChip(void) {
-	if(!_notBusy()||!_writeEnable())
- 		return false;
+	if(!_notBusy() || !_writeEnable()) {
+    return false;
+  }
 
 	_beginSPI(CHIPERASE);
-	_endSPI();
-	if(!_notBusy(_chip.eraseTime)) {
-    return false; //Datasheet says erasing chip takes 6s max
+  _endSPI();
+
+	while(_readStat1() & BUSY) {
+    _delay_us(30000L);
   }
 
 	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
 	// i.e. to write disable state upon the following conditions:
 	// Power-up, Write Disable, Page Program, Quad Page Program, Sector Erase, Block Erase, ``Chip Erase``, Write Status Register,
 	// Erase Security Register and Program Security register
-
+  _endSPI();
 	return true;
 
 }

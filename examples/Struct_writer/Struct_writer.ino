@@ -45,7 +45,7 @@
 
 
 
-SPIFlash flash;
+SPIFlash flash(SS1, &SPI1);
 
 
 struct Configuration {

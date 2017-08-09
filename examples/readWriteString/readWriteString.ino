@@ -29,7 +29,7 @@ uint32_t strAddr;
 #define RANDPIN A0
 #endif
 
-SPIFlash flash;
+SPIFlash flash(SS1, &SPI1);
 
 bool readSerialStr(String &inputStr);
 

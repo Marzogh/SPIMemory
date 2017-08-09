@@ -40,7 +40,7 @@
 #define WRITEENABLE  0x06
 #define SECTORERASE  0x20
 #define BLOCK32ERASE 0x52
-#define CHIPERASE    0xC7
+#define CHIPERASE    0x60
 #define SUSPEND      0x75
 #define ID           0x90
 #define RESUME       0x7A
@@ -54,7 +54,7 @@
 //                     General size definitions                       //
 //            B = Bytes; KB = Kilo Bytes; MB = Mega Bytes               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define B1            1L * B
+/*#define B1            1L * B
 #define B2            2L * B
 #define B4            4L * B
 #define B8            8L * B
@@ -84,7 +84,7 @@
 #define MB64          64L * M
 #define MB128         128L * M
 #define MB256         256L * M
-#define MB512         512L * M
+#define MB512         512L * M*/
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -94,10 +94,13 @@
   #define PAGESIZE	 0x100
   #define WINBOND_WRITE_DELAY 0x02
   #define WINBOND_WREN_TIMEOUT  10L
-  #define CHIPSIZE MB2
+  //#define CHIPSIZE 1*M
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define MICROCHIP_MANID		 0xBF
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define CYPRESS_MANID		 0x1
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -105,6 +108,8 @@
 #define BUSY          0x01
 #if defined (ARDUINO_ARCH_ESP32)
 #define SPI_CLK       20000000
+/*#elif defined (ARDUINO_ARCH_SAMD)
+#define SPI_CLK       8000000*/
 #else
 #define SPI_CLK       104000000       //Hex equivalent of 104MHz
 //#define SPI_CLK       4000000       //Hex equivalent of 104MHz
@@ -127,7 +132,7 @@
 #if defined (SIMBLEE)
 #define BUSY_TIMEOUT  100L
 #else
-#define BUSY_TIMEOUT  10L
+#define BUSY_TIMEOUT  1000L
 #endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)

@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.7.0
+/* Arduino SPIFlash Library v.3.0.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 02/05/2017
  *
@@ -68,6 +68,7 @@ bool SPIFlash::_transferAddress(void) {
   _nextByte(_currentAddress >> 16);
   _nextByte(_currentAddress >> 8);
   _nextByte(_currentAddress);
+  return true;
 }
 
 bool SPIFlash::_startSPIBus(void) {
@@ -77,19 +78,27 @@ bool SPIFlash::_startSPIBus(void) {
 
   #if defined (ARDUINO_ARCH_SAM)
     _dueSPIInit(DUE_SPI_CLK);
-  #else
-    #if defined (ARDUINO_ARCH_AVR)
-      //save current SPI settings
-        _SPCR = SPCR;
-        _SPSR = SPSR;
-    #endif
+  #elif defined (ARDUINO_ARCH_SAMD)
     #ifdef SPI_HAS_TRANSACTION
       _spi->beginTransaction(_settings);
     #else
       _spi->setClockDivider(SPI_CLOCK_DIV_4)
       _spi->setDataMode(SPI_MODE0);
       _spi->setBitOrder(MSBFIRST);
-      #endif
+    #endif
+  #else
+    #if defined (ARDUINO_ARCH_AVR)
+      //save current SPI settings
+      _SPCR = SPCR;
+      _SPSR = SPSR;
+    #endif
+    #ifdef SPI_HAS_TRANSACTION
+      SPI.beginTransaction(_settings);
+    #else
+      SPI.setClockDivider(SPI_CLOCK_DIV_4)
+      SPI.setDataMode(SPI_MODE0);
+      SPI.setBitOrder(MSBFIRST);
+    #endif
   #endif
   SPIBusState = true;
   return true;
@@ -148,7 +157,11 @@ uint8_t SPIFlash::_nextByte(uint8_t data) {
 
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
-    return _spi->transfer16(data);
+#if defined (ARDUINO_ARCH_SAMD)
+  return _spi->transfer16(data);
+#else
+  return SPI.transfer16(data);
+#endif
 }
 
 //Reads/Writes next data buffer. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
@@ -158,26 +171,27 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     case READDATA:
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPIRecByte(&(*data_buffer), size);
-    #elif defined (ARDUINO_ARCH_AVR)
+    #elif defined (ARDUINO_ARCH_SAMD)
       _spi->transfer(&data_buffer[0], size);
     #else
       for (uint16_t i = 0; i < size; i++) {
         *_dataAddr = xfer(NULLBYTE);
         _dataAddr++;
       }
-      #endif
+    #endif
     break;
 
     case PAGEPROG:
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPISendByte(&(*data_buffer), size);
-    #elif defined (ARDUINO_ARCH_AVR)
+    #elif defined (ARDUINO_ARCH_SAMD)
       _spi->transfer(&(*data_buffer), size);
     #else
-      for (uint16_t i = 0; i < size; i++) {
+      SPI.transfer(&(*data_buffer), size);
+      /*for (uint16_t i = 0; i < size; i++) {
         xfer(*_dataAddr);
         _dataAddr++;
-      }
+      }*/
     #endif
     break;
   }
@@ -186,16 +200,19 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
 //Stops all operations. Should be called after all the required data is read/written from repeated _nextByte() calls
 void SPIFlash::_endSPI(void) {
   CHIP_DESELECT
-  #ifdef SPI_HAS_TRANSACTION
-  _spi->endTransaction();
+#ifdef SPI_HAS_TRANSACTION
+  #if defined (ARDUINO_ARCH_SAMD)
+    _spi->endTransaction();
   #else
-  interrupts();
+    SPI.endTransaction();
   #endif
-
-  #if defined (ARDUINO_ARCH_AVR)
+#else
+  interrupts();
+#endif
+#if defined (ARDUINO_ARCH_AVR)
   SPCR = _SPCR;
   SPSR = _SPSR;
-  #endif
+#endif
   SPIBusState = false;
 }
 
@@ -325,7 +342,7 @@ bool SPIFlash::_getSFDP(void) {
     _chip.sfdp += (_nextByte() << (8*i));
   }
   CHIP_DESELECT
-  if (_chip.sfdp = 0x50444653) {
+  if (_chip.sfdp == 0x50444653) {
     //Serial.print("_chip.sfdp: ");
     //Serial.println(_chip.sfdp, HEX);
     return true;
@@ -354,9 +371,8 @@ bool SPIFlash::_chipID(void) {
   }
 
   // If no capacity is defined in user code
-#if !defined (CAPACITY)
-  _chip.supported = _chip.manufacturerID;
-  if (_chip.supported == WINBOND_MANID || _chip.supported == MICROCHIP_MANID) {
+#if !defined (CHIPSIZE)
+  if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID) {
     //Identify capacity
     for (uint8_t i = 0; i < sizeof(_capID); i++) {
       if (_chip.capacityID == _capID[i]) {
@@ -364,6 +380,7 @@ bool SPIFlash::_chipID(void) {
         _chip.eraseTime = _eraseTime[i];
       }
     }
+    _chip.supported = true;
     return true;
   }
   else {
@@ -372,10 +389,12 @@ bool SPIFlash::_chipID(void) {
   }
 #else
   // If a custom chip size is defined
-  _chip.eraseTime = _chip.capacity/KB8;
-  _chip.supported = false;// This chip is not officially supported
-  _troubleshoot(UNKNOWNCHIP); //Error code for unidentified chip
-  //while(1);         //Enable this if usercode is not meant to be run on unsupported chips
+  _chip.eraseTime = (400L *S);
+  if (_chip.manufacturerID!= WINBOND_MANID && _chip.manufacturerID != MICROCHIP_MANID && _chip.manufacturerID != CYPRESS_MANID) {
+    _chip.supported = false;// This chip is not officially supported
+    _troubleshoot(UNKNOWNCHIP); //Error code for unidentified chip
+    //while(1);         //Enable this if usercode is not meant to be run on unsupported chips
+  }
   return true;
 #endif
 }

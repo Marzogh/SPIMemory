@@ -79,8 +79,8 @@ extern "C" {
 #ifdef ARDUINO_ARCH_AVR
   #define CHIP_SELECT   *cs_port &= ~cs_mask;
   #define CHIP_DESELECT *cs_port |=  cs_mask;
-  #define xfer(n)   _spi->transfer(n)
-  #define BEGIN_SPI _spi->begin();
+  #define xfer(n)   SPI.transfer(n)
+  #define BEGIN_SPI SPI.begin();
 #elif defined (ARDUINO_ARCH_SAM)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
@@ -90,13 +90,18 @@ extern "C" {
 #elif defined (BOARD_RTL8195A)
   #define CHIP_SELECT   gpio_write(&csPin, 0);
   #define CHIP_DESELECT gpio_write(&csPin, 1);
-  #define xfer(n)   _spi->transfer(n)
-  #define BEGIN_SPI _spi->begin();
-#else //#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
+  #define xfer(n)   SPI.transfer(n)
+  #define BEGIN_SPI SPI.begin();
+#elif defined (ARDUINO_ARCH_SAMD)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
   #define xfer(n)   _spi->transfer(n)
   #define BEGIN_SPI _spi->begin();
+#else
+  #define CHIP_SELECT   digitalWrite(csPin, LOW);
+  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+  #define xfer(n)   SPI.transfer(n)
+  #define BEGIN_SPI SPI.begin();
 #endif
 
 #define LIBVER 3
@@ -114,10 +119,12 @@ class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------
   //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
-  #if !defined (BOARD_RTL8195A)
+  #if defined (ARDUINO_ARCH_SAMD)
   SPIFlash(uint8_t cs = CS, SPIClass *spiinterface=&SPI);
+  #elif defined (BOARD_RTL8195A)
+  SPIFlash(PinName cs = CS);
   #else
-  SPIFlash(PinName cs = CS, SPIClass *spiinterface=&SPI);
+  SPIFlash(uint8_t cs = CS);
   #endif
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   bool     begin(void);
@@ -247,10 +254,10 @@ private:
   bool        pageOverflow, SPIBusState;
   uint8_t     cs_mask, errorcode, state, _SPCR, _SPSR, _a0, _a1, _a2;
   struct      chipID {
+                bool supported;
                 uint8_t manufacturerID;
                 uint8_t memoryTypeID;
                 uint8_t capacityID;
-                uint16_t supported;
                 uint32_t sfdp;
                 uint32_t capacity;
                 uint32_t eraseTime;
