@@ -2,7 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 02/08/2017
+ * Modified by Prajwal Bhattaram - 09/08/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -28,29 +28,27 @@
 #include "SPIFlash.h"
 
 // Constructor
-#if defined (ARDUINO_ARCH_AVR)
-SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
+//If board has multiple SPI interfaces, this constructor lets the user choose between them
+// Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
+#if !defined (BOARD_RTL8195A)
+SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
+  _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
   csPin = cs;
+#if defined (ARDUINO_ARCH_AVR)
   cs_mask = digitalPinToBitMask(csPin);
-  pageOverflow = overflow;
+#endif
   pinMode(csPin, OUTPUT);
 }
-// Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
-#elif defined (BOARD_RTL8195A)
-SPIFlash::SPIFlash(PinName cs, bool overflow) {
+#else
+SPIFlash::SPIFlash(PinName cs, SPIClass *spiinterface) {
+  _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
   gpio_init(&csPin, cs);
   gpio_dir(&csPin, PIN_OUTPUT);
   gpio_mode(&csPin, PullNone);
   gpio_write(&csPin, 1);
-  pageOverflow = overflow;
-}
-#else
-SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
-  csPin = cs;
-  pageOverflow = overflow;
-  pinMode(csPin, OUTPUT);
 }
 #endif
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Public functions used for read, write and erase operations     //
@@ -58,9 +56,12 @@ SPIFlash::SPIFlash(uint8_t cs, bool overflow) {
 
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(void) {
-#ifdef CHIPSIZE
-    _chip.capacity = CHIPSIZE/8;
+#if defined (CHIPSIZE)
+    _chip.capacity = CHIPSIZE;
 #endif
+
+Serial.print("CHIPSIZE: ");
+Serial.println(_chip.capacity);
   BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus

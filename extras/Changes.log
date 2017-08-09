@@ -4,7 +4,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.0.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						11.05.2017											   //
+//					  						09.08.2017											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 To check:
 --> Check _nextBuf function and optimize
@@ -18,7 +18,7 @@ Deprecations:
 													address = (pagenumber << 8) + offset.
 													_____________________________________
 												 (32 bit) |     (16 bit)     | (8 bit)
-
+--> The constructor no longer takes the pageOverflow variable as an argument. Page overflow is globally enabled by default and can be disabled by including a "#define DISABLEOVERFLOW" at the beginning of the user code.
 New Boards supported:
 -->
 
@@ -45,6 +45,7 @@ Enhancements:
 --> Restructured the internal _troubleshoot() function to be better human readable and easier to compile.
 --> Users can define RUNDIAGNOSTIC or HIGHSPEED in their code to access the library's special modes. No requirement to modify the library any more.
 --> No need to include CHIPSIZE in flash.begin() any more. Just defining CHIPSIZE in user code as one of the standard sizes as in defines.h will be enough. (Refer to 'Deprecations -> 1' above)
+--> Constructor changed to enable user to choose one of multiple SPI ports - if available. Look at wiki for further info
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

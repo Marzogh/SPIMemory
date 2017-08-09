@@ -2,7 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 02/08/2017
+ * Modified by Prajwal Bhattaram - 09/08/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -33,7 +33,7 @@
 //                                                                    //
 //      Error codes will be generated and returned on functions       //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define RUNDIAGNOSTIC                                               //
+#define RUNDIAGNOSTIC                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -79,8 +79,8 @@ extern "C" {
 #ifdef ARDUINO_ARCH_AVR
   #define CHIP_SELECT   *cs_port &= ~cs_mask;
   #define CHIP_DESELECT *cs_port |=  cs_mask;
-  #define xfer(n)   SPI.transfer(n)
-  #define BEGIN_SPI SPI.begin();
+  #define xfer(n)   _spi->transfer(n)
+  #define BEGIN_SPI _spi->begin();
 #elif defined (ARDUINO_ARCH_SAM)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
@@ -90,13 +90,13 @@ extern "C" {
 #elif defined (BOARD_RTL8195A)
   #define CHIP_SELECT   gpio_write(&csPin, 0);
   #define CHIP_DESELECT gpio_write(&csPin, 1);
-  #define xfer(n)   SPI.transfer(n)
-  #define BEGIN_SPI SPI.begin();
+  #define xfer(n)   _spi->transfer(n)
+  #define BEGIN_SPI _spi->begin();
 #else //#elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_SAMD)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-  #define xfer(n)   SPI.transfer(n)
-  #define BEGIN_SPI SPI.begin();
+  #define xfer(n)   _spi->transfer(n)
+  #define BEGIN_SPI _spi->begin();
 #endif
 
 #define LIBVER 3
@@ -115,9 +115,9 @@ public:
   //----------------------------------------------Constructor-----------------------------------------------
   //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
   #if !defined (BOARD_RTL8195A)
-  SPIFlash(uint8_t cs = CS, bool overflow = true);
+  SPIFlash(uint8_t cs = CS, SPIClass *spiinterface=&SPI);
   #else
-  SPIFlash(PinName cs = CS, bool overflow = true);
+  SPIFlash(PinName cs = CS, SPIClass *spiinterface=&SPI);
   #endif
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   bool     begin(void);
@@ -235,6 +235,8 @@ private:
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
   #endif
+  //If multiple SPI ports are available this variable is used to choose between them (SPI, SPI1, SPI2 etc.)
+  SPIClass *_spi;
   #if !defined (BOARD_RTL8195A)
   uint8_t     csPin;
   #else

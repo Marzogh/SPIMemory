@@ -84,11 +84,11 @@ bool SPIFlash::_startSPIBus(void) {
         _SPSR = SPSR;
     #endif
     #ifdef SPI_HAS_TRANSACTION
-      SPI.beginTransaction(_settings);
+      _spi->beginTransaction(_settings);
     #else
-      SPI.setClockDivider(SPI_CLOCK_DIV_4)
-      SPI.setDataMode(SPI_MODE0);
-      SPI.setBitOrder(MSBFIRST);
+      _spi->setClockDivider(SPI_CLOCK_DIV_4)
+      _spi->setDataMode(SPI_MODE0);
+      _spi->setBitOrder(MSBFIRST);
       #endif
   #endif
   SPIBusState = true;
@@ -148,7 +148,7 @@ uint8_t SPIFlash::_nextByte(uint8_t data) {
 
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
-    return SPI.transfer16(data);
+    return _spi->transfer16(data);
 }
 
 //Reads/Writes next data buffer. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
@@ -159,7 +159,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPIRecByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_AVR)
-      SPI.transfer(&data_buffer[0], size);
+      _spi->transfer(&data_buffer[0], size);
     #else
       for (uint16_t i = 0; i < size; i++) {
         *_dataAddr = xfer(NULLBYTE);
@@ -172,7 +172,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
     #if defined (ARDUINO_ARCH_SAM)
       _dueSPISendByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_AVR)
-      SPI.transfer(&(*data_buffer), size);
+      _spi->transfer(&(*data_buffer), size);
     #else
       for (uint16_t i = 0; i < size; i++) {
         xfer(*_dataAddr);
@@ -187,7 +187,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
 void SPIFlash::_endSPI(void) {
   CHIP_DESELECT
   #ifdef SPI_HAS_TRANSACTION
-  SPI.endTransaction();
+  _spi->endTransaction();
   #else
   interrupts();
   #endif
@@ -354,35 +354,33 @@ bool SPIFlash::_chipID(void) {
   }
 
   // If no capacity is defined in user code
-  if (!_chip.capacity) {
-    _chip.supported = _chip.manufacturerID;
-    if (_chip.supported == WINBOND_MANID || _chip.supported == MICROCHIP_MANID) {
-      //Identify capacity
-      for (uint8_t i = 0; i < sizeof(_capID); i++)
-      {
-        if (_chip.capacityID == _capID[i]) {
-          _chip.capacity = (_memSize[i]);
-          _chip.eraseTime = _eraseTime[i];
-        }
+#if !defined (CAPACITY)
+  _chip.supported = _chip.manufacturerID;
+  if (_chip.supported == WINBOND_MANID || _chip.supported == MICROCHIP_MANID) {
+    //Identify capacity
+    for (uint8_t i = 0; i < sizeof(_capID); i++) {
+      if (_chip.capacityID == _capID[i]) {
+        _chip.capacity = (_memSize[i]);
+        _chip.eraseTime = _eraseTime[i];
       }
-      return true;
     }
-    else {
-      _troubleshoot(UNKNOWNCAP); //Error code for unidentified capacity
-      return false;
-    }
+    return true;
   }
   else {
-    // If a custom chip size is defined
-    _chip.eraseTime = _chip.capacity/KB8;
-    _chip.supported = false;// This chip is not officially supported
-    _troubleshoot(UNKNOWNCHIP); //Error code for unidentified chip
-    //while(1);         //Enable this if usercode is not meant to be run on unsupported chips
+    _troubleshoot(UNKNOWNCAP); //Error code for unidentified capacity
+    return false;
   }
+#else
+  // If a custom chip size is defined
+  _chip.eraseTime = _chip.capacity/KB8;
+  _chip.supported = false;// This chip is not officially supported
+  _troubleshoot(UNKNOWNCHIP); //Error code for unidentified chip
+  //while(1);         //Enable this if usercode is not meant to be run on unsupported chips
   return true;
+#endif
 }
 
-//Checks to see if pageOverflow is permitted and assists with determining next address to read/write.
+//Checks to see if page overflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
 bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
   if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
@@ -395,14 +393,13 @@ bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
 
   //for (uint32_t i = 0; i < size; i++) {
   if (_addr + size >= _chip.capacity) {
-    if (!pageOverflow) {
-      _troubleshoot(OUTOFBOUNDS);
-      return false;					// At end of memory - (!pageOverflow)
-    }
-    else {
-      _currentAddress = 0x00;
-      return true;					// At end of memory - (pageOverflow)
-    }
+  #ifdef DISABLEOVERFLOW
+    _troubleshoot(OUTOFBOUNDS);
+    return false;					// At end of memory - (!pageOverflow)
+  #else
+    _currentAddress = 0x00;
+    return true;					// At end of memory - (pageOverflow)
+  #endif
   }
   //}
   _currentAddress = _addr;
