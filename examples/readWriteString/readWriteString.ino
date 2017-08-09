@@ -2,10 +2,10 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                             readWriteString.ino                                                               |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 2.5.0                                                                     |
+  |                                                                   v 3.0.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  16.11.2016                                                                   |
+  |                                                                  29.05.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program shows the method of reading a string from the console and saving it to flash memory                       |
@@ -14,8 +14,7 @@
 */
 #include<SPIFlash.h>
 
-int strPage, strSize;
-byte strOffset;
+uint32_t strAddr;
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -49,30 +48,25 @@ void setup() {
 #else
   randomSeed(analogRead(RANDPIN));
 #endif
-  strPage = random(0, 4095);
-  strOffset = random(0, 255);
+  strAddr = random(0, flash.getCapacity());
   String inputString = "This is a test String";
-  flash.writeStr(strPage, strOffset, inputString);
+  flash.writeStr(strAddr, inputString);
 #ifndef __AVR_ATtiny85__
   Serial.print(F("Written string: "));
-  Serial.print(inputString);
-  Serial.print(F(" to page "));
-  Serial.print(strPage);
-  Serial.print(F(", at offset "));
-  Serial.println(strOffset);
+  Serial.println(inputString);
+  Serial.print(F("To address: "));
+  Serial.println(strAddr);
 #endif
   String outputString = "";
-  if (flash.readStr(strPage, strOffset, outputString)) {
+  if (flash.readStr(strAddr, outputString)) {
 #ifndef __AVR_ATtiny85__
     Serial.print(F("Read string: "));
-    Serial.print(outputString);
-    Serial.print(F(" from page "));
-    Serial.print(strPage);
-    Serial.print(F(", at offset "));
-    Serial.println(strOffset);
+    Serial.println(outputString);
+    Serial.print(F("From address: "));
+    Serial.println(strAddr);
 #endif
   }
-  while (!flash.eraseSector(strPage, 0));
+  while (!flash.eraseSector(strAddr));
 }
 
 void loop() {

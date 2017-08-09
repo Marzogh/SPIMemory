@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.7.0
+/* Arduino SPIFlash Library v.3.0.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 14/11/2016
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
@@ -25,162 +25,110 @@
  * <http://www.gnu.org/licenses/>.
  */
 
- #include "SPIFlash.h"
+#include "SPIFlash.h"
 
- #if !defined (__AVR_ATtiny85__)
- //Subfunctions for troubleshooting function
- void SPIFlash::_printErrorCode(void) {
-   Serial.print("Error code: 0x");
-   if (errorcode < 0x10) {
-     Serial.print("0");
-   }
-   Serial.println(errorcode, HEX);
- }
+//ATTiny85 does not have enough pins to support Serial. So, the basic troubleshooting functions of this library are not applicable. It is up to the end user to come up with a diagnostic routine for the ATTiny85.
+#if !defined (__AVR_ATtiny85__)
+//Subfunctions for troubleshooting function
+void SPIFlash::_printErrorCode(void) {
+  Serial.print("Error code: 0x");
+  if (errorcode < 0x10) {
+    Serial.print("0");
+  }
+  Serial.println(errorcode, HEX);
+}
 
- void SPIFlash::_printSupportLink(void) {
-   Serial.print("If this does not help resolve/clarify this issue, ");
-   Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
- }
- //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
- void SPIFlash::_troubleshoot(void) {
-
- 	switch (errorcode) {
-    case SUCCESS:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("Action completed successfully");
-  #endif
-    break;
-
-    case NORESPONSE:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("Check your wiring. Flash chip is non-responsive.");
-    _printSupportLink();
-  #endif
-    break;
-
-    case CALLBEGIN:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("*constructor_of_choice*.begin() was not called in void setup()");
-    _printSupportLink();
-  #endif
-    break;
-
-    case UNKNOWNCHIP:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    Serial.print("Error code: 0x0");
-    Serial.println(UNKNOWNCHIP, HEX);
-  #else
-    Serial.println("Unable to identify chip. Are you sure this chip is supported?");
-    _printSupportLink();
-  #endif
-  Serial.println("Chip details:");
-    Serial.print("manufacturer ID: 0x"); Serial.println(_chip.manufacturerID, HEX);
-    Serial.print("capacity ID: 0x");Serial.println(_chip.memoryTypeID, HEX);
-    Serial.print("device ID: 0x");Serial.println(_chip.capacityID, HEX);
-    break;
-
-    case UNKNOWNCAP:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("Unable to identify capacity. Is this chip officially supported? If not, please define a `CAPACITY` constant and include it in flash.begin(CAPACITY).");
-    _printSupportLink();
-  #endif
-    break;
-
-    case CHIPBUSY:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("Chip is busy.");
-    Serial.println("Make sure all pins have been connected properly");
-    _printSupportLink();
-  #endif
-    break;
-
-    case OUTOFBOUNDS:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("Page overflow has been disabled and the address called exceeds the memory");
-    _printSupportLink();
-  #endif
-    break;
-
-    case CANTENWRITE:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("Unable to Enable Writing to chip.");
-    Serial.println("Please make sure the HOLD & WRITEPROTECT pins are pulled up to VCC");
-    _printSupportLink();
-  #endif
-    break;
-
-    case PREVWRITTEN:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("This sector already contains data.");
-    Serial.println("Please make sure the sectors being written to are erased.");
-    _printSupportLink();
-  #endif
-    break;
-
-    case LOWRAM:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("You are running low on SRAM. Please optimise your program for better RAM usage");
-    /*#if defined (ARDUINO_ARCH_SAM)
-      Serial.print("Current Free SRAM: ");
-      Serial.println(freeRAM());
-    #endif*/
-    _printSupportLink();
-  #endif
-    break;
-
-    case SYSSUSPEND:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("Unable to suspend/resume operation.");
-    _printSupportLink();
-  #endif
-    break;
-
-    case UNSUPPORTED:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-    _printErrorCode();
-  #else
-    Serial.println("This function is not supported by the current flash IC.");
-    _printSupportLink();
-  #endif
-    break;
-
-  case ERRORCHKFAIL:
-#if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
-  _printErrorCode();
+void SPIFlash::_printSupportLink(void) {
+  Serial.print("If this does not help resolve/clarify this issue, ");
+  Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
+}
+//Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
+void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
+  bool _printoverride;
+  errorcode = _code;
+#ifdef RUNDIAGNOSTIC
+  _printoverride = true;
 #else
-  Serial.println("Write Function has failed errorcheck.");
-  _printSupportLink();
+  _printoverride = printoverride;
 #endif
-  break;
-
-    default:
-  #if defined (ARDUINO_ARCH_AVR) || defined (__AVR_ATtiny85__)
+  if (_printoverride) {
+  #if defined (ARDUINO_ARCH_AVR)
     _printErrorCode();
   #else
-    Serial.println("Unknown error");
-    _printSupportLink();
+    switch (_code) {
+      case SUCCESS:
+      Serial.println("Action completed successfully");
+      break;
+
+      case NORESPONSE:
+      Serial.println("Check your wiring. Flash chip is non-responsive.");
+      break;
+
+      case CALLBEGIN:
+      Serial.println("*constructor_of_choice*.begin() was not called in void setup()");
+      break;
+
+      case UNKNOWNCHIP:
+      Serial.println("Unable to identify chip. Are you sure this chip is supported?");
+      Serial.println("Chip details:");
+      Serial.print("manufacturer ID: 0x"); Serial.println(_chip.manufacturerID, HEX);
+      Serial.print("capacity ID: 0x"); Serial.println(_chip.memoryTypeID, HEX);
+      Serial.print("device ID: 0x"); Serial.println(_chip.capacityID, HEX);
+      break;
+
+      case UNKNOWNCAP:
+      Serial.println("Unable to identify capacity. Is this chip officially supported? If not, please define a `CAPACITY` constant and include it in flash.begin(CAPACITY).");
+      break;
+
+      case CHIPBUSY:
+      Serial.println("Chip is busy.");
+      Serial.println("Make sure all pins have been connected properly");
+      break;
+
+      case OUTOFBOUNDS:
+      Serial.println("Page overflow has been disabled and the address called exceeds the memory");
+      break;
+
+      case CANTENWRITE:
+      Serial.println("Unable to Enable Writing to chip.");
+      Serial.println("Please make sure the HOLD & WRITEPROTECT pins are pulled up to VCC");
+      break;
+
+      case PREVWRITTEN:
+      Serial.println("This sector already contains data.");
+      Serial.println("Please make sure the sectors being written to are erased.");
+      break;
+
+      case LOWRAM:
+      Serial.println("You are running low on SRAM. Please optimise your program for better RAM usage");
+      /*#if defined (ARDUINO_ARCH_SAM)
+        Serial.print("Current Free SRAM: ");
+        Serial.println(freeRAM());
+      #endif*/
+      break;
+
+      case SYSSUSPEND:
+      Serial.println("Unable to suspend/resume operation.");
+      break;
+
+      case UNSUPPORTED:
+      Serial.println("This function is not supported by the current flash IC.");
+      break;
+
+      case ERRORCHKFAIL:
+      Serial.println("Write Function has failed errorcheck.");
+      break;
+
+      default:
+      Serial.println("Unknown error");
+      break;
+    }
+    if (_code != SUCCESS) {
+      _printSupportLink();
+    }
   #endif
-  break;
- 	}
- }
- #endif
+  }
+}
+#else //If compiled for ATTiny85 based platform - empty function to prevent compile errors
+void troubleshoot(uint8_t _code, bool printoverride) {}
+#endif    //End of ATTiny85 code limitation

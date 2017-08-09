@@ -1,4 +1,4 @@
-/* Arduino SPIFlash Library v.2.7.0
+/* Arduino SPIFlash Library v.3.0.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by Prajwal Bhattaram - 02/08/2017
@@ -35,6 +35,7 @@
 #define WRITEDISABLE 0x04
 #define READSTAT1    0x05
 #define READSTAT2    0x35
+#define WRITESTATEN  0x50
 #define WRITESTAT    0x01
 #define WRITEENABLE  0x06
 #define SECTORERASE  0x20
@@ -91,6 +92,8 @@
 	//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
   #define WINBOND_MANID		 0xEF
   #define PAGESIZE	 0x100
+  #define WINBOND_WRITE_DELAY 0x02
+  #define WINBOND_WREN_TIMEOUT  10L
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define MICROCHIP_MANID		 0xBF
@@ -103,6 +106,7 @@
 #define SPI_CLK       20000000
 #else
 #define SPI_CLK       104000000       //Hex equivalent of 104MHz
+//#define SPI_CLK       4000000       //Hex equivalent of 104MHz
 #endif
 #define WRTEN         0x02
 #define SUS           0x80
@@ -117,6 +121,8 @@
 #define NOOVERFLOW    false
 #define NOERRCHK      false
 #define VERBOSE       true
+#define PRINTOVERRIDE true
+#define ERASEFUNC     0xEF
 #if defined (SIMBLEE)
 #define BUSY_TIMEOUT  100L
 #else
