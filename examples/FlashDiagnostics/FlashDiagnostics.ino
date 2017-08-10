@@ -59,8 +59,8 @@ void setup() {
   Serial.println();
   Serial.println();
   randomSeed(analogRead(RANDPIN));
-  getID();
-  diagnose();
+  //getID();
+  //diagnose();
 }
 
 void loop() {
