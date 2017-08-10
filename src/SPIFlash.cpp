@@ -52,7 +52,6 @@ SPIFlash::SPIFlash(PinName cs) {
 #else
 SPIFlash::SPIFlash(uint8_t cs) {
   csPin = cs;
-  cs_mask = digitalPinToBitMask(csPin);
   pinMode(csPin, OUTPUT);
 }
 #endif
