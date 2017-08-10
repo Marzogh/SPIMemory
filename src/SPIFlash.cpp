@@ -729,7 +729,8 @@ bool SPIFlash::eraseBlock64K(uint32_t _addr) {
 
 //Erases whole chip. Think twice before using.
 bool SPIFlash::eraseChip(void) {
-  if (!_prep(ERASEFUNC, NULLBYTE)) {
+  //if (!_prep(ERASEFUNC, NULLBYTE)) {
+  if(!_notBusy()||!_writeEnable()) {
     return false;
   }
 

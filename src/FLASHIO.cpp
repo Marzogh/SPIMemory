@@ -154,9 +154,11 @@ uint8_t SPIFlash::_nextByte(uint8_t data) {
 //#if defined (ARDUINO_ARCH_SAM)
 //  return _dueSPITransfer(data);
 //#else
+  Serial.println(data, HEX);
   return xfer(data);
 //#endif
 }
+
 
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
@@ -189,12 +191,13 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
       _dueSPISendByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_SAMD)
       _spi->transfer(&(*data_buffer), size);
-    #else
-      SPI.transfer(&(*data_buffer), size);
-      /*for (uint16_t i = 0; i < size; i++) {
+    #elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_ESP32)
+      for (uint16_t i = 0; i < size; i++) {
         xfer(*_dataAddr);
         _dataAddr++;
-      }*/
+      }
+      #else
+        SPI.transfer(&(*data_buffer), size);
     #endif
     break;
   }
