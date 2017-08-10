@@ -30,7 +30,13 @@
 // Constructor
 //If board has multiple SPI interfaces, this constructor lets the user choose between them
 // Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
-#if defined (ARDUINO_ARCH_SAMD)
+#if defined (ARDUINO_ARCH_AVR)
+SPIFlash::SPIFlash(uint8_t cs) {
+  csPin = cs;
+  cs_mask = digitalPinToBitMask(csPin);
+  pinMode(csPin, OUTPUT);
+}
+#elif defined (ARDUINO_ARCH_SAMD)
 SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
   _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
   csPin = cs;

@@ -74,24 +74,23 @@ extern "C" {
 }
 #endif
 
-#endif
-
 #ifdef ARDUINO_ARCH_AVR
-  #define CHIP_SELECT   *cs_port &= ~cs_mask;
-  #define CHIP_DESELECT *cs_port |=  cs_mask;
-  #define xfer(n)   SPI.transfer(n)
-  #define BEGIN_SPI SPI.begin();
+    #define CHIP_SELECT   *cs_port &= ~cs_mask;
+    #define CHIP_DESELECT *cs_port |=  cs_mask;
+    #define xfer(n)   SPI.transfer(n)
+    #define BEGIN_SPI SPI.begin();
+  #endif
 #elif defined (ARDUINO_ARCH_SAM)
-  #define CHIP_SELECT   digitalWrite(csPin, LOW);
-  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-  #define xfer   _dueSPITransfer
-  #define BEGIN_SPI _dueSPIBegin();
+    #define CHIP_SELECT   digitalWrite(csPin, LOW);
+    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+    #define xfer   _dueSPITransfer
+    #define BEGIN_SPI _dueSPIBegin();
 // Specific access configuration for Chip select pin - @boseji <salearj@hotmail.com> 02.03.17
 #elif defined (BOARD_RTL8195A)
-  #define CHIP_SELECT   gpio_write(&csPin, 0);
-  #define CHIP_DESELECT gpio_write(&csPin, 1);
-  #define xfer(n)   SPI.transfer(n)
-  #define BEGIN_SPI SPI.begin();
+    #define CHIP_SELECT   gpio_write(&csPin, 0);
+    #define CHIP_DESELECT gpio_write(&csPin, 1);
+    #define xfer(n)   SPI.transfer(n)
+    #define BEGIN_SPI SPI.begin();
 #elif defined (ARDUINO_ARCH_SAMD)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);

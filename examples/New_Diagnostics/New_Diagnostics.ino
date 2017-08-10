@@ -42,7 +42,7 @@
 #define FALSE 0
 
 //SPIFlash flash(SS1, &SPI1);
-SPIFlash flash(10);
+SPIFlash flash;
 
 void setup() {
   Serial.begin(BAUD_RATE);

@@ -35,7 +35,7 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
   switch (opcode) {
     case PAGEPROG:
     #ifndef HIGHSPEED
-    if(!_addressCheck(_addr, size) || !_notBusy() || !_writeEnable() || !_notPrevWritten(_addr, size)) {
+    if(!_addressCheck(_addr, size) || !_notPrevWritten(_addr, size) || !_notBusy() || !_writeEnable()) {
       return false;
     }
     #else
@@ -65,9 +65,12 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
 
 // Transfer Address.
 bool SPIFlash::_transferAddress(void) {
-  _nextByte(_currentAddress >> 16);
+  /*_nextByte(_currentAddress >> 16);
   _nextByte(_currentAddress >> 8);
-  _nextByte(_currentAddress);
+  _nextByte(_currentAddress);*/
+  _nextByte(Higher(_currentAddress));
+  _nextByte(Hi(_currentAddress));
+  _nextByte(Lo(_currentAddress));
   return true;
 }
 

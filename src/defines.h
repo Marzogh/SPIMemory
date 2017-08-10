@@ -199,4 +199,15 @@
  #define NORESPONSE   0x0C
  #define UNKNOWNERROR 0xFE
 
- //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                        Bit shift macros                            //
+//                      Thanks to @VitorBoss                          //
+//          https://github.com/Marzogh/SPIFlash/issues/76             //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define Lo(param) ((char *)&param)[0] //0x000y
+#define Hi(param) ((char *)&param)[1] //0x00y0
+#define Higher(param) ((char *)&param)[2] //0x0y00
+#define Highest(param) ((char *)&param)[3] //0xy000
+#define Low(param) ((int *)&param)[0] //0x00yy
+#define Top(param) ((int *)&param)[1] //0xyy00
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
