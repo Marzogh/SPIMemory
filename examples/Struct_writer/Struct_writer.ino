@@ -45,7 +45,8 @@
 
 
 
-SPIFlash flash(SS1, &SPI1);
+//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
+SPIFlash flash;
 
 
 struct Configuration {

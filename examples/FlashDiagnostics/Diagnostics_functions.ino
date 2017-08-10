@@ -47,12 +47,12 @@ void printTimer(uint32_t _us) {
 
   if (_us > 1000000) {
     float _s = _us / (float)1000000;
-    Serial.print(_s, 4);
+    Serial.print(_s, 3);
     Serial.print(" s");
   }
-  else if (_us > 10000) {
+  else if (_us > 1000) {
     float _ms = _us / (float)1000;
-    Serial.print(_ms, 4);
+    Serial.print(_ms, 3);
     Serial.print(" ms");
   }
   else {
