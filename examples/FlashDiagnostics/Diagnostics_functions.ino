@@ -30,9 +30,9 @@ void clearprintBuffer(char *bufPtr) {
 
 void printTime(uint32_t _wTime, uint32_t _rTime) {
   if (_rTime != 0) {
-    Serial.print(F("\t\tWrite Time: \t"));
+    Serial.print(F("\t\tWrite Time: "));
     printTimer(_wTime);
-    Serial.print(F(", Read Time: "));
+    Serial.print(F(",\tRead Time: "));
     printTimer(_rTime);
     Serial.println();
   }
@@ -109,8 +109,11 @@ void getID() {
   //---------------------------------------------------------------------------------------------//
 
   clearprintBuffer(&printBuffer[1]);
-  sprintf(printBuffer, "\t\t\tJEDEC ID: %04lxh", JEDEC);
+  sprintf(printBuffer, "\t\t\tJEDEC ID: %04xh", JEDEC);
   Serial.println(printBuffer);
+  //Serial.print(F("\t\t\tJEDEC ID: "));
+  //Serial.print(JEDEC, HEX);
+  //Serial.println(F("xh"));
   clearprintBuffer(&printBuffer[1]);
   sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu bytes\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
   Serial.println(printBuffer);
@@ -482,27 +485,5 @@ void eraseChipTest() {
   else {
     pass(FALSE);
   }
-}
-
-void diagnose() {
-  eraseChipTest();
-  eraseBlock64KTest();
-  eraseBlock32KTest();
-  eraseSectorTest();
-  
-  byteTest();
-  charTest();
-  wordTest();
-  shortTest();
-  uLongTest();
-  longTest();
-  floatTest();
-  stringTest();
-  structTest();
-  arrayTest();
-
-  
-  powerDownTest();
-  powerUpTest();
 }
 

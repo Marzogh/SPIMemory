@@ -59,8 +59,26 @@ void setup() {
   Serial.println();
   Serial.println();
   randomSeed(analogRead(RANDPIN));
-  //getID();
-  //diagnose();
+  getID();
+  eraseChipTest();
+  eraseBlock64KTest();
+  eraseBlock32KTest();
+  eraseSectorTest();
+  
+  byteTest();
+  charTest();
+  wordTest();
+  shortTest();
+  uLongTest();
+  longTest();
+  floatTest();
+  stringTest();
+  structTest();
+  arrayTest();
+
+  powerDownTest();
+  powerUpTest();
+  printLine();
 }
 
 void loop() {

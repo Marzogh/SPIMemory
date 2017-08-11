@@ -35,12 +35,14 @@ SPIFlash::SPIFlash(uint8_t cs) {
   csPin = cs;
   cs_mask = digitalPinToBitMask(csPin);
   pinMode(csPin, OUTPUT);
+  CHIP_DESELECT
 }
 #elif defined (ARDUINO_ARCH_SAMD)
 SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
   _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
   csPin = cs;
   pinMode(csPin, OUTPUT);
+  CHIP_DESELECT
 }
 #elif defined (BOARD_RTL8195A)
 SPIFlash::SPIFlash(PinName cs) {
@@ -48,11 +50,14 @@ SPIFlash::SPIFlash(PinName cs) {
   gpio_dir(&csPin, PIN_OUTPUT);
   gpio_mode(&csPin, PullNone);
   gpio_write(&csPin, 1);
+  CHIP_DESELECT
 }
 #else
 SPIFlash::SPIFlash(uint8_t cs) {
   csPin = cs;
+  cs_mask = digitalPinToBitMask(csPin);
   pinMode(csPin, OUTPUT);
+  CHIP_DESELECT
 }
 #endif
 
@@ -63,9 +68,6 @@ SPIFlash::SPIFlash(uint8_t cs) {
 
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(void) {
-#if defined (CHIPSIZE)
-    _chip.capacity = CHIPSIZE;
-#endif
   BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
@@ -729,8 +731,7 @@ bool SPIFlash::eraseBlock64K(uint32_t _addr) {
 
 //Erases whole chip. Think twice before using.
 bool SPIFlash::eraseChip(void) {
-  //if (!_prep(ERASEFUNC, NULLBYTE)) {
-  if(!_notBusy()||!_writeEnable()) {
+	if(!_notBusy() || !_writeEnable()) {
     return false;
   }
 

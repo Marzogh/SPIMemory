@@ -154,11 +154,9 @@ uint8_t SPIFlash::_nextByte(uint8_t data) {
 //#if defined (ARDUINO_ARCH_SAM)
 //  return _dueSPITransfer(data);
 //#else
-  Serial.println(data, HEX);
   return xfer(data);
 //#endif
 }
-
 
 //Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
@@ -178,6 +176,8 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
       _dueSPIRecByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_SAMD)
       _spi->transfer(&data_buffer[0], size);
+    #elif defined (ARDUINO_ARCH_AVR)
+      SPI.transfer(&(*data_buffer), size);
     #else
       for (uint16_t i = 0; i < size; i++) {
         *_dataAddr = xfer(NULLBYTE);
@@ -191,13 +191,13 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
       _dueSPISendByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_SAMD)
       _spi->transfer(&(*data_buffer), size);
-    #elif defined (ARDUINO_ARCH_ESP8266) || defined (ARDUINO_ARCH_ESP32)
+    #elif defined (ARDUINO_ARCH_AVR)
+      SPI.transfer(&(*data_buffer), size);
+    #else
       for (uint16_t i = 0; i < size; i++) {
         xfer(*_dataAddr);
         _dataAddr++;
       }
-      #else
-        SPI.transfer(&(*data_buffer), size);
     #endif
     break;
   }
@@ -224,10 +224,10 @@ void SPIFlash::_endSPI(void) {
 
 // Checks if status register 1 can be accessed - used to check chip status, during powerdown and power up and for debugging
 uint8_t SPIFlash::_readStat1(void) {
-	_beginSPI(READSTAT1);
-  uint8_t stat1 = _nextByte();
+  _beginSPI(READSTAT1);
+  stat1 = _nextByte();
   CHIP_DESELECT
-	return stat1;
+  return stat1;
 }
 
 // Checks if status register 2 can be accessed, if yes, reads and returns it
@@ -251,44 +251,51 @@ bool SPIFlash::_noSuspend(void) {
     break;
 
     case MICROCHIP_MANID:
-    if(_readStat1() & WSE || _readStat1() & WSP) {
+    _readStat1();
+    if(stat1 & WSE || stat1 & WSP) {
       _troubleshoot(SYSSUSPEND);
   		return false;
     }
-  	return true;
   }
-
+  return true;
 }
 
 // Polls the status register 1 until busy flag is cleared or timeout
 bool SPIFlash::_notBusy(uint32_t timeout) {
   _delay_us(WINBOND_WRITE_DELAY);
-	uint32_t startTime = millis();
+  uint32_t _time = 0;
 
-	do {
-    state = _readStat1();
-		if((millis()-startTime) > timeout){
-      _troubleshoot(CHIPBUSY);
-			return false;
-		}
-	} while(state & BUSY);
-	return true;
+  while (_time < timeout) {
+    _readStat1();
+    if (!(stat1 & BUSY))
+    {
+      return true;
+    }
+    _time++;
+  }
+  if (_time == timeout) {
+    return false;
+  }
+  return true;
 }
 
 //Enables writing to chip by setting the WRITEENABLE bit
-bool SPIFlash::_writeEnable(uint32_t timeout) {
-  uint32_t startTime = millis();
-  //if (!(state & WRTEN)) {
+bool SPIFlash::_writeEnable(void) {
+  /*uint32_t startTime = millis();
     do {
       _beginSPI(WRITEENABLE);
       CHIP_DESELECT
-      state = _readStat1();
+      _readStat1();
       if((millis()-startTime) > timeout) {
         _troubleshoot(CANTENWRITE);
         return false;
       }
-     } while (!(state & WRTEN)) ;
-  //}
+    } while (!(stat1 & WRTEN)) ;*/
+  _beginSPI(WRITEENABLE);
+  CHIP_DESELECT
+  if (!(_readStat1() & WRTEN)) {
+    _troubleshoot(CANTENWRITE);
+  }
   return true;
 }
 
@@ -367,12 +374,12 @@ bool SPIFlash::_chipID(void) {
   }
 
   if (_chip.manufacturerID == MICROCHIP_MANID) {
-    uint8_t _stat1 = _readStat1();
-    _stat1 &= 0xC3;
+    _readStat1();
+    stat1 &= 0xC3;
     _beginSPI(WRITESTATEN);
     CHIP_DESELECT
     _beginSPI(WRITESTAT);
-    _nextByte(_stat1);
+    _nextByte(stat1);
     CHIP_DESELECT
   }
 

@@ -23,6 +23,7 @@ New Boards supported:
 -->
 
 Enhancements:
+--> _notBusy() is faster
 --> Completely re-written FlashDiagnostics - uses fewer resources, compatible with more chips and boards
 --> Library now works with Microchip flash memory. (Further optimizations required)
 --> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):

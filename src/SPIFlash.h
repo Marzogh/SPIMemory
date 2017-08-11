@@ -26,14 +26,14 @@
  */
 
 #ifndef SPIFLASH_H
-  #define SPIFLASH_H
+#define SPIFLASH_H
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
 //                         does not respond                           //
 //                                                                    //
 //      Error codes will be generated and returned on functions       //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define RUNDIAGNOSTIC                                               //
+#define RUNDIAGNOSTIC                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -57,22 +57,21 @@
 
 #if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A)
 // RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
-  #define _delay_us(us) delayMicroseconds(us)
+ #define _delay_us(us) delayMicroseconds(us)
 #else
-  #include <util/delay.h>
+ #include <util/delay.h>
 #endif
 // Includes specific to RTL8195A to access GPIO HAL - @boseji <salearj@hotmail.com> 02.03.17
 #if defined (BOARD_RTL8195A)
-  #ifdef __cplusplus
-    extern "C" {
-  #endif
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-  #include "gpio_api.h"
-  #include "PinNames.h"
+#include "gpio_api.h"
+#include "PinNames.h"
 
-  #ifdef __cplusplus
-    }
-  #endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef ARDUINO_ARCH_AVR
@@ -80,31 +79,24 @@
     #define CHIP_DESELECT *cs_port |=  cs_mask;
     #define xfer(n)   SPI.transfer(n)
     #define BEGIN_SPI SPI.begin();
-
+  #endif
 #elif defined (ARDUINO_ARCH_SAM)
     #define CHIP_SELECT   digitalWrite(csPin, LOW);
     #define CHIP_DESELECT digitalWrite(csPin, HIGH);
     #define xfer   _dueSPITransfer
     #define BEGIN_SPI _dueSPIBegin();
-    extern char _end;
-    extern "C" char *sbrk(int i);
-    //char *ramstart=(char *)0x20070000;
-    //char *ramend=(char *)0x20088000;
-
-#elif defined (ARDUINO_ARCH_SAMD)
-  #define CHIP_SELECT   digitalWrite(csPin, LOW);
-  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-  #define xfer(n)   _spi->transfer(n)
-  #define BEGIN_SPI _spi->begin();
-
 // Specific access configuration for Chip select pin - @boseji <salearj@hotmail.com> 02.03.17
 #elif defined (BOARD_RTL8195A)
     #define CHIP_SELECT   gpio_write(&csPin, 0);
     #define CHIP_DESELECT gpio_write(&csPin, 1);
     #define xfer(n)   SPI.transfer(n)
     #define BEGIN_SPI SPI.begin();
-
-#elif !defined (ARDUINO_ARCH_AVR) || !defined (ARDUINO_ARCH_SAM) || !defined (ARDUINO_ARCH_SAMD) || !defined (BOARD_RTL8195A)
+#elif defined (ARDUINO_ARCH_SAMD)
+  #define CHIP_SELECT   digitalWrite(csPin, LOW);
+  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+  #define xfer(n)   _spi->transfer(n)
+  #define BEGIN_SPI _spi->begin();
+#else
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
   #define xfer(n)   SPI.transfer(n)
@@ -115,18 +107,24 @@
 #define LIBSUBVER 0
 #define BUGFIXVER 0
 
+#if defined (ARDUINO_ARCH_SAM)
+  extern char _end;
+  extern "C" char *sbrk(int i);
+  //char *ramstart=(char *)0x20070000;
+  //char *ramend=(char *)0x20088000;
+#endif
 
 class SPIFlash {
 public:
   //----------------------------------------------Constructor-----------------------------------------------
   //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
-#if defined (ARDUINO_ARCH_SAMD)
+  #if defined (ARDUINO_ARCH_SAMD)
   SPIFlash(uint8_t cs = CS, SPIClass *spiinterface=&SPI);
-#elif defined (BOARD_RTL8195A)
+  #elif defined (BOARD_RTL8195A)
   SPIFlash(PinName cs = CS);
-#else
+  #else
   SPIFlash(uint8_t cs = CS);
-#endif
+  #endif
   //----------------------------------------Initial / Chip Functions----------------------------------------//
   bool     begin(void);
   void     setClock(uint32_t clockSpeed);
@@ -224,7 +222,7 @@ private:
   bool     _noSuspend(void);
   bool     _notBusy(uint32_t timeout = BUSY_TIMEOUT);
   bool     _notPrevWritten(uint32_t _addr, uint32_t size = 1);
-  bool     _writeEnable(uint32_t timeout = 10L);
+  bool     _writeEnable(void);
   bool     _writeDisable(void);
   bool     _getJedecId(void);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
@@ -240,20 +238,20 @@ private:
   template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
   template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint8_t _sz);
   //-------------------------------------------Private variables------------------------------------------//
-#ifdef SPI_HAS_TRANSACTION
+  #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
-#endif
+  #endif
   //If multiple SPI ports are available this variable is used to choose between them (SPI, SPI1, SPI2 etc.)
   SPIClass *_spi;
-#if !defined (BOARD_RTL8195A)
+  #if !defined (BOARD_RTL8195A)
   uint8_t     csPin;
-#else
+  #else
   // Object declaration for the GPIO HAL type for csPin - @boseji <salearj@hotmail.com> 02.03.17
   gpio_t      csPin;
-#endif
+  #endif
   volatile uint8_t *cs_port;
   bool        pageOverflow, SPIBusState;
-  uint8_t     cs_mask, errorcode, state, _SPCR, _SPSR, _a0, _a1, _a2;
+  uint8_t     cs_mask, errorcode, stat1, _SPCR, _SPSR, _a0, _a1, _a2;
   struct      chipID {
                 bool supported;
                 uint8_t manufacturerID;
@@ -399,17 +397,11 @@ template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint8_t _sz, b
   if (_prep(READDATA, _addr, _sz)) {
     uint8_t* p = (uint8_t*)(void*)&value;
     CHIP_SELECT
-    switch (fastRead) {
-      case false:
-      _nextByte(READDATA);
-      break;
-
-      case true:
+    if (fastRead) {
       _nextByte(FASTREAD);
-      break;
-
-      default:
-      break;
+    }
+    else {
+      _nextByte(READDATA);
     }
     _transferAddress();
     for (uint16_t i = 0; i < _sz; i++) {
