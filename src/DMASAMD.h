@@ -4,7 +4,7 @@
 // packages/arduino/tools/CMSIS/4.0.0-atmel/Device/ATMEL/samd21/include/component/dmac.h
 // http://asf.atmel.com/docs/3.16.0/samd21/html/asfdoc_sam0_sercom_spi_dma_use_case.html
 //  assume normal SPI setup, then we take over with DMA
-
+#ifdef ARDUINO_ARCH_SAMD
 #include <SPI.h>
 
 #define PRREG(x) Serial.print(#x" 0x"); Serial.println(x,HEX)
@@ -137,3 +137,4 @@ void spi_transfer(void *txdata, void *rxdata,  size_t n) {
   xtype = DoTXRX;
   spi_xfr(txdata,rxdata,n);
 }
+#endif

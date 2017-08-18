@@ -55,7 +55,6 @@ SPIFlash::SPIFlash(PinName cs) {
 #else
 SPIFlash::SPIFlash(uint8_t cs) {
   csPin = cs;
-  cs_mask = digitalPinToBitMask(csPin);
   pinMode(csPin, OUTPUT);
   CHIP_DESELECT
 }
@@ -164,15 +163,9 @@ uint16_t SPIFlash::sizeofStr(String &inputStr) {
 }
 
 // Reads a byte of data from a specific location in a page.
-// Has two variants:
-//	A. Takes two arguments -
-//		1. _addr --> Any address from 0 to capacity
-//		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes three arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
+//  Takes two arguments -
+//    1. _addr --> Any address from 0 to capacity
+//    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 uint8_t SPIFlash::readByte(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -186,15 +179,9 @@ uint8_t SPIFlash::readByte(uint32_t _addr, bool fastRead) {
 }
 
 // Reads a char of data from a specific location in a page.
-// Has two variants:
-//	A. Takes two arguments -
-//		1. _addr --> Any address from 0 to capacity
-//		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes three arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
+//  Takes two arguments -
+//    1. _addr --> Any address from 0 to capacity
+//    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 int8_t SPIFlash::readChar(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -207,18 +194,14 @@ int8_t SPIFlash::readChar(uint32_t _addr, bool fastRead) {
   return data;
 }
 
-// Reads an array of bytes starting from a specific location in a page.// Has two variants:
-//	A. Takes three arguments
-//		1. _addr --> Any address from 0 to capacity
-//		2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes four arguments
-//		1. page --> Any page number from 0 to maxPage
-//		2. offset --> Any offset within the page - from 0 to 255
-//		3. data_buffer --> The array of bytes to be read from the flash memory - starting at the offset on the page indicated
-//		4. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
-bool  SPIFlash::readByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead) {
+// Reads an array of bytes starting from a specific location in a page.
+//  Takes four arguments
+//    1. _addr --> Any address from 0 to capacity
+//    2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
+//    3. bufferSize --> The size of the buffer - in number of bytes.
+//    4. fastRead --> defaults to false - executes _beginFastRead() if set to true
+
+bool  SPIFlash::readByteArray(uint32_t _addr, uint8_t *data_buffer, size_t bufferSize, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
@@ -239,18 +222,13 @@ bool  SPIFlash::readByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t buf
 	return true;
 }
 
-// Reads an array of chars starting from a specific location in a page.// Has two variants:
-//	A. Takes three arguments
-//		1. _addr --> Any address from 0 to capacity
-//		2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes four arguments
-//		1. page --> Any page number from 0 to maxPage
-//		2. offset --> Any offset within the page - from 0 to 255
-//		3. data_buffer --> The array of bytes to be read from the flash memory - starting at the offset on the page indicated
-//		4. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
-bool  SPIFlash::readCharArray(uint32_t _addr, char *data_buffer, uint16_t bufferSize, bool fastRead) {
+// Reads an array of chars starting from a specific location in a page..
+//  Takes four arguments
+//    1. _addr --> Any address from 0 to capacity
+//    2. data_buffer --> The array of bytes to be read from the flash memory - starting at the address indicated
+//    3. bufferSize --> The size of the buffer - in number of bytes.
+//    4. fastRead --> defaults to false - executes _beginFastRead() if set to true
+bool  SPIFlash::readCharArray(uint32_t _addr, char *data_buffer, size_t bufferSize, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
@@ -272,15 +250,9 @@ bool  SPIFlash::readCharArray(uint32_t _addr, char *data_buffer, uint16_t buffer
 }
 
 // Reads an unsigned int of data from a specific location in a page.
-// Has two variants:
-//	A. Takes two arguments -
-//		1. _addr --> Any address from 0 to capacity
-//		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes three arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
+//  Takes two arguments -
+//    1. _addr --> Any address from 0 to capacity
+//    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 uint16_t SPIFlash::readWord(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -294,15 +266,9 @@ uint16_t SPIFlash::readWord(uint32_t _addr, bool fastRead) {
 }
 
 // Reads a signed int of data from a specific location in a page.
-// Has two variants:
-//	A. Takes two arguments -
-//		1. _addr --> Any address from 0 to capacity
-//		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes three arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
+//  Takes two arguments -
+//    1. _addr --> Any address from 0 to capacity
+//    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 int16_t SPIFlash::readShort(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -316,15 +282,9 @@ int16_t SPIFlash::readShort(uint32_t _addr, bool fastRead) {
 }
 
 // Reads an unsigned long of data from a specific location in a page.
-// Has two variants:
-//	A. Takes two arguments -
-//		1. _addr --> Any _addr from 0 to capacity
-//		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes three arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
+//  Takes two arguments -
+//    1. _addr --> Any address from 0 to capacity
+//    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 uint32_t SPIFlash::readULong(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -338,15 +298,9 @@ uint32_t SPIFlash::readULong(uint32_t _addr, bool fastRead) {
 }
 
 // Reads a signed long of data from a specific location in a page.
-// Has two variants:
-//	A. Takes two arguments -
-//		1. _addr --> Any _addr from 0 to capacity
-//		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes three arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
+//  Takes two arguments -
+//    1. _addr --> Any address from 0 to capacity
+//    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 int32_t SPIFlash::readLong(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -359,16 +313,10 @@ int32_t SPIFlash::readLong(uint32_t _addr, bool fastRead) {
   return data;
 }
 
-// Reads a signed long of data from a specific location in a page.
-// Has two variants:
-//	A. Takes two arguments -
-//		1. _addr --> Any address from 0 to capacity
-//		2. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes three arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// Variant A
+// Reads a float of data from a specific location in a page.
+//  Takes two arguments -
+//    1. _addr --> Any address from 0 to capacity
+//    2. fastRead --> defaults to false - executes _beginFastRead() if set to true
 float SPIFlash::readFloat(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -382,19 +330,10 @@ float SPIFlash::readFloat(uint32_t _addr, bool fastRead) {
 }
 
 // Reads a string from a specific location on a page.
-// Has two variants:
-//	A. Takes three arguments
-//		1. _addr --> Any address from 0 to capacity
-//		2. outputString --> String variable to write the output to
-//		3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-//	B. Takes four arguments
-//		1. page --> Any page number from 0 to maxPage
-//		2. offset --> Any offset within the page - from 0 to 255
-//		3. outputString --> String variable to write the output to
-//		4. fastRead --> defaults to false - executes _beginFastRead() if set to true
-// This function first reads a short from the address to figure out the size of the String object stored and
-// then reads the String object data
-// Variant A
+//  Takes three arguments
+//    1. _addr --> Any address from 0 to capacity
+//    2. outputString --> String variable to write the output to
+//    3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 bool SPIFlash::readStr(uint32_t _addr, String &data, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -407,19 +346,12 @@ bool SPIFlash::readStr(uint32_t _addr, String &data, bool fastRead) {
 }
 
 // Writes a byte of data to a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> One byte of data to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> One byte of data to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One byte to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -432,19 +364,12 @@ bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
 }
 
 // Writes a char of data to a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> One char of data to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> One char of data to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One char to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeChar(uint32_t _addr, int8_t data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -457,20 +382,14 @@ bool SPIFlash::writeChar(uint32_t _addr, int8_t data, bool errorCheck) {
 }
 
 // Writes an array of bytes starting from a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> An array of bytes to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> An array of bytes to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+//  Takes four arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data_buffer --> The pointer to the array of bytes be written to a particular location on a page
+//    3. bufferSize --> Size of the array of bytes - in number of bytes
+//    4. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
-bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck) {
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t bufferSize, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
@@ -543,20 +462,14 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t buf
 }
 
 // Writes an array of bytes starting from a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> An array of chars to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> An array of chars to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+//  Takes four arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data_buffer --> The pointer to the array of chars be written to a particular location on a page
+//    3. bufferSize --> Size of the array of chars - in number of bytes
+//    4. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
-bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, uint16_t bufferSize, bool errorCheck) {
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSize, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
@@ -629,19 +542,12 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, uint16_t buffer
 }
 
 // Writes an unsigned int as two bytes starting from a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> One unsigned int of data to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> One unsigned int of data to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One word to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeWord(uint32_t _addr, uint16_t data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -653,20 +559,13 @@ bool SPIFlash::writeWord(uint32_t _addr, uint16_t data, bool errorCheck) {
   #endif
 }
 
-// Writes a signed int as two bytes starting from a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> One signed int of data to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> One signed int of data to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+// Writes a signed int as two bytes starting from a specific location in a page
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One short to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeShort(uint32_t _addr, int16_t data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -679,19 +578,12 @@ bool SPIFlash::writeShort(uint32_t _addr, int16_t data, bool errorCheck) {
 }
 
 // Writes an unsigned long as four bytes starting from a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> One unsigned long of data to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> One unsigned long of data to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One unsigned long to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeULong(uint32_t _addr, uint32_t data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -703,20 +595,13 @@ bool SPIFlash::writeULong(uint32_t _addr, uint32_t data, bool errorCheck) {
   #endif
 }
 
-// Writes a signed long as four bytes starting from a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> One signed long of data to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> One signed long of data to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+// Writes a signed long as four bytes starting from a specific location in a page
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One signed long to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeLong(uint32_t _addr, int32_t data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -728,20 +613,13 @@ bool SPIFlash::writeLong(uint32_t _addr, int32_t data, bool errorCheck) {
   #endif
 }
 
-// Writes a float as four bytes starting from a specific location in a page.
-// Has two variants:
-//	A. Takes three arguments -
-//  	1. _addr --> Any address - from 0 to capacity
-//  	2. data --> One float of data to be written to a particular location on a page
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//  	3. data --> One float of data to be written to a particular location on a page
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+// Writes a float as four bytes starting from a specific location in a page
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One float to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -753,22 +631,13 @@ bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
   #endif
 }
 
-// Reads a string from a specific location on a page.
-// Has two variants:
-//	A. Takes two arguments -
-//  	1. _addr --> Any address from 0 to capacity
-//		2. inputString --> String variable to write the data from
-//		3. errorCheck --> Turned on by default. Checks for writing errors
-//	B. Takes four arguments -
-//  	1. page --> Any page number from 0 to maxPage
-//  	2. offset --> Any offset within the page - from 0 to 255
-//		3. inputString --> String variable to write the data from
-//		4. errorCheck --> Turned on by default. Checks for writing errors
+// Writes a string to a specific location on a page
+//  Takes three arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data --> One String to be written to a particular location on a page
+//    3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
-// 			Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-// This function first writes the size of the string as an unsigned int to the address to figure out the size of the String object stored and
-// then writes the String object data. Therefore it takes up two bytes more than the size of the String itself.
-// Variant A
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeStr(uint32_t _addr, String &data, bool errorCheck) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -780,12 +649,8 @@ bool SPIFlash::writeStr(uint32_t _addr, String &data, bool errorCheck) {
   #endif
 }
 
-//Erases one 4k sector. Has two variants:
-//	A. Takes the address as the argument and erases the sector containing the address.
-//	B. Takes page to be erased as the argument and erases the sector containing the page.
-//	The sectors are numbered 0 - 255 containing 16 pages each.
-//			Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255
-// Variant A
+// Erases one 4k sector.
+//  Takes an address as the argument and erases the block containing the address.
 bool SPIFlash::eraseSector(uint32_t _addr) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -803,20 +668,11 @@ bool SPIFlash::eraseSector(uint32_t _addr) {
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
 
-		//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
-		// i.e. to write disable state upon the following conditions:
-		// Power-up, Write Disable, Page Program, Quad Page Program, ``Sector Erase``, Block Erase, Chip Erase, Write Status Register,
-		// Erase Security Register and Program Security register
-
 	return true;
 }
 
-//Erases one 32k block. Has two variants:
-//	A. Takes the address as the argument and erases the block containing the address.
-//	B. Takes page to be erased as the argument and erases the block containing the page.
-//	The blocks are numbered 0 - 31 containing 128 pages each.
-// 			Page 0-127 --> Block 0; Page 128-255 --> Block 1;......Page 3968-4095 --> Block 31
-// Variant A
+// Erases one 32k block.
+//  Takes an address as the argument and erases the block containing the address.
 bool SPIFlash::eraseBlock32K(uint32_t _addr) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -830,11 +686,6 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr) {
 	if(!_notBusy(1*S)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
-
-	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
-	// i.e. to write disable state upon the following conditions:
-	// Power-up, Write Disable, Page Program, Quad Page Program, Sector Erase, ``Block Erase``, Chip Erase, Write Status Register,
-	// Erase Security Register and Program Security register
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
@@ -842,12 +693,8 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr) {
 	return true;
 }
 
-//Erases one 64k block. Has two variants:
-//	A. Takes the address as the argument and erases the block containing the address.
-//	B. Takes page to be erased as the argument and erases the block containing the page.
-//	The blocks are numbered 0 - 15 containing 256 pages each.
-// 				Page 0-255 --> Block 0; Page 256-511 --> Block 1;......Page 3840-4095 --> Block 15
-//	Variant A
+// Erases one 64k block.
+//  Takes an address as the argument and erases the block containing the address.
 bool SPIFlash::eraseBlock64K(uint32_t _addr) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
@@ -862,11 +709,6 @@ bool SPIFlash::eraseBlock64K(uint32_t _addr) {
 	if(!_notBusy(1200L)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
-
-	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
-	// i.e. to write disable state upon the following conditions:
-	// Power-up, Write Disable, Page Program, Quad Page Program, Sector Erase, ``Block Erase``, Chip Erase, Write Status Register,
-	// Erase Security Register and Program Security register
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
@@ -888,11 +730,6 @@ bool SPIFlash::eraseChip(void) {
 	while(_readStat1() & BUSY) {
     _delay_us(30000L);
   }
-
-	//_writeDisable(); //_writeDisable() is not required because the Write Enable Latch (WEL) flag is cleared to 0
-	// i.e. to write disable state upon the following conditions:
-	// Power-up, Write Disable, Page Program, Quad Page Program, Sector Erase, Block Erase, ``Chip Erase``, Write Status Register,
-	// Erase Security Register and Program Security register
   _endSPI();
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
@@ -923,7 +760,7 @@ bool SPIFlash::suspendProg(void) {
   _beginSPI(SUSPEND);
   _endSPI();
   _delay_us(20);
-  if(!_notBusy(50) || _noSuspend()) {  //Max suspend Enable time according to datasheet
+  if(!_notBusy(50) || _noSuspend()) {
     return false;
   }
   #ifdef RUNDIAGNOSTIC
@@ -957,7 +794,6 @@ bool SPIFlash::resumeProg(void) {
 }
 
 //Puts device in low power state. Good for battery powered operations.
-//Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4)
 //In powerDown() the chip will only respond to powerUp()
 bool SPIFlash::powerDown(void) {
   #ifdef RUNDIAGNOSTIC
@@ -997,3 +833,6 @@ bool SPIFlash::powerUp(void) {
     return _writeEnable(false);
   #endif
 }
+
+/* Note: _writeDisable() is not required at the end of any function that writes to the Flash memory because the Write Enable Latch (WEL) flag is cleared to 0 i.e. to write disable state upon the following conditions being completed:
+Power-up, Write Disable, Page Program, Quad Page Program, Sector Erase, Block Erase, Chip Erase, Write Status Register, Erase Security Register and Program Security register */

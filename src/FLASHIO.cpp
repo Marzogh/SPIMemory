@@ -69,9 +69,6 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
 
 // Transfer Address.
 bool SPIFlash::_transferAddress(void) {
-  /*_nextByte(_currentAddress >> 16);
-  _nextByte(_currentAddress >> 8);
-  _nextByte(_currentAddress);*/
   _nextByte(WRITE, Higher(_currentAddress));
   _nextByte(WRITE, Hi(_currentAddress));
   _nextByte(WRITE, Lo(_currentAddress));

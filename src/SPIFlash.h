@@ -156,14 +156,14 @@ public:
   bool     writeByte(uint32_t _addr, uint8_t data, bool errorCheck = true);
   uint8_t  readByte(uint32_t _addr, bool fastRead = false);
   //----------------------------- Write / Read Byte Arrays ------------------------------//
-  bool     writeByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t bufferSize, bool errorCheck = true);
-  bool     readByteArray(uint32_t _addr, uint8_t *data_buffer, uint16_t bufferSize, bool fastRead = false);
+  bool     writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t bufferSize, bool errorCheck = true);
+  bool     readByteArray(uint32_t _addr, uint8_t *data_buffer, size_t bufferSize, bool fastRead = false);
   //-------------------------------- Write / Read Chars ---------------------------------//
   bool     writeChar(uint32_t _addr, int8_t data, bool errorCheck = true);
   int8_t   readChar(uint32_t _addr, bool fastRead = false);
   //------------------------------ Write / Read Char Arrays -----------------------------//
-  bool     writeCharArray(uint32_t _addr, char *data_buffer, uint16_t bufferSize, bool errorCheck = true);
-  bool     readCharArray(uint32_t _addr, char *data_buffer, uint16_t buffer_size, bool fastRead = false);
+  bool     writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSize, bool errorCheck = true);
+  bool     readCharArray(uint32_t _addr, char *data_buffer, size_t buffer_size, bool fastRead = false);
   //-------------------------------- Write / Read Shorts --------------------------------//
   bool     writeShort(uint32_t _addr, int16_t data, bool errorCheck = true);
   int16_t  readShort(uint32_t _addr, bool fastRead = false);
@@ -317,12 +317,11 @@ template <class T> bool SPIFlash::readAnything(uint32_t _addr, T& data, bool fas
 
 //---------------------------------- Private Templates ----------------------------------//
 
-// Checks for errors in writing data to flash memory.
+// Private template to check for errors in writing to flash memory
 // Takes three arguments -
 //  1. _addr --> Any address from 0 to maxAddress
 //  2. const T& value --> Variable with the data to be error checked
 //  3. _sz --> Size of the data variable to be error checked, in bytes (1 byte = 8 bits)
-// Private template to check for errors in writing to flash memory
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, size_t _sz) {
   if (!_notBusy()) {
     return false;
