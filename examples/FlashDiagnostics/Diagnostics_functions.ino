@@ -136,7 +136,6 @@ void byteTest() {
   _data = flash.readByte(addr);
   rTime = micros() - rTime;
 
-
   Serial.print ("\t\t\tByte: \t\t");
   if (_data == _d) {
     pass(TRUE);

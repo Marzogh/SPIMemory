@@ -54,11 +54,12 @@ void setup() {
   {
     Serial.print(F("."));
   }
-  Serial.println();
+  Serial.println();randomSeed(analogRead(RANDPIN));
+  //longBlink();
   flash.begin();
   Serial.println();
   Serial.println();
-  randomSeed(analogRead(RANDPIN));
+  
   getID();
   eraseChipTest();
   eraseBlock64KTest();
@@ -84,3 +85,12 @@ void setup() {
 void loop() {
 
 }
+
+void longBlink() {
+  pinMode(13, OUTPUT);
+  digitalWrite(13, HIGH);
+  delay(3000);
+  digitalWrite(13, LOW);
+  delay(2000);
+}
+
