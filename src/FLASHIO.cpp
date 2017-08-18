@@ -303,16 +303,6 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
 
 //Enables writing to chip by setting the WRITEENABLE bit
 bool SPIFlash::_writeEnable(bool _troubleshootEnable) {
-  /*uint32_t startTime = millis();
-    do {
-      _beginSPI(WRITEENABLE);
-      CHIP_DESELECT
-      _readStat1();
-      if((millis()-startTime) > timeout) {
-        _troubleshoot(CANTENWRITE);
-        return false;
-      }
-    } while (!(stat1 & WRTEN)) ;*/
   _beginSPI(WRITEENABLE);
   CHIP_DESELECT
   if (!(_readStat1() & WRTEN)) {
@@ -376,9 +366,16 @@ bool SPIFlash::_getSFDP(void) {
   _beginSPI(READSFDP);
   _transferAddress();
   _nextByte(WRITE, DUMMYBYTE);
-  for (uint8_t i = 0; i < 4; i++) {
+  /*for (uint8_t i = 0; i < 4; i++) {
     _chip.sfdp += (_nextByte(READ) << (8*i));
-  }
+  }*/
+  // Modification suggested by @VitorBoss on 13.08.2017.
+  // Ref issue 76 on Github here -->
+  // https://github.com/Marzogh/SPIFlash/issues/76
+  Lo(_chip.sfdp) = _nextByte(READ);
+  Hi(_chip.sfdp) = _nextByte(READ);
+  Higher(_chip.sfdp) = _nextByte(READ);
+  Highest(_chip.sfdp) = _nextByte(READ);
   CHIP_DESELECT
   if (_chip.sfdp == 0x50444653) {
     //Serial.print("_chip.sfdp: ");
@@ -387,6 +384,29 @@ bool SPIFlash::_getSFDP(void) {
   }
   else {
     return false;
+  }
+}
+
+bool SPIFlash::_disableGlobalBlockProtect(void) {
+  if (_chip.memoryTypeID == SST25) {
+    _readStat1();
+    stat1 &= 0xC3;
+    _beginSPI(WRITESTATEN);
+    CHIP_DESELECT
+    _beginSPI(WRITESTAT);
+    _nextByte(WRITE, stat1);
+    CHIP_DESELECT
+  }
+  else if (_chip.memoryTypeID == SST26) {
+    if(!_notBusy()) {
+    	return false;
+    }
+    _writeEnable();
+    _delay_us(10);
+    _beginSPI(ULBPR);
+    CHIP_DESELECT
+    _delay_us(50);
+    _writeDisable();
   }
 }
 
@@ -399,43 +419,32 @@ bool SPIFlash::_chipID(void) {
   }
 
   if (_chip.manufacturerID == MICROCHIP_MANID) {
-    _readStat1();
-    stat1 &= 0xC3;
-    _beginSPI(WRITESTATEN);
-    CHIP_DESELECT
-    _beginSPI(WRITESTAT);
-    _nextByte(WRITE, stat1);
-    CHIP_DESELECT
+    _disableGlobalBlockProtect();
   }
 
-  // If no capacity is defined in user code
-#if !defined (CHIPSIZE)
-  if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID) {
-    //Identify capacity
-    for (uint8_t i = 0; i < sizeof(_capID); i++) {
-      if (_chip.capacityID == _capID[i]) {
-        _chip.capacity = (_memSize[i]);
-        _chip.eraseTime = _eraseTime[i];
+  if (!_chip.capacity) {
+    if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID) {
+      //Identify capacity
+      for (uint8_t i = 0; i < sizeof(_capID); i++) {
+        if (_chip.capacityID == _capID[i]) {
+          _chip.capacity = (_memSize[i]);
+          _chip.supported = true;
+          return true;
+        }
+      }
+      if (!_chip.capacity) {
+        _troubleshoot(UNKNOWNCAP);
+        return false;
       }
     }
-    _chip.supported = true;
-    return true;
-  }
-  else {
-    _troubleshoot(UNKNOWNCAP); //Error code for unidentified capacity
-    return false;
-  }
-#else
-  // If a custom chip size is defined
-  _chip.eraseTime = (400L *S);
-  if (_chip.manufacturerID!= WINBOND_MANID && _chip.manufacturerID != MICROCHIP_MANID && _chip.manufacturerID != CYPRESS_MANID) {
-    _chip.supported = false;// This chip is not officially supported
-    _troubleshoot(UNKNOWNCHIP); //Error code for unidentified chip
-    //while(1);         //Enable this if usercode is not meant to be run on unsupported chips
+    else {
+      _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
+      return false;
+    }
   }
   return true;
-#endif
 }
+
 
 //Checks to see if page overflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
@@ -443,7 +452,7 @@ bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
   if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
     return false;
   }
-	if (!_chip.eraseTime) {
+	if (!_chip.capacity) {
     _troubleshoot(CALLBEGIN);
     return false;
 	}

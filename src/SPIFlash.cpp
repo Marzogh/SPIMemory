@@ -66,16 +66,30 @@ SPIFlash::SPIFlash(uint8_t cs) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Identifies chip and establishes parameters
-bool SPIFlash::begin(void) {
+bool SPIFlash::begin(size_t flashChipSize) {
 #ifdef RUNDIAGNOSTIC
   Serial.println("Full Diagnostics Workup initiated!");
+  Serial.println();
 #endif
   BEGIN_SPI
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
   _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
 #endif
-  return _chipID();
+// If no capacity is defined in user code
+  if (!flashChipSize) {
+    return _chipID();
+  }
+  else {
+    _getJedecId();
+    // If a custom chip size is defined
+    #ifdef RUNDIAGNOSTIC
+    Serial.println("Custom Chipsize defined");
+    #endif
+    _chip.capacity = flashChipSize;
+    _chip.supported = false;
+  }
+  return true;
 }
 
 //Allows the setting of a custom clock speed for the SPI bus to communicate with the chip.
@@ -796,24 +810,30 @@ bool SPIFlash::resumeProg(void) {
 //Puts device in low power state. Good for battery powered operations.
 //In powerDown() the chip will only respond to powerUp()
 bool SPIFlash::powerDown(void) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-  #endif
-	if(!_notBusy(20))
-		return false;
+  if (_chip.manufacturerID != MICROCHIP_MANID) {
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros();
+    #endif
+  	if(!_notBusy(20))
+  		return false;
 
-	_beginSPI(POWERDOWN);
-  _endSPI();
+  	_beginSPI(POWERDOWN);
+    _endSPI();
 
-  _delay_us(5);
+    _delay_us(5);
 
-  #ifdef RUNDIAGNOSTIC
-    bool _retVal = !_writeEnable(false);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-    return !_writeEnable(false);
-  #endif
+    #ifdef RUNDIAGNOSTIC
+      bool _retVal = !_writeEnable(false);
+      _spifuncruntime = micros() - _spifuncruntime;
+      return _retVal;
+    #else
+      return !_writeEnable(false);
+    #endif
+  }
+  else {
+    _troubleshoot(UNSUPPORTEDFUNCTION);
+    return false;
+  }
 }
 
 //Wakes chip from low power state.

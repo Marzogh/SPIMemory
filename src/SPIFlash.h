@@ -141,7 +141,7 @@ public:
   SPIFlash(uint8_t cs = CS);
   #endif
   //----------------------------- Initial / Chip Functions ------------------------------//
-  bool     begin(void);
+  bool     begin(size_t flashChipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  error(bool verbosity = false);
@@ -231,6 +231,7 @@ private:
   void     _printErrorCode(void);
   void     _printSupportLink(void);
   void     _endSPI(void);
+  bool     _disableGlobalBlockProtect(void);
   bool     _prep(uint8_t opcode, uint32_t _addr, uint32_t size = 0);
   bool     _startSPIBus(void);
   bool     _beginSPI(uint8_t opcode);
@@ -288,9 +289,6 @@ private:
 
   const uint32_t _memSize[12]  =
   {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M, 6L * M, 32L * M, 8L * M, 8L * M};
-
-  const uint32_t _eraseTime[12] =
-  {1L * S, 2L * S, 2L * S, 4L * S, 6L * S, 10L * S, 15L * S, 100L * S, 200L * S, 400L * S, 50L * S, 50L * S}; //Erase time in milliseconds
 };
 
 //--------------------------------- Public Templates ------------------------------------//

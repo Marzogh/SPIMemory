@@ -23,6 +23,7 @@ New Boards supported:
 -->
 
 Enhancements:
+--> Confirmed to work with SPANSION/CYPRESS & MICROCHIP (Both SST25 & SST26 series).
 --> When RUNDIAGNOSTIC is uncommented in SPIFlash.h, users now have access to a new function called flash.functionRunTime() which can be called after any library I/O function is run. flash.functionRunTime() returns the time taken by the previous function to run, in microseconds (as a float). An example use case can be found when the FlashDiagnostics sketch is run with RUNDIAGNOSTIC uncommented.
 --> _notBusy() is faster
 --> Completely re-written FlashDiagnostics - uses fewer resources, compatible with more chips and boards
@@ -46,9 +47,8 @@ Enhancements:
 				(+) eraseChip																		-> +12%
 --> All functions except the Byte/Char Array Read/Write functions now call an internal _write/_read function.
 --> Restructured the internal _troubleshoot() function to be better human readable and easier to compile.
---> Users can define RUNDIAGNOSTIC or HIGHSPEED in their code to access the library's special modes. No requirement to modify the library any more.
 --> No need to include CHIPSIZE in flash.begin() any more. Just defining CHIPSIZE in user code as one of the standard sizes as in defines.h will be enough. (Refer to 'Deprecations -> 1' above)
---> Constructor changed to enable user to choose one of multiple SPI ports - if available. Look at wiki for further info
+--> Constructor changed to enable user to choose one of multiple SPI ports - if available. Look at wiki for further info.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
