@@ -54,7 +54,7 @@
 //                     General size definitions                       //
 //            B = Bytes; KB = Kilo Bytes; MB = Mega Bytes               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-/*#define B1            1L * B
+#define B1            1L * B
 #define B2            2L * B
 #define B4            4L * B
 #define B8            8L * B
@@ -84,23 +84,26 @@
 #define MB64          64L * M
 #define MB128         128L * M
 #define MB256         256L * M
-#define MB512         512L * M*/
+#define MB512         512L * M
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define WINBOND_MANID		 0xEF
-  #define PAGESIZE	 0x100
-  #define WINBOND_WRITE_DELAY 0x02
+  #define WINBOND_MANID         0xEF
+  #define PAGESIZE              0x100
+  #define WINBOND_WRITE_DELAY   0x02
   #define WINBOND_WREN_TIMEOUT  10L
   //#define CHIPSIZE 1*M
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define MICROCHIP_MANID		 0xBF
+  #define MICROCHIP_MANID       0xBF
+  #define SST25                 0x25
+  #define SST26                 0x26
+  #define ULBPR                 0x98    //Global Block Protection Unlock (Ref sections 4.1.1 & 5.37 of datasheet)
 
   //~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define CYPRESS_MANID		 0x1
+  #define CYPRESS_MANID         0x01
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -183,20 +186,21 @@
 //     					   List of Error codes						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
- #define SUCCESS      0x00
- #define CALLBEGIN    0x01
- #define UNKNOWNCHIP  0x02
- #define UNKNOWNCAP   0x03
- #define CHIPBUSY     0x04
- #define OUTOFBOUNDS  0x05
- #define CANTENWRITE  0x06
- #define PREVWRITTEN  0x07
- #define LOWRAM       0x08
- #define SYSSUSPEND   0x09
- #define UNSUPPORTED  0x0A
- #define ERRORCHKFAIL 0x0B
- #define NORESPONSE   0x0C
- #define UNKNOWNERROR 0xFE
+ #define SUCCESS              0x00
+ #define CALLBEGIN            0x01
+ #define UNKNOWNCHIP          0x02
+ #define UNKNOWNCAP           0x03
+ #define CHIPBUSY             0x04
+ #define OUTOFBOUNDS          0x05
+ #define CANTENWRITE          0x06
+ #define PREVWRITTEN          0x07
+ #define LOWRAM               0x08
+ #define SYSSUSPEND           0x09
+ #define UNSUPPORTED          0x0A
+ #define ERRORCHKFAIL         0x0B
+ #define NORESPONSE           0x0C
+ #define UNSUPPORTEDFUNCTION  0x0D
+ #define UNKNOWNERROR         0xFE
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                        Bit shift macros                            //

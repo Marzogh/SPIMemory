@@ -15,6 +15,7 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 void printLine() {
+    Serial.println();
   for (uint8_t i = 0; i < 230; i++) {
     Serial.print(F("-"));
   }
@@ -34,12 +35,10 @@ void printTime(uint32_t _wTime, uint32_t _rTime) {
     printTimer(_wTime);
     Serial.print(F(",\tRead Time: "));
     printTimer(_rTime);
-    Serial.println();
   }
   else {
     Serial.print(F("\t\tTime: "));
     printTimer(_wTime);
-    Serial.println();
   }
 }
 
@@ -84,16 +83,16 @@ void getID() {
   flash.libver(&_ver, &_subver, &_bugfix);
   clearprintBuffer(&printBuffer[1]);
   sprintf(printBuffer, ": %d.%d.%d", _ver, _subver, _bugfix);
-  Serial.println(printBuffer);
+  Serial.print(printBuffer);
 #else
-  Serial.println(F("< 2.5.0"));
+  Serial.print(F("< 2.5.0"));
 #endif
   printLine();
 
   for (uint8_t i = 0; i < 80; i++) {
     Serial.print(F(" "));
   }
-  Serial.println(F("Get ID"));
+  Serial.print(F("Get ID"));
   printLine();
   uint8_t b1, b2;
   //uint16_t b3;
@@ -116,12 +115,12 @@ void getID() {
   //Serial.println(F("xh"));
   clearprintBuffer(&printBuffer[1]);
   sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu bytes\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
-  Serial.println(printBuffer);
+  Serial.print(printBuffer);
   printLine();
-  Serial.println();
 }
 
 void byteTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   uint8_t _data, _d;
   _d = 35;
@@ -147,6 +146,7 @@ void byteTest() {
 }
 
 void charTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   int8_t _data, _d;
   _d = -110;
@@ -173,6 +173,7 @@ void charTest() {
 }
 
 void wordTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   uint16_t _data, _d;
   _d = 4520;
@@ -199,6 +200,7 @@ void wordTest() {
 }
 
 void shortTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   int16_t _data, _d;
   _d = -1250;
@@ -225,6 +227,7 @@ void shortTest() {
 }
 
 void uLongTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   uint32_t _data, _d;
   _d = 876532;
@@ -251,6 +254,7 @@ void uLongTest() {
 }
 
 void longTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   int32_t _data, _d;
   _d = -10959;
@@ -277,6 +281,7 @@ void longTest() {
 }
 
 void floatTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   float _data, _d;
   _d = 3.14;
@@ -303,6 +308,7 @@ void floatTest() {
 }
 
 void stringTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   String _data, _d;
   _d = "This is a test String 123!@#";
@@ -329,6 +335,7 @@ void stringTest() {
 }
 
 void structTest() {
+    Serial.println();
   struct Test {
     word s1;
     float s2;
@@ -369,6 +376,7 @@ void structTest() {
 }
 
 void arrayTest() {
+    Serial.println();
   uint32_t wTime, rTime, addr;
   uint8_t _d[256], _data[256];
 
@@ -399,6 +407,7 @@ void arrayTest() {
 }
 
 void powerDownTest() {
+    Serial.println();
   uint32_t _time;
   Serial.print(F("\t\t\tPower Down: \t"));
   if (flash.powerDown()) {
@@ -408,10 +417,12 @@ void powerDownTest() {
   }
   else {
     pass(FALSE);
+    Serial.print(F("\t\tNot all chips support power down. Please check your datasheet."));
   }
 }
 
 void powerUpTest() {
+    Serial.println();
   uint32_t _time;
   Serial.print(F("\t\t\tPower Up: \t"));
   if (flash.powerUp()) {
@@ -425,6 +436,7 @@ void powerUpTest() {
 }
 
 void eraseSectorTest() {
+    Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   Serial.print(F("\t\t\tErase 4KB Sector: "));
@@ -440,6 +452,7 @@ void eraseSectorTest() {
 }
 
 void eraseBlock32KTest() {
+    Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   Serial.print(F("\t\t\tErase 32KB Block: "));
@@ -454,6 +467,7 @@ void eraseBlock32KTest() {
 }
 
 void eraseBlock64KTest() {
+    Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   Serial.print(F("\t\t\tErase 64KB Block: "));
@@ -468,6 +482,7 @@ void eraseBlock64KTest() {
 }
 
 void eraseChipTest() {
+    Serial.println();
   uint32_t _time;
   Serial.print(F("\t\t\tErase Chip: \t"));
   if (flash.eraseChip()) {
