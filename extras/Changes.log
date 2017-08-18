@@ -9,7 +9,7 @@
 To check:
 --> Check _nextBuf function and optimize
 Bugs Squashed:
--->
+--> The writeByteArray() & writeCharArray() bug that occurred when writing arrays that spanned page boundaries (squashed in v2.5.0), stayed around to haunt the other functions. Writing any data larger than a single byte that spanned page boundaries would cause the data to wrap around to the beginning of the page. The likelihood of this occurring was slim - no one has reported it to date. However, just in case, this has now been squashed in this release.
 
 Deprecations:
 --> Going forward the ATTiny85 is no longer officially supported.
@@ -23,12 +23,13 @@ New Boards supported:
 -->
 
 Enhancements:
+--> When RUNDIAGNOSTIC is uncommented in SPIFlash.h, users now have access to a new function called flash.functionRunTime() which can be called after any library I/O function is run. flash.functionRunTime() returns the time taken by the previous function to run, in microseconds (as a float). An example use case can be found when the FlashDiagnostics sketch is run with RUNDIAGNOSTIC uncommented.
 --> _notBusy() is faster
 --> Completely re-written FlashDiagnostics - uses fewer resources, compatible with more chips and boards
 --> Library now works with Microchip flash memory. (Further optimizations required)
 --> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):
 
-	Improvements in speed in v3.0.0 when compared to v2.7.0 (values in percentage of time v3.0.0 is faster than v2.7.0)
+	Improvements in speed in v3.0.0 when compared to v2.6.0 (values in percentage of time v3.0.0 is faster than v2.6.0)
 				(+) writeByte																		-> +3%
 				(+) writeChar 																	-> +6%
 				(+) writeWord																		-> +3%

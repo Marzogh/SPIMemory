@@ -54,8 +54,8 @@ void setup() {
   {
     Serial.print(F("."));
   }
-  Serial.println();randomSeed(analogRead(RANDPIN));
-  //longBlink();
+  Serial.println();
+  randomSeed(analogRead(RANDPIN));
   flash.begin();
   Serial.println();
   Serial.println();
@@ -80,6 +80,9 @@ void setup() {
   powerDownTest();
   powerUpTest();
   printLine();
+  if (!flash.functionRunTime()) {
+    Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+  }
 }
 
 void loop() {

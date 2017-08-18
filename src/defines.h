@@ -107,12 +107,9 @@
 
 #define BUSY          0x01
 #if defined (ARDUINO_ARCH_ESP32)
-#define SPI_CLK       20000000
-/*#elif defined (ARDUINO_ARCH_SAMD)
-#define SPI_CLK       8000000*/
+#define SPI_CLK       20000000        //Hz equivalent of 20MHz
 #else
-#define SPI_CLK       104000000       //Hex equivalent of 104MHz
-//#define SPI_CLK       4000000       //Hex equivalent of 104MHz
+#define SPI_CLK       104000000       //Hz equivalent of 104MHz
 #endif
 #define WRTEN         0x02
 #define SUS           0x80
@@ -131,6 +128,8 @@
 #define ERASEFUNC     0xEF
 #if defined (SIMBLEE)
 #define BUSY_TIMEOUT  100L
+#elif defined ENABLEZERODMA
+#define BUSY_TIMEOUT  3500L
 #else
 #define BUSY_TIMEOUT  1000L
 #endif
