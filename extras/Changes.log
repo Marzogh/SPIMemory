@@ -2,6 +2,54 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.0.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						09.08.2017											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+To check:
+--> Check _nextBuf function and optimize
+Bugs Squashed:
+--> The writeByteArray() & writeCharArray() bug that occurred when writing arrays that spanned page boundaries (squashed in v2.5.0), stayed around to haunt the other functions. Writing any data larger than a single byte that spanned page boundaries would cause the data to wrap around to the beginning of the page. The likelihood of this occurring was slim - no one has reported it to date. However, just in case, this has now been squashed in this release.
+
+Deprecations:
+--> Going forward the ATTiny85 is no longer officially supported.
+--> flash.begin() no longer takes any variable as an argument. To define a custom CHIPSIZE to use the library with an unsupported chip - refer to 'Enhancements -> 6'
+--> The library no longer supports using the page number + offset combination instead of addresses. If your code requires you to use a page number + offset combination, use the following code to help
+													address = (pagenumber << 8) + offset.
+													_____________________________________
+												 (32 bit) |     (16 bit)     | (8 bit)
+--> The constructor no longer takes the pageOverflow variable as an argument. Page overflow is globally enabled by default and can be disabled by including a "#define DISABLEOVERFLOW" at the beginning of the user code.
+New Boards supported:
+-->
+
+Enhancements:
+--> When RUNDIAGNOSTIC is uncommented in SPIFlash.h, users now have access to a new function called flash.functionRunTime() which can be called after any library I/O function is run. flash.functionRunTime() returns the time taken by the previous function to run, in microseconds (as a float). An example use case can be found when the FlashDiagnostics sketch is run with RUNDIAGNOSTIC uncommented.
+--> _notBusy() is faster
+--> Completely re-written FlashDiagnostics - uses fewer resources, compatible with more chips and boards
+--> Library now works with Microchip flash memory. (Further optimizations required)
+--> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):
+
+	Improvements in speed in v3.0.0 when compared to v2.6.0 (values in percentage of time v3.0.0 is faster than v2.6.0)
+				(+) writeByte																		-> +3%
+				(+) writeChar 																	-> +6%
+				(+) writeWord																		-> +3%
+				(+) writeShort 																	-> +5%
+				(+) writeULong 																	-> +7%
+				(+) writeLong | readLong												-> +7%	 |   +7%
+				(+) writeFloat																	-> +7%
+				(+) writeStr | readStr													-> +57%  |   +61%
+				(+) writeAnything | readAnything (struct)				-> +25%  |   +20%
+				(+) writeByteArray | readByteArray (256 bytes)	-> +18%  |   +45%
+				(+) eraseSector																	-> +99%
+				(+) eraseBlock32K																-> +99.4%
+				(+) eraseBlock64K																-> +99.5%
+				(+) eraseChip																		-> +12%
+--> All functions except the Byte/Char Array Read/Write functions now call an internal _write/_read function.
+--> Restructured the internal _troubleshoot() function to be better human readable and easier to compile.
+--> Users can define RUNDIAGNOSTIC or HIGHSPEED in their code to access the library's special modes. No requirement to modify the library any more.
+--> No need to include CHIPSIZE in flash.begin() any more. Just defining CHIPSIZE in user code as one of the standard sizes as in defines.h will be enough. (Refer to 'Deprecations -> 1' above)
+--> Constructor changed to enable user to choose one of multiple SPI ports - if available. Look at wiki for further info
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						17.04.2017											   //
