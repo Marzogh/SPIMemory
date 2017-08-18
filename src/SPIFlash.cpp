@@ -78,7 +78,7 @@ bool SPIFlash::begin(size_t flashChipSize) {
 #endif
 // If no capacity is defined in user code
   if (!flashChipSize) {
-    bool retVal = _chipID;
+    bool retVal = _chipID();
     _endSPI();
     return retVal;
   }
