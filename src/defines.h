@@ -221,3 +221,7 @@
 #define Low(param) ((int *)&param)[0] //0x00yy
 #define Top(param) ((int *)&param)[1] //0xyy00
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+#ifndef LED_BUILTIN //fix for boards without that definition
+  #define LED_BUILTIN 13
+#endif
