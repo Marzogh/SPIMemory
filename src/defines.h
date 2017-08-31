@@ -40,14 +40,14 @@
 #define WRITEENABLE  0x06
 #define SECTORERASE  0x20
 #define BLOCK32ERASE 0x52
+#define BLOCK64ERASE 0xD8
 #define CHIPERASE    0x60
 #define SUSPEND      0x75
 #define ID           0x90
 #define RESUME       0x7A
 #define JEDECID      0x9F
-#define RELEASE      0xAB
 #define POWERDOWN    0xB9
-#define BLOCK64ERASE 0xD8
+#define RELEASE      0xAB
 #define READSFDP     0x5A
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -89,21 +89,26 @@
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
   #define WINBOND_MANID         0xEF
   #define PAGESIZE              0x100
   #define WINBOND_WRITE_DELAY   0x02
   #define WINBOND_WREN_TIMEOUT  10L
-  //#define CHIPSIZE 1*M
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define MICROCHIP_MANID       0xBF
   #define SST25                 0x25
   #define SST26                 0x26
   #define ULBPR                 0x98    //Global Block Protection Unlock (Ref sections 4.1.1 & 5.37 of datasheet)
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define CYPRESS_MANID         0x01
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define ADESTO_MANID         0x1F
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MICRON_MANID         0x20
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

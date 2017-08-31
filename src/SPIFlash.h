@@ -77,7 +77,7 @@
   #endif
 #endif
 
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A)
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(__STM32F1__) || defined(STM32F0xx)
 // RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
   #define _delay_us(us) delayMicroseconds(us)
 #else
@@ -251,10 +251,10 @@ private:
   void     _nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size);
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
-  template <class T> bool _write(uint32_t _addr, const T& value, size_t _sz, bool errorCheck);
-  template <class T> bool _read(uint32_t _addr, T& value, size_t _sz, bool fastRead = false);
+  template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck);
+  template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false);
   template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
-  template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, size_t _sz);
+  template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz);
   //-------------------------------- Private variables ----------------------------------//
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
@@ -284,11 +284,11 @@ private:
               };
               chipID _chip;
   uint32_t    currentAddress, _currentAddress = 0;
-  const uint8_t _capID[12]   =
-  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B};
+  const uint8_t _capID[14]   =
+  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};
 
-  const uint32_t _memSize[12]  =
-  {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M, 6L * M, 32L * M, 8L * M, 8L * M};
+  const uint32_t _memSize[14]  =
+  {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M, 6L * M, 32L * M, 8L * M, 8L * M, 256L * K, 512L * K};
 };
 
 //--------------------------------- Public Templates ------------------------------------//
@@ -320,10 +320,12 @@ template <class T> bool SPIFlash::readAnything(uint32_t _addr, T& data, bool fas
 //  1. _addr --> Any address from 0 to maxAddress
 //  2. const T& value --> Variable with the data to be error checked
 //  3. _sz --> Size of the data variable to be error checked, in bytes (1 byte = 8 bits)
-template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, size_t _sz) {
+template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz) {
   if (!_notBusy()) {
     return false;
   }
+  //Serial.print(F("Address being error checked: "));
+  //Serial.println(_addr);
   _currentAddress = _addr;
   const uint8_t* p = (const uint8_t*)(const void*)&value;
   CHIP_SELECT
@@ -349,12 +351,13 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 
-template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, size_t _sz, bool errorCheck) {
+template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck) {
   if (!_prep(PAGEPROG, _addr, _sz)) {
     return false;
   }
   const uint8_t* p = ((const uint8_t*)(const void*)&value);
-
+//Serial.print(F("Address being written to: "));
+//Serial.println(_addr);
   if (!SPIBusState) {
     _startSPIBus();
   }
@@ -402,6 +405,8 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, size_t 
     return true;
   }
   else {
+    //Serial.print(F("Address sent to error check: "));
+    //Serial.println(_addr);
     return _writeErrorCheck(_addr, value, _sz);
   }
 }
@@ -412,7 +417,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, size_t 
 //  2. T& value --> Variable to return data into
 //  3. _sz --> Size of the variable in bytes (1 byte = 8 bits)
 //  4. fastRead --> defaults to false - executes _beginFastRead() if set to true
-template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, size_t _sz, bool fastRead) {
+template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead) {
   if (_prep(READDATA, _addr, _sz)) {
     uint8_t* p = (uint8_t*)(void*)&value;
     CHIP_SELECT

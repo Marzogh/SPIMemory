@@ -61,7 +61,7 @@ void setup() {
   eraseBlock64KTest();
   eraseBlock32KTest();
   eraseSectorTest();
-
+  
   byteTest();
   charTest();
   wordTest();
@@ -72,7 +72,7 @@ void setup() {
   stringTest();
   structTest();
   arrayTest();
-
+  
   powerDownTest();
   powerUpTest();
   printLine();

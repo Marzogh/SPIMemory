@@ -337,11 +337,11 @@ void stringTest() {
 void structTest() {
     Serial.println();
   struct Test {
-    word s1;
+    uint16_t s1;
     float s2;
-    long s3;
+    int32_t s3;
     bool s4;
-    byte s5;
+    uint8_t s5;
   };
   Test _d;
   Test _data;

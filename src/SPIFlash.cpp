@@ -681,6 +681,7 @@ bool SPIFlash::eraseSector(uint32_t _addr) {
 	if(!_notBusy(500L)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
+  //_writeDisable();
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
@@ -703,6 +704,7 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr) {
 	if(!_notBusy(1*S)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
+  _writeDisable();
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
@@ -849,11 +851,18 @@ bool SPIFlash::powerUp(void) {
 	_delay_us(3);						    //Max release enable time according to the Datasheet
 
   #ifdef RUNDIAGNOSTIC
-    bool _retVal = _writeEnable(false);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
+    if (_writeEnable(false)) {
+      _writeDisable();
+      _spifuncruntime = micros() - _spifuncruntime;
+      return true;
+    }
+    return false;
   #else
-    return _writeEnable(false);
+  if (_writeEnable(false)) {
+    _writeDisable();
+    return true;
+  }
+  return false;
   #endif
 }
 

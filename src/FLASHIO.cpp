@@ -35,6 +35,8 @@
 bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
   switch (opcode) {
     case PAGEPROG:
+    //Serial.print(F("Address being prepped: "));
+    //Serial.println(_addr);
     #ifndef HIGHSPEED
       if(!_addressCheck(_addr, size) || !_notPrevWritten(_addr, size) || !_notBusy() || !_writeEnable()) {
         return false;
@@ -72,6 +74,9 @@ bool SPIFlash::_transferAddress(void) {
   _nextByte(WRITE, Higher(_currentAddress));
   _nextByte(WRITE, Hi(_currentAddress));
   _nextByte(WRITE, Lo(_currentAddress));
+  /*_nextByte(_currentAddress >> 16);
+  _nextByte(_currentAddress >> 8);
+  _nextByte(_currentAddress);*/
   return true;
 }
 
@@ -86,7 +91,7 @@ bool SPIFlash::_startSPIBus(void) {
     #ifdef SPI_HAS_TRANSACTION
       _spi->beginTransaction(_settings);
     #else
-      _spi->setClockDivider(SPI_CLOCK_DIV_4)
+      _spi->setClockDivider(SPI_CLOCK_DIV_4);
       _spi->setDataMode(SPI_MODE0);
       _spi->setBitOrder(MSBFIRST);
     #endif
@@ -102,7 +107,7 @@ bool SPIFlash::_startSPIBus(void) {
     #ifdef SPI_HAS_TRANSACTION
       SPI.beginTransaction(_settings);
     #else
-      SPI.setClockDivider(SPI_CLOCK_DIV_4)
+      SPI.setClockDivider(SPI_CLOCK_DIV4);
       SPI.setDataMode(SPI_MODE0);
       SPI.setBitOrder(MSBFIRST);
     #endif
@@ -349,7 +354,7 @@ bool SPIFlash::_getJedecId(void) {
 	_chip.memoryTypeID = _nextByte(READ);		// memory type
 	_chip.capacityID = _nextByte(READ);		// capacity
   CHIP_DESELECT
-  if (!_chip.manufacturerID || !_chip.memoryTypeID || !_chip.capacityID) {
+  if (!_chip.manufacturerID) {
     _troubleshoot(NORESPONSE);
     return false;
   }
@@ -423,7 +428,7 @@ bool SPIFlash::_chipID(void) {
   }
 
   if (!_chip.capacity) {
-    if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID) {
+    if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID) {
       //Identify capacity
       for (uint8_t i = 0; i < sizeof(_capID); i++) {
         if (_chip.capacityID == _capID[i]) {
