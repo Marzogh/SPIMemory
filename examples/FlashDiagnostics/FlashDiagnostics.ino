@@ -25,26 +25,31 @@
 #endif
 
 #if defined (SIMBLEE)
-#define BAUD_RATE 250000
-#define RANDPIN 1
+  #define BAUD_RATE 250000
+  #define RANDPIN 1
 #else
-#define BAUD_RATE 115200
-#define RANDPIN A0
+  #define BAUD_RATE 115200
+  #if defined(ARCH_STM32)
+    #define RANDPIN PA0
+  #else
+    #define RANDPIN A0
+  #endif
 #endif
 
 #define TRUE 1
 #define FALSE 0
 
-//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
+//SPIFlash flash(SS1, &SPI2);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 SPIFlash flash;
 
 void setup() {
   Serial.begin(BAUD_RATE);
-#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__)
-  while (!Serial) ; // Wait for Serial monitor to open
-#endif
+  #if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32)
+    while (!Serial) ; // Wait for Serial monitor to open
+  #endif
+  delay(50); //Time to terminal get connected
   Serial.print(F("Initialising Flash memory"));
-  for (int i = 0; i < 10; ++i)
+  for (uint8_t i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
   }
@@ -86,10 +91,10 @@ void loop() {
 }
 
 void longBlink() {
-  pinMode(13, OUTPUT);
-  digitalWrite(13, HIGH);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
   delay(3000);
-  digitalWrite(13, LOW);
+  digitalWrite(LED_BUILTIN, LOW);
   delay(2000);
 }
 
