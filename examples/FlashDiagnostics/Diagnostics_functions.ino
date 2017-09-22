@@ -366,7 +366,7 @@ void structTest() {
 
 
   Serial.print ("\t\t\tStruct: \t");
-  if (_d.s1 == _data.s1 && _d.s2 == _data.s2 && _d.s3 == _data.s3 && _d.s4 == _data.s4 && _d.s5 == _data.s5) {
+  if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5)) {
     pass(TRUE);
   }
   else {

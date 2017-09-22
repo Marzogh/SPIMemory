@@ -77,7 +77,12 @@
   #endif
 #endif
 
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(__STM32F1__) || defined(STM32F0xx)
+#ifndef ARCH_STM32
+  #if defined(ARDUINO_ARCH_STM32) || defined(__STM32F1__) || defined(STM32F1) || defined(STM32F3) || defined(STM32F4) || defined(STM32F0xx)
+    #define ARCH_STM32
+  #endif
+#endif
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(ARCH_STM32)
 // RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
   #define _delay_us(us) delayMicroseconds(us)
 #else
@@ -112,8 +117,8 @@
   #define xfer(n)   SPI.transfer(n)
   #define BEGIN_SPI SPI.begin();
 
-// Defines and variables specific to SAMD architecture
-#elif defined (ARDUINO_ARCH_SAMD)
+// Defines and variables specific to ARM architecture
+#elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
   #define CHIP_SELECT   digitalWrite(csPin, LOW);
   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
   #define xfer(n)   _spi->transfer(n)
@@ -133,7 +138,7 @@ class SPIFlash {
 public:
   //------------------------------------ Constructor ------------------------------------//
   //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
-  #if defined (ARDUINO_ARCH_SAMD)
+  #if defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
   SPIFlash(uint8_t cs = CS, SPIClass *spiinterface=&SPI);
   #elif defined (BOARD_RTL8195A)
   SPIFlash(PinName cs = CS);
@@ -288,7 +293,7 @@ private:
   {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};
 
   const uint32_t _memSize[14]  =
-  {64L * K, 128L * K, 256L * K, 512L * K, 1L * M, 2L * M, 4L * M, 8L * M, 6L * M, 32L * M, 8L * M, 8L * M, 256L * K, 512L * K};
+  {64L * KiB, 128L * KiB, 256L * KiB, 512L * KiB, 1L * MiB, 2L * MiB, 4L * MiB, 8L * MiB, 6L * MiB, 32L * MiB, 8L * MiB, 8L * MiB, 256L * KiB, 512L * KiB};
 };
 
 //--------------------------------- Public Templates ------------------------------------//
@@ -371,7 +376,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   }
   else { //If data is longer than one byte (8 bits)
     uint32_t length = _sz;
-    uint16_t maxBytes = PAGESIZE-(_addr % PAGESIZE);  // Force the first set of bytes to stay within the first page
+    uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
 
     if (maxBytes > length) {
       for (uint16_t i = 0; i < length; ++i) {

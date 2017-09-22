@@ -52,46 +52,48 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
-//            B = Bytes; KB = Kilo Bytes; MB = Mega Bytes               //
+//            B = Bytes; KiB = Kilo Bytes; MiB = Mega Bytes           //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define B1            1L * B
-#define B2            2L * B
-#define B4            4L * B
-#define B8            8L * B
-#define B16           16L * B
-#define B32           32L * B
-#define B64           64L * B
-#define B80           80L * B
-#define B128          128L * B
-#define B256          256L * B
-#define B512          512L * B
-#define KB1           1L * K
-#define KB2           2L * K
-#define KB4           4L * K
-#define KB8           8L * K
-#define KB16          16L * K
-#define KB32          32L * K
-#define KB64          64L * K
-#define KB128         128L * K
-#define KB256         256L * K
-#define KB512         512L * K
-#define MB1           1L * M
-#define MB2           2L * M
-#define MB4           4L * M
-#define MB8           8L * M
-#define MB16          16L * M
-#define MB32          32L * M
-#define MB64          64L * M
-#define MB128         128L * M
-#define MB256         256L * M
-#define MB512         512L * M
+#ifndef B1
+  #define B1            1L * Bit
+#endif
+#define B2            2L * Bit
+#define B4            4L * Bit
+#define B8            8L * Bit
+#define B16           16L * Bit
+#define B32           32L * Bit
+#define B64           64L * Bit
+#define B80           80L * Bit
+#define B128          128L * Bit
+#define B256          256L * Bit
+#define B512          512L * Bit
+#define KB1           1L * KiB
+#define KB2           2L * KiB
+#define KB4           4L * KiB
+#define KB8           8L * KiB
+#define KB16          16L * KiB
+#define KB32          32L * KiB
+#define KB64          64L * KiB
+#define KB128         128L * KiB
+#define KB256         256L * KiB
+#define KB512         512L * KiB
+#define MB1           1L * MiB
+#define MB2           2L * MiB
+#define MB4           4L * MiB
+#define MB8           8L * MiB
+#define MB16          16L * MiB
+#define MB32          32L * MiB
+#define MB64          64L * MiB
+#define MB128         128L * MiB
+#define MB256         256L * MiB
+#define MB512         512L * MiB
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
   #define WINBOND_MANID         0xEF
-  #define PAGESIZE              0x100
+  #define SPI_PAGESIZE          0x100
   #define WINBOND_WRITE_DELAY   0x02
   #define WINBOND_WREN_TIMEOUT  10L
 
@@ -143,9 +145,9 @@
 #endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
-#define B             1L
-#define K             1024L
-#define M             K * K
+#define Bit           1L
+#define KiB           1024L
+#define MiB           KiB * KiB
 #define S             1000L
 
 #if defined (ARDUINO_ARCH_ESP8266)
@@ -219,3 +221,7 @@
 #define Low(param) ((int *)&param)[0] //0x00yy
 #define Top(param) ((int *)&param)[1] //0xyy00
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+#ifndef LED_BUILTIN //fix for boards without that definition
+  #define LED_BUILTIN 13
+#endif
