@@ -59,6 +59,7 @@ Enhancements:
 --> Completely re-written FlashDiagnostics - uses fewer resources, compatible with more chips and boards
 --> All functions except the Byte/Char Array Read/Write functions now call an internal _write/_read function for increased ease of compilation, execution and troubleshooting
 --> Restructured the internal _troubleshoot() function to be better human readable and faster to compile.
+--> Added a function `getUniqueID()` which returns the unique ID of the flash memory chip as a 64-bit integer.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

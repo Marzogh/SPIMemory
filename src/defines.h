@@ -49,6 +49,7 @@
 #define POWERDOWN    0xB9
 #define RELEASE      0xAB
 #define READSFDP     0x5A
+#define UNIQUEID     0x4B
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //

@@ -165,6 +165,29 @@ uint32_t SPIFlash::getJEDECID(void) {
     return id;
 }
 
+// Returns a 64-bit Unique ID that is unique to each flash memory chip
+uint64_t SPIFlash::getUniqueID(void) {
+  if(!_notBusy()) {
+    return false;
+   }
+  _beginSPI(UNIQUEID);
+  for (uint8_t i = 0; i < 4; i++) {
+    _nextByte(DUMMYBYTE);
+  }
+
+   for (uint8_t i = 0; i < 8; i++) {
+     _uniqueID[i] = _nextByte(READ);
+   }
+   CHIP_DESELECT
+
+   long long _uid;
+   for (uint8_t i = 0; i < 8; i++) {
+     _uid += _uniqueID[i];
+     _uid = _uid << 8;
+   }
+   return _uid;
+}
+
 //Gets the next available address for use. Has two variants:
 //	A. Takes the size of the data as an argument and returns a 32-bit address
 //	B. Takes a three variables, the size of the data and two other variables to return a page number value & an offset into.

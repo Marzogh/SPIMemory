@@ -71,6 +71,16 @@ void pass(bool _status) {
   }
 }
 
+void printUniqueID(void) {
+  Serial.print("Unique ID: ");
+  long long _uniqueID = flash.getUniqueID();
+  Serial.print(uint32_t(_uniqueID/1000000L));
+  Serial.print(uint32_t(_uniqueID%1000000L));
+  Serial.print(", ");
+  Serial.print(uint32_t(_uniqueID >> 32), HEX);
+  Serial.print(uint32_t(_uniqueID), HEX);
+}
+
 void getID() {
   char printBuffer[128];
   printLine();
@@ -124,6 +134,8 @@ void getID() {
   sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu bytes\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
   #endif
   Serial.print(printBuffer);
+  Serial.print("\n\t\t\t");
+  printUniqueID();
   printLine();
 }
 
