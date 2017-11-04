@@ -2,65 +2,6 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//				 	 						Version 3.0.0 									   	   //
-//									Author: Prajwal Bhattaram									   //
-//					  						09.08.2017											   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-To check:
-Bugs Squashed:
---> The writeByteArray() & writeCharArray() bug that occurred when writing arrays that spanned page boundaries (squashed in v2.5.0), stayed around to haunt the other functions. Writing any data larger than a single byte that spanned page boundaries would cause the data to wrap around to the beginning of the page. The likelihood of this occurring was slim - no one has reported it to date. However, just in case, this has now been squashed in this release.
-
-Deprecations:
---> Going forward the ATTiny85 is no longer officially supported.
---> The library no longer supports using the page number + offset combination instead of addresses. If your code requires you to use a page number + offset combination, use the following code to help
-													address = (pagenumber << 8) + offset.
-													_____________________________________
-												 (32 bit) |     (16 bit)     | (8 bit)
---> The constructor no longer takes the pageOverflow variable as an argument. Page overflow is globally enabled by default and can be disabled by including a "#define DISABLEOVERFLOW" at the beginning of the user code.
-
-New Boards supported:
---> Nucleo-F091RC
---> Adafruit Feather M0
-
-New Flash manufacturers supported:
---> Microchip (SST25 & SST26 series)
---> Cypress
---> Spansion
-
-Enhancements:
---> Confirmed to work with SPANSION/CYPRESS & MICROCHIP (Both SST25 & SST26 series).
---> If not using an officially supported chip, use the following variation of flash.begin() :
-			flash.begin(flashChipSize);
-
-			where flashChipSize is indicated in Bytes, Kilobytes or Megabytes. (Refer to the next two items in this change log)
---> Including 'flashChipSize' in flash.begin() compiles more efficiently than in prvious versions.
---> The way memory size is indicated by the users in flash.begin(flashChipSize) has changed - please refer to defines.h or the wiki for further information. The new method enables users to define any custom size unlike the previous version where only a limited number of predetermined sizes were available to use.
---> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):
-
-	Improvements in speed in v3.0.0 when compared to v2.7.0 (values in percentage of time v3.0.0 is faster than v2.7.0)
-				(+) writeByte																		-> +3%
-				(+) writeChar 																	-> +6%
-				(+) writeWord																		-> +3%
-				(+) writeShort 																	-> +5%
-				(+) writeULong 																	-> +7%
-				(+) writeLong | readLong												-> +7%	 |   +7%
-				(+) writeFloat																	-> +7%
-				(+) writeStr | readStr													-> +57%  |   +61%
-				(+) writeAnything | readAnything (struct)				-> +25%  |   +20%
-				(+) writeByteArray | readByteArray (256 bytes)	-> +18%  |   +45%
-				(+) eraseSector																	-> +99%
-				(+) eraseBlock32K																-> +99.4%
-				(+) eraseBlock64K																-> +99.5%
-				(+) eraseChip																		-> +12%
-
---> Constructor changed to enable user to choose one of multiple SPI ports - if available. Look at wiki for further info
---> When RUNDIAGNOSTIC is uncommented in SPIFlash.h, users now have access to a new function called flash.functionRunTime() which can be called after any library I/O function is run. flash.functionRunTime() returns the time taken by the previous function to run, in microseconds (as a float). An example use case can be found when the FlashDiagnostics sketch is run with RUNDIAGNOSTIC uncommented.
---> _notBusy() is faster
---> Completely re-written FlashDiagnostics - uses fewer resources, compatible with more chips and boards
---> All functions except the Byte/Char Array Read/Write functions now call an internal _write/_read function for increased ease of compilation, execution and troubleshooting
---> Restructured the internal _troubleshoot() function to be better human readable and faster to compile.
---> Added a function `getUniqueID()` which returns the unique ID of the flash memory chip as a 64-bit integer.
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						17.04.2017											   //

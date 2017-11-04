@@ -1,7 +1,7 @@
-/* Arduino SPIFlash Library v.3.0.0
+/* Arduino SPIFlash Library v.2.7.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 04/11/2017
+ * Modified by Prajwal Bhattaram - 02/08/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -35,62 +35,74 @@
 #define WRITEDISABLE 0x04
 #define READSTAT1    0x05
 #define READSTAT2    0x35
-#define WRITESTATEN  0x50
 #define WRITESTAT    0x01
 #define WRITEENABLE  0x06
 #define SECTORERASE  0x20
 #define BLOCK32ERASE 0x52
-#define BLOCK64ERASE 0xD8
-#define CHIPERASE    0x60
+#define CHIPERASE    0xC7
 #define SUSPEND      0x75
 #define ID           0x90
 #define RESUME       0x7A
 #define JEDECID      0x9F
-#define POWERDOWN    0xB9
 #define RELEASE      0xAB
+#define POWERDOWN    0xB9
+#define BLOCK64ERASE 0xD8
 #define READSFDP     0x5A
-#define UNIQUEID     0x4B
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
-//            B = Bytes; KiB = Kilo Bytes; MiB = Mega Bytes           //
+//            B = Bytes; KB = Kilo bits; MB = Mega bits               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define B(x)          size_t(x*BYTE)
-#define KB(x)         size_t(x*KiB)
-#define MB(x)         size_t(x*MiB)
+#define B1            1L
+#define B2            2L
+#define B4            4L
+#define B8            8L
+#define B16           16L
+#define B32           32L
+#define B64           64L
+#define B80           80L
+#define B128          128L
+#define B256          256L
+#define B512          512L
+#define KB1           B1 * K
+#define KB2           B2 * K
+#define KB4           B4 * K
+#define KB8           B8 * K
+#define KB16          B16 * K
+#define KB32          B32 * K
+#define KB64          B64 * K
+#define KB128         B128 * K
+#define KB256         B256 * K
+#define KB512         B512 * K
+#define MB1           B1 * M
+#define MB2           B2 * M
+#define MB4           B4 * M
+#define MB8           B8 * M
+#define MB16          B16 * M
+#define MB32          B32 * M
+#define MB64          B64 * M
+#define MB128         B128 * M
+#define MB256         B256 * M
+#define MB512         B512 * M
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define WINBOND_MANID         0xEF
-  #define SPI_PAGESIZE          0x100
-  #define WINBOND_WRITE_DELAY   0x02
-  #define WINBOND_WREN_TIMEOUT  10L
+	//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define WINBOND_MANID		 0xEF
+  #define PAGESIZE	 0x100
 
-//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define MICROCHIP_MANID       0xBF
-  #define SST25                 0x25
-  #define SST26                 0x26
-  #define ULBPR                 0x98    //Global Block Protection Unlock (Ref sections 4.1.1 & 5.37 of datasheet)
-
-//~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define CYPRESS_MANID         0x01
-
-//~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define ADESTO_MANID         0x1F
-
-//~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define MICRON_MANID         0x20
+	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MICROCHIP_MANID		 0xBF
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define BUSY          0x01
 #if defined (ARDUINO_ARCH_ESP32)
-#define SPI_CLK       20000000        //Hz equivalent of 20MHz
+#define SPI_CLK       20000000
 #else
-#define SPI_CLK       104000000       //Hz equivalent of 104MHz
+#define SPI_CLK       104000000       //Hex equivalent of 104MHz
 #endif
 #define WRTEN         0x02
 #define SUS           0x80
@@ -105,26 +117,23 @@
 #define NOOVERFLOW    false
 #define NOERRCHK      false
 #define VERBOSE       true
-#define PRINTOVERRIDE true
-#define ERASEFUNC     0xEF
 #if defined (SIMBLEE)
 #define BUSY_TIMEOUT  100L
-#elif defined ENABLEZERODMA
-#define BUSY_TIMEOUT  3500L
 #else
-#define BUSY_TIMEOUT  1000L
+#define BUSY_TIMEOUT  10L
 #endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
-#define BYTE          1L
-#define KiB           1024L
-#define MiB           KiB * KiB
+#define K             1024L
+#define M             K * K
 #define S             1000L
 
 #if defined (ARDUINO_ARCH_ESP8266)
 #define CS 15
 #elif defined (ARDUINO_ARCH_SAMD)
 #define CS 10
+#elif defined __AVR_ATtiny85__
+#define CS 5
 /*********************************************************************************************
 // Declaration of the Default Chip select pin name for RTL8195A
 // Note: This has been shifted due to a bug identified in the HAL layer SPI driver
@@ -164,35 +173,19 @@
 //     					   List of Error codes						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
- #define SUCCESS              0x00
- #define CALLBEGIN            0x01
- #define UNKNOWNCHIP          0x02
- #define UNKNOWNCAP           0x03
- #define CHIPBUSY             0x04
- #define OUTOFBOUNDS          0x05
- #define CANTENWRITE          0x06
- #define PREVWRITTEN          0x07
- #define LOWRAM               0x08
- #define SYSSUSPEND           0x09
- #define UNSUPPORTED          0x0A
- #define ERRORCHKFAIL         0x0B
- #define NORESPONSE           0x0C
- #define UNSUPPORTEDFUNCTION  0x0D
- #define UNKNOWNERROR         0xFE
+ #define SUCCESS      0x00
+ #define CALLBEGIN    0x01
+ #define UNKNOWNCHIP  0x02
+ #define UNKNOWNCAP   0x03
+ #define CHIPBUSY     0x04
+ #define OUTOFBOUNDS  0x05
+ #define CANTENWRITE  0x06
+ #define PREVWRITTEN  0x07
+ #define LOWRAM       0x08
+ #define SYSSUSPEND   0x09
+ #define UNSUPPORTED  0x0A
+ #define ERRORCHKFAIL 0x0B
+ #define NORESPONSE   0x0C
+ #define UNKNOWNERROR 0xFE
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//                        Bit shift macros                            //
-//                      Thanks to @VitorBoss                          //
-//          https://github.com/Marzogh/SPIFlash/issues/76             //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define Lo(param) ((char *)&param)[0] //0x000y
-#define Hi(param) ((char *)&param)[1] //0x00y0
-#define Higher(param) ((char *)&param)[2] //0x0y00
-#define Highest(param) ((char *)&param)[3] //0xy000
-#define Low(param) ((int *)&param)[0] //0x00yy
-#define Top(param) ((int *)&param)[1] //0xyy00
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
-#ifndef LED_BUILTIN //fix for boards without that definition
-  #define LED_BUILTIN 13
-#endif
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
