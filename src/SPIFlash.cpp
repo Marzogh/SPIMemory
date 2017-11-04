@@ -2,7 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 09/08/2017
+ * Modified by Prajwal Bhattaram - 04/11/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -37,7 +37,7 @@ SPIFlash::SPIFlash(uint8_t cs) {
   pinMode(csPin, OUTPUT);
   CHIP_DESELECT
 }
-#elif defined (ARDUINO_ARCH_SAMD)
+#elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
 SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
   _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
   csPin = cs;
@@ -68,7 +68,11 @@ SPIFlash::SPIFlash(uint8_t cs) {
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(size_t flashChipSize) {
 #ifdef RUNDIAGNOSTIC
-  Serial.println("Full Diagnostics Workup initiated!");
+  Serial.println("Chip Diagnostics initiated.");
+  Serial.println();
+#endif
+#ifdef HIGHSPEED
+  Serial.println("Highspeed mode initiated.");
   Serial.println();
 #endif
   BEGIN_SPI
@@ -78,7 +82,12 @@ bool SPIFlash::begin(size_t flashChipSize) {
 #endif
 // If no capacity is defined in user code
   if (!flashChipSize) {
-    return _chipID();
+    #ifdef RUNDIAGNOSTIC
+    Serial.println("No Chip size defined by user");
+    #endif
+    bool retVal = _chipID();
+    _endSPI();
+    return retVal;
   }
   else {
     _getJedecId();
@@ -89,6 +98,12 @@ bool SPIFlash::begin(size_t flashChipSize) {
     _chip.capacity = flashChipSize;
     _chip.supported = false;
   }
+  _endSPI();
+
+  if (_chip.manufacturerID == CYPRESS_MANID) {
+    setClock(SPI_CLK/4);
+  }
+
   return true;
 }
 
@@ -117,7 +132,7 @@ uint32_t SPIFlash::getCapacity(void) {
 
 //Returns maximum number of pages
 uint32_t SPIFlash::getMaxPage(void) {
-	return (_chip.capacity / PAGESIZE);
+	return (_chip.capacity / SPI_PAGESIZE);
 }
 
 //Returns the time taken to run a function. Must be called immediately after a function is run as the variable returned is overwritten eachtime a function from this library is called. Primarily used in the diagnostics sketch included in the library to track function time.
@@ -148,6 +163,29 @@ uint32_t SPIFlash::getJEDECID(void) {
     id = (id << 8)|(_chip.memoryTypeID << 0);
     id = (id << 8)|(_chip.capacityID << 0);
     return id;
+}
+
+// Returns a 64-bit Unique ID that is unique to each flash memory chip
+uint64_t SPIFlash::getUniqueID(void) {
+  if(!_notBusy()) {
+    return false;
+   }
+  _beginSPI(UNIQUEID);
+  for (uint8_t i = 0; i < 4; i++) {
+    _nextByte(DUMMYBYTE);
+  }
+
+   for (uint8_t i = 0; i < 8; i++) {
+     _uniqueID[i] = _nextByte(READ);
+   }
+   CHIP_DESELECT
+
+   long long _uid;
+   for (uint8_t i = 0; i < 8; i++) {
+     _uid += _uniqueID[i];
+     _uid = _uid << 8;
+   }
+   return _uid;
 }
 
 //Gets the next available address for use. Has two variants:
@@ -410,7 +448,7 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
   if (!_prep(PAGEPROG, _addr, bufferSize)) {
     return false;
   }
-  uint16_t maxBytes = PAGESIZE-(_addr % PAGESIZE);  // Force the first set of bytes to stay within the first page
+  uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
 
   if (bufferSize <= maxBytes) {
     CHIP_SELECT
@@ -490,7 +528,7 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSi
   if (!_prep(PAGEPROG, _addr, bufferSize)) {
     return false;
   }
-  uint16_t maxBytes = PAGESIZE-(_addr % PAGESIZE);  // Force the first set of bytes to stay within the first page
+  uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
 
   if (bufferSize <= maxBytes) {
     CHIP_SELECT
@@ -678,6 +716,7 @@ bool SPIFlash::eraseSector(uint32_t _addr) {
 	if(!_notBusy(500L)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
+  //_writeDisable();
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
@@ -700,6 +739,7 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr) {
 	if(!_notBusy(1*S)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
+  _writeDisable();
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
@@ -742,9 +782,10 @@ bool SPIFlash::eraseChip(void) {
   _endSPI();
 
 	while(_readStat1() & BUSY) {
-    _delay_us(30000L);
+    //_delay_us(30000L);
   }
   _endSPI();
+
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif
@@ -846,11 +887,18 @@ bool SPIFlash::powerUp(void) {
 	_delay_us(3);						    //Max release enable time according to the Datasheet
 
   #ifdef RUNDIAGNOSTIC
-    bool _retVal = _writeEnable(false);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
+    if (_writeEnable(false)) {
+      _writeDisable();
+      _spifuncruntime = micros() - _spifuncruntime;
+      return true;
+    }
+    return false;
   #else
-    return _writeEnable(false);
+  if (_writeEnable(false)) {
+    _writeDisable();
+    return true;
+  }
+  return false;
   #endif
 }
 

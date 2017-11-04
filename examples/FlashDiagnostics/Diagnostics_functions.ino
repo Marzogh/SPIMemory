@@ -5,7 +5,7 @@
   |                                                                   v 3.0.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  10.08.2017                                                                   |
+  |                                                                  04.11.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -71,6 +71,16 @@ void pass(bool _status) {
   }
 }
 
+void printUniqueID(void) {
+  Serial.print("Unique ID: ");
+  long long _uniqueID = flash.getUniqueID();
+  Serial.print(uint32_t(_uniqueID/1000000L));
+  Serial.print(uint32_t(_uniqueID%1000000L));
+  Serial.print(", ");
+  Serial.print(uint32_t(_uniqueID >> 32), HEX);
+  Serial.print(uint32_t(_uniqueID), HEX);
+}
+
 void getID() {
   char printBuffer[128];
   printLine();
@@ -108,20 +118,31 @@ void getID() {
   //---------------------------------------------------------------------------------------------//
 
   clearprintBuffer(&printBuffer[1]);
+  #if defined (ARDUINO_ARCH_ESP32)
   sprintf(printBuffer, "\t\t\tJEDEC ID: %04xh", JEDEC);
+  #else
+  sprintf(printBuffer, "\t\t\tJEDEC ID: %04lxh", JEDEC);
+  #endif
   Serial.println(printBuffer);
   //Serial.print(F("\t\t\tJEDEC ID: "));
   //Serial.print(JEDEC, HEX);
   //Serial.println(F("xh"));
   clearprintBuffer(&printBuffer[1]);
+  #if defined (ARDUINO_ARCH_ESP32)
+  sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %u bytes\n\t\t\tMaximum pages: %u", b1, b2, capacity, maxPage);
+  #else
   sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu bytes\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
+  #endif
   Serial.print(printBuffer);
+  Serial.print("\n\t\t\t");
+  printUniqueID();
   printLine();
 }
 
 void byteTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint8_t _data, _d;
   _d = 35;
 
@@ -147,7 +168,8 @@ void byteTest() {
 
 void charTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   int8_t _data, _d;
   _d = -110;
 
@@ -174,7 +196,8 @@ void charTest() {
 
 void wordTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint16_t _data, _d;
   _d = 4520;
 
@@ -201,7 +224,8 @@ void wordTest() {
 
 void shortTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   int16_t _data, _d;
   _d = -1250;
 
@@ -228,7 +252,8 @@ void shortTest() {
 
 void uLongTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint32_t _data, _d;
   _d = 876532;
 
@@ -255,7 +280,8 @@ void uLongTest() {
 
 void longTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   int32_t _data, _d;
   _d = -10959;
 
@@ -282,7 +308,8 @@ void longTest() {
 
 void floatTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   float _data, _d;
   _d = 3.14;
 
@@ -308,8 +335,8 @@ void floatTest() {
 }
 
 void stringTest() {
-    Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   String _data, _d;
   _d = "This is a test String 123!@#";
 
@@ -318,7 +345,6 @@ void stringTest() {
   if (flash.writeStr(addr, _d)) {
     wTime = flash.functionRunTime();
   }
-
   
   flash.readStr(addr, _data);
   rTime = flash.functionRunTime();
@@ -332,16 +358,24 @@ void stringTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_ESP8266)
+  Serial.println();
+  printLine();
+  if (!flash.functionRunTime()) {
+    Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+  }
+#endif
 }
 
 void structTest() {
     Serial.println();
   struct Test {
-    word s1;
+    uint16_t s1;
     float s2;
-    long s3;
+    int32_t s3;
     bool s4;
-    byte s5;
+    uint8_t s5;
   };
   Test _d;
   Test _data;
@@ -352,7 +386,8 @@ void structTest() {
   _d.s4 = true;
   _d.s5 = 5;
 
-  uint32_t addr, wTime, rTime;
+  uint32_t wTime = 0;
+  uint32_t addr, rTime;
 
   addr = random(0, 0xFFFFF);
   
@@ -366,7 +401,7 @@ void structTest() {
 
 
   Serial.print ("\t\t\tStruct: \t");
-  if (_d.s1 == _data.s1 && _d.s2 == _data.s2 && _d.s3 == _data.s3 && _d.s4 == _data.s4 && _d.s5 == _data.s5) {
+  if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5)) {
     pass(TRUE);
   }
   else {
@@ -377,7 +412,8 @@ void structTest() {
 
 void arrayTest() {
     Serial.println();
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint8_t _d[256], _data[256];
 
   for (uint16_t i = 0; i < 256; i++) {

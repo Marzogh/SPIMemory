@@ -21,15 +21,4 @@
 * |____________|________________|
 *
 *
-* Simblee (Sparkfun breakout) SPI pinout is as follows:
-*  _____________________________
-* |   GPIO #   |  HSPI Function |
-* |------------|----------------|
-* |    Pin 3   |  MISO (DIN)    |
-* |    Pin 5   |  MOSI (DOUT)   |
-* |    Pin 4   |  CLOCK         |
-* |    Pin 6   |  CS / SS       |
-* |____________|________________|
-*
-*
 */

@@ -257,10 +257,10 @@ void loop() {
       }
       addr = Serial.parseInt();
       Serial.println(addr);
-      for (uint16_t i = 0; i < PAGESIZE; ++i) {
+      for (uint16_t i = 0; i < SPI_PAGESIZE; ++i) {
         pageBuffer[i] = i;
       }
-      if (flash.writeByteArray(addr, &pageBuffer[0], PAGESIZE)) {
+      if (flash.writeByteArray(addr, &pageBuffer[0], SPI_PAGESIZE)) {
         clearprintBuffer();
         sprintf(printBuffer, "Values from 0 to 255 have been written starting from the address %d", addr);
         Serial.println(printBuffer);
@@ -492,8 +492,8 @@ void printPage(uint32_t _address, uint8_t outputType) {
   sprintf(buffer, "Reading address (%04x)", _address);
   Serial.println(buffer);
 
-  uint8_t data_buffer[PAGESIZE];
-  flash.readByteArray(_address, &data_buffer[0], PAGESIZE);
+  uint8_t data_buffer[SPI_PAGESIZE];
+  flash.readByteArray(_address, &data_buffer[0], SPI_PAGESIZE);
   _printPageBytes(data_buffer, outputType);
 }
 

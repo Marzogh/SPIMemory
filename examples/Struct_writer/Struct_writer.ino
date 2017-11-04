@@ -91,7 +91,9 @@ void setup() {
 #ifdef SENSOR
   readLDR();
 #endif
-
+  if (flash.eraseChip()) {
+    Serial.println("Chip has been erased");
+  }
   if (flash.writeAnything(_addr, configuration))
     Serial.println ("Data write successful");
   else

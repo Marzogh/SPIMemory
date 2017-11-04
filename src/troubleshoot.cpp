@@ -56,7 +56,7 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
   Serial.println();
     switch (_code) {
       case SUCCESS:
-      Serial.println("Action completed successfully");
+      Serial.println("Function executed successfully");
       break;
 
       case NORESPONSE:
