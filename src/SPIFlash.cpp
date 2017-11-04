@@ -2,7 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 09/08/2017
+ * Modified by Prajwal Bhattaram - 04/11/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -68,7 +68,11 @@ SPIFlash::SPIFlash(uint8_t cs) {
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(size_t flashChipSize) {
 #ifdef RUNDIAGNOSTIC
-  Serial.println("Full Diagnostics Workup initiated!");
+  Serial.println("Chip Diagnostics initiated.");
+  Serial.println();
+#endif
+#ifdef HIGHSPEED
+  Serial.println("Highspeed mode initiated.");
   Serial.println();
 #endif
   BEGIN_SPI
@@ -78,6 +82,9 @@ bool SPIFlash::begin(size_t flashChipSize) {
 #endif
 // If no capacity is defined in user code
   if (!flashChipSize) {
+    #ifdef RUNDIAGNOSTIC
+    Serial.println("No Chip size defined by user");
+    #endif
     bool retVal = _chipID();
     _endSPI();
     return retVal;
@@ -92,6 +99,11 @@ bool SPIFlash::begin(size_t flashChipSize) {
     _chip.supported = false;
   }
   _endSPI();
+
+  if (_chip.manufacturerID == CYPRESS_MANID) {
+    setClock(SPI_CLK/4);
+  }
+
   return true;
 }
 
@@ -747,9 +759,10 @@ bool SPIFlash::eraseChip(void) {
   _endSPI();
 
 	while(_readStat1() & BUSY) {
-    _delay_us(30000L);
+    //_delay_us(30000L);
   }
   _endSPI();
+
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
   #endif

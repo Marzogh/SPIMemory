@@ -1,6 +1,6 @@
 /* Arduino SPIFlash Library v.3.0.0
  * Copyright (C) 2017 by Prajwal Bhattaram
- * Created by Prajwal Bhattaram - 02/05/2017
+ * Created by Prajwal Bhattaram - 04/11/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -413,6 +413,7 @@ bool SPIFlash::_disableGlobalBlockProtect(void) {
     _delay_us(50);
     _writeDisable();
   }
+  return true;
 }
 
 //Identifies the chip
