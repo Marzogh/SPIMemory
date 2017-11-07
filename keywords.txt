@@ -1,9 +1,9 @@
 #######################################
-# Syntax Coloring Map SPI
+# Syntax Coloring Map SPIFlash
 #######################################
 
 #######################################
-# Datatypes (KEYWORD1)
+# Class (KEYWORD1)
 #######################################
 
 SPIFlash	KEYWORD1
@@ -13,14 +13,16 @@ SPIFlash	KEYWORD1
 #######################################
 begin	KEYWORD2
 setClock  KEYWORD2
-error KEYWORD2
 libver  KEYWORD2
-getJEDECID	KEYWORD2
+error KEYWORD2
 getManID	KEYWORD2
+getJEDECID	KEYWORD2
+getUniqueID KEYWORD2
 getAddress	KEYWORD2
+sizeofStr	KEYWORD2
 getCapacity	KEYWORD2
 getMaxPage	KEYWORD2
-sizeofStr	KEYWORD2
+functionRunTime KEYWORD2
 readByte	KEYWORD2
 readByteArray	KEYWORD2
 readChar	KEYWORD2
@@ -52,7 +54,20 @@ resumeProg	KEYWORD2
 powerUp		KEYWORD2
 powerDown	KEYWORD2
 
-
 #######################################
 # Constants (LITERAL1)
+#######################################
+WINBOND_MANID LITERAL1
+MICROCHIP_MANID LITERAL1
+CYPRESS_MANID LITERAL1
+ADESTO_MANID  LITERAL1
+MICRON_MANID  LITERAL1
+NULLBYTE  LITERAL1
+NULLINT LITERAL1
+BYTE  LITERAL1
+KiB LITERAL1
+MiB LITERAL1
+
+#######################################
+# Built-in variables (LITERAL2)
 #######################################
