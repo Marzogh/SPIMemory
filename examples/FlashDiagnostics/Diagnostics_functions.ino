@@ -5,7 +5,7 @@
   |                                                                   v 3.0.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  10.08.2017                                                                   |
+  |                                                                  04.11.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -15,6 +15,7 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 void printLine() {
+    Serial.println();
   for (uint8_t i = 0; i < 230; i++) {
     Serial.print(F("-"));
   }
@@ -34,12 +35,10 @@ void printTime(uint32_t _wTime, uint32_t _rTime) {
     printTimer(_wTime);
     Serial.print(F(",\tRead Time: "));
     printTimer(_rTime);
-    Serial.println();
   }
   else {
     Serial.print(F("\t\tTime: "));
     printTimer(_wTime);
-    Serial.println();
   }
 }
 
@@ -72,6 +71,16 @@ void pass(bool _status) {
   }
 }
 
+void printUniqueID(void) {
+  Serial.print("Unique ID: ");
+  long long _uniqueID = flash.getUniqueID();
+  Serial.print(uint32_t(_uniqueID/1000000L));
+  Serial.print(uint32_t(_uniqueID%1000000L));
+  Serial.print(", ");
+  Serial.print(uint32_t(_uniqueID >> 32), HEX);
+  Serial.print(uint32_t(_uniqueID), HEX);
+}
+
 void getID() {
   char printBuffer[128];
   printLine();
@@ -84,16 +93,16 @@ void getID() {
   flash.libver(&_ver, &_subver, &_bugfix);
   clearprintBuffer(&printBuffer[1]);
   sprintf(printBuffer, ": %d.%d.%d", _ver, _subver, _bugfix);
-  Serial.println(printBuffer);
+  Serial.print(printBuffer);
 #else
-  Serial.println(F("< 2.5.0"));
+  Serial.print(F("< 2.5.0"));
 #endif
   printLine();
 
   for (uint8_t i = 0; i < 80; i++) {
     Serial.print(F(" "));
   }
-  Serial.println(F("Get ID"));
+  Serial.print(F("Get ID"));
   printLine();
   uint8_t b1, b2;
   //uint16_t b3;
@@ -109,33 +118,43 @@ void getID() {
   //---------------------------------------------------------------------------------------------//
 
   clearprintBuffer(&printBuffer[1]);
+  #if defined (ARDUINO_ARCH_ESP32)
   sprintf(printBuffer, "\t\t\tJEDEC ID: %04xh", JEDEC);
+  #else
+  sprintf(printBuffer, "\t\t\tJEDEC ID: %04lxh", JEDEC);
+  #endif
   Serial.println(printBuffer);
   //Serial.print(F("\t\t\tJEDEC ID: "));
   //Serial.print(JEDEC, HEX);
   //Serial.println(F("xh"));
   clearprintBuffer(&printBuffer[1]);
+  #if defined (ARDUINO_ARCH_ESP32)
+  sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %u bytes\n\t\t\tMaximum pages: %u", b1, b2, capacity, maxPage);
+  #else
   sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu bytes\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
-  Serial.println(printBuffer);
+  #endif
+  Serial.print(printBuffer);
+  Serial.print("\n\t\t\t");
+  printUniqueID();
   printLine();
-  Serial.println();
 }
 
 void byteTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint8_t _data, _d;
   _d = 35;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeByte(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   _data = flash.readByte(addr);
-  rTime = micros() - rTime;
-
+  rTime = flash.functionRunTime();
 
   Serial.print ("\t\t\tByte: \t\t");
   if (_data == _d) {
@@ -148,19 +167,21 @@ void byteTest() {
 }
 
 void charTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   int8_t _data, _d;
   _d = -110;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeChar(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   _data = flash.readChar(addr);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tChar: \t\t");
@@ -174,19 +195,21 @@ void charTest() {
 }
 
 void wordTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint16_t _data, _d;
   _d = 4520;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeWord(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   _data = flash.readWord(addr);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tWord: \t\t");
@@ -200,19 +223,21 @@ void wordTest() {
 }
 
 void shortTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   int16_t _data, _d;
   _d = -1250;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeShort(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   _data = flash.readShort(addr);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tShort: \t\t");
@@ -226,19 +251,21 @@ void shortTest() {
 }
 
 void uLongTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint32_t _data, _d;
   _d = 876532;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeULong(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   _data = flash.readULong(addr);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tULong: \t\t");
@@ -252,19 +279,21 @@ void uLongTest() {
 }
 
 void longTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   int32_t _data, _d;
   _d = -10959;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeLong(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   _data = flash.readLong(addr);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tLong: \t\t");
@@ -278,19 +307,21 @@ void longTest() {
 }
 
 void floatTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   float _data, _d;
   _d = 3.14;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeFloat(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   _data = flash.readFloat(addr);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tFloat: \t\t");
@@ -304,19 +335,19 @@ void floatTest() {
 }
 
 void stringTest() {
-  uint32_t wTime, rTime, addr;
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   String _data, _d;
   _d = "This is a test String 123!@#";
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeStr(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
-
-  rTime = micros();
+  
   flash.readStr(addr, _data);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tString: \t");
@@ -327,15 +358,24 @@ void stringTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_ESP8266)
+  Serial.println();
+  printLine();
+  if (!flash.functionRunTime()) {
+    Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+  }
+#endif
 }
 
 void structTest() {
+    Serial.println();
   struct Test {
-    word s1;
+    uint16_t s1;
     float s2;
-    long s3;
+    int32_t s3;
     bool s4;
-    byte s5;
+    uint8_t s5;
   };
   Test _d;
   Test _data;
@@ -346,21 +386,22 @@ void structTest() {
   _d.s4 = true;
   _d.s5 = 5;
 
-  uint32_t addr, wTime, rTime;
+  uint32_t wTime = 0;
+  uint32_t addr, rTime;
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeAnything(addr, _d)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   flash.readAnything(addr, _data);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tStruct: \t");
-  if (_d.s1 == _data.s1 && _d.s2 == _data.s2 && _d.s3 == _data.s3 && _d.s4 == _data.s4 && _d.s5 == _data.s5) {
+  if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5)) {
     pass(TRUE);
   }
   else {
@@ -370,7 +411,9 @@ void structTest() {
 }
 
 void arrayTest() {
-  uint32_t wTime, rTime, addr;
+    Serial.println();
+  uint32_t wTime = 0;
+  uint32_t rTime, addr;
   uint8_t _d[256], _data[256];
 
   for (uint16_t i = 0; i < 256; i++) {
@@ -378,14 +421,14 @@ void arrayTest() {
   }
 
   addr = random(0, 0xFFFFF);
-  wTime = micros();
+  
   if (flash.writeByteArray(addr, _d, 256)) {
-    wTime = micros() - wTime;
+    wTime = flash.functionRunTime();
   }
 
-  rTime = micros();
+  
   flash.readByteArray(addr, _data, 256);
-  rTime = micros() - rTime;
+  rTime = flash.functionRunTime();
 
 
   Serial.print ("\t\t\tByte Array: \t");
@@ -400,25 +443,26 @@ void arrayTest() {
 }
 
 void powerDownTest() {
+    Serial.println();
   uint32_t _time;
   Serial.print(F("\t\t\tPower Down: \t"));
-  _time = micros();
   if (flash.powerDown()) {
-    _time = micros() - _time;
+    _time = flash.functionRunTime();
     pass(TRUE);
     printTime(_time, 0);
   }
   else {
     pass(FALSE);
+    Serial.print(F("\t\tNot all chips support power down. Please check your datasheet."));
   }
 }
 
 void powerUpTest() {
+    Serial.println();
   uint32_t _time;
   Serial.print(F("\t\t\tPower Up: \t"));
-  _time = micros();
   if (flash.powerUp()) {
-    _time = micros() - _time;
+    _time = flash.functionRunTime();
     pass(TRUE);
     printTime(_time, 0);
   }
@@ -428,12 +472,12 @@ void powerUpTest() {
 }
 
 void eraseSectorTest() {
+    Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   Serial.print(F("\t\t\tErase 4KB Sector: "));
-  _time = micros();
   if (flash.eraseSector(_addr)) {
-    _time = micros() - _time;
+    _time = flash.functionRunTime();
     pass(TRUE);
     printTime(_time, 0);
   }
@@ -444,12 +488,12 @@ void eraseSectorTest() {
 }
 
 void eraseBlock32KTest() {
+    Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   Serial.print(F("\t\t\tErase 32KB Block: "));
-  _time = micros();
   if (flash.eraseBlock32K(_addr)) {
-    _time = micros() - _time;
+    _time = flash.functionRunTime();
     pass(TRUE);
     printTime(_time, 0);
   }
@@ -459,12 +503,12 @@ void eraseBlock32KTest() {
 }
 
 void eraseBlock64KTest() {
+    Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   Serial.print(F("\t\t\tErase 64KB Block: "));
-  _time = micros();
   if (flash.eraseBlock64K(_addr)) {
-    _time = micros() - _time;
+    _time = flash.functionRunTime();
     pass(TRUE);
     printTime(_time, 0);
   }
@@ -474,11 +518,11 @@ void eraseBlock64KTest() {
 }
 
 void eraseChipTest() {
+    Serial.println();
   uint32_t _time;
   Serial.print(F("\t\t\tErase Chip: \t"));
-  _time = micros();
   if (flash.eraseChip()) {
-    _time = micros() - _time;
+    _time = flash.functionRunTime();
     pass(TRUE);
     printTime(_time, 0);
   }

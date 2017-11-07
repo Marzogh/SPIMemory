@@ -53,9 +53,10 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
   #if defined (ARDUINO_ARCH_AVR)
     _printErrorCode();
   #else
+  Serial.println();
     switch (_code) {
       case SUCCESS:
-      Serial.println("Action completed successfully");
+      Serial.println("Function executed successfully");
       break;
 
       case NORESPONSE:
@@ -103,6 +104,10 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
         Serial.print("Current Free SRAM: ");
         Serial.println(freeRAM());
       #endif*/
+      break;
+
+      case UNSUPPORTEDFUNCTION:
+      Serial.println("This function is not supported by the flash memory hardware.");
       break;
 
       case SYSSUSPEND:
