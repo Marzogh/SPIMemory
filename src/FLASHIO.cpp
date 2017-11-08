@@ -72,7 +72,7 @@ bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
 //Takes address and returns the address if true, else returns false. Throws an error if there is a problem.
 bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
   // If the flash memory is >= 256 MB enable 4-byte addressing
-  if (_chip.manufacturerID == WINBOND_MANID && _addr >= MB(128)) {
+  if (_chip.manufacturerID == WINBOND_MANID && _addr >= MB(16)) {
     if (!_enable4ByteAddressing()) {    // If unable to enable 4-byte addressing
       return false;
     }
@@ -545,8 +545,8 @@ bool SPIFlash::_chipID(void) {
     }
   }
 
-  /*// If the flash memory is > 128 MB enable 4-byte addressing
-  if (_chip.manufacturerID == WINBOND_MANID && _chip.capacity > MB(128)) {
+  /*// If the flash memory is > 16 MB enable 4-byte addressing
+  if (_chip.manufacturerID == WINBOND_MANID && _chip.capacity > MB(16)) {
     if (!_enable4ByteAddressing()) {    // If unable to enable 4-byte addressing
       return false;
     }

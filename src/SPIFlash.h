@@ -299,7 +299,7 @@ private:
   {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};
 
   const uint32_t _memSize[14]  =
-  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(6), MB(32), MB(8), MB(8), KB(256), KB(512)}; // To understand the _memSize definitions check defines.h
+  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512)}; // To understand the _memSize definitions check defines.h
 };
 
 //--------------------------------- Public Templates ------------------------------------//
