@@ -146,7 +146,7 @@ public:
   SPIFlash(uint8_t cs = CS);
   #endif
   //----------------------------- Initial / Chip Functions ------------------------------//
-  bool     begin(size_t flashChipSize = 0);
+  bool     begin(uint32_t flashChipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  error(bool verbosity = false);

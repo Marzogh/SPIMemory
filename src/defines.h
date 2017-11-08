@@ -60,9 +60,9 @@
 //                     General size definitions                       //
 //            B = Bytes; KiB = Kilo Bytes; MiB = Mega Bytes           //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define B(x)          size_t(x*BYTE)
-#define KB(x)         size_t(x*KiB)
-#define MB(x)         size_t(x*MiB)
+#define B(x)          uint32_t(x*BYTE)
+#define KB(x)         uint32_t(x*KiB)
+#define MB(x)         uint32_t(x*MiB)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

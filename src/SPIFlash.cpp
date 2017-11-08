@@ -66,7 +66,7 @@ SPIFlash::SPIFlash(uint8_t cs) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Identifies chip and establishes parameters
-bool SPIFlash::begin(size_t flashChipSize) {
+bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef RUNDIAGNOSTIC
   Serial.println("Chip Diagnostics initiated.");
   Serial.println();
