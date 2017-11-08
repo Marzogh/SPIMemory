@@ -60,6 +60,8 @@ Enhancements:
 --> All functions except the Byte/Char Array Read/Write functions now call an internal _write/_read function for increased ease of compilation, execution and troubleshooting
 --> Restructured the internal _troubleshoot() function to be better human readable and faster to compile.
 --> Added a function `getUniqueID()` which returns the unique ID of the flash memory chip as a 64-bit integer.
+--> Added an internal _readStat3() function to enable 4-byte addressing when using flash memory larger than 128 MB
+--> 4-byte addressing enabled in flash memory larger than 128 MB. This is currently only supported on the W25Q256 and W25Q512. More chips will be supported on a case-by-case basis
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

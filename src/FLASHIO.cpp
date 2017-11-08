@@ -29,10 +29,54 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Private functions used by read, write and erase operations     //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//Checks to see if page overflow is permitted and assists with determining next address to read/write.
+//Sets the global address variable
+bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
+  if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
+    return false;
+  }
+	if (!_chip.capacity) {
+    _troubleshoot(CALLBEGIN);
+    return false;
+	}
+
+  //for (uint32_t i = 0; i < size; i++) {
+  if (_addr + size >= _chip.capacity) {
+  #ifdef DISABLEOVERFLOW
+    _troubleshoot(OUTOFBOUNDS);
+    return false;					// At end of memory - (!pageOverflow)
+  #else
+    _currentAddress = 0x00;
+    return true;					// At end of memory - (pageOverflow)
+  #endif
+  }
+  //}
+  _currentAddress = _addr;
+  return true;				// Not at end of memory if (address < _chip.capacity)
+}
+
+// Checks to see if the block of memory has been previously written to
+bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
+  _beginSPI(READDATA);
+  for (uint32_t i = 0; i < size; i++) {
+    if (_nextByte(READ) != 0xFF) {
+      CHIP_DESELECT;
+      return false;
+    }
+  }
+  CHIP_DESELECT
+  return true;
+}
 
 //Double checks all parameters before calling a read or write. Comes in two variants
 //Takes address and returns the address if true, else returns false. Throws an error if there is a problem.
 bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
+  // If the flash memory is >= 256 MB enable 4-byte addressing
+  if (_chip.manufacturerID == WINBOND_MANID && _addr >= MB(128)) {
+    if (!_enable4ByteAddressing()) {    // If unable to enable 4-byte addressing
+      return false;
+    }
+  }
   switch (opcode) {
     case PAGEPROG:
     //Serial.print(F("Address being prepped: "));
@@ -71,12 +115,18 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
 
 // Transfer Address.
 bool SPIFlash::_transferAddress(void) {
+  if (address4ByteEnabled) {
+    _nextByte(WRITE, Highest(_currentAddress));
+  }
   _nextByte(WRITE, Higher(_currentAddress));
   _nextByte(WRITE, Hi(_currentAddress));
   _nextByte(WRITE, Lo(_currentAddress));
-  /*_nextByte(_currentAddress >> 16);
-  _nextByte(_currentAddress >> 8);
-  _nextByte(_currentAddress);*/
+  /*if (address4ByteEnabled) {
+    _nextByte(WRITE, _currentAddress >> 24);
+  }
+  _nextByte(WRITE, _currentAddress >> 16);
+  _nextByte(WRITE, _currentAddress >> 8);
+  _nextByte(WRITE, _currentAddress);*/
   return true;
 }
 
@@ -177,7 +227,7 @@ uint8_t SPIFlash::_nextByte(char IOType, uint8_t data) {
 #endif
 }
 
-//Reads/Writes next int. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
+//Reads/Writes next int. Call 'n' times to read/write 'n' number of integers. Should be called after _beginSPI()
 uint16_t SPIFlash::_nextInt(uint16_t data) {
 #if defined (ARDUINO_ARCH_SAMD)
   return _spi->transfer16(data);
@@ -186,7 +236,7 @@ uint16_t SPIFlash::_nextInt(uint16_t data) {
 #endif
 }
 
-//Reads/Writes next data buffer. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
+//Reads/Writes next data buffer. Should be called after _beginSPI()
 void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
   uint8_t *_dataAddr = &(*data_buffer);
   switch (opcode) {
@@ -233,6 +283,11 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
 //Stops all operations. Should be called after all the required data is read/written from repeated _nextByte() calls
 void SPIFlash::_endSPI(void) {
   CHIP_DESELECT
+
+  if (address4ByteEnabled) {          // If the previous operation enabled 4-byte addressing, disable it
+    _disable4ByteAddressing();
+  }
+
 #ifdef SPI_HAS_TRANSACTION
   #if defined (ARDUINO_ARCH_SAMD)
     _spi->endTransaction();
@@ -260,10 +315,51 @@ uint8_t SPIFlash::_readStat1(void) {
 // Checks if status register 2 can be accessed, if yes, reads and returns it
 uint8_t SPIFlash::_readStat2(void) {
   _beginSPI(READSTAT2);
-  uint8_t stat2 = _nextByte(READ);
   stat2 = _nextByte(READ);
+  //stat2 = _nextByte(READ);
   CHIP_DESELECT
   return stat2;
+}
+
+// Checks if status register 3 can be accessed, if yes, reads and returns it
+uint8_t SPIFlash::_readStat3(void) {
+  _beginSPI(READSTAT3);
+  stat3 = _nextByte(READ);
+  //stat2 = _nextByte(READ);
+  CHIP_DESELECT
+  return stat3;
+}
+
+// Checks to see if 4-byte addressing is already enabled and if not, enables it
+bool SPIFlash::_enable4ByteAddressing(void) {
+  if (_readStat3() & ADS) {
+    return true;
+  }
+  _beginSPI(ADDR4BYTE_EN);
+  CHIP_DESELECT
+  if (_readStat3() & ADS) {
+    address4ByteEnabled = true;
+    return true;
+  }
+  else {
+    _troubleshoot(UNABLETO4BYTE);
+    return false;
+  }
+}
+
+// Checks to see if 4-byte addressing is already disabled and if not, disables it
+bool SPIFlash::_disable4ByteAddressing(void) {
+  if (!(_readStat3() & ADS)) {      // If 4 byte addressing is disabled (default state)
+    return true;
+  }
+  _beginSPI(ADDR4BYTE_DIS);
+  CHIP_DESELECT
+  if (_readStat3() & ADS) {
+    _troubleshoot(UNABLETO3BYTE);
+    return false;
+  }
+  address4ByteEnabled = false;
+  return true;
 }
 
 // Checks the erase/program suspend flag before enabling/disabling a program/erase suspend operation
@@ -395,11 +491,11 @@ bool SPIFlash::_getSFDP(void) {
 bool SPIFlash::_disableGlobalBlockProtect(void) {
   if (_chip.memoryTypeID == SST25) {
     _readStat1();
-    stat1 &= 0xC3;
+    uint8_t _tempStat1 = stat1 & 0xC3;
     _beginSPI(WRITESTATEN);
     CHIP_DESELECT
-    _beginSPI(WRITESTAT);
-    _nextByte(WRITE, stat1);
+    _beginSPI(WRITESTAT1);
+    _nextByte(WRITE, _tempStat1);
     CHIP_DESELECT
   }
   else if (_chip.memoryTypeID == SST26) {
@@ -448,44 +544,12 @@ bool SPIFlash::_chipID(void) {
       return false;
     }
   }
-  return true;
-}
 
-
-//Checks to see if page overflow is permitted and assists with determining next address to read/write.
-//Sets the global address variable
-bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
-  if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
-    return false;
-  }
-	if (!_chip.capacity) {
-    _troubleshoot(CALLBEGIN);
-    return false;
-	}
-
-  //for (uint32_t i = 0; i < size; i++) {
-  if (_addr + size >= _chip.capacity) {
-  #ifdef DISABLEOVERFLOW
-    _troubleshoot(OUTOFBOUNDS);
-    return false;					// At end of memory - (!pageOverflow)
-  #else
-    _currentAddress = 0x00;
-    return true;					// At end of memory - (pageOverflow)
-  #endif
-  }
-  //}
-  _currentAddress = _addr;
-  return true;				// Not at end of memory if (address < _chip.capacity)
-}
-
-bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
-  _beginSPI(READDATA);
-  for (uint32_t i = 0; i < size; i++) {
-    if (_nextByte(READ) != 0xFF) {
-      CHIP_DESELECT;
+  /*// If the flash memory is > 128 MB enable 4-byte addressing
+  if (_chip.manufacturerID == WINBOND_MANID && _chip.capacity > MB(128)) {
+    if (!_enable4ByteAddressing()) {    // If unable to enable 4-byte addressing
       return false;
     }
-  }
-  CHIP_DESELECT
+  }*/
   return true;
 }

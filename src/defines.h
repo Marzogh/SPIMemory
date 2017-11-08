@@ -28,28 +28,33 @@
 //						Common Instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#define	MANID        0x90
-#define PAGEPROG     0x02
-#define READDATA     0x03
-#define FASTREAD     0x0B
-#define WRITEDISABLE 0x04
-#define READSTAT1    0x05
-#define READSTAT2    0x35
-#define WRITESTATEN  0x50
-#define WRITESTAT    0x01
-#define WRITEENABLE  0x06
-#define SECTORERASE  0x20
-#define BLOCK32ERASE 0x52
-#define BLOCK64ERASE 0xD8
-#define CHIPERASE    0x60
-#define SUSPEND      0x75
-#define ID           0x90
-#define RESUME       0x7A
-#define JEDECID      0x9F
-#define POWERDOWN    0xB9
-#define RELEASE      0xAB
-#define READSFDP     0x5A
-#define UNIQUEID     0x4B
+#define	MANID         0x90
+#define PAGEPROG      0x02
+#define READDATA      0x03
+#define FASTREAD      0x0B
+#define WRITEDISABLE  0x04
+#define READSTAT1     0x05
+#define READSTAT2     0x35
+#define READSTAT3     0x15
+#define WRITESTATEN   0x50
+#define WRITESTAT1    0x01
+#define WRITESTAT2    0x31
+#define WRITESTAT3    0x11
+#define WRITEENABLE   0x06
+#define ADDR4BYTE_EN  0xB7
+#define ADDR4BYTE_DIS 0xE9
+#define SECTORERASE   0x20
+#define BLOCK32ERASE  0x52
+#define BLOCK64ERASE  0xD8
+#define CHIPERASE     0x60
+#define SUSPEND       0x75
+#define ID            0x90
+#define RESUME        0x7A
+#define JEDECID       0x9F
+#define POWERDOWN      0xB9
+#define RELEASE       0xAB
+#define READSFDP      0x5A
+#define UNIQUEID      0x4B
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
@@ -96,6 +101,7 @@
 #define SUS           0x80
 #define WSE           0x04
 #define WSP           0x08
+#define ADS           0x01            // Current Address mode in Status register 3
 #define DUMMYBYTE     0xEE
 #define NULLBYTE      0x00
 #define NULLINT       0x0000
@@ -178,6 +184,8 @@
  #define ERRORCHKFAIL         0x0B
  #define NORESPONSE           0x0C
  #define UNSUPPORTEDFUNCTION  0x0D
+ #define UNABLETO4BYTE        0x0E
+ #define UNABLETO3BYTE        0x0F
  #define UNKNOWNERROR         0xFE
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
