@@ -122,6 +122,14 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
       Serial.println("Write Function has failed errorcheck.");
       break;
 
+      case UNABLETO4BYTE:
+      Serial.println("Unable to enable 4-byte addressing");
+      break;
+
+      case UNABLETO3BYTE:
+      Serial.println("Unable to disable 4-byte addressing");
+      break;
+
       default:
       Serial.println("Unknown error");
       break;

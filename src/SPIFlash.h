@@ -146,7 +146,7 @@ public:
   SPIFlash(uint8_t cs = CS);
   #endif
   //----------------------------- Initial / Chip Functions ------------------------------//
-  bool     begin(size_t flashChipSize = 0);
+  bool     begin(uint32_t flashChipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   uint8_t  error(bool verbosity = false);
@@ -252,14 +252,17 @@ private:
   bool     _chipID(void);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t _addr, uint32_t size = 1);
+  bool     _enable4ByteAddressing(void);
+  bool     _disable4ByteAddressing(void);
   uint8_t  _nextByte(char IOType, uint8_t data = NULLBYTE);
   uint16_t _nextInt(uint16_t = NULLINT);
   void     _nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size);
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
+  uint8_t  _readStat3(void);
   template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck);
   template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false);
-  template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
+  //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
   template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz);
   //-------------------------------- Private variables ----------------------------------//
   #ifdef SPI_HAS_TRANSACTION
@@ -275,7 +278,8 @@ private:
   #endif
   volatile uint8_t *cs_port;
   bool        pageOverflow, SPIBusState;
-  uint8_t     cs_mask, errorcode, stat1, _SPCR, _SPSR, _a0, _a1, _a2;
+  bool        address4ByteEnabled = false;
+  uint8_t     cs_mask, errorcode, stat1, stat2, stat3, _SPCR, _SPSR, _a0, _a1, _a2;
   char READ = 'R';
   char WRITE = 'W';
   float _spifuncruntime = 0;
@@ -295,7 +299,7 @@ private:
   {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};
 
   const uint32_t _memSize[14]  =
-  {64L * KiB, 128L * KiB, 256L * KiB, 512L * KiB, 1L * MiB, 2L * MiB, 4L * MiB, 8L * MiB, 6L * MiB, 32L * MiB, 8L * MiB, 8L * MiB, 256L * KiB, 512L * KiB};
+  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512)}; // To understand the _memSize definitions check defines.h
 };
 
 //--------------------------------- Public Templates ------------------------------------//
