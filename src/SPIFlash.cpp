@@ -66,7 +66,7 @@ SPIFlash::SPIFlash(uint8_t cs) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //Identifies chip and establishes parameters
-bool SPIFlash::begin(size_t flashChipSize) {
+bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef RUNDIAGNOSTIC
   Serial.println("Chip Diagnostics initiated.");
   Serial.println();
@@ -101,7 +101,7 @@ bool SPIFlash::begin(size_t flashChipSize) {
   _endSPI();
 
   if (_chip.manufacturerID == CYPRESS_MANID) {
-    setClock(SPI_CLK/4);
+    setClock(SPI_CLK/4);    // Cypress/Spansion chips appear to perform best at SPI_CLK/4
   }
 
   return true;
@@ -172,7 +172,10 @@ uint64_t SPIFlash::getUniqueID(void) {
    }
   _beginSPI(UNIQUEID);
   for (uint8_t i = 0; i < 4; i++) {
-    _nextByte(DUMMYBYTE);
+    _nextByte(WRITE, DUMMYBYTE);
+  }
+  if (address4ByteEnabled) {
+    _nextByte(WRITE, DUMMYBYTE);
   }
 
    for (uint8_t i = 0; i < 8; i++) {
