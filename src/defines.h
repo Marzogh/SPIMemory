@@ -1,7 +1,7 @@
-/* Arduino SPIFlash Library v.2.7.0
+/* Arduino SPIFlash Library v.3.0.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 02/08/2017
+ * Modified by Prajwal Bhattaram - 04/11/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -58,7 +58,7 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
-//            B = Bytes; KB = Kilo bits; MB = Mega bits               //
+//            B = Bytes; KiB = Kilo Bytes; MiB = Mega Bytes           //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #define B(x)          uint32_t(x*BYTE)
 #define KB(x)         uint32_t(x*KiB)
@@ -67,21 +67,35 @@
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define WINBOND_MANID		 0xEF
-  #define PAGESIZE	 0x100
+//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define WINBOND_MANID         0xEF
+  #define SPI_PAGESIZE          0x100
+  #define WINBOND_WRITE_DELAY   0x02
+  #define WINBOND_WREN_TIMEOUT  10L
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define MICROCHIP_MANID		 0xBF
+//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MICROCHIP_MANID       0xBF
+  #define SST25                 0x25
+  #define SST26                 0x26
+  #define ULBPR                 0x98    //Global Block Protection Unlock (Ref sections 4.1.1 & 5.37 of datasheet)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define CYPRESS_MANID         0x01
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define ADESTO_MANID         0x1F
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MICRON_MANID         0x20
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define BUSY          0x01
 #if defined (ARDUINO_ARCH_ESP32)
-#define SPI_CLK       20000000
+#define SPI_CLK       20000000        //Hz equivalent of 20MHz
 #else
-#define SPI_CLK       104000000       //Hex equivalent of 104MHz
+#define SPI_CLK       104000000       //Hz equivalent of 104MHz
 #endif
 #define WRTEN         0x02
 #define SUS           0x80
@@ -97,23 +111,26 @@
 #define NOOVERFLOW    false
 #define NOERRCHK      false
 #define VERBOSE       true
+#define PRINTOVERRIDE true
+#define ERASEFUNC     0xEF
 #if defined (SIMBLEE)
 #define BUSY_TIMEOUT  100L
+#elif defined ENABLEZERODMA
+#define BUSY_TIMEOUT  3500L
 #else
-#define BUSY_TIMEOUT  10L
+#define BUSY_TIMEOUT  1000L
 #endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
-#define K             1024L
-#define M             K * K
+#define BYTE          1L
+#define KiB           1024L
+#define MiB           KiB * KiB
 #define S             1000L
 
 #if defined (ARDUINO_ARCH_ESP8266)
 #define CS 15
 #elif defined (ARDUINO_ARCH_SAMD)
 #define CS 10
-#elif defined __AVR_ATtiny85__
-#define CS 5
 /*********************************************************************************************
 // Declaration of the Default Chip select pin name for RTL8195A
 // Note: This has been shifted due to a bug identified in the HAL layer SPI driver
@@ -183,4 +200,6 @@
 #define Top(param) ((int *)&param)[1] //0xyy00
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
- //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#ifndef LED_BUILTIN //fix for boards without that definition
+  #define LED_BUILTIN 13
+#endif
