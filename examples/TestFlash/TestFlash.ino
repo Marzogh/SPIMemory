@@ -16,46 +16,46 @@
   |  1. getID                                                                                                                        |
   |   '1' gets the JEDEC ID of the chip                                                                                              |
   |                                                                                                                                  |
-  |  2. writeByte [address] [byte]                                                                                                   |
-  |   '2' followed by '2435' and then by '224' writes the byte 224 to address 2435                                                   |
+  |  2. writeByte [page] [offset] [byte]                                                                                             |
+  |   '2' followed by '100' and then by '20' and then by '224' writes the byte 224 to page 100 position 20                           |
   |                                                                                                                                  |
-  |  3. readByte [address]                                                                                                           |
-  |   '3' followed by '2435' returns the byte from address '2435'                                                                    |
+  |  3. readByte [page] [offset]                                                                                                     |
+  |   '3' followed by '100' and then by '20' returns the byte from page 100 position 20                                              |
   |                                                                                                                                  |
-  |  4. writeWord [address] [word]                                                                                                   |
-  |   '4' followed by '5948' and then by '633' writes the int 633 to address 5948                                                    |
+  |  4. writeWord [page] [offset]                                                                                                    |
+  |   '4' followed by '55' and then by '35' and then by '633' writes the int 633 to page 5 position 35                               |
   |                                                                                                                                  |
-  |  5. readWord [address]                                                                                                           |
-  |   '5' followed by '5948' returns the int from address 5948                                                                       |
+  |  5. readWord [page] [offset]                                                                                                     |
+  |   '5' followed by '200' and then by '30' returns the int from page 200 position 30                                               |
   |                                                                                                                                  |
-  |  6. writeStr [address] [inputString]                                                                                             |
-  |   '6' followed by '345736' and then by 'Test String 1!' writes the String 'Test String 1! to address 345736                      |
+  |  6. writeStr [page] [offset] [inputString]                                                                                       |
+  |   '6' followed by '345' and then by '65' and then by 'Test String 1!' writes the String 'Test String 1! to page 345 position 65  |
   |                                                                                                                                  |
-  |  7. readStr [address] [outputString]                                                                                             |
-  |   '7' followed by '345736' reads the String from address 345736 into the outputString                                            |
+  |  7. readStr [page] [offset] [outputString]                                                                                       |
+  |   '7' followed by '2050' and then by '73' reds the String from page 2050 position 73 into the outputString                       |
   |                                                                                                                                  |
   |  8. writePage [page]                                                                                                             |
-  |   '8' followed by '33' writes bytes from 0 to 255 sequentially to fill a page (256 bytes) starting with address 33               |
+  |   '8' followed by '33' writes bytes from 0 to 255 sequentially to fill page 33                                                   |
   |                                                                                                                                  |
   |  9. printPage [page]                                                                                                             |
-  |   '9' followed by 33 reads & prints a page (256 bytes) starting with address 33. To just read a page to a data buffer, refer     |
+  |   '9' followed by 33 reads & prints page 33. To just read a page to a data buffer, refer                                         |
   |    to 'ReadMe.md' in the library folder.                                                                                         |
   |                                                                                                                                  |
-  |  10. printAllData                                                                                                                |
-  |   '10' reads the entire chip and outputs the data as a byte array to the serial console                                          |
+  |  10. printAllPages                                                                                                               |
+  |   '10' reads all 4096 pages and outputs them to the serial console                                                               |
   |   This function is to extract data from a flash chip onto a computer as a text file.                                             |
   |   Refer to 'Read me.md' in the library for details.                                                                              |
   |                                                                                                                                  |
   |  11. Erase 4KB sector                                                                                                            |
-  |   '11'  followed by 2 erases a 4KB sector containing the address be erased                                                       |
+  |   '11'  followed by 2 erases a 4KB sector containing the page to be erased                                                       |
   |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
   |                                                                                                                                  |
   |  12. Erase 32KB block                                                                                                            |
-  |   '12'  followed by 2 erases a 32KB block containing the address to be erased                                                    |
+  |   '12'  followed by 2 erases a 32KB block containing the page to be erased                                                       |
   |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
   |                                                                                                                                  |
   |  13. Erase 64KB block                                                                                                            |
-  |   '13'  followed by 2 erases a 64KB block containing the address to be erased                                                    |
+  |   '13'  followed by 2 erases a 64KB block containing the page to be erased                                                       |
   |   Page 0-15 --> Sector 0; Page 16-31 --> Sector 1;......Page 4080-4095 --> Sector 255                                            |
   |                                                                                                                                  |
   |  14. Erase Chip                                                                                                                  |
@@ -70,13 +70,10 @@
 uint8_t pageBuffer[256];
 String serialCommand;
 char printBuffer[128];
-uint32_t addr;
-uint8_t dataByte;
+uint16_t page;
+uint8_t offset, dataByte;
 uint16_t dataInt;
 String inputString, outputString;
-
-//Define a flash memory size (if using non-Winbond memory) according to the list in defines.h
-//#define CHIPSIZE MB64
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -89,7 +86,6 @@ String inputString, outputString;
 #define BAUD_RATE 115200
 #endif
 
-//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 SPIFlash flash;
 
 void setup() {
@@ -101,11 +97,7 @@ void setup() {
     Serial.print(F("."));
   }
   Serial.println();
-#if defined (CHIPSIZE)
-  flash.begin(CHIPSIZE); //use flash.begin(CHIPSIZE) if using non-Winbond flash (Refer to '#define CHIPSIZE' above)
-#else
   flash.begin();
-#endif
   Serial.println();
   Serial.println();
   commandList();
@@ -142,15 +134,24 @@ void loop() {
       Serial.println(F("                                                       Function 2 : Write Byte                                                    "));
       printSplash();
       printLine();
-      inputAddress();
+      Serial.print(F("Please enter the number of the page you wish to modify: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position on the page (0-255) you wish to modify: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
       Serial.print(F("Please enter the value of the byte (0-255) you wish to save: "));
       while (!Serial.available()) {
       }
       dataByte = Serial.parseInt();
       Serial.println(dataByte);
-      if (flash.writeByte(addr, dataByte)) {
+      if (flash.writeByte(page, offset, dataByte)) {
         clearprintBuffer();
-        sprintf(printBuffer, "%d has been written to address %d", dataByte, addr);
+        sprintf(printBuffer, "%d has been written to position %d on page %d", dataByte, offset, page);
         Serial.println(printBuffer);
       }
       else {
@@ -164,11 +165,20 @@ void loop() {
       Serial.println(F("                                                       Function 3 : Read Byte                                                     "));
       printSplash();
       printLine();
-      inputAddress();
+      Serial.print(F("Please enter the number of the page the byte you wish to read is on: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position of the byte on the page (0-255) you wish to read: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
       clearprintBuffer();
-      sprintf(printBuffer, "The byte at address %d is: ", addr);
+      sprintf(printBuffer, "The byte at position %d on page %d is: ", offset, page);
       Serial.print(printBuffer);
-      Serial.println(flash.readByte(addr));
+      Serial.println(flash.readByte(page, offset));
       printLine();
       printNextCMD();
     }
@@ -177,15 +187,24 @@ void loop() {
       Serial.println(F("                                                       Function 4 : Write Word                                                    "));
       printSplash();
       printLine();
-      inputAddress();
+      Serial.print(F("Please enter the number of the page you wish to modify: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position on the page (0-255) you wish to modify: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
       Serial.print(F("Please enter the value of the word (>255) you wish to save: "));
       while (!Serial.available()) {
       }
       dataInt = Serial.parseInt();
       Serial.println(dataInt);
-      if (flash.writeWord(addr, dataInt)) {
+      if (flash.writeWord(page, offset, dataInt)) {
         clearprintBuffer();
-        sprintf(printBuffer, "%d has been written to address %d", dataInt, addr);
+        sprintf(printBuffer, "%d has been written to position %d on page %d", dataInt, offset, page);
         Serial.println(printBuffer);
       }
       else {
@@ -199,11 +218,20 @@ void loop() {
       Serial.println(F("                                                       Function 5 : Read Word                                                     "));
       printSplash();
       printLine();
-      inputAddress();
+      Serial.print(F("Please enter the number of the page the byte you wish to read is on: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position of the word on the page (0-255) you wish to read: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
       clearprintBuffer();
-      sprintf(printBuffer, "The unsigned int at address %d is: ", addr);
+      sprintf(printBuffer, "The unsigned int at position %d on page %d is: ", offset, page);
       Serial.print(printBuffer);
-      Serial.println(flash.readWord(addr));
+      Serial.println(flash.readWord(page, offset));
       printLine();
       printNextCMD();
     }
@@ -213,16 +241,25 @@ void loop() {
       printSplash();
       printLine();
       Serial.println(F("This function will write a String of your choice to the page selected."));
-      inputAddress();
+      Serial.print(F("Please enter the number of the page you wish to write to: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position on the page (0-255) you wish to write to: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
       Serial.println(F("Please enter the String you wish to save: "));
       while (!Serial.available()) {
       }
       readSerialStr(inputString);
-      if (flash.writeStr(addr, inputString)) {
+      if (flash.writeStr(page, offset, inputString)) {
         clearprintBuffer();
         Serial.print(F("String '"));
         Serial.print(inputString);
-        sprintf(printBuffer, "' has been written to address %d", addr);
+        sprintf(printBuffer, "' has been written to position %d on page %d", offset, page);
         Serial.println(printBuffer);
       }
       else {
@@ -236,12 +273,20 @@ void loop() {
       Serial.println(F("                                                      Function 7 : Read String                                                    "));
       printSplash();
       printLine();
-      Serial.print(F("This function will read a string from your address of choice: "));
-      inputAddress();
+      Serial.print(F("Please enter the number of the page the String you wish to read is on: "));
+      while (!Serial.available()) {
+      }
+      page = Serial.parseInt();
+      Serial.println(page);
+      Serial.print(F("Please enter the position of the String on the page (0-255) you wish to read: "));
+      while (!Serial.available()) {
+      }
+      offset = Serial.parseInt();
+      Serial.println(offset);
       clearprintBuffer();
-      sprintf(printBuffer, "The String at address %d is: ", addr);
+      sprintf(printBuffer, "The String at position %d on page %d is: ", offset, page);
       Serial.print(printBuffer);
-      flash.readStr(addr, outputString);
+      flash.readStr(page, offset, outputString);
       Serial.println(outputString);
       printLine();
       printNextCMD();
@@ -251,18 +296,18 @@ void loop() {
       Serial.println(F("                                                       Function 8 : Write Page                                                    "));
       printSplash();
       printLine();
-      Serial.println(F("This function will write a sequence of bytes (0-255) starting from your address of choice"));
-      Serial.print(F("Please enter the address you wish to write to: "));
+      Serial.println(F("This function will write a sequence of bytes (0-255) to the page selected."));
+      Serial.print(F("Please enter the number of the page you wish to write to: "));
       while (!Serial.available()) {
       }
-      addr = Serial.parseInt();
-      Serial.println(addr);
-      for (uint16_t i = 0; i < SPI_PAGESIZE; ++i) {
+      page = Serial.parseInt();
+      Serial.println(page);
+      for (uint16_t i = 0; i < PAGESIZE; ++i) {
         pageBuffer[i] = i;
       }
-      if (flash.writeByteArray(addr, &pageBuffer[0], SPI_PAGESIZE)) {
+      if (flash.writeByteArray(page, 0, &pageBuffer[0], PAGESIZE)) {
         clearprintBuffer();
-        sprintf(printBuffer, "Values from 0 to 255 have been written starting from the address %d", addr);
+        sprintf(printBuffer, "Values from 0 to 255 have been written to the page %d", page);
         Serial.println(printBuffer);
         printReadChoice();
         while (!Serial.available()) {
@@ -275,7 +320,7 @@ void loop() {
           }
           uint8_t outputType = Serial.parseInt();
           Serial.println(outputType);
-          printPage(addr, outputType);
+          printPage(page, outputType);
         }
       }
       else {
@@ -289,18 +334,18 @@ void loop() {
       Serial.println(F("                                                       Function 9 : Read Page                                                    "));
       printSplash();
       printLine();
-      Serial.println(F("This function will read 256 bytes from the address selected."));
-      Serial.print(F("Please enter the address you wish to read: "));
+      Serial.println(F("This function will read the entire page selected."));
+      Serial.print(F("Please enter the number of the page you wish to read: "));
       while (!Serial.available()) {
       }
-      addr = Serial.parseInt();
-      Serial.println(addr);
+      page = Serial.parseInt();
+      Serial.println(page);
       printOutputChoice();
       while (!Serial.available()) {
       }
       uint8_t outputType = Serial.parseInt();
       Serial.println(outputType);
-      printPage(addr, outputType);
+      printPage(page, outputType);
       printLine();
       printNextCMD();
     }
@@ -332,14 +377,14 @@ void loop() {
       printSplash();
       printLine();
       Serial.println(F("This function will erase a 4KB sector."));
-      Serial.print(F("Please enter the address you wish to erase: "));
+      Serial.print(F("Please enter the number of the page you wish to erase: "));
       while (!Serial.available()) {
       }
-      addr = Serial.parseInt();
-      Serial.println(addr);
-      flash.eraseSector(addr);
+      page = Serial.parseInt();
+      Serial.println(page);
+      flash.eraseSector(page, 0);
       clearprintBuffer();
-      sprintf(printBuffer, "A 4KB sector containing address %d has been erased", addr);
+      sprintf(printBuffer, "A 4KB sector containing page %d has been erased", page);
       Serial.println(printBuffer);
       printReadChoice();
       while (!Serial.available()) {
@@ -352,7 +397,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        printPage(addr, outputType);
+        printPage(page, outputType);
       }
       printLine();
       printNextCMD();
@@ -363,14 +408,14 @@ void loop() {
       printSplash();
       printLine();
       Serial.println(F("This function will erase a 32KB block."));
-      Serial.print(F("Please enter the address you wish to erase: "));
+      Serial.print(F("Please enter the number of the page you wish to erase: "));
       while (!Serial.available()) {
       }
-      addr = Serial.parseInt();
-      Serial.println(addr);
-      flash.eraseBlock32K(addr);
+      page = Serial.parseInt();
+      Serial.println(page);
+      flash.eraseBlock32K(page, 0);
       clearprintBuffer();
-      sprintf(printBuffer, "A 32KB block containing address %d has been erased", addr);
+      sprintf(printBuffer, "A 32KB block containing page %d has been erased", page);
       Serial.println(printBuffer);
       printReadChoice();
       while (!Serial.available()) {
@@ -383,7 +428,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        printPage(addr, outputType);
+        printPage(page, outputType);
       }
       printLine();
       printNextCMD();
@@ -394,14 +439,14 @@ void loop() {
       printSplash();
       printLine();
       Serial.println(F("This function will erase a 64KB block."));
-      Serial.print(F("Please enter the address you wish to erase: "));
+      Serial.print(F("Please enter the number of the page you wish to erase: "));
       while (!Serial.available()) {
       }
-      addr = Serial.parseInt();
-      Serial.println(addr);
-      flash.eraseBlock64K(addr);
+      page = Serial.parseInt();
+      Serial.println(page);
+      flash.eraseBlock64K(page, 0);
       clearprintBuffer();
-      sprintf(printBuffer, "A 64KB block containing address %d has been erased", addr);
+      sprintf(printBuffer, "A 64KB block containing page %d has been erased", page);
       Serial.println(printBuffer);
       printReadChoice();
       while (!Serial.available()) {
@@ -414,7 +459,7 @@ void loop() {
         }
         uint8_t outputType = Serial.parseInt();
         Serial.println(outputType);
-        printPage(addr, outputType);
+        printPage(page, outputType);
       }
       printLine();
       printNextCMD();
@@ -484,16 +529,16 @@ void _printPageBytes(uint8_t *data_buffer, uint8_t outputType) {
 }
 
 //Reads a page of data and prints it to Serial stream. Make sure the sizeOf(uint8_t data_buffer[]) == 256.
-void printPage(uint32_t _address, uint8_t outputType) {
+void printPage(uint16_t page_number, uint8_t outputType) {
   if (!Serial)
     Serial.begin(115200);
 
   char buffer[24];
-  sprintf(buffer, "Reading address (%04x)", _address);
+  sprintf(buffer, "Reading page (%04x)", page_number);
   Serial.println(buffer);
 
-  uint8_t data_buffer[SPI_PAGESIZE];
-  flash.readByteArray(_address, &data_buffer[0], SPI_PAGESIZE);
+  uint8_t data_buffer[PAGESIZE];
+  flash.readByteArray(page_number, 0, &data_buffer[0], PAGESIZE);
   _printPageBytes(data_buffer, outputType);
 }
 
@@ -506,11 +551,10 @@ void printAllPages(uint8_t outputType) {
   Serial.println("Reading all pages");
   uint8_t data_buffer[256];
 
-  uint32_t maxAddr = flash.getCapacity();
-  for (int a = 0; a < maxAddr; a++) {
-    flash.readByteArray(a, &data_buffer[0], 256);
+  uint32_t maxPage = flash.getMaxPage();
+  for (int a = 0; a < maxPage; a++) {
+    flash.readByteArray(a, 0, &data_buffer[0], 256);
     _printPageBytes(data_buffer, outputType);
-    delay(100);
   }
 }
 
@@ -550,12 +594,3 @@ void writeFail()
 {
   Serial.println("Data write failed");
 }
-
-void inputAddress(void) {
-  Serial.print(F("Please enter the address (0 - CAPACITY) you wish to access: "));
-  while (!Serial.available()) {
-  }
-  addr = Serial.parseInt();
-  Serial.println(addr);
-}
-
