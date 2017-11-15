@@ -51,7 +51,7 @@
 #define ID            0x90
 #define RESUME        0x7A
 #define JEDECID       0x9F
-#define POWERDOWN      0xB9
+#define POWERDOWN     0xB9
 #define RELEASE       0xAB
 #define READSFDP      0x5A
 #define UNIQUEID      0x4B
@@ -180,12 +180,11 @@
  #define PREVWRITTEN          0x07
  #define LOWRAM               0x08
  #define SYSSUSPEND           0x09
- #define UNSUPPORTED          0x0A
- #define ERRORCHKFAIL         0x0B
- #define NORESPONSE           0x0C
- #define UNSUPPORTEDFUNCTION  0x0D
- #define UNABLETO4BYTE        0x0E
- #define UNABLETO3BYTE        0x0F
+ #define ERRORCHKFAIL         0x0A
+ #define NORESPONSE           0x0B
+ #define UNSUPPORTEDFUNC      0x0C
+ #define UNABLETO4BYTE        0x0D
+ #define UNABLETO3BYTE        0x0E
  #define UNKNOWNERROR         0xFE
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

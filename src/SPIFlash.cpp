@@ -135,7 +135,7 @@ uint32_t SPIFlash::getMaxPage(void) {
 	return (_chip.capacity / SPI_PAGESIZE);
 }
 
-//Returns the time taken to run a function. Must be called immediately after a function is run as the variable returned is overwritten eachtime a function from this library is called. Primarily used in the diagnostics sketch included in the library to track function time.
+//Returns the time taken to run a function. Must be called immediately after a function is run as the variable returned is overwritten each time a function from this library is called. Primarily used in the diagnostics sketch included in the library to track function time.
 float SPIFlash::functionRunTime(void) {
   return _spifuncruntime;
 }
@@ -875,7 +875,7 @@ bool SPIFlash::powerDown(void) {
     #endif
   }
   else {
-    _troubleshoot(UNSUPPORTEDFUNCTION);
+    _troubleshoot(UNSUPPORTEDFUNC);
     return false;
   }
 }
