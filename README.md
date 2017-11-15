@@ -79,11 +79,15 @@ SPIFlash flash(33);
 #### Usage
 
 - The library is called by declaring the```SPIFlash flash(csPin*)``` constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
-<sub>* Optional. Do not include csPin if using the default slave select pin for your board.</sub>
-- Every version of the library >= v3.0.0 supports the ability to use any of multiple SPI interfaces (if your micro-controller supports them). Switching to use another SPI interface is done by calling ```SPIFlash flash(csPin, &SPI1);``` (or &SPI2 and so on), instead of ```SPIFlash flash(csPin)```. * NOTE: This is currently only supported on the SAMD and STM32 architectures.
+
+    <sub>* Optional. Do not include csPin if using the default slave select pin for your board.</sub>
+- Every version of the library >= v3.0.0 supports the ability to use any of multiple SPI interfaces (if your micro-controller supports them). Switching to use another SPI interface is done by calling ```SPIFlash flash(csPin, &SPI1);``` (or &SPI2 and so on), instead of ```SPIFlash flash(csPin)```.
+
+    <sub>* NOTE: This is currently only supported on the SAMD and STM32 architectures.</sub>
 - Make sure to include ```#include<SPI.H>``` when you include ```#include<SPIFlash.h>```.
 - Also make sure to include ```flash.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of flash chip installed and load the right parameters.
-<sub>* Optional</sub>
+
+    <sub>* Optional</sub>
 
 ###### Notes on Address overflow and Error checking
 - The library has Address overflow enabled by default - i.e. if the last address read/written from/to,  in any function, is 0xFFFFF then, the next address read/written from/to is 0x00000. This can be disabled by uncommenting ```#define DISABLEOVERFLOW``` in SPIFlash.h. (Address overflow only works for Read / Write functions. Erase functions erase only a set number of blocks/sectors irrespective of overflow.)
@@ -93,6 +97,7 @@ The library enables the following functions:
 <hr>
 
 ##### Non-I/O commands
+<hr>
 
 ###### begin(_chipsize*)
 Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly. An optional CHIPSIZE parameter can be declared as an argument with this function. For supported CHIPSIZE values, please refer to the appropriate [wiki section](https://github.com/Marzogh/SPIFlash/wiki/begin()) or look at defines.h .
@@ -137,11 +142,14 @@ Returns the time taken to run a function. Must be called immediately after a fun
 <hr>
 
 ##### Read commands
+<hr>
+<sub>
 All read commands take a last boolean argument 'fastRead'. This argument defaults to FALSE, but when set to TRUE carries out the Fast Read instruction so data can be read at up to the memory's maximum frequency.
+</sub>
 
-<hr>
+<sub>
 All read commands only take a 32-bit address variable instead of the optional 16-bit page number & 8-bit offset variables in previous versions of the library (< v3.0.0)
-<hr>
+</sub>
 
 ###### readAnything(address, value)
 Reads _any type of variable/struct_ (any sized value) from a specific location. Takes the address (0-maxAddress) of the data and the variable/struct to write the data back to, as arguments.
@@ -175,9 +183,12 @@ Reads _any type of variable/struct_ (any sized value) from a specific location. 
 <hr>
 
 ##### Write commands
+<hr>
+<sub>
 All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
+</sub>
 
-All write commands only take a 32-bit address variable instead of the optional 16-bit page number & 8-bit offset variables in previous versions of the library (< v3.0.0)
+<sub> All write commands only take a 32-bit address variable instead of the optional 16-bit page number & 8-bit offset variables in previous versions of the library (< v3.0.0) </sub>
 
 ###### writeByte(address, data)
 Writes a byte of data to a specific location. Takes the address (0-maxAddress) of data byte and one byte of data as arguments.
@@ -208,7 +219,10 @@ Writes _any type of variable/struct_ (any sized value) from a specific location.
 <hr>
 
 ##### Continuous read/write commands
+<sub>
 All write commands take a boolean last argument 'errorCheck'. This argument defaults to TRUE, but when set to FALSE will more than double the writing speed. This however comes at the cost of checking for writing errors. Use with care.
+</sub>
+<hr>
 
 ###### readByteArray(address, *data_buffer, bufferSize)
 Reads an array of bytes starting from a specific address Takes the address (0-maxAddress) & a data_buffer - i.e. an array of bytes to be read from the flash memory - and size of the array as arguments. ```uint8_t data_buffer[n];``` The data buffer **must** be an array of n **bytes**. 'n' is determined by the amount of RAM available on the Arduino board.
@@ -224,7 +238,10 @@ Writes an array of chars starting from a specific address. Takes the address (0-
 <hr>
 
 ##### Erase commands
+<sub>
 All erase commands only take a 32-bit address variable instead of the optional 16-bit page number & 8-bit offset variables in previous versions of the library (< v3.0.0)
+</sub>
+<hr>
 
 ###### eraseSector(address)
 Erases one 4KB sector - 16 pages - containing the address to be erased. The sectors are numbered 0 - 255 containing 16 pages each.
@@ -243,6 +260,7 @@ Erases entire chip. Use with care.
 <hr>
 
 ##### Suspend/Resume commands
+<hr>
 
 ###### suspendProg()
 Suspends current Block Erase/Sector Erase/Page Program. Does not suspend chipErase(). Page Program, Write Status Register, Erase instructions are not allowed. Erase suspend is only allowed during Block/Sector erase. Program suspend is only allowed during Page/Quad Page Program
@@ -252,6 +270,7 @@ Resumes previously suspended Block Erase/Sector Erase/Page Program.
 <hr>
 
 ##### Power operation commands
+<hr>
 
 ###### powerDown()
 Puts device in low power state. Useful for battery powered operations. Typical current consumption during power-down is 1mA with a maximum of 5mA. (Datasheet 7.4). In powerDown() the chip will only respond to powerUp()
