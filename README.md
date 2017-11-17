@@ -121,8 +121,7 @@ Returns the Unique ID as a 64-bit value.
 Gets the next available address for use. Has two variants:
 * Takes the size of the data as an argument and returns a 32-bit address
 * Takes a three variables, the size of the data and two other variables to return a page number value & an offset into.
-
-All addresses in the in the sketch must be obtained via this function or not at all.
+In library versions >= v3.0.0 This function can be called anytime - even if there is preexisting data on the flash chip. It will simply find the next empty address block for the data.
 
 ###### sizeofStr()
 Use this function to find the size of a String to use as the argument in getAddress(size). Using size = sizeof(String) will cause the getAddress(size) function to fail.

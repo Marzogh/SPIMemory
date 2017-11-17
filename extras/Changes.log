@@ -62,6 +62,7 @@ Enhancements:
 --> Added a function `getUniqueID()` which returns the unique ID of the flash memory chip as a 64-bit integer.
 --> Added an internal _readStat3() function to enable 4-byte addressing when using flash memory larger than 128 MB
 --> 4-byte addressing enabled in flash memory larger than 128 MB. This is currently only supported on the W25Q256 and W25Q512. More chips will be supported on a case-by-case basis
+--> getAddress() function now works anytime it is called - even if there is preexisting data on the chip
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

@@ -2,7 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 04/11/2017
+ * Modified by Prajwal Bhattaram - 17/11/2017
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -197,15 +197,29 @@ uint64_t SPIFlash::getUniqueID(void) {
 // All addresses in the in the sketch must be obtained via this function or not at all.
 // Variant A
 uint32_t SPIFlash::getAddress(uint16_t size) {
+  bool _loopedOver = false;
   if (!_addressCheck(currentAddress, size)){
-    _troubleshoot(OUTOFBOUNDS);
     return false;
 	}
-	else {
+   while (!_notPrevWritten(currentAddress, size)) {
+     currentAddress+=size;
+    _currentAddress = currentAddress;
+    if (_currentAddress >= _chip.capacity) {
+      if (_loopedOver) {
+        return false;
+      }
+    #ifdef DISABLEOVERFLOW
+      _troubleshoot(OUTOFBOUNDS);
+      return false;					// At end of memory - (!pageOverflow)
+    #else
+      currentAddress = 0x00;// At end of memory - (pageOverflow)
+      _loopedOver = true;
+    #endif
+    }
+  }
 		uint32_t _addr = currentAddress;
 		currentAddress+=size;
 		return _addr;
-	}
 }
 
 //Function for returning the size of the string (only to be used for the getAddress() function)
