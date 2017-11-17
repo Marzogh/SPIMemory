@@ -16,7 +16,7 @@ Deprecations:
 													address = (pagenumber << 8) + offset.
 													_____________________________________
 												 (32 bit) |     (16 bit)     | (8 bit)
---> The constructor no longer takes the pageOverflow variable as an argument. Page overflow is globally enabled by default and can be disabled by including a "#define DISABLEOVERFLOW" at the beginning of the user code.
+--> The constructor no longer takes the pageOverflow variable as an argument. Page overflow is globally enabled by default and can be disabled by including a "#define DISABLEOVERFLOW" at the beginning of SPIFlash.h.
 
 New Boards supported:
 --> Nucleo-F091RC
@@ -33,7 +33,7 @@ Enhancements:
 			flash.begin(flashChipSize);
 
 			where flashChipSize is indicated in Bytes, Kilobytes or Megabytes. (Refer to the next two items in this change log)
---> Including 'flashChipSize' in flash.begin() compiles more efficiently than in prvious versions.
+--> Including 'flashChipSize' in flash.begin() compiles more efficiently than in previous versions.
 --> The way memory size is indicated by the users in flash.begin(flashChipSize) has changed - please refer to defines.h or the wiki for further information. The new method enables users to define any custom size unlike the previous version where only a limited number of predetermined sizes were available to use.
 --> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):
 
@@ -62,6 +62,7 @@ Enhancements:
 --> Added a function `getUniqueID()` which returns the unique ID of the flash memory chip as a 64-bit integer.
 --> Added an internal _readStat3() function to enable 4-byte addressing when using flash memory larger than 128 MB
 --> 4-byte addressing enabled in flash memory larger than 128 MB. This is currently only supported on the W25Q256 and W25Q512. More chips will be supported on a case-by-case basis
+--> getAddress() function now works anytime it is called - even if there is preexisting data on the chip
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.7.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

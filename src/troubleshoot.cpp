@@ -106,7 +106,7 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
       #endif*/
       break;
 
-      case UNSUPPORTEDFUNCTION:
+      case UNSUPPORTEDFUNC:
       Serial.println("This function is not supported by the flash memory hardware.");
       break;
 
@@ -114,20 +114,16 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
       Serial.println("Unable to suspend/resume operation.");
       break;
 
-      case UNSUPPORTED:
-      Serial.println("This function is not supported by the current flash IC.");
-      break;
-
       case ERRORCHKFAIL:
       Serial.println("Write Function has failed errorcheck.");
       break;
 
       case UNABLETO4BYTE:
-      Serial.println("Unable to enable 4-byte addressing");
+      Serial.println("Unable to enable 4-byte addressing.");
       break;
 
       case UNABLETO3BYTE:
-      Serial.println("Unable to disable 4-byte addressing");
+      Serial.println("Unable to disable 4-byte addressing.");
       break;
 
       default:

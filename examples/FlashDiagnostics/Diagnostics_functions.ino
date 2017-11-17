@@ -5,7 +5,7 @@
   |                                                                   v 3.0.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  04.11.2017                                                                   |
+  |                                                                  17.11.2017                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -77,6 +77,7 @@ void printUniqueID(void) {
   Serial.print(uint32_t(_uniqueID/1000000L));
   Serial.print(uint32_t(_uniqueID%1000000L));
   Serial.print(", ");
+  Serial.print("0x");
   Serial.print(uint32_t(_uniqueID >> 32), HEX);
   Serial.print(uint32_t(_uniqueID), HEX);
 }
