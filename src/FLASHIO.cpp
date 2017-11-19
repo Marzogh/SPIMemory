@@ -188,18 +188,22 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     _nextByte(WRITE, opcode);
     _nextByte(WRITE, DUMMYBYTE);
     _transferAddress();
+    break;
 
     case SECTORERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     case BLOCK32ERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     case BLOCK64ERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     default:
     _nextByte(WRITE, opcode);
