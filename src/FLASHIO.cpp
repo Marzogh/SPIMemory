@@ -401,7 +401,7 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
     }
     _time++;
   } while ((micros() - _time) < timeout);
-  if ((micros() - _time) == timeout) {
+  if (timeout <= (micros() - _time)) {
     return false;
   }
   return true;
