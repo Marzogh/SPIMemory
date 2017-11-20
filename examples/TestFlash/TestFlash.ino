@@ -337,22 +337,25 @@ void loop() {
       }
       addr = Serial.parseInt();
       Serial.println(addr);
-      flash.eraseSector(addr);
-      clearprintBuffer();
-      sprintf(printBuffer, "A 4KB sector containing address %d has been erased", addr);
-      Serial.println(printBuffer);
-      printReadChoice();
-      while (!Serial.available()) {
-      }
-      uint8_t choice = Serial.parseInt();
-      Serial.println(choice);
-      if (choice == 1) {
-        printOutputChoice();
+      if (flash.eraseSector(addr)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "A 4KB sector containing address %d has been erased", addr);
+        Serial.println(printBuffer);
+        printReadChoice();
         while (!Serial.available()) {
         }
-        uint8_t outputType = Serial.parseInt();
-        Serial.println(outputType);
-        printPage(addr, outputType);
+        uint8_t choice = Serial.parseInt();
+        Serial.println(choice);
+        if (choice == 1) {
+          printOutputChoice();
+          while (!Serial.available()) {
+          }
+          uint8_t outputType = Serial.parseInt();
+          Serial.println(outputType);
+          printPage(addr, outputType);
+        }
+      } else {
+        Serial.println("Erasing sector failed");
       }
       printLine();
       printNextCMD();
@@ -368,22 +371,25 @@ void loop() {
       }
       addr = Serial.parseInt();
       Serial.println(addr);
-      flash.eraseBlock32K(addr);
-      clearprintBuffer();
-      sprintf(printBuffer, "A 32KB block containing address %d has been erased", addr);
-      Serial.println(printBuffer);
-      printReadChoice();
-      while (!Serial.available()) {
-      }
-      uint8_t choice = Serial.parseInt();
-      Serial.println(choice);
-      if (choice == 1) {
-        printOutputChoice();
+      if (flash.eraseBlock32K(addr)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "A 32KB block containing address %d has been erased", addr);
+        Serial.println(printBuffer);
+        printReadChoice();
         while (!Serial.available()) {
         }
-        uint8_t outputType = Serial.parseInt();
-        Serial.println(outputType);
-        printPage(addr, outputType);
+        uint8_t choice = Serial.parseInt();
+        Serial.println(choice);
+        if (choice == 1) {
+          printOutputChoice();
+          while (!Serial.available()) {
+          }
+          uint8_t outputType = Serial.parseInt();
+          Serial.println(outputType);
+          printPage(addr, outputType);
+        }
+      } else {
+        Serial.println("Erasing block 32K failed");
       }
       printLine();
       printNextCMD();
@@ -399,22 +405,25 @@ void loop() {
       }
       addr = Serial.parseInt();
       Serial.println(addr);
-      flash.eraseBlock64K(addr);
-      clearprintBuffer();
-      sprintf(printBuffer, "A 64KB block containing address %d has been erased", addr);
-      Serial.println(printBuffer);
-      printReadChoice();
-      while (!Serial.available()) {
-      }
-      uint8_t choice = Serial.parseInt();
-      Serial.println(choice);
-      if (choice == 1) {
-        printOutputChoice();
+      if (flash.eraseBlock64K(addr)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "A 64KB block containing address %d has been erased", addr);
+        Serial.println(printBuffer);
+        printReadChoice();
         while (!Serial.available()) {
         }
-        uint8_t outputType = Serial.parseInt();
-        Serial.println(outputType);
-        printPage(addr, outputType);
+        uint8_t choice = Serial.parseInt();
+        Serial.println(choice);
+        if (choice == 1) {
+          printOutputChoice();
+          while (!Serial.available()) {
+          }
+          uint8_t outputType = Serial.parseInt();
+          Serial.println(outputType);
+          printPage(addr, outputType);
+        }
+      } else {
+        Serial.println("Erasing block 64K failed");
       }
       printLine();
       printNextCMD();
