@@ -95,8 +95,11 @@ String inputString, outputString;
 SPIFlash flash;
 
 void setup() {
-  delay(10);
   Serial.begin(BAUD_RATE);
+  #if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32)
+    while (!Serial) ; // Wait for Serial monitor to open
+  #endif
+  delay(50); //Time to terminal get connected
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
