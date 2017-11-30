@@ -56,6 +56,7 @@ SPIFlash flash(33);
   - SST26VF064B
 - Cypress/Spansion
   - S25FL116K
+  - S25FL127S
 
 ###### Should work with (Similar enough to the ones actually tested with)
 - Winbond (All SPI Flash chips)

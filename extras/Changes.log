@@ -13,7 +13,10 @@ Thanks for catching and fixing the following @hanyazou
 --> The library did not wait until the busy bit in SR1 was cleared. Timeout argument of _notBusy() must be in micro-second. 500L means 500 micro seconds which is too short to wait for completion of erase command. Added " * 1000" to the arguments. (commit 2: 9633c2f)
 --> Modified TestFlash.ino to check error of erase commands execution. (commit 3: a179306)
 ****************
---> 
+-->
+
+New flash memory chips supported:
+--> S25FL127S
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.0.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
