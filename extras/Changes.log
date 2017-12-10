@@ -4,16 +4,16 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.0.1 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						09.08.2017											   //
+//					  						10.12.2017											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 Bugs squashed:
 ****************
-Thanks for catching and fixing the following @hanyazou
+Thanks for catching and fixing the following @hanyazou (PR #101)
 --> Added missing break statements in SPIFlash::_beginSPI() because that lacks some essential break statement in switch/case. (commit 1: 1de2c10)
 --> The library did not wait until the busy bit in SR1 was cleared. Timeout argument of _notBusy() must be in micro-second. 500L means 500 micro seconds which is too short to wait for completion of erase command. Added " * 1000" to the arguments. (commit 2: 9633c2f)
 --> Modified TestFlash.ino to check error of erase commands execution. (commit 3: a179306)
 ****************
--->
+--> Fixes a major bug that was causing input Arrays to be overwritten by zeros during the writeByteArray() / writeCharArray() process. Thanks for catching this @hanyazou. (Issue #102)
 
 New flash memory chips supported:
 --> S25FL127S
