@@ -471,7 +471,10 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
     CHIP_SELECT
     _nextByte(WRITE, PAGEPROG);
     _transferAddress();
-    _nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
+    //_nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
+    for (uint16_t i = 0; i < bufferSize; ++i) {
+      _nextByte(WRITE, data_buffer[i]);
+    }
     CHIP_DESELECT
   }
   else {
@@ -551,7 +554,10 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSi
     CHIP_SELECT
     _nextByte(WRITE, PAGEPROG);
     _transferAddress();
-    _nextBuf(PAGEPROG, (uint8_t*) &data_buffer[0], bufferSize);
+    //_nextBuf(PAGEPROG, (uint8_t*) &data_buffer[0], bufferSize);
+    for (uint16_t i = 0; i < bufferSize; ++i) {
+      _nextByte(WRITE, data_buffer[i]);
+    }
     CHIP_DESELECT
   }
   else {
