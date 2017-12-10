@@ -471,7 +471,10 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
     CHIP_SELECT
     _nextByte(WRITE, PAGEPROG);
     _transferAddress();
-    _nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
+    //_nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
+    for (uint16_t i = 0; i < bufferSize; ++i) {
+      _nextByte(WRITE, data_buffer[i]);
+    }
     CHIP_DESELECT
   }
   else {
@@ -551,7 +554,10 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSi
     CHIP_SELECT
     _nextByte(WRITE, PAGEPROG);
     _transferAddress();
-    _nextBuf(PAGEPROG, (uint8_t*) &data_buffer[0], bufferSize);
+    //_nextBuf(PAGEPROG, (uint8_t*) &data_buffer[0], bufferSize);
+    for (uint16_t i = 0; i < bufferSize; ++i) {
+      _nextByte(WRITE, data_buffer[i]);
+    }
     CHIP_DESELECT
   }
   else {
@@ -730,7 +736,7 @@ bool SPIFlash::eraseSector(uint32_t _addr) {
   _beginSPI(SECTORERASE);   //The address is transferred as a part of this function
   _endSPI();
 
-	if(!_notBusy(500L)) {
+  if(!_notBusy(500 * 1000L)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
   //_writeDisable();
@@ -753,7 +759,7 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr) {
   _beginSPI(BLOCK32ERASE);
   _endSPI();
 
-	if(!_notBusy(1*S)) {
+  if(!_notBusy(1000 * 1000L)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
   _writeDisable();
@@ -777,7 +783,7 @@ bool SPIFlash::eraseBlock64K(uint32_t _addr) {
   _beginSPI(BLOCK64ERASE);
   _endSPI();
 
-	if(!_notBusy(1200L)) {
+  if(!_notBusy(1200 * 1000L)) {
     return false;	//Datasheet says erasing a sector takes 400ms max
   }
   #ifdef RUNDIAGNOSTIC

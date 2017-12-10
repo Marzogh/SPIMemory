@@ -1,10 +1,12 @@
 /*
   ----------------------------------------------------------------------------------------------------------------------------------
   |                                                            Winbond Flash                                                         |
-  |                                                      SPIFlash library test v2.4.0                                                |
+  |                                                      SPIFlash library test v3.0.1                                                |
   |----------------------------------------------------------------------------------------------------------------------------------|
   |                                                                Marzogh                                                           |
   |                                                              16.11.2016                                                          |
+  |                                                          Modified: hanyazou                                                      |
+  |                                                              19.11.2017                                                          |
   |----------------------------------------------------------------------------------------------------------------------------------|
   |                                     (Please make sure your Serial monitor is set to 'No Line Ending')                            |
   |                                     *****************************************************************                            |
@@ -93,8 +95,11 @@ String inputString, outputString;
 SPIFlash flash;
 
 void setup() {
-  delay(10);
   Serial.begin(BAUD_RATE);
+  #if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32)
+    while (!Serial) ; // Wait for Serial monitor to open
+  #endif
+  delay(50); //Time to terminal get connected
   Serial.print(F("Initialising Flash memory"));
   for (int i = 0; i < 10; ++i)
   {
@@ -337,22 +342,25 @@ void loop() {
       }
       addr = Serial.parseInt();
       Serial.println(addr);
-      flash.eraseSector(addr);
-      clearprintBuffer();
-      sprintf(printBuffer, "A 4KB sector containing address %d has been erased", addr);
-      Serial.println(printBuffer);
-      printReadChoice();
-      while (!Serial.available()) {
-      }
-      uint8_t choice = Serial.parseInt();
-      Serial.println(choice);
-      if (choice == 1) {
-        printOutputChoice();
+      if (flash.eraseSector(addr)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "A 4KB sector containing address %d has been erased", addr);
+        Serial.println(printBuffer);
+        printReadChoice();
         while (!Serial.available()) {
         }
-        uint8_t outputType = Serial.parseInt();
-        Serial.println(outputType);
-        printPage(addr, outputType);
+        uint8_t choice = Serial.parseInt();
+        Serial.println(choice);
+        if (choice == 1) {
+          printOutputChoice();
+          while (!Serial.available()) {
+          }
+          uint8_t outputType = Serial.parseInt();
+          Serial.println(outputType);
+          printPage(addr, outputType);
+        }
+      } else {
+        Serial.println("Erasing sector failed");
       }
       printLine();
       printNextCMD();
@@ -368,22 +376,25 @@ void loop() {
       }
       addr = Serial.parseInt();
       Serial.println(addr);
-      flash.eraseBlock32K(addr);
-      clearprintBuffer();
-      sprintf(printBuffer, "A 32KB block containing address %d has been erased", addr);
-      Serial.println(printBuffer);
-      printReadChoice();
-      while (!Serial.available()) {
-      }
-      uint8_t choice = Serial.parseInt();
-      Serial.println(choice);
-      if (choice == 1) {
-        printOutputChoice();
+      if (flash.eraseBlock32K(addr)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "A 32KB block containing address %d has been erased", addr);
+        Serial.println(printBuffer);
+        printReadChoice();
         while (!Serial.available()) {
         }
-        uint8_t outputType = Serial.parseInt();
-        Serial.println(outputType);
-        printPage(addr, outputType);
+        uint8_t choice = Serial.parseInt();
+        Serial.println(choice);
+        if (choice == 1) {
+          printOutputChoice();
+          while (!Serial.available()) {
+          }
+          uint8_t outputType = Serial.parseInt();
+          Serial.println(outputType);
+          printPage(addr, outputType);
+        }
+      } else {
+        Serial.println("Erasing block 32K failed");
       }
       printLine();
       printNextCMD();
@@ -399,22 +410,25 @@ void loop() {
       }
       addr = Serial.parseInt();
       Serial.println(addr);
-      flash.eraseBlock64K(addr);
-      clearprintBuffer();
-      sprintf(printBuffer, "A 64KB block containing address %d has been erased", addr);
-      Serial.println(printBuffer);
-      printReadChoice();
-      while (!Serial.available()) {
-      }
-      uint8_t choice = Serial.parseInt();
-      Serial.println(choice);
-      if (choice == 1) {
-        printOutputChoice();
+      if (flash.eraseBlock64K(addr)) {
+        clearprintBuffer();
+        sprintf(printBuffer, "A 64KB block containing address %d has been erased", addr);
+        Serial.println(printBuffer);
+        printReadChoice();
         while (!Serial.available()) {
         }
-        uint8_t outputType = Serial.parseInt();
-        Serial.println(outputType);
-        printPage(addr, outputType);
+        uint8_t choice = Serial.parseInt();
+        Serial.println(choice);
+        if (choice == 1) {
+          printOutputChoice();
+          while (!Serial.available()) {
+          }
+          uint8_t outputType = Serial.parseInt();
+          Serial.println(outputType);
+          printPage(addr, outputType);
+        }
+      } else {
+        Serial.println("Erasing block 64K failed");
       }
       printLine();
       printNextCMD();

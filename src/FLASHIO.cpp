@@ -188,18 +188,22 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     _nextByte(WRITE, opcode);
     _nextByte(WRITE, DUMMYBYTE);
     _transferAddress();
+    break;
 
     case SECTORERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     case BLOCK32ERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     case BLOCK64ERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     default:
     _nextByte(WRITE, opcode);
@@ -267,7 +271,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
       #ifdef ENABLEZERODMA
         spi_write(&(*data_buffer), size);
       #else
-        _spi->transfer(&(*data_buffer), size);
+        _spi->transfer(&data_buffer[0], size);
       #endif
     #elif defined (ARDUINO_ARCH_AVR)
       SPI.transfer(&(*data_buffer), size);
@@ -397,7 +401,7 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
     }
     _time++;
   } while ((micros() - _time) < timeout);
-  if ((micros() - _time) == timeout) {
+  if (timeout <= (micros() - _time)) {
     return false;
   }
   return true;
