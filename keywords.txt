@@ -6,68 +6,68 @@
 # Class (KEYWORD1)
 #######################################
 
-SPIFlash	KEYWORD1
+SPIFlash  KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-begin	KEYWORD2
-setClock	KEYWORD2
-libver	KEYWORD2
-error	KEYWORD2
-getManID	KEYWORD2
-getJEDECID	KEYWORD2
-getUniqueID	KEYWORD2
-getAddress	KEYWORD2
-sizeofStr	KEYWORD2
-getCapacity	KEYWORD2
-getMaxPage	KEYWORD2
+begin KEYWORD2
+setClock  KEYWORD2
+libver  KEYWORD2
+error KEYWORD2
+getManID  KEYWORD2
+getJEDECID  KEYWORD2
+getUniqueID KEYWORD2
+getAddress  KEYWORD2
+sizeofStr KEYWORD2
+getCapacity KEYWORD2
+getMaxPage  KEYWORD2
 functionRunTime KEYWORD2
-readByte	KEYWORD2
-readByteArray	KEYWORD2
-readChar	KEYWORD2
-readCharArray	KEYWORD2
-readWord	KEYWORD2
-readShort	KEYWORD2
-readLong	KEYWORD2
-readULong	KEYWORD2
-readFloat	KEYWORD2
-readStr 	KEYWORD2
-readAnything	KEYWORD2
-writeByte	KEYWORD2
-writeByteArray	KEYWORD2
-writeChar	KEYWORD2
-writeCharArray	KEYWORD2
-writeWord	KEYWORD2
-writeShort	KEYWORD2
-writeLong	KEYWORD2
-writeULong	KEYWORD2
-writeFloat	KEYWORD2
-writeStr	KEYWORD2
-writeAnything	KEYWORD2
-eraseSection KEYWORD2
-eraseSector	KEYWORD2
-eraseBlock32K	KEYWORD2
-eraseBlock64K	KEYWORD2
-eraseChip	KEYWORD2
-suspendProg	KEYWORD2
-resumeProg	KEYWORD2
-powerUp		KEYWORD2
-powerDown	KEYWORD2
+readByte  KEYWORD2
+readByteArray KEYWORD2
+readChar  KEYWORD2
+readCharArray KEYWORD2
+readWord  KEYWORD2
+readShort KEYWORD2
+readLong  KEYWORD2
+readULong KEYWORD2
+readFloat KEYWORD2
+readStr KEYWORD2
+readAnything  KEYWORD2
+writeByte KEYWORD2
+writeByteArray  KEYWORD2
+writeChar KEYWORD2
+writeCharArray  KEYWORD2
+writeWord KEYWORD2
+writeShort  KEYWORD2
+writeLong KEYWORD2
+writeULong  KEYWORD2
+writeFloat  KEYWORD2
+writeStr  KEYWORD2
+writeAnything KEYWORD2
+eraseSection  KEYWORD2
+eraseSector KEYWORD2
+eraseBlock32K KEYWORD2
+eraseBlock64K KEYWORD2
+eraseChip KEYWORD2
+suspendProg KEYWORD2
+resumeProg  KEYWORD2
+powerUp KEYWORD2
+powerDown KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
-WINBOND_MANID	LITERAL1
-MICROCHIP_MANID	LITERAL1
-CYPRESS_MANID	LITERAL1
-ADESTO_MANID	LITERAL1
-MICRON_MANID	LITERAL1
-NULLBYTE	LITERAL1
-NULLINT	LITERAL1
-BYTE	LITERAL1
-KiB	LITERAL1
-MiB	LITERAL1
+WINBOND_MANID LITERAL1
+MICROCHIP_MANID LITERAL1
+CYPRESS_MANID LITERAL1
+ADESTO_MANID  LITERAL1
+MICRON_MANID  LITERAL1
+NULLBYTE  LITERAL1
+NULLINT LITERAL1
+BYTE  LITERAL1
+KiB LITERAL1
+MiB LITERAL1
 
 #######################################
 # Built-in variables (LITERAL2)
