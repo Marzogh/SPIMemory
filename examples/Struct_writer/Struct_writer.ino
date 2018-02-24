@@ -5,36 +5,23 @@
   |                                                                   v 2.6.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  16.04.2017                                                                   |
+  |                                                                  24.02.2018                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
-  |        Uncomment #define SENSOR below to get real world readings. Real world readings require a Light dependant resistor hooked up to A0.     |
-  |                   For information on how to hook up an LDR to an Arduino, please refer to Adafruit's excellent tutorial at                    |
-  |                                          https://learn.adafruit.com/photocells/using-a-photocell                                              |
   |                                                                                                                                               |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 
 #include<SPIFlash.h>
 
+//#define PRINTDETAIL
+
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
 #define Serial SERIAL_PORT_USBVIRTUAL
 #endif
 
-#if defined (SIMBLEE)
-#define BAUD_RATE 250000
-#else
-#define BAUD_RATE 115200
-#endif
-
-/*
-   Uncomment the #define below if you would like real world readings.
-   For real world readings, hook up a light dependant resistor to A1.
-
-*/
-//#define SENSOR
 #if defined (SIMBLEE)
 #define BAUD_RATE 250000
 #define LDR 1
@@ -48,34 +35,56 @@
 //SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 SPIFlash flash;
 
+struct ConfigurationIn {
+  float lux = 3.24;
+  float vOut = 4.45;                   // Voltage ouput from potential divider to Analog input
+  float RLDR = 1.234;                   // Resistance calculation of potential divider with LDR
+  bool light = true;
+  uint8_t adc = 45;
+  uint8_t arr[8] = {0, 1, 2, 3, 4, 5, 6, 7};
+  struct MISC {
+    byte tempHigh = 30;
+    byte tempLow = 20;
+    bool parkingMode = false;
+    bool allowDataToBeSent = false;
+  } misc;
+  struct NETWORK {
+    char ssid[5] = "ssid";
+    char pwd[4] = "pwd";
+    char userid[7] = "userid";
+  } network;
+  struct CHARGING_INFO {
+    byte interval = 5;
+    byte highChargingDefault = 80;
+  } charging;
+};
+ConfigurationIn configurationIn;
 
-/* struct Configuration {
+struct ConfigurationOut {
   float lux;
   float vOut;                   // Voltage ouput from potential divider to Analog input
   float RLDR;                   // Resistance calculation of potential divider with LDR
   bool light;
   uint8_t adc;
   uint8_t arr[8];
+  struct MISC {
+    byte tempHigh;
+    byte tempLow;
+    bool parkingMode;
+    bool allowDataToBeSent;
+  } misc;
+  struct NETWORK {
+    char ssid[5];
+    char pwd[4];
+    char userid[7];
+  } network;
+  struct CHARGING_INFO {
+    byte interval;
+    byte highChargingDefault;
+  } charging;
 };
-Configuration configuration; */
+ConfigurationOut configurationOut;
 
-struct CONFIGURATION {
-    struct MISC {
-        byte tempHigh = 30;            
-        byte tempLow = 20;             
-        bool parkingMode = false;      
-        bool allowDataToBeSent = false;
-    } misc;
-    struct NETWORK {
-        char ssid[50] = "§";           
-        char pwd[50] = "§";            
-        char userid[50] = "§";         
-    } network;
-    struct CHARGING_INFO {
-        byte interval = 5;             
-        byte highChargingDefault = 80; 
-    } charging;
-} configuration;
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -92,91 +101,101 @@ void setup() {
   Serial.println();
   flash.begin();
 
+  for (uint8_t x = 1; x <= 20; x++) {
+    //uint32_t _addr = random(0, 1677215);
+    uint32_t _addr = random(0, flash.getCapacity());
+    Serial.print("Size of array: ");
+    Serial.println(sizeof(configurationIn));
 
-  uint32_t _addr = random(0, 1677215);
-
-#ifndef SENSOR
-  configuration.lux = 98.43;
-  configuration.vOut = 4.84;
-  configuration.RLDR = 889.32;
-  configuration.light = true;
-  configuration.adc = 5;
-  for (uint8_t i = 0; i < 8; i++) {
-    configuration.arr[i] = i;
-  }
+    if (flash.eraseSection(_addr, sizeof(configurationIn))) {
+      Serial.println("Section has been erased");
+      }
+    /*if (flash.eraseSector(_addr)) {
+      Serial.println("Sector has been erased");
+    }*/
+    if (flash.writeAnything(_addr, configurationIn)) {
+#ifdef PRINTDETAIL
+      Serial.println(configurationIn.lux);
+      Serial.println(configurationIn.vOut);
+      Serial.println(configurationIn.RLDR);
+      Serial.println(configurationIn.light);
+      Serial.println(configurationIn.adc);
+      for (uint8_t i = 0; i < 8; i++) {
+        Serial.print(configurationIn.arr[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      Serial.println(configurationIn.misc.tempHigh);
+      Serial.println(configurationIn.misc.tempLow);
+      Serial.println(configurationIn.misc.parkingMode);
+      Serial.println(configurationIn.misc.allowDataToBeSent);
+      for (uint8_t i = 0; i < 4; i++) {
+        Serial.print(configurationIn.network.ssid[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      for (uint8_t i = 0; i < 3; i++) {
+        Serial.print(configurationIn.network.pwd[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      for (uint8_t i = 0; i < 6; i++) {
+        Serial.print(configurationIn.network.userid[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      Serial.println(configurationIn.charging.interval);
+      Serial.println(configurationIn.charging.highChargingDefault);
 #endif
+      Serial.print ("Data write ");
+      Serial.print(x);
+      Serial.println(" successful");
+    }
+    else {
+      Serial.print ("Data write ");
+      Serial.print(x);
+      Serial.println(" failed");
+    }
+    Serial.println();
 
-#ifdef SENSOR
-  readLDR();
+    if (flash.readAnything(_addr, configurationOut)) {
+#ifdef PRINTDETAIL
+      Serial.println(configurationOut.lux);
+      Serial.println(configurationOut.vOut);
+      Serial.println(configurationOut.RLDR);
+      Serial.println(configurationOut.light);
+      Serial.println(configurationOut.adc);
+      for (uint8_t i = 0; i < 8; i++) {
+        Serial.print(configurationIn.arr[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      Serial.println(configurationOut.misc.tempHigh);
+      Serial.println(configurationOut.misc.tempLow);
+      Serial.println(configurationOut.misc.parkingMode);
+      Serial.println(configurationOut.misc.allowDataToBeSent);
+      for (uint8_t i = 0; i < 4; i++) {
+        Serial.print(configurationOut.network.ssid[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      for (uint8_t i = 0; i < 3; i++) {
+        Serial.print(configurationOut.network.pwd[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      for (uint8_t i = 0; i < 6; i++) {
+        Serial.print(configurationOut.network.userid[i]);
+        Serial.print(",");
+      }
+      Serial.println();
+      Serial.println(configurationOut.charging.interval);
+      Serial.println(configurationOut.charging.highChargingDefault);
 #endif
-  if (flash.eraseChip()) {
-    Serial.println("Chip has been erased");
+    }
   }
-  if (flash.writeAnything(_addr, configuration))
-    Serial.println ("Data write successful");
-  else
-    Serial.println ("Data write failed");
-
-  Serial.println(configuration.lux);
-  Serial.println(configuration.vOut);
-  Serial.println(configuration.RLDR);
-  Serial.println(configuration.light);
-  Serial.println(configuration.adc);
-  for (uint8_t i = 0; i < 8; i++) {
-    Serial.print(configuration.arr[i]);
-    Serial.print(", ");
-  }
-  Serial.println();
-  Serial.println("Saved!");
-  configuration.lux = 0;
-  configuration.vOut = 0;
-  configuration.RLDR = 0;
-  configuration.light = 0;
-  configuration.adc = 0;
-  for (uint8_t i = 0; i < 8; i++) {
-    configuration.arr[i] = 0;
-  }
-  Serial.println();
-  Serial.println("Local values set to 0");
-  Serial.println(configuration.lux);
-  Serial.println(configuration.vOut);
-  Serial.println(configuration.RLDR);
-  Serial.println(configuration.light);
-  Serial.println(configuration.adc);
-  for (uint8_t i = 0; i < 8; i++) {
-    Serial.print(configuration.arr[i]);
-    Serial.print(", ");
-  }
-  Serial.println();
-  Serial.println();
-  flash.readAnything(_addr, configuration);
-  flash.eraseSector(_addr);
-
-  Serial.println("After reading");
-  Serial.println(configuration.lux);
-  Serial.println(configuration.vOut);
-  Serial.println(configuration.RLDR);
-  Serial.println(configuration.light);
-  Serial.println(configuration.adc);
-  for (uint8_t i = 0; i < 8; i++) {
-    Serial.print(configuration.arr[i]);
-    Serial.print(", ");
-  }
-  Serial.println();
-
-}
-
-void loop() {
   delay(1000);
 }
 
-#ifdef SENSOR
-void readLDR()
-{
-  configuration.adc = analogRead(LDR);
-  configuration.vOut = (configuration.adc * 0.0048828125);                       // vOut = Output voltage from potential Divider. [vOut = ADC * (Vin / 1024)]
-  configuration.RLDR = (10.0 * (5 - configuration.vOut)) / configuration.vOut;   // Equation to calculate Resistance of LDR, [R-LDR =(R1 (Vin - vOut))/ vOut]. R1 is in KOhms
-  // R1 = 10 KOhms , Vin = 5.0 Vdc.
-  configuration.lux = (500 / configuration.RLDR);
+void loop() {
 }
-#endif
