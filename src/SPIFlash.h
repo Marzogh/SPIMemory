@@ -1,8 +1,8 @@
-/* Arduino SPIFlash Library v.3.0.0
+/* Arduino SPIFlash Library v.3.1.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 04/11/2017
+ * Modified by Prajwal Bhattaram - 24/02/2018
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -138,7 +138,7 @@
 #endif
 
 #define LIBVER 3
-#define LIBSUBVER 0
+#define LIBSUBVER 1
 #define BUGFIXVER 0
 
 class SPIFlash {
@@ -200,6 +200,7 @@ public:
   template <class T> bool writeAnything(uint32_t _addr, const T& data, bool errorCheck = true);
   template <class T> bool readAnything(uint32_t _addr, T& data, bool fastRead = false);
   //-------------------------------- Erase functions ------------------------------------//
+  bool     eraseSection(uint32_t _addr, uint32_t _sz);
   bool     eraseSector(uint32_t _addr);
   bool     eraseBlock32K(uint32_t _addr);
   bool     eraseBlock64K(uint32_t _addr);
@@ -301,6 +302,7 @@ private:
               };
               chipID _chip;
   uint32_t    currentAddress, _currentAddress = 0;
+  uint32_t    _addressOverflow = false;
   uint8_t _uniqueID[8];
   const uint8_t _capID[14]   =
   {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};
@@ -370,9 +372,13 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 
 template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck) {
-  if (!_prep(PAGEPROG, _addr, _sz)) {
+  uint32_t _addrIn = _addr;
+  if (!_prep(PAGEPROG, _addrIn, _sz)) {
     return false;
   }
+  _addrIn = _currentAddress;
+  //Serial.print("_addrIn: ");
+  //Serial.println(_addrIn, HEX);
   const uint8_t* p = ((const uint8_t*)(const void*)&value);
 //Serial.print(F("Address being written to: "));
 //Serial.println(_addr);
@@ -389,7 +395,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   }
   else { //If data is longer than one byte (8 bits)
     uint32_t length = _sz;
-    uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+    uint16_t maxBytes = SPI_PAGESIZE-(_addrIn % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
 
     if (maxBytes > length) {
       for (uint16_t i = 0; i < length; ++i) {
@@ -408,7 +414,15 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
           _nextByte(WRITE, *p++);
         }
         CHIP_DESELECT
-        _currentAddress += writeBufSz;
+        if (!_addressOverflow) {
+          _currentAddress += writeBufSz;
+        }
+        else {
+          if (data_offset >= _addressOverflow) {
+            _currentAddress = 0x00;
+            _addressOverflow = false;
+          }
+        }
         data_offset += writeBufSz;
         length -= writeBufSz;
         maxBytes = 256;   // Now we can do up to 256 bytes per loop
@@ -425,7 +439,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   else {
     //Serial.print(F("Address sent to error check: "));
     //Serial.println(_addr);
-    return _writeErrorCheck(_addr, value, _sz);
+    return _writeErrorCheck(_addrIn, value, _sz);
   }
 }
 

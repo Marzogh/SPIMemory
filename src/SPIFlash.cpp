@@ -1,8 +1,8 @@
-/* Arduino SPIFlash Library v.3.0.0
+/* Arduino SPIFlash Library v.3.1.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 17/11/2017
+ * Modified by Prajwal Bhattaram - 24/02/2018
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -724,13 +724,111 @@ bool SPIFlash::writeStr(uint32_t _addr, String &data, bool errorCheck) {
   #endif
 }
 
+// Erases a number of sectors or blocks as needed by the data being input.
+//  Takes an address and the size of the data being input as the arguments and erases the block/s of memory containing the address.
+bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+
+  if (!_prep(ERASEFUNC, _addr, _sz)) {
+    return false;
+  }
+
+  // If size of data is > 4KB more than one sector needs to be erased. So the number of erase sessions is determined by the quotient of _sz/KB(4). If the _sz is not perfectly divisible by KB(4), then an additional sector has to be erased.
+  uint32_t noOfEraseRunsB4Boundary, noOf4KBEraseRuns, EraseFunc, KB64Blocks, KB32Blocks, KB4Blocks, totalBlocks;
+
+  if (_sz/KB(4)) {
+    noOf4KBEraseRuns = _sz/KB(4);
+  }
+  else {
+    noOf4KBEraseRuns = 1;
+  }
+  KB64Blocks = noOf4KBEraseRuns/16;
+  KB32Blocks = (noOf4KBEraseRuns % 16) / 8;
+  KB4Blocks = (noOf4KBEraseRuns % 8);
+  totalBlocks = KB64Blocks + KB32Blocks + KB4Blocks;
+  //Serial.print("noOf4KBEraseRuns: ");
+  //Serial.println(noOf4KBEraseRuns);
+  //Serial.print("totalBlocks: ");
+  //Serial.println(totalBlocks);
+
+  uint16_t _eraseFuncOrder[totalBlocks];
+
+  if (KB64Blocks) {
+    for (uint32_t i = 0; i < KB64Blocks; i++) {
+      _eraseFuncOrder[i] = BLOCK64ERASE;
+    }
+  }
+  if (KB32Blocks) {
+    for (uint32_t i = KB64Blocks; i < (KB64Blocks + KB32Blocks); i++) {
+      _eraseFuncOrder[i] = BLOCK32ERASE;
+    }
+  }
+  if (KB4Blocks) {
+    for (uint32_t i = (KB64Blocks + KB32Blocks); i < totalBlocks; i++) {
+      _eraseFuncOrder[i] = SECTORERASE;
+    }
+  }
+
+// Now that the number of blocks to be erased have been calculated and the information saved, the erase function is carried out.
+  if (_addressOverflow) {
+    noOfEraseRunsB4Boundary = (_sz - _addressOverflow)/16;
+    noOfEraseRunsB4Boundary += ((_sz - _addressOverflow) % 16) / 8;
+    noOfEraseRunsB4Boundary += ((_sz - _addressOverflow) % 8);
+    //Serial.print("noOfEraseRunsB4Boundary: ");
+    //Serial.println(noOfEraseRunsB4Boundary);
+  }
+  if (!_addressOverflow) {
+    for (uint32_t j = 0; j < totalBlocks; j++) {
+      _beginSPI(_eraseFuncOrder[j]);   //The address is transferred as a part of this function
+      _endSPI();
+
+
+      //Serial.print("_eraseFuncOrder: 0x");
+      //Serial.println(_eraseFuncOrder[j], HEX);
+
+      uint16_t _timeFactor;
+      switch (_eraseFuncOrder[j]) {
+        case BLOCK64ERASE:
+        _timeFactor = 1200;
+        break;
+
+        case BLOCK32ERASE:
+        _timeFactor = 1000;
+        break;
+
+        case SECTORERASE:
+        _timeFactor = 500;
+        break;
+
+      }
+      if(!_notBusy(_timeFactor * 1000L)) {
+        return false;	//Datasheet says erasing a sector takes 400ms max
+      }
+      if (j == noOfEraseRunsB4Boundary) {
+        if (!_prep(ERASEFUNC, (_addr + (_sz - _addressOverflow)), _sz)) {
+          return false;
+        }
+        //Serial.print("Overflow triggered");
+      }
+    }
+  }
+  //_writeDisable();
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros() - _spifuncruntime;
+  #endif
+
+	return true;
+}
+
 // Erases one 4k sector.
 //  Takes an address as the argument and erases the block containing the address.
 bool SPIFlash::eraseSector(uint32_t _addr) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-  if (!_prep(ERASEFUNC, _addr)) {
+  if (!_prep(ERASEFUNC, _addr, KB(4))) {
     return false;
   }
   _beginSPI(SECTORERASE);   //The address is transferred as a part of this function
@@ -753,7 +851,7 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-  if (!_prep(ERASEFUNC, _addr)) {
+  if (!_prep(ERASEFUNC, _addr, KB(32))) {
     return false;
   }
   _beginSPI(BLOCK32ERASE);
@@ -776,7 +874,7 @@ bool SPIFlash::eraseBlock64K(uint32_t _addr) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-  if (!_prep(ERASEFUNC, _addr)) {
+  if (!_prep(ERASEFUNC, _addr, KB(64))) {
     return false;
   }
 

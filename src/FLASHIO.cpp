@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.3.0.0
+/* Arduino SPIFlash Library v.3.1.0
  * Copyright (C) 2017 by Prajwal Bhattaram
- * Created by Prajwal Bhattaram - 04/11/2017
+ * Created by Prajwal Bhattaram - 24/02/2018
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -32,6 +32,7 @@
 //Checks to see if page overflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
 bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
+  uint32_t _submittedAddress = _addr;
   if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
     return false;
   }
@@ -40,19 +41,30 @@ bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
     return false;
 	}
 
-  //for (uint32_t i = 0; i < size; i++) {
-  if (_addr + size >= _chip.capacity) {
+  //Serial.print("_chip.capacity: ");
+  //Serial.println(_chip.capacity, HEX);
+
+  if (_submittedAddress + size >= _chip.capacity) {
+    //Serial.print("_submittedAddress + size: ");
+    //Serial.println(_submittedAddress + size, HEX);
   #ifdef DISABLEOVERFLOW
     _troubleshoot(OUTOFBOUNDS);
     return false;					// At end of memory - (!pageOverflow)
   #else
-    _currentAddress = 0x00;
+    _addressOverflow = ((_submittedAddress + size) - _chip.capacity);
+    _currentAddress = _addr;
+    //Serial.print("_addressOverflow: ");
+    //Serial.println(_addressOverflow, HEX);
     return true;					// At end of memory - (pageOverflow)
   #endif
   }
-  //}
-  _currentAddress = _addr;
-  return true;				// Not at end of memory if (address < _chip.capacity)
+  else {
+    _addressOverflow = false;
+    _currentAddress = _addr;
+    return true;				// Not at end of memory if (address < _chip.capacity)
+  }
+  //Serial.print("_currentAddress: ");
+  //Serial.println(_currentAddress, HEX);
 }
 
 // Checks to see if the block of memory has been previously written to
@@ -62,6 +74,7 @@ bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
   for (uint32_t i = 0; i < size; i++) {
     if (_nextByte(READ) != 0xFF) {
       CHIP_DESELECT;
+      _troubleshoot(PREVWRITTEN);
       return false;
     }
   }
@@ -95,8 +108,7 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
     break;
 
     case ERASEFUNC:
-    _currentAddress = _addr;
-    if(!_notBusy()||!_writeEnable()) {
+    if(!_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
       return false;
     }
     return true;

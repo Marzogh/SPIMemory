@@ -49,7 +49,7 @@
 SPIFlash flash;
 
 
-struct Configuration {
+/* struct Configuration {
   float lux;
   float vOut;                   // Voltage ouput from potential divider to Analog input
   float RLDR;                   // Resistance calculation of potential divider with LDR
@@ -57,7 +57,25 @@ struct Configuration {
   uint8_t adc;
   uint8_t arr[8];
 };
-Configuration configuration;
+Configuration configuration; */
+
+struct CONFIGURATION {
+    struct MISC {
+        byte tempHigh = 30;            
+        byte tempLow = 20;             
+        bool parkingMode = false;      
+        bool allowDataToBeSent = false;
+    } misc;
+    struct NETWORK {
+        char ssid[50] = "§";           
+        char pwd[50] = "§";            
+        char userid[50] = "§";         
+    } network;
+    struct CHARGING_INFO {
+        byte interval = 5;             
+        byte highChargingDefault = 80; 
+    } charging;
+} configuration;
 
 void setup() {
   Serial.begin(BAUD_RATE);

@@ -377,6 +377,10 @@ void structTest() {
     int32_t s3;
     bool s4;
     uint8_t s5;
+    struct structOfStruct {
+      uint8_t b1;
+      float f2;
+    } structofstruct;
   };
   Test _d;
   Test _data;
@@ -386,6 +390,8 @@ void structTest() {
   _d.s3 = 880932;
   _d.s4 = true;
   _d.s5 = 5;
+  _d.structofstruct.b1 = 234;
+  _d.structofstruct.f2 = 6.28;
 
   uint32_t wTime = 0;
   uint32_t addr, rTime;
@@ -402,7 +408,7 @@ void structTest() {
 
 
   Serial.print ("\t\t\tStruct: \t");
-  if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5)) {
+  if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5) && (_d.structofstruct.b1 == _data.structofstruct.b1) && (_d.structofstruct.b1 == _data.structofstruct.b1)) {
     pass(TRUE);
   }
   else {

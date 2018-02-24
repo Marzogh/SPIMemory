@@ -2,6 +2,20 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.1.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						24.02.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs squashed
+--> An error with how _addressCheck() works with data that spans the memory boundary - when rolling over from address '_chip.capacity' to address '0x00' - has been fixed. In previous versions this caused issues with writing complex data structures across the memory boundary and led to many _writeErrorCheck() failures. Fixes issue #112
+
+Enhancements:
+--> A new function - 'flash.eraseSection(address, size)' - has been intrduced in this version. When a user requires a large and variable (between writes) amount of data to be written to the flash memory on the fly and to have the correct amount of space erased to fit the data, this function will automatically calculate and erase the right amount of space to fit the data. Please note that if the the amount of data being written is consistently the same size, the pre-existing 'flash.eraseSector()', 'flash.eraseBlock32K()' and 'flash.eraseBlock64K()' functions will operate a lot faster.
+
+
+New flash memory chips supported:
+--> S25FL127S
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.0.1 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						10.12.2017											   //

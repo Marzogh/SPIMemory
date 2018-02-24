@@ -45,6 +45,7 @@ writeULong	KEYWORD2
 writeFloat	KEYWORD2
 writeStr	KEYWORD2
 writeAnything	KEYWORD2
+eraseSection KEYWORD2
 eraseSector	KEYWORD2
 eraseBlock32K	KEYWORD2
 eraseBlock64K	KEYWORD2

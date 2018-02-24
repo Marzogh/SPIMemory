@@ -258,6 +258,11 @@ Erases one 64KB block - 256 pages - containing the address to be erased. The blo
 
 ###### eraseChip()
 Erases entire chip. Use with care.
+
+###### eraseSection(address, sizeOfData)
+Erases the specific number of blocks/sectors to fit data (size defined by the sizeOfData arguement) into. When a user requires a large and variable (between writes) amount of data to be written to the flash memory on the fly and to have the correct amount of space erased to fit the data, this function will automatically calculate and erase the right amount of space to fit the data.
+
+Please note that if the the amount of data being written is consistently the same size, the pre-existing 'flash.eraseSector()', 'flash.eraseBlock32K()' and 'flash.eraseBlock64K()' functions will operate a lot faster.
 <hr>
 
 ##### Suspend/Resume commands
