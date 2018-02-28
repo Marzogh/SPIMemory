@@ -1,6 +1,9 @@
 Hey there! Thanks for using the SPIFlash library for Arduino. 
+### Please note that starting 01.03.2018 any issue raised here MUST be submitted according to this template or it will be flagged with 'Not enough information'. No action will be taken till all the prerequisite information is provided. If no information is provided for over a month, the issue will be closed.
 
 **Note: For support questions, please use the [Arduino Forums](http://forum.arduino.cc/index.php?topic=324009.0). This repository's issues are reserved for feature requests and bug reports.**
+
+# Issue submission template
 
 **I'm submitting a ...**
   - [ ] bug report
@@ -27,8 +30,21 @@ When opening an issue please include the following details:
 
 --------------------------
 ###### Bug reports only
+- If this is a bug report - 
 
-- [ ] If this is a bug report - Provide a **minimal code snippet** example that reproduces the bug. Please make sure you wrap any code in the proper code blocks like below 
+- [ ] Make sure you have run FlashDiagnostics.ino with ``` #define RUNDIAGNOSTICS ``` uncommented in SPIFlash.h. **List any error codes** that pop up in your Serial output when you run FlashDiagnostics.ino.here:
+      Error codes
+      ------------
+        - 
+        -
+        -
+        -
+        -
+- [ ] If you have a problem with a particular function, call the flash.error() function (after you have made sure you have started up your Serial port with a ``` Serial.begin(BAUD) ``` ). Provide details of the function, the data given to/ expected from the function and the error code here: (**Please repeat this for every function you have an error with***)
+        Function - 
+        Data - 
+        Error code - 
+- [ ] Provide a **minimal code snippet** example that reproduces the bug. Please make sure you wrap any code in the proper code blocks like below 
 ```
 ```CODE HERE```
 ```
