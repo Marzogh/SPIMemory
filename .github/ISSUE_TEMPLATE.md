@@ -3,7 +3,7 @@ Hey there! Thanks for using the SPIFlash library for Arduino.
 
 **Note: For support questions, please use the [Arduino Forums](http://forum.arduino.cc/index.php?topic=324009.0). This repository's issues are reserved for feature requests and bug reports.**
 
-# Issue submission template
+# Issue details
 
 **I'm submitting a ...**
   - [ ] bug report
