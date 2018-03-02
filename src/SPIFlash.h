@@ -246,6 +246,7 @@ private:
   void     _printSupportLink(void);
   void     _endSPI(void);
   bool     _disableGlobalBlockProtect(void);
+  bool     _isChipPoweredDown(void);
   bool     _prep(uint8_t opcode, uint32_t _addr, uint32_t size = 0);
   bool     _startSPIBus(void);
   bool     _beginSPI(uint8_t opcode);
@@ -285,7 +286,7 @@ private:
   gpio_t      csPin;
   #endif
   volatile uint8_t *cs_port;
-  bool        pageOverflow, SPIBusState;
+  bool        pageOverflow, SPIBusState, chipPoweredDown;
   bool        address4ByteEnabled = false;
   uint8_t     cs_mask, errorcode, stat1, stat2, stat3, _SPCR, _SPSR, _a0, _a1, _a2;
   char READ = 'R';
@@ -341,7 +342,7 @@ template <class T> bool SPIFlash::readAnything(uint32_t _addr, T& data, bool fas
 //  2. const T& value --> Variable with the data to be error checked
 //  3. _sz --> Size of the data variable to be error checked, in bytes (1 byte = 8 bits)
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz) {
-  if (!_notBusy()) {
+  if (!_notBusy() || _isChipPoweredDown()) {
     return false;
   }
   //Serial.print(F("Address being error checked: "));

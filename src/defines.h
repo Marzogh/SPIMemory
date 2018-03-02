@@ -185,6 +185,7 @@
  #define UNSUPPORTEDFUNC      0x0C
  #define UNABLETO4BYTE        0x0D
  #define UNABLETO3BYTE        0x0E
+ #define CHIPISPOWEREDDOWN    0x0F
  #define UNKNOWNERROR         0xFE
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

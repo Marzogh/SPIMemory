@@ -96,11 +96,11 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
     //Serial.print(F("Address being prepped: "));
     //Serial.println(_addr);
     #ifndef HIGHSPEED
-      if(!_addressCheck(_addr, size) || !_notPrevWritten(_addr, size) || !_notBusy() || !_writeEnable()) {
+      if(_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notPrevWritten(_addr, size) || !_notBusy() || !_writeEnable()) {
         return false;
       }
     #else
-      if (!_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
+      if (_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
         return false;
       }
     #endif
@@ -108,14 +108,14 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
     break;
 
     case ERASEFUNC:
-    if(!_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
+    if(_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
       return false;
     }
     return true;
     break;
 
     default:
-      if (!_addressCheck(_addr, size) || !_notBusy()) {
+      if (_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notBusy()) {
         return false;
       }
     #ifdef ENABLEZERODMA
@@ -398,6 +398,17 @@ bool SPIFlash::_noSuspend(void) {
     }
   }
   return true;
+}
+
+// Checks to see if chip is powered down. If it is, retrns true. If not, returns false.
+bool SPIFlash::_isChipPoweredDown(void) {
+  if (chipPoweredDown) {
+    _troubleshoot(CHIPISPOWEREDDOWN);
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 // Polls the status register 1 until busy flag is cleared or timeout

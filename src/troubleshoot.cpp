@@ -126,6 +126,10 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
       Serial.println("Unable to disable 4-byte addressing.");
       break;
 
+      case CHIPISPOWEREDDOWN:
+      Serial.println("The Flash chip is currently powered down.");
+      break;
+
       default:
       Serial.println("Unknown error");
       break;

@@ -167,7 +167,7 @@ uint32_t SPIFlash::getJEDECID(void) {
 
 // Returns a 64-bit Unique ID that is unique to each flash memory chip
 uint64_t SPIFlash::getUniqueID(void) {
-  if(!_notBusy()) {
+  if(!_notBusy() || _isChipPoweredDown()) {
     return false;
    }
   _beginSPI(UNIQUEID);
@@ -985,10 +985,12 @@ bool SPIFlash::powerDown(void) {
     _delay_us(5);
 
     #ifdef RUNDIAGNOSTIC
+      chipPoweredDown = true;
       bool _retVal = !_writeEnable(false);
       _spifuncruntime = micros() - _spifuncruntime;
       return _retVal;
     #else
+      chipPoweredDown = true;
       return !_writeEnable(false);
     #endif
   }
@@ -1011,12 +1013,14 @@ bool SPIFlash::powerUp(void) {
     if (_writeEnable(false)) {
       _writeDisable();
       _spifuncruntime = micros() - _spifuncruntime;
+      chipPoweredDown = false;
       return true;
     }
     return false;
   #else
   if (_writeEnable(false)) {
     _writeDisable();
+    chipPoweredDown = false;
     return true;
   }
   return false;
