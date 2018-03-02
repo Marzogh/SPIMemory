@@ -103,7 +103,7 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
   if (_chip.manufacturerID == CYPRESS_MANID) {
     setClock(SPI_CLK/4);    // Cypress/Spansion chips appear to perform best at SPI_CLK/4
   }
-
+  chipPoweredDown = false;
   return true;
 }
 
@@ -895,7 +895,7 @@ bool SPIFlash::eraseChip(void) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-	if(!_notBusy() || !_writeEnable()) {
+	if(_isChipPoweredDown() || !_notBusy() || !_writeEnable()) {
     return false;
   }
 
@@ -922,7 +922,7 @@ bool SPIFlash::suspendProg(void) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-	if(_notBusy()) {
+	if(_isChipPoweredDown() || _notBusy()) {
 		return false;
   }
 
@@ -950,7 +950,7 @@ bool SPIFlash::resumeProg(void) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-	if(!_notBusy() || _noSuspend()) {
+	if(_isChipPoweredDown() || !_notBusy() || _noSuspend()) {
     return false;
   }
 
