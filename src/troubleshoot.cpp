@@ -53,7 +53,7 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
   #if defined (ARDUINO_ARCH_AVR)
     _printErrorCode();
   #else
-  Serial.println();
+  //Serial.println();
     switch (_code) {
       case SUCCESS:
       Serial.println("Function executed successfully");

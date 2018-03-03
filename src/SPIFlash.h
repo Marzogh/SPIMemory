@@ -269,10 +269,10 @@ private:
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint8_t  _readStat3(void);
-  template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck);
+  template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
   template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false);
   //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
-  template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz);
+  template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType = 0x00);
   //-------------------------------- Private variables ----------------------------------//
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
@@ -323,7 +323,7 @@ private:
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 template <class T> bool SPIFlash::writeAnything(uint32_t _addr, const T& data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck);
+  return _write(_addr, data, sizeof(data), errorCheck, _STRUCT_);
 }
 
 // Reads any type of data from a specific location in the flash memory.
@@ -342,7 +342,7 @@ template <class T> bool SPIFlash::readAnything(uint32_t _addr, T& data, bool fas
 //  1. _addr --> Any address from 0 to maxAddress
 //  2. const T& value --> Variable with the data to be error checked
 //  3. _sz --> Size of the data variable to be error checked, in bytes (1 byte = 8 bits)
-template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz) {
+/*template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz) {
   if (!_notBusy() || _isChipPoweredDown()) {
     return false;
   }
@@ -359,9 +359,46 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
       _endSPI();
       return false;
     }
+    //_delay_us(5);
   }
   _endSPI();
   return true;
+}*/
+template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType) {
+  if (_isChipPoweredDown() || !_addressCheck(_addr, _sz) || !_notBusy()) {
+    return false;
+  }
+  const uint8_t* p = (const uint8_t*)(const void*)&value;
+  if (_dataType == _STRUCT_) {
+    uint8_t _inByte[_sz];
+    _beginSPI(READDATA);
+    _nextBuf(READDATA, &(*_inByte), _sz);
+    _endSPI();
+    for (uint16_t i = 0; i < _sz; i++) {
+      if (*p++ != _inByte[i]) {
+        _troubleshoot(ERRORCHKFAIL);
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+  }
+  else {
+    const uint8_t* p = (const uint8_t*)(const void*)&value;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint16_t i = 0; i < _sz; i++) {
+      if (*p++ != _nextByte(READ)) {
+        _troubleshoot(ERRORCHKFAIL);
+        _endSPI();
+        return false;
+      }
+    }
+    _endSPI();
+    return true;
+  }
 }
 
 // Writes any type of data to a specific location in the flash memory.
@@ -373,7 +410,12 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 
-template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck) {
+template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType) {
+  bool _retVal;
+#ifdef RUNDIAGNOSTIC
+  _spifuncruntime = micros();
+#endif
+
   uint32_t _addrIn = _addr;
   if (!_prep(PAGEPROG, _addrIn, _sz)) {
     return false;
@@ -427,13 +469,14 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
         }
         data_offset += writeBufSz;
         length -= writeBufSz;
-        maxBytes = 256;   // Now we can do up to 256 bytes per loop
+        maxBytes = SPI_PAGESIZE;   // Now we can do up to 256 bytes per loop
         if(!_notBusy() || !_writeEnable()) {
           return false;
         }
       } while (length > 0);
     }
   }
+
   if (!errorCheck) {
     _endSPI();
     return true;
@@ -441,8 +484,12 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   else {
     //Serial.print(F("Address sent to error check: "));
     //Serial.println(_addr);
-    return _writeErrorCheck(_addrIn, value, _sz);
+    _retVal =  _writeErrorCheck(_addr, value, _sz, _dataType);
   }
+#ifdef RUNDIAGNOSTIC
+  _spifuncruntime = micros() - _spifuncruntime;
+#endif
+  return _retVal;
 }
 
 // Reads any type of data from a specific location in the flash memory.

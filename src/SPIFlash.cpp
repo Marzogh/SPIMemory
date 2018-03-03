@@ -422,14 +422,7 @@ bool SPIFlash::readStr(uint32_t _addr, String &data, bool fastRead) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-    return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _BYTE_);
 }
 
 // Writes a char of data to a specific location in a page.
@@ -440,14 +433,7 @@ bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeChar(uint32_t _addr, int8_t data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-    return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _CHAR_);
 }
 
 // Writes an array of bytes starting from a specific location in a page.
@@ -624,14 +610,7 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSi
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeWord(uint32_t _addr, uint16_t data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-  return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _WORD_);
 }
 
 // Writes a signed int as two bytes starting from a specific location in a page
@@ -642,14 +621,7 @@ bool SPIFlash::writeWord(uint32_t _addr, uint16_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeShort(uint32_t _addr, int16_t data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-  return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _SHORT_);
 }
 
 // Writes an unsigned long as four bytes starting from a specific location in a page.
@@ -660,14 +632,7 @@ bool SPIFlash::writeShort(uint32_t _addr, int16_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeULong(uint32_t _addr, uint32_t data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-  return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _ULONG_);
 }
 
 // Writes a signed long as four bytes starting from a specific location in a page
@@ -678,14 +643,7 @@ bool SPIFlash::writeULong(uint32_t _addr, uint32_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeLong(uint32_t _addr, int32_t data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-  return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _LONG_);
 }
 
 // Writes a float as four bytes starting from a specific location in a page
@@ -696,14 +654,7 @@ bool SPIFlash::writeLong(uint32_t _addr, int32_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-  return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _FLOAT_);
 }
 
 // Writes a string to a specific location on a page
@@ -714,14 +665,7 @@ bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeStr(uint32_t _addr, String &data, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-    bool _retVal = _write(_addr, data, sizeof(data), errorCheck);
-    _spifuncruntime = micros() - _spifuncruntime;
-    return _retVal;
-  #else
-  return _write(_addr, data, sizeof(data), errorCheck);
-  #endif
+  return _write(_addr, data, sizeof(data), errorCheck, _STRING_);
 }
 
 // Erases a number of sectors or blocks as needed by the data being input.

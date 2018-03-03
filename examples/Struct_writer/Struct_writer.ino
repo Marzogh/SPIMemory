@@ -2,10 +2,10 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                               Struct_writer.ino                                                               |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 2.6.0                                                                     |
+  |                                                                   v 3.1.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  24.02.2018                                                                   |
+  |                                                                  03.03.2018                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program writes a struct to a random location on your flash memory chip and reads it back.                         |
@@ -16,6 +16,8 @@
 #include<SPIFlash.h>
 
 //#define PRINTDETAIL
+//#define PRINTINDIVIDUALRUNS
+#define NUMBEROFREPEATS 100
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -37,7 +39,7 @@ SPIFlash flash;
 
 struct ConfigurationIn {
   float lux = 3.24;
-  float vOut = 4.45;                   // Voltage ouput from potential divider to Analog input
+  float vOut = 4.45;                    // Voltage ouput from potential divider to Analog input
   float RLDR = 1.234;                   // Resistance calculation of potential divider with LDR
   bool light = true;
   uint8_t adc = 45;
@@ -84,10 +86,14 @@ struct ConfigurationOut {
   } charging;
 };
 ConfigurationOut configurationOut;
-
+uint16_t eraseCount, writeCount, errorCount, readCount;
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  eraseCount = 0;
+  writeCount = 0;
+  errorCount = NUMBEROFREPEATS;
+  readCount = 0;
 #if defined (ARDUINO_SAMD_ZERO) || (__AVR_ATmega32U4__)
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
@@ -98,21 +104,39 @@ void setup() {
     Serial.print(F("."));
   }
   Serial.println();
-  Serial.println();
   flash.begin();
+  Serial.println();
+#ifdef PRINTINDIVIDUALRUNS
+  printLine();
+  Serial.println();
+  Serial.print("\tStruct number\t\t\tSection Erase\t\t\tStruct Write\t\t\tErrorCheck\t\t\tStruct Read\t\t\t");
+  Serial.println();
+  printLine();
+  Serial.println();
+#endif
 
-  for (uint8_t x = 1; x <= 20; x++) {
+  for (uint16_t x = 1; x <= NUMBEROFREPEATS; x++) {
+    Serial.println(x);
     //uint32_t _addr = random(0, 1677215);
     uint32_t _addr = random(0, flash.getCapacity());
-    Serial.print("Size of array: ");
-    Serial.println(sizeof(configurationIn));
+#ifdef PRINTINDIVIDUALRUNS
+    Serial.print("\t\t");
+    Serial.print(x);
+#endif
 
     if (flash.eraseSection(_addr, sizeof(configurationIn))) {
-      Serial.println("Section has been erased");
-      }
+      //if (flash.eraseSector(_addr)) {
+      eraseCount++;
+#ifdef PRINTINDIVIDUALRUNS
+      Serial.print("\t\t\t    Done");
+#endif
+    }
+    else {
+      eraseCount--;
+    }
     /*if (flash.eraseSector(_addr)) {
       Serial.println("Sector has been erased");
-    }*/
+      }*/
     if (flash.writeAnything(_addr, configurationIn)) {
 #ifdef PRINTDETAIL
       Serial.println(configurationIn.lux);
@@ -147,17 +171,18 @@ void setup() {
       Serial.println(configurationIn.charging.interval);
       Serial.println(configurationIn.charging.highChargingDefault);
 #endif
-      Serial.print ("Data write ");
-      Serial.print(x);
-      Serial.println(" successful");
+      writeCount++;
+      errorCount--;
+#ifdef PRINTINDIVIDUALRUNS
+      Serial.print("\t\t\t   Done\t\t\t\t   Pass");
+#endif
     }
     else {
-      Serial.print ("Data write ");
-      Serial.print(x);
-      Serial.println(" failed");
+#ifdef PRINTINDIVIDUALRUNS
+      Serial.print("\t\t\t   Done\t\t\t\t   Fail");
+#endif
     }
-    Serial.println();
-
+delay(50);
     if (flash.readAnything(_addr, configurationOut)) {
 #ifdef PRINTDETAIL
       Serial.println(configurationOut.lux);
@@ -192,10 +217,57 @@ void setup() {
       Serial.println(configurationOut.charging.interval);
       Serial.println(configurationOut.charging.highChargingDefault);
 #endif
+      if (configurationIn.lux == configurationOut.lux || configurationIn.vOut == configurationOut.vOut || configurationIn.RLDR == configurationOut.RLDR || configurationIn.light == configurationOut.light || \
+          configurationIn.adc == configurationOut.adc || configurationIn.arr[2] == configurationOut.arr[2] || configurationIn.misc.tempHigh == configurationOut.misc.tempHigh || configurationIn.misc.tempLow == configurationOut.misc.tempLow || \
+          configurationIn.misc.parkingMode == configurationOut.misc.parkingMode || configurationIn.misc.allowDataToBeSent == configurationOut.misc.allowDataToBeSent || configurationIn.network.ssid[3] == configurationOut.network.ssid[3] || configurationIn.network.pwd[1] == configurationOut.network.pwd[1] || \
+          configurationIn.network.userid[4] == configurationOut.network.userid[4] || configurationIn.charging.interval == configurationOut.charging.interval || configurationIn.charging.highChargingDefault == configurationOut.charging.highChargingDefault) {
+#ifdef PRINTINDIVIDUALRUNS
+        Serial.print("\t\t\t\t   Pass");
+      Serial.println();
+#endif
+        readCount++;
+      }
+      else {
+#ifdef PRINTINDIVIDUALRUNS
+        Serial.print("\t\t\t\t   Fail");
+      Serial.println();
+#endif
+        readCount--;
+      }
     }
   }
-  delay(1000);
+#ifdef PRINTINDIVIDUALRUNS
+  printLine();
+#endif
+  Serial.println();
+  printLine();
+  Serial.println();
+  Serial.println("\t\tFinal results");
+  printLine();
+  Serial.println();
+  Serial.print("\t\tNo. of successful erases: ");
+  Serial.print("\t\t");
+  Serial.println(eraseCount);
+  Serial.print("\t\tNo. of successful writes: ");
+  Serial.print("\t\t");
+  Serial.println(writeCount);
+  Serial.print("\t\tNo. of errors generated:");
+  Serial.print("\t\t");
+  Serial.print(errorCount);
+  Serial.println("\t(errorCheck function failures)");
+  Serial.print("\t\tNo. of successful reads: ");
+  Serial.print("\t\t");
+  Serial.println(readCount);
+  printLine();
+  Serial.println();
 }
 
 void loop() {
 }
+
+void printLine() {
+  for (uint16_t i = 0; i < 160; i++) {
+    Serial.print("-");
+  }
+}
+

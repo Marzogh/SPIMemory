@@ -188,6 +188,22 @@
  #define CHIPISPOWEREDDOWN    0x0F
  #define UNKNOWNERROR         0xFE
 
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+ //     					   List of Supported data types						  //
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+  #define _BYTE_              0x01
+  #define _CHAR_              0x02
+  #define _WORD_              0x03
+  #define _SHORT_             0x04
+  #define _ULONG_             0x05
+  #define _LONG_              0x06
+  #define _FLOAT_             0x07
+  #define _STRING_            0x08
+  #define _BYTEARRAY_         0x09
+  #define _CHARARRAY_         0x0A
+  #define _STRUCT_            0x0B
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                        Bit shift macros                            //
 //                      Thanks to @VitorBoss                          //
