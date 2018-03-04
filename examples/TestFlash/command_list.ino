@@ -1,10 +1,14 @@
 void commandList() {
-  printSplash();
-  getID();
-  printLine();
+  Serial.println(F("-----------------------------------------------------------------------------------------------------------------------------------"));
+  Serial.println(F("                                                            Winbond Flash                                                          "));
+  Serial.println(F("                                                      SPIFlash library test v3.1.0                                                 "));
+  Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
+  Serial.println(F("                                                                Marzogh                                                            "));
+  Serial.println(F("                                                              24.11.2015                                                           "));
+  Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
   Serial.println(F("                                      (Please make sure your Serial monitor is set to 'No Line Ending')                            "));
-  Serial.println();
-  Serial.println();
+  Serial.println(F("                                      *****************************************************************                            "));
+  Serial.println(F("                                                                                                                                   "));
   Serial.println(F("                      # Please pick from the following commands and type the command number into the Serial console #              "));
   Serial.println(F("     For example - to write a byte of data, you would have to use the Write Byte function - so type '3' into the serial console.   "));
   Serial.println(F("                                                     --------------------------------                                              "));
@@ -55,86 +59,5 @@ void commandList() {
   Serial.println(F("  14. eraseChip"));
   Serial.print(F("\t\t"));
   Serial.println(F("'14' erases the entire chip"));
-  printLine();
+  Serial.println(F(" ----------------------------------------------------------------------------------------------------------------------------------"));
 }
-
-void printLine(void) {
-  //Serial.println();
-  for (uint8_t i = 0; i < 130; i++) {
-    Serial.print(F("-"));
-  }
-  Serial.println();
-}
-
-void clearprintBuffer(char *bufPtr) {
-  for (uint8_t i = 0; i < 128; i++) {
-    //printBuffer[i] = 0;
-    *bufPtr++ = 0;
-  }
-}
-
-void printUniqueID(void) {
-  Serial.print("Unique ID: ");
-  long long _uniqueID = flash.getUniqueID();
-  Serial.print(uint32_t(_uniqueID / 1000000L));
-  Serial.print(uint32_t(_uniqueID % 1000000L));
-  Serial.print(", ");
-  Serial.print("0x");
-  Serial.print(uint32_t(_uniqueID >> 32), HEX);
-  Serial.println(uint32_t(_uniqueID), HEX);
-}
-
-void getID(void) {
-  
-  char printBuffer[128];
-  printLine();
-  for (uint8_t i = 0; i < 50; i++) {
-    Serial.print(F(" "));
-  }
-  Serial.print(F("SPIFlash Library version"));
-#ifdef LIBVER
-  uint8_t _ver, _subver, _bugfix;
-  flash.libver(&_ver, &_subver, &_bugfix);
-  clearprintBuffer(&printBuffer[1]);
-  sprintf(printBuffer, ": %d.%d.%d", _ver, _subver, _bugfix);
-  Serial.println(printBuffer);
-#else
-  Serial.println(F("< 2.5.0"));
-#endif
-  printLine();
-
-  for (uint8_t i = 0; i < 65; i++) {
-    Serial.print(F(" "));
-  }
-  Serial.println(F("Get ID"));
-  printLine();
-  uint8_t b1, b2;
-  //uint16_t b3;
-  uint32_t JEDEC = flash.getJEDECID();
-  uint32_t maxPage = flash.getMaxPage();
-  uint32_t capacity = flash.getCapacity();
-  b1 = (JEDEC >> 16);
-  b2 = (JEDEC >> 8);
-  //b3 = (JEDEC >> 0);
-
-  clearprintBuffer(&printBuffer[1]);
-#if defined (ARDUINO_ARCH_ESP32)
-  sprintf(printBuffer, "\t\t\tJEDEC ID: %04xh", JEDEC);
-#else
-  sprintf(printBuffer, "\t\t\tJEDEC ID: %04lxh", JEDEC);
-#endif
-  Serial.println(printBuffer);
-  //Serial.print(F("\t\t\tJEDEC ID: "));
-  //Serial.print(JEDEC, HEX);
-  //Serial.println(F("xh"));
-  clearprintBuffer(&printBuffer[1]);
-#if defined (ARDUINO_ARCH_ESP32)
-  sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %u bytes\n\t\t\tMaximum pages: %u", b1, b2, capacity, maxPage);
-#else
-  sprintf(printBuffer, "\t\t\tManufacturer ID: %02xh\n\t\t\tMemory Type: %02xh\n\t\t\tCapacity: %lu bytes\n\t\t\tMaximum pages: %lu", b1, b2, capacity, maxPage);
-#endif
-  Serial.print(printBuffer);
-  Serial.print("\n\t\t\t");
-  printUniqueID();
-}
-
