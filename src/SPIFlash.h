@@ -61,6 +61,8 @@
 //#define ENABLEZERODMA                                               //
 //#define ZERO_SPISERCOM SERCOM4                                      //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define PRINTNAMECHANGEALERT
+
   #include <Arduino.h>
   #include "defines.h"
   #include <SPI.h>
@@ -270,7 +272,7 @@ private:
   uint8_t  _readStat2(void);
   uint8_t  _readStat3(void);
   template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
-  template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false);
+  template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false, uint8_t _dataType = 0x00);
   //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
   template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType = 0x00);
   //-------------------------------- Private variables ----------------------------------//
@@ -337,33 +339,6 @@ template <class T> bool SPIFlash::readAnything(uint32_t _addr, T& data, bool fas
 
 //---------------------------------- Private Templates ----------------------------------//
 
-// Private template to check for errors in writing to flash memory
-// Takes three arguments -
-//  1. _addr --> Any address from 0 to maxAddress
-//  2. const T& value --> Variable with the data to be error checked
-//  3. _sz --> Size of the data variable to be error checked, in bytes (1 byte = 8 bits)
-/*template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz) {
-  if (!_notBusy() || _isChipPoweredDown()) {
-    return false;
-  }
-  //Serial.print(F("Address being error checked: "));
-  //Serial.println(_addr);
-  _currentAddress = _addr;
-  const uint8_t* p = (const uint8_t*)(const void*)&value;
-  CHIP_SELECT
-  _nextByte(WRITE, READDATA);
-  _transferAddress();
-  for (uint16_t i = 0; i < _sz; i++) {
-    if (*p++ != _nextByte(READ)) {
-      _troubleshoot(ERRORCHKFAIL);
-      _endSPI();
-      return false;
-    }
-    //_delay_us(5);
-  }
-  _endSPI();
-  return true;
-}*/
 template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType) {
   if (_isChipPoweredDown() || !_addressCheck(_addr, _sz) || !_notBusy()) {
     return false;
@@ -385,7 +360,6 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
     }
   }
   else {
-    const uint8_t* p = (const uint8_t*)(const void*)&value;
     CHIP_SELECT
     _nextByte(WRITE, READDATA);
     _transferAddress();
@@ -397,8 +371,8 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
       }
     }
     _endSPI();
-    return true;
   }
+  return true;
 }
 
 // Writes any type of data to a specific location in the flash memory.
@@ -498,26 +472,39 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
 //  2. T& value --> Variable to return data into
 //  3. _sz --> Size of the variable in bytes (1 byte = 8 bits)
 //  4. fastRead --> defaults to false - executes _beginFastRead() if set to true
-template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead) {
-  if (_prep(READDATA, _addr, _sz)) {
-    uint8_t* p = (uint8_t*)(void*)&value;
-    CHIP_SELECT
-    if (fastRead) {
-      _nextByte(WRITE, FASTREAD);
-    }
-    else {
-      _nextByte(WRITE, READDATA);
-    }
-    _transferAddress();
-    for (uint16_t i = 0; i < _sz; i++) {
-      *p++ =_nextByte(READ);
-    }
-    _endSPI();
-    return true;
-  }
-  else {
+template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead, uint8_t _dataType) {
+  if (!_prep(READDATA, _addr, _sz)) {
     return false;
   }
+  else {
+    uint8_t* p = (uint8_t*)(void*)&value;
+
+    if (_dataType == _STRING_) {
+      char _inChar[_sz];
+      _beginSPI(READDATA);
+      _nextBuf(READDATA, (uint8_t*) &(*_inChar), _sz);
+      _endSPI();
+      for (uint16_t i = 0; i < _sz; i++) {
+        *p++ = _inChar[i];
+      }
+    }
+    else {
+      CHIP_SELECT
+      if (fastRead) {
+        _nextByte(WRITE, FASTREAD);
+      }
+      else {
+        _nextByte(WRITE, READDATA);
+      }
+      _transferAddress();
+      for (uint16_t i = 0; i < _sz; i++) {
+        *p++ =_nextByte(READ);
+      }
+      _endSPI();
+    }
+    return true;
+  }
+  return true;
 }
 
 #endif // _SPIFLASH_H_

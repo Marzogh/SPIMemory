@@ -67,6 +67,27 @@ SPIFlash::SPIFlash(uint8_t cs) {
 
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(uint32_t flashChipSize) {
+#ifdef PRINTNAMECHANGEALERT
+  if (!Serial) {
+    Serial.begin(115200);
+  }
+  for (uint8_t i = 0; i < 230; i++) {
+    Serial.print("-");
+  }
+  Serial.println();
+  Serial.println("\t\t\t\t\t\t\t\t\t\tImportant Notice");
+  for (uint8_t i = 0; i < 230; i++) {
+    Serial.print("-");
+  }
+  Serial.println();
+  Serial.println("\t\t\t\t\tThis version of the library - v3.1.0 will be the last version to ship under the name SPIFlash.");
+  Serial.println("\t\t\t\tStarting early May - when v3.2.0 is due - this library will be renamed 'SPIMemory' on the Arduino library manager.");
+  Serial.println("\t\t\t\t\t\t\tPlease refer to the Readme file for further details.");
+  for (uint8_t i = 0; i < 230; i++) {
+    Serial.print("-");
+  }
+  Serial.println();
+  #endif
 #ifdef RUNDIAGNOSTIC
   Serial.println("Chip Diagnostics initiated.");
   Serial.println();
@@ -183,7 +204,7 @@ uint64_t SPIFlash::getUniqueID(void) {
    }
    CHIP_DESELECT
 
-   long long _uid;
+   long long _uid = 0;
    for (uint8_t i = 0; i < 8; i++) {
      _uid += _uniqueID[i];
      _uid = _uid << 8;
@@ -239,7 +260,7 @@ uint8_t SPIFlash::readByte(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-  uint8_t data;
+  uint8_t data = 0;
   _read(_addr, data, sizeof(data), fastRead);
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
@@ -255,7 +276,7 @@ int8_t SPIFlash::readChar(uint32_t _addr, bool fastRead) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
-  int8_t data;
+  int8_t data = 0;
   _read(_addr, data, sizeof(data), fastRead);
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
@@ -679,8 +700,9 @@ bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
     return false;
   }
 
-  // If size of data is > 4KB more than one sector needs to be erased. So the number of erase sessions is determined by the quotient of _sz/KB(4). If the _sz is not perfectly divisible by KB(4), then an additional sector has to be erased.
-  uint32_t noOfEraseRunsB4Boundary, noOf4KBEraseRuns, EraseFunc, KB64Blocks, KB32Blocks, KB4Blocks, totalBlocks;
+    // If size of data is > 4KB more than one sector needs to be erased. So the number of erase sessions is determined by the quotient of _sz/KB(4). If the _sz is not perfectly divisible by KB(4), then an additional sector has to be erased.
+  uint32_t noOfEraseRunsB4Boundary = 0;
+  uint32_t noOf4KBEraseRuns, KB64Blocks, KB32Blocks, KB4Blocks, totalBlocks;
 
   if (_sz/KB(4)) {
     noOf4KBEraseRuns = _sz/KB(4);
@@ -732,7 +754,7 @@ bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
       //Serial.print("_eraseFuncOrder: 0x");
       //Serial.println(_eraseFuncOrder[j], HEX);
 
-      uint16_t _timeFactor;
+      uint16_t _timeFactor = 0;
       switch (_eraseFuncOrder[j]) {
         case BLOCK64ERASE:
         _timeFactor = 1200;
