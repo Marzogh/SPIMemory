@@ -104,7 +104,7 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 // If no capacity is defined in user code
   if (!flashChipSize) {
     #ifdef RUNDIAGNOSTIC
-    Serial.println("No Chip size defined by user");
+    Serial.println("No Chip size defined by user. Automated identification initiated.");
     #endif
     bool retVal = _chipID();
     _endSPI();
@@ -156,12 +156,15 @@ uint32_t SPIFlash::getMaxPage(void) {
 	return (_chip.capacity / SPI_PAGESIZE);
 }
 
+#ifdef RUNDIAGNOSTICS
 //Returns the time taken to run a function. Must be called immediately after a function is run as the variable returned is overwritten each time a function from this library is called. Primarily used in the diagnostics sketch included in the library to track function time.
+//This function can only be called if #define RUNDIAGNOSTICS is uncommented in SPIFlash.h
 float SPIFlash::functionRunTime(void) {
   return _spifuncruntime;
 }
+#endif
 
-//Returns the library version as a string
+//Returns the library version as three bytes
 bool SPIFlash::libver(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
   *b1 = LIBVER;
   *b2 = LIBSUBVER;
@@ -212,11 +215,9 @@ uint64_t SPIFlash::getUniqueID(void) {
    return _uid;
 }
 
-//Gets the next available address for use. Has two variants:
-//	A. Takes the size of the data as an argument and returns a 32-bit address
-//	B. Takes a three variables, the size of the data and two other variables to return a page number value & an offset into.
+//Gets the next available address for use.
+// Takes the size of the data as an argument and returns a 32-bit address
 // All addresses in the in the sketch must be obtained via this function or not at all.
-// Variant A
 uint32_t SPIFlash::getAddress(uint16_t size) {
   bool _loopedOver = false;
   if (!_addressCheck(currentAddress, size)){
