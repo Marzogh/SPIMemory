@@ -156,13 +156,15 @@ uint32_t SPIFlash::getMaxPage(void) {
 	return (_chip.capacity / SPI_PAGESIZE);
 }
 
-#ifdef RUNDIAGNOSTICS
 //Returns the time taken to run a function. Must be called immediately after a function is run as the variable returned is overwritten each time a function from this library is called. Primarily used in the diagnostics sketch included in the library to track function time.
-//This function can only be called if #define RUNDIAGNOSTICS is uncommented in SPIFlash.h
+//This function can only be called if #define RUNDIAGNOSTIC is uncommented in SPIFlash.h
 float SPIFlash::functionRunTime(void) {
+#ifdef RUNDIAGNOSTIC
   return _spifuncruntime;
-}
+#else
+  return 0;
 #endif
+}
 
 //Returns the library version as three bytes
 bool SPIFlash::libver(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
