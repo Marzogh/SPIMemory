@@ -490,6 +490,21 @@ void eraseSectorTest() {
   Serial.println();
 }
 
+void eraseSectionTest() {
+    Serial.println();
+  uint32_t _time, _addr;
+  _addr = random(0, 0xFFFFF);
+  Serial.print(F("\t\t\tErase 72KB Section: "));
+  if (flash.eraseSection(_addr, KB(72))) {
+    _time = flash.functionRunTime();
+    pass(TRUE);
+    printTime(_time, 0);
+  }
+  else {
+    pass(FALSE);
+  }
+}
+
 void eraseBlock32KTest() {
     Serial.println();
   uint32_t _time, _addr;
