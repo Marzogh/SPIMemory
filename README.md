@@ -12,27 +12,26 @@ This Arduino library is for use with flash memory chips that communicate using t
 <hr>
 
 >### Important note from developer
-
 >The term 'SPI Flash' is a fairly common way to refer to Flash memory chips that communicate over the SPI protocol and there are a number of libraries that are named SPIFlash. When I first started work on this library in 2014, it was mostly as an exercise to improve my embedded systems programming skills. When I asked for it to be included in the list of Arduino libraries, I did not really expect it to go very far or get very popular. But, before I knew it, I was releasing new versions every other month and I found the number of users got way bigger than I imagined it would. The amount of traffic the GitHub repository gets still surprises me.
-
+>
 >A few months ago, @LowPowerLab raised an issue ([#83](https://github.com/Marzogh/SPIFlash/issues/83)) about the problems the name of this library was causing the users of his library - also called SPIFlash. The fact that this library is in the Arduino Library manager meant that his users were being asked to upgrade their version of SPIFlash when the libraries were actually different. I can understand how much of an annoyance this can be for a user.
-
+>
 >@LowPowerLab's version of SPIFlash has been around for longer than this one and his library is a major part of his commercial line of development boards. Since I am a hobbyist developer (I'm a full-time geneticist & a part-time dabbler in ecology - if you're curious) and this library is not a commercial product with branding and trademarks to worry about, the least I can do is change the name of this library so it stops being an annoyance to @LowPowerLab's customers.
 >> On a side note, if you did not know already, @LowPowerLab makes and sells a fantastic line of Arduino compatible boards - the [Moteino](https://lowpowerlab.com/shop/) series - and has developed a fantastic IoT protocol to use with them to add smarts to your home. In January this year, I finally got around to getting my hands on some of his boards and have been playing around with them. They are fantastic! I'd strongly recommend you check them out - if you haven't already done so.
-
+>
 >I asked the Arduino developers if there was a way to migrate this library to a new name without breaking the upgrade path ([Issue #6904](https://github.com/arduino/Arduino/issues/6904)) and was told that it was not possible. The only way is to pull my version of SPIFlash from the library manager and ask for a renamed version to be included in the library manager after.
-
+>
 >So, this is what I have decided to do.:
-- This version - v3.1.0 - will be the last version to be released under the SPIFlash name.
-- Anyone downloading this version of the library will be able to read this notice in the ReadMe file.
-- Anyone using this version of the library will see a notice in their Serial output directing them to this notice in the ReadMe file. (this can be removed by commenting out the `#define PRINTNAMECHANGEALERT` in `SPIFlash.h`)
-- Version 3.2.0 will be released in a couple of months (in May most likely) under a new name. I'm currently thinking of calling it SPIMemory - suggestions are welcome.
-- This version of SPIFlash will be removed from the library manager then and replaced with the new one.
-
+>- This version - v3.1.0 - will be the last version to be released under the SPIFlash name.
+>- Anyone downloading this version of the library will be able to read this notice in the ReadMe file.
+>- Anyone using this version of the library will see a notice in their Serial output directing them to this notice in the ReadMe file. (this can be removed by commenting out the `#define PRINTNAMECHANGEALERT` in `SPIFlash.h`)
+>- Version 3.2.0 will be released in a couple of months (in May most likely) under a new name. I'm currently thinking of calling it SPIMemory - suggestions are welcome.
+>- This version of SPIFlash will be removed from the library manager then and replaced with the new one.
+>
 >The only change will have to be made in end-user code will be to change the `#include SPIFlash.h` to `#include SPIMemory.h` (or whatever the new name will be). After the name change, rest assured that older versions will remain accessible and the development history of the library will be preserved.
-
+>
 >I apologise for any trouble this might cause you as the end user, but, given the facts, it is the only thing I can do to be fair to @LowPowerLab
-
+>
 >Thanks again for using `SPIFlash` and I hope you will continue to find it useful in whatever new name it will take on.
 
 <hr>
