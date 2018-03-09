@@ -87,7 +87,7 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
     Serial.print("-");
   }
   Serial.println();
-  #endif
+#endif
 #ifdef RUNDIAGNOSTIC
   Serial.println("Chip Diagnostics initiated.");
   Serial.println();
