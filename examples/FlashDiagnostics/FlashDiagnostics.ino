@@ -64,6 +64,7 @@ void setup() {
   
   getID();
   eraseChipTest();
+  eraseSectionTest();
   eraseBlock64KTest();
   eraseBlock32KTest();
   eraseSectorTest();
