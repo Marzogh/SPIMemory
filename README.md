@@ -156,7 +156,7 @@ size = sizeof(variable) can be used for all types of data but String objects.
 ###### getCapacity()
 Returns the capacity in bytes as a 32-bit value.
 
-###### getmaxPage()
+###### getMaxPage()
 Returns the maximum number of pages in the flash memory as a 32-bit value.
 
 ###### functionRunTime()
