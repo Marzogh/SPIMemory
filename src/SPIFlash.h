@@ -1,8 +1,8 @@
-/* Arduino SPIFlash Library v.3.0.0
+/* Arduino SPIFlash Library v.3.1.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 04/11/2017
+ * Modified by Prajwal Bhattaram - 24/02/2018
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -61,6 +61,8 @@
 //#define ENABLEZERODMA                                               //
 //#define ZERO_SPISERCOM SERCOM4                                      //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define PRINTNAMECHANGEALERT
+
   #include <Arduino.h>
   #include "defines.h"
   #include <SPI.h>
@@ -138,7 +140,7 @@
 #endif
 
 #define LIBVER 3
-#define LIBSUBVER 0
+#define LIBSUBVER 1
 #define BUGFIXVER 0
 
 class SPIFlash {
@@ -200,6 +202,7 @@ public:
   template <class T> bool writeAnything(uint32_t _addr, const T& data, bool errorCheck = true);
   template <class T> bool readAnything(uint32_t _addr, T& data, bool fastRead = false);
   //-------------------------------- Erase functions ------------------------------------//
+  bool     eraseSection(uint32_t _addr, uint32_t _sz);
   bool     eraseSector(uint32_t _addr);
   bool     eraseBlock32K(uint32_t _addr);
   bool     eraseBlock64K(uint32_t _addr);
@@ -245,6 +248,7 @@ private:
   void     _printSupportLink(void);
   void     _endSPI(void);
   bool     _disableGlobalBlockProtect(void);
+  bool     _isChipPoweredDown(void);
   bool     _prep(uint8_t opcode, uint32_t _addr, uint32_t size = 0);
   bool     _startSPIBus(void);
   bool     _beginSPI(uint8_t opcode);
@@ -267,10 +271,10 @@ private:
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint8_t  _readStat3(void);
-  template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck);
-  template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false);
+  template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
+  template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false, uint8_t _dataType = 0x00);
   //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
-  template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz);
+  template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType = 0x00);
   //-------------------------------- Private variables ----------------------------------//
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
@@ -285,6 +289,7 @@ private:
   #endif
   volatile uint8_t *cs_port;
   bool        pageOverflow, SPIBusState;
+  bool        chipPoweredDown = false;
   bool        address4ByteEnabled = false;
   uint8_t     cs_mask, errorcode, stat1, stat2, stat3, _SPCR, _SPSR, _a0, _a1, _a2;
   char READ = 'R';
@@ -301,6 +306,7 @@ private:
               };
               chipID _chip;
   uint32_t    currentAddress, _currentAddress = 0;
+  uint32_t    _addressOverflow = false;
   uint8_t _uniqueID[8];
   const uint8_t _capID[14]   =
   {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};
@@ -319,7 +325,7 @@ private:
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 template <class T> bool SPIFlash::writeAnything(uint32_t _addr, const T& data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck);
+  return _write(_addr, data, sizeof(data), errorCheck, _STRUCT_);
 }
 
 // Reads any type of data from a specific location in the flash memory.
@@ -333,30 +339,39 @@ template <class T> bool SPIFlash::readAnything(uint32_t _addr, T& data, bool fas
 
 //---------------------------------- Private Templates ----------------------------------//
 
-// Private template to check for errors in writing to flash memory
-// Takes three arguments -
-//  1. _addr --> Any address from 0 to maxAddress
-//  2. const T& value --> Variable with the data to be error checked
-//  3. _sz --> Size of the data variable to be error checked, in bytes (1 byte = 8 bits)
-template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz) {
-  if (!_notBusy()) {
+template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType) {
+  if (_isChipPoweredDown() || !_addressCheck(_addr, _sz) || !_notBusy()) {
     return false;
   }
-  //Serial.print(F("Address being error checked: "));
-  //Serial.println(_addr);
-  _currentAddress = _addr;
   const uint8_t* p = (const uint8_t*)(const void*)&value;
-  CHIP_SELECT
-  _nextByte(WRITE, READDATA);
-  _transferAddress();
-  for (uint16_t i = 0; i < _sz; i++) {
-    if (*p++ != _nextByte(READ)) {
-      _troubleshoot(ERRORCHKFAIL);
-      _endSPI();
-      return false;
+  if (_dataType == _STRUCT_) {
+    uint8_t _inByte[_sz];
+    _beginSPI(READDATA);
+    _nextBuf(READDATA, &(*_inByte), _sz);
+    _endSPI();
+    for (uint16_t i = 0; i < _sz; i++) {
+      if (*p++ != _inByte[i]) {
+        _troubleshoot(ERRORCHKFAIL);
+        return false;
+      }
+      else {
+        return true;
+      }
     }
   }
-  _endSPI();
+  else {
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint16_t i = 0; i < _sz; i++) {
+      if (*p++ != _nextByte(READ)) {
+        _troubleshoot(ERRORCHKFAIL);
+        _endSPI();
+        return false;
+      }
+    }
+    _endSPI();
+  }
   return true;
 }
 
@@ -369,10 +384,19 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 
-template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck) {
-  if (!_prep(PAGEPROG, _addr, _sz)) {
+template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType) {
+  bool _retVal;
+#ifdef RUNDIAGNOSTIC
+  _spifuncruntime = micros();
+#endif
+
+  uint32_t _addrIn = _addr;
+  if (!_prep(PAGEPROG, _addrIn, _sz)) {
     return false;
   }
+  _addrIn = _currentAddress;
+  //Serial.print("_addrIn: ");
+  //Serial.println(_addrIn, HEX);
   const uint8_t* p = ((const uint8_t*)(const void*)&value);
 //Serial.print(F("Address being written to: "));
 //Serial.println(_addr);
@@ -389,7 +413,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   }
   else { //If data is longer than one byte (8 bits)
     uint32_t length = _sz;
-    uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+    uint16_t maxBytes = SPI_PAGESIZE-(_addrIn % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
 
     if (maxBytes > length) {
       for (uint16_t i = 0; i < length; ++i) {
@@ -408,16 +432,25 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
           _nextByte(WRITE, *p++);
         }
         CHIP_DESELECT
-        _currentAddress += writeBufSz;
+        if (!_addressOverflow) {
+          _currentAddress += writeBufSz;
+        }
+        else {
+          if (data_offset >= _addressOverflow) {
+            _currentAddress = 0x00;
+            _addressOverflow = false;
+          }
+        }
         data_offset += writeBufSz;
         length -= writeBufSz;
-        maxBytes = 256;   // Now we can do up to 256 bytes per loop
+        maxBytes = SPI_PAGESIZE;   // Now we can do up to 256 bytes per loop
         if(!_notBusy() || !_writeEnable()) {
           return false;
         }
       } while (length > 0);
     }
   }
+
   if (!errorCheck) {
     _endSPI();
     return true;
@@ -425,8 +458,12 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   else {
     //Serial.print(F("Address sent to error check: "));
     //Serial.println(_addr);
-    return _writeErrorCheck(_addr, value, _sz);
+    _retVal =  _writeErrorCheck(_addr, value, _sz, _dataType);
   }
+#ifdef RUNDIAGNOSTIC
+  _spifuncruntime = micros() - _spifuncruntime;
+#endif
+  return _retVal;
 }
 
 // Reads any type of data from a specific location in the flash memory.
@@ -435,26 +472,39 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
 //  2. T& value --> Variable to return data into
 //  3. _sz --> Size of the variable in bytes (1 byte = 8 bits)
 //  4. fastRead --> defaults to false - executes _beginFastRead() if set to true
-template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead) {
-  if (_prep(READDATA, _addr, _sz)) {
-    uint8_t* p = (uint8_t*)(void*)&value;
-    CHIP_SELECT
-    if (fastRead) {
-      _nextByte(WRITE, FASTREAD);
-    }
-    else {
-      _nextByte(WRITE, READDATA);
-    }
-    _transferAddress();
-    for (uint16_t i = 0; i < _sz; i++) {
-      *p++ =_nextByte(READ);
-    }
-    _endSPI();
-    return true;
-  }
-  else {
+template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead, uint8_t _dataType) {
+  if (!_prep(READDATA, _addr, _sz)) {
     return false;
   }
+  else {
+    uint8_t* p = (uint8_t*)(void*)&value;
+
+    if (_dataType == _STRING_) {
+      char _inChar[_sz];
+      _beginSPI(READDATA);
+      _nextBuf(READDATA, (uint8_t*) &(*_inChar), _sz);
+      _endSPI();
+      for (uint16_t i = 0; i < _sz; i++) {
+        *p++ = _inChar[i];
+      }
+    }
+    else {
+      CHIP_SELECT
+      if (fastRead) {
+        _nextByte(WRITE, FASTREAD);
+      }
+      else {
+        _nextByte(WRITE, READDATA);
+      }
+      _transferAddress();
+      for (uint16_t i = 0; i < _sz; i++) {
+        *p++ =_nextByte(READ);
+      }
+      _endSPI();
+    }
+    return true;
+  }
+  return true;
 }
 
 #endif // _SPIFLASH_H_

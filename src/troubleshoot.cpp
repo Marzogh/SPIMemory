@@ -53,7 +53,7 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
   #if defined (ARDUINO_ARCH_AVR)
     _printErrorCode();
   #else
-  Serial.println();
+  //Serial.println();
     switch (_code) {
       case SUCCESS:
       Serial.println("Function executed successfully");
@@ -124,6 +124,10 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
 
       case UNABLETO3BYTE:
       Serial.println("Unable to disable 4-byte addressing.");
+      break;
+
+      case CHIPISPOWEREDDOWN:
+      Serial.println("The Flash chip is currently powered down.");
       break;
 
       default:

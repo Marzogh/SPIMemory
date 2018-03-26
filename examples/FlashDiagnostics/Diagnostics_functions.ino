@@ -2,14 +2,14 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                          FlashDiagnostic_functions.ino                                                        |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 3.0.0                                                                     |
+  |                                                                   v 3.1.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  17.11.2017                                                                   |
+  |                                                                  04.03.2018                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
-  |                                uncomment #define RUNDIAGNOSTIC in SPIFlash.cpp in the library before compiling                                |
+  |                                 uncomment #define RUNDIAGNOSTIC in SPIFlash.h in the library before compiling                                 |
   |                                             and loading this application onto your Arduino.                                                   |
   |                                                                                                                                               |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -113,10 +113,6 @@ void getID() {
   b1 = (JEDEC >> 16);
   b2 = (JEDEC >> 8);
   //b3 = (JEDEC >> 0);
-
-
-  printLine();
-  //---------------------------------------------------------------------------------------------//
 
   clearprintBuffer(&printBuffer[1]);
   #if defined (ARDUINO_ARCH_ESP32)
@@ -377,6 +373,10 @@ void structTest() {
     int32_t s3;
     bool s4;
     uint8_t s5;
+    struct structOfStruct {
+      uint8_t b1;
+      float f2;
+    } structofstruct;
   };
   Test _d;
   Test _data;
@@ -386,6 +386,8 @@ void structTest() {
   _d.s3 = 880932;
   _d.s4 = true;
   _d.s5 = 5;
+  _d.structofstruct.b1 = 234;
+  _d.structofstruct.f2 = 6.28;
 
   uint32_t wTime = 0;
   uint32_t addr, rTime;
@@ -402,7 +404,7 @@ void structTest() {
 
 
   Serial.print ("\t\t\tStruct: \t");
-  if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5)) {
+  if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5) && (_d.structofstruct.b1 == _data.structofstruct.b1) && (_d.structofstruct.b1 == _data.structofstruct.b1)) {
     pass(TRUE);
   }
   else {
@@ -486,6 +488,21 @@ void eraseSectorTest() {
     pass(FALSE);
   }
   Serial.println();
+}
+
+void eraseSectionTest() {
+    Serial.println();
+  uint32_t _time, _addr;
+  _addr = random(0, 0xFFFFF);
+  Serial.print(F("\t\t\tErase 72KB Section: "));
+  if (flash.eraseSection(_addr, KB(72))) {
+    _time = flash.functionRunTime();
+    pass(TRUE);
+    printTime(_time, 0);
+  }
+  else {
+    pass(FALSE);
+  }
 }
 
 void eraseBlock32KTest() {
