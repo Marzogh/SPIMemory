@@ -1,6 +1,6 @@
 # SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=stable)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
 [![GitHub release](https://img.shields.io/github/release/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash)
-[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIFlash/v3.0.0.svg)](https://github.com/Marzogh/SPIFlash/compare/v3.1.0...development)
+[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIFlash/v3.1.0.svg)](https://github.com/Marzogh/SPIFlash/compare/v3.1.0...development)
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash/blob/master/LICENSE)
