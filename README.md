@@ -25,10 +25,10 @@ This Arduino library is for use with flash memory chips that communicate using t
 >- This version - v3.1.0 - will be the last version to be released under the SPIFlash name.
 >- Anyone downloading this version of the library will be able to read this notice in the ReadMe file.
 >- Anyone using this version of the library will see a notice in their Serial output directing them to this notice in the ReadMe file. (this can be removed by commenting out the `#define PRINTNAMECHANGEALERT` in `SPIFlash.h`)
->- Version 3.2.0 will be released in a couple of months (in May most likely) under a new name. I'm currently thinking of calling it SPIMemory - suggestions are welcome.
+>- Version 3.2.0 will be released in a couple of months (in May most likely) under a new name - SPIMemory.
 >- This version of SPIFlash will be removed from the library manager then and replaced with the new one.
 >
->The only change will have to be made in end-user code will be to change the `#include SPIFlash.h` to `#include SPIMemory.h` (or whatever the new name will be). After the name change, rest assured that older versions will remain accessible and the development history of the library will be preserved.
+>The only change will have to be made in end-user code will be to change the `#include SPIFlash.h` to `#include SPIMemory.h`. After the name change, rest assured that older versions will remain accessible and the development history of the library will be preserved.
 >
 >I apologise for any trouble this might cause you as the end user, but, given the facts, it is the only thing I can do to be fair to @LowPowerLab
 >
