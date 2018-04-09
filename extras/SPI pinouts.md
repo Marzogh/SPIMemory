@@ -21,4 +21,15 @@
 * |____________|________________|
 *
 *
+* ESP32 Feather SPI pinout is as follows:
+*  _______________________________________
+* |Pin Name |   GPIO #   |  HSPI Function |
+* |---------|------------|----------------|
+* | MISO    |   GPIO19   |  MISO (DIN)    |
+* | MOSI    |   GPIO18   |  MOSI (DOUT)   |
+* | SCK     |   GPIO5    |  CLOCK         |
+* | 33      |   GPIO33   |  CS / SS       |
+* |_________|____________|________________|
+*
+*
 */
