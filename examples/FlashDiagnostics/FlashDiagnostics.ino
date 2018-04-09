@@ -61,7 +61,7 @@ void setup() {
   //flash.begin(MB(1));
   Serial.println();
   Serial.println();
-  
+
   getID();
   eraseChipTest();
   eraseSectionTest();

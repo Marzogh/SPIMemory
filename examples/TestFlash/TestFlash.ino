@@ -137,7 +137,7 @@ void loop() {
       sprintf(printBuffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
       Serial.println(printBuffer);
       clearprintBuffer();
-      sprintf(printBuffer, "JEDEC ID: %04lxh", JEDEC);
+      sprintf(printBuffer, "JEDEC ID: %04xh", JEDEC);
       Serial.println(printBuffer);
       printLine();
       printNextCMD();
@@ -572,4 +572,3 @@ void inputAddress(void) {
   addr = Serial.parseInt();
   Serial.println(addr);
 }
-
