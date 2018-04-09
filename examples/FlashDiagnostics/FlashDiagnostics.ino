@@ -2,14 +2,14 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                             FlashDiagnostics.ino                                                              |
   |                                                               SPIFlash library                                                                |
-  |                                                                   v 3.0.0                                                                     |
+  |                                                                   v 3.1.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  17.11.2017                                                                   |
+  |                                                                  04.03.2018                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
-  |                                uncomment #define RUNDIAGNOSTIC in SPIFlash.cpp in the library before compiling                                |
+  |                                 uncomment #define RUNDIAGNOSTIC in SPIFlash.h in the library before compiling                                 |
   |                                             and loading this application onto your Arduino.                                                   |
   |                                                                                                                                               |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -23,15 +23,15 @@
 #endif
 
 #if defined (SIMBLEE)
-  #define BAUD_RATE 250000
-  #define RANDPIN 1
+#define BAUD_RATE 250000
+#define RANDPIN 1
 #else
-  #define BAUD_RATE 115200
-  #if defined(ARCH_STM32)
-    #define RANDPIN PA0
-  #else
-    #define RANDPIN A0
-  #endif
+#define BAUD_RATE 115200
+#if defined(ARCH_STM32)
+#define RANDPIN PA0
+#else
+#define RANDPIN A0
+#endif
 #endif
 
 #define TRUE 1
@@ -42,9 +42,9 @@ SPIFlash flash;
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  #if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32)
-    while (!Serial) ; // Wait for Serial monitor to open
-  #endif
+#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
   delay(50); //Time to terminal get connected
   Serial.print(F("Initialising Flash memory"));
   for (uint8_t i = 0; i < 10; ++i)
@@ -53,14 +53,18 @@ void setup() {
   }
   Serial.println();
   randomSeed(analogRead(RANDPIN));
-  flash.begin();
+  //while (!
+  flash.begin();/*) {
+    delay(1000);
+  }*/
   //To use a custom flash memory size (if using memory from manufacturers not officially supported by the library) - declare a size variable according to the list in defines.h
   //flash.begin(MB(1));
   Serial.println();
   Serial.println();
-
+  
   getID();
   eraseChipTest();
+  eraseSectionTest();
   eraseBlock64KTest();
   eraseBlock32KTest();
   eraseSectorTest();

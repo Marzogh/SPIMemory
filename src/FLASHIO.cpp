@@ -1,6 +1,6 @@
-/* Arduino SPIFlash Library v.3.0.0
+/* Arduino SPIFlash Library v.3.1.0
  * Copyright (C) 2017 by Prajwal Bhattaram
- * Created by Prajwal Bhattaram - 04/11/2017
+ * Created by Prajwal Bhattaram - 24/02/2018
  *
  * This file is part of the Arduino SPIFlash Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -32,6 +32,7 @@
 //Checks to see if page overflow is permitted and assists with determining next address to read/write.
 //Sets the global address variable
 bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
+  uint32_t _submittedAddress = _addr;
   if (errorcode == UNKNOWNCAP || errorcode == NORESPONSE) {
     return false;
   }
@@ -40,19 +41,30 @@ bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size) {
     return false;
 	}
 
-  //for (uint32_t i = 0; i < size; i++) {
-  if (_addr + size >= _chip.capacity) {
+  //Serial.print("_chip.capacity: ");
+  //Serial.println(_chip.capacity, HEX);
+
+  if (_submittedAddress + size >= _chip.capacity) {
+    //Serial.print("_submittedAddress + size: ");
+    //Serial.println(_submittedAddress + size, HEX);
   #ifdef DISABLEOVERFLOW
     _troubleshoot(OUTOFBOUNDS);
     return false;					// At end of memory - (!pageOverflow)
   #else
-    _currentAddress = 0x00;
+    _addressOverflow = ((_submittedAddress + size) - _chip.capacity);
+    _currentAddress = _addr;
+    //Serial.print("_addressOverflow: ");
+    //Serial.println(_addressOverflow, HEX);
     return true;					// At end of memory - (pageOverflow)
   #endif
   }
-  //}
-  _currentAddress = _addr;
-  return true;				// Not at end of memory if (address < _chip.capacity)
+  else {
+    _addressOverflow = false;
+    _currentAddress = _addr;
+    return true;				// Not at end of memory if (address < _chip.capacity)
+  }
+  //Serial.print("_currentAddress: ");
+  //Serial.println(_currentAddress, HEX);
 }
 
 // Checks to see if the block of memory has been previously written to
@@ -62,6 +74,7 @@ bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
   for (uint32_t i = 0; i < size; i++) {
     if (_nextByte(READ) != 0xFF) {
       CHIP_DESELECT;
+      _troubleshoot(PREVWRITTEN);
       return false;
     }
   }
@@ -83,11 +96,11 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
     //Serial.print(F("Address being prepped: "));
     //Serial.println(_addr);
     #ifndef HIGHSPEED
-      if(!_addressCheck(_addr, size) || !_notPrevWritten(_addr, size) || !_notBusy() || !_writeEnable()) {
+      if(_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notPrevWritten(_addr, size) || !_notBusy() || !_writeEnable()) {
         return false;
       }
     #else
-      if (!_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
+      if (_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
         return false;
       }
     #endif
@@ -95,15 +108,14 @@ bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size) {
     break;
 
     case ERASEFUNC:
-    _currentAddress = _addr;
-    if(!_notBusy()||!_writeEnable()) {
+    if(_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notBusy() || !_writeEnable()) {
       return false;
     }
     return true;
     break;
 
     default:
-      if (!_addressCheck(_addr, size) || !_notBusy()) {
+      if (_isChipPoweredDown() || !_addressCheck(_addr, size) || !_notBusy()) {
         return false;
       }
     #ifdef ENABLEZERODMA
@@ -188,18 +200,22 @@ bool SPIFlash::_beginSPI(uint8_t opcode) {
     _nextByte(WRITE, opcode);
     _nextByte(WRITE, DUMMYBYTE);
     _transferAddress();
+    break;
 
     case SECTORERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     case BLOCK32ERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     case BLOCK64ERASE:
     _nextByte(WRITE, opcode);
     _transferAddress();
+    break;
 
     default:
     _nextByte(WRITE, opcode);
@@ -267,7 +283,7 @@ void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
       #ifdef ENABLEZERODMA
         spi_write(&(*data_buffer), size);
       #else
-        _spi->transfer(&(*data_buffer), size);
+        _spi->transfer(&data_buffer[0], size);
       #endif
     #elif defined (ARDUINO_ARCH_AVR)
       SPI.transfer(&(*data_buffer), size);
@@ -384,6 +400,17 @@ bool SPIFlash::_noSuspend(void) {
   return true;
 }
 
+// Checks to see if chip is powered down. If it is, retrns true. If not, returns false.
+bool SPIFlash::_isChipPoweredDown(void) {
+  if (chipPoweredDown) {
+    _troubleshoot(CHIPISPOWEREDDOWN);
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 // Polls the status register 1 until busy flag is cleared or timeout
 bool SPIFlash::_notBusy(uint32_t timeout) {
   _delay_us(WINBOND_WRITE_DELAY);
@@ -397,7 +424,7 @@ bool SPIFlash::_notBusy(uint32_t timeout) {
     }
     _time++;
   } while ((micros() - _time) < timeout);
-  if ((micros() - _time) == timeout) {
+  if (timeout <= (micros() - _time)) {
     return false;
   }
   return true;

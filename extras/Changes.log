@@ -2,11 +2,50 @@
 //										  SPIFlash Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.1.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						24.02.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+--> Library name change notice inserted into flash.begin(). This notice can be dismissed by commenting out the instance of `#define PRINTNAMECHANGEALERT` in SPIFlash.h. Please refer to the Readme file for further details.
+
+Bugs squashed
+--> An error with how _addressCheck() works with data that spans the memory boundary - when rolling over from address '_chip.capacity' to address '0x00' - has been fixed. In previous versions this caused issues with writing complex data structures across the memory boundary and led to many _writeErrorCheck() failures. Fixes issue #112
+
+--> An error with how _writeErrorCheck() worked has been resolved. Writing structs is now as stable as other functions are. Fixes #106
+
+--> All compilation-time, non-critical errors have been fixed.
+
+Enhancements:
+--> A new function - 'flash.eraseSection(address, size)' - has been introduced in this version. When a user requires a large and variable (between writes) amount of data to be written to the flash memory on the fly and to have the correct amount of space erased to fit the data, this function will automatically calculate and erase the right amount of space to fit the data. Please note that if the the amount of data being written is consistently the same size, the pre-existing 'flash.eraseSector()', 'flash.eraseBlock32K()' and 'flash.eraseBlock64K()' functions will operate a lot faster.
+
+--> Updated Diagnostics.ino to include eraseSection().
+
+--> All I/O functions now check to see if the flash chip is powered down. If it is, they prevent the function from running and returns an error. A new error code 'CHIPISPOWEREDDOWN' will be returned upon calling flash.error().
+
+
+New flash memory chips supported:
+--> S25FL127S
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.0.1 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						10.12.2017											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs squashed:
+****************
+Thanks for catching and fixing the following @hanyazou (PR #101)
+--> Added missing break statements in SPIFlash::_beginSPI() because that lacks some essential break statement in switch/case. (commit 1: 1de2c10)
+--> The library did not wait until the busy bit in SR1 was cleared. Timeout argument of _notBusy() must be in micro-second. 500L means 500 micro seconds which is too short to wait for completion of erase command. Added " * 1000" to the arguments. (commit 2: 9633c2f)
+--> Modified TestFlash.ino to check error of erase commands execution. (commit 3: a179306)
+****************
+--> Fixes a major bug that was causing input Arrays to be overwritten by zeros during the writeByteArray() / writeCharArray() process. Thanks for catching this @hanyazou. (Issue #102)
+
+New flash memory chips supported:
+--> S25FL127S
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.0.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						09.08.2017											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-To check:
 Bugs Squashed:
 --> The writeByteArray() & writeCharArray() bug that occurred when writing arrays that spanned page boundaries (squashed in v2.5.0), stayed around to haunt the other functions. Writing any data larger than a single byte that spanned page boundaries would cause the data to wrap around to the beginning of the page. The likelihood of this occurring was slim - no one has reported it to date. However, just in case, this has now been squashed in this release.
 
