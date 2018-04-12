@@ -62,53 +62,48 @@ void setup() {
   Serial.println();
   Serial.println();
 
-  getID();
-  eraseChipTest();
-  eraseSectionTest();
-  eraseBlock64KTest();
-  eraseBlock32KTest();
-  eraseSectorTest();
+  if (getID()) {
+    eraseChipTest();
+    eraseSectionTest();
+    eraseBlock64KTest();
+    eraseBlock32KTest();
+    eraseSectorTest();
+    Serial.println();
 
 #if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
-  delay(10);
-  powerDownTest();
-  powerUpTest();
-  Serial.println();
+    delay(10);
+    powerDownTest();
+    powerUpTest();
+    Serial.println();
 #endif
 
-  byteTest();
-  charTest();
-  wordTest();
-  shortTest();
-  uLongTest();
+    byteTest();
+    charTest();
+    wordTest();
+    shortTest();
+    uLongTest();
 #if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
-  delay(10);
+    delay(10);
 #endif
-  longTest();
-  floatTest();
-  structTest();
-  arrayTest();
-  stringTest();
+    longTest();
+    floatTest();
+    structTest();
+    arrayTest();
+    stringTest();
 
 #if !defined(ARDUINO_ARCH_SAM) || !defined(ARDUINO_ARCH_ESP8266)
-  powerDownTest();
-  powerUpTest();
+    Serial.println();
+    powerDownTest();
+    powerUpTest();
 #endif
-  printLine();
-  if (!flash.functionRunTime()) {
-    Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+    printLine();
+    if (!flash.functionRunTime()) {
+      Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+    }
   }
 }
 
 void loop() {
 
-}
-
-void longBlink() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(3000);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(2000);
 }
 
