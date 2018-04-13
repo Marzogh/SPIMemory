@@ -67,27 +67,6 @@ SPIFlash::SPIFlash(uint8_t cs) {
 
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(uint32_t flashChipSize) {
-#ifdef PRINTNAMECHANGEALERT
-  if (!Serial) {
-    Serial.begin(115200);
-  }
-  for (uint8_t i = 0; i < 230; i++) {
-    Serial.print("-");
-  }
-  Serial.println();
-  Serial.println("\t\t\t\t\t\t\t\t\t\tImportant Notice");
-  for (uint8_t i = 0; i < 230; i++) {
-    Serial.print("-");
-  }
-  Serial.println();
-  Serial.println("\t\t\t\t\tThis version of the library - v3.1.0 will be the last version to ship under the name SPIFlash.");
-  Serial.println("\t\t\t\tStarting early May - when v3.2.0 is due - this library will be renamed 'SPIMemory' on the Arduino library manager.");
-  Serial.println("\t\t\t\t\t\t\tPlease refer to the Readme file for further details.");
-  for (uint8_t i = 0; i < 230; i++) {
-    Serial.print("-");
-  }
-  Serial.println();
-#endif
 #ifdef RUNDIAGNOSTIC
   Serial.println("Chip Diagnostics initiated.");
   Serial.println();
@@ -106,6 +85,7 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
     #ifdef RUNDIAGNOSTIC
     Serial.println("No Chip size defined by user. Automated identification initiated.");
     #endif
+    _checkForSFDP();
     bool retVal = _chipID();
     _endSPI();
     return retVal;
@@ -185,7 +165,8 @@ uint16_t SPIFlash::getManID(void) {
 
 //Returns JEDEC ID which is returned as a 32 bit int
 uint32_t SPIFlash::getJEDECID(void) {
-    uint32_t id = _chip.manufacturerID;
+    uint32_t id = 0;
+    id = _chip.manufacturerID;
     id = (id << 8)|(_chip.memoryTypeID << 0);
     id = (id << 8)|(_chip.capacityID << 0);
     return id;

@@ -1,6 +1,18 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//										  SPIFlash Library 				 						   //
+//										  SPIMemory Library 				 						   //
 //					  				  		Changes log 									   	   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.2.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						13.04.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+--> Library name changed to SPIMemory
+
+Bugs squashed
+
+Enhancements
+--> Library now recognises (and prefers SFDP) compatible flash memory. This means, compatibility is no longer limited to a handful of differenc ICs. Along with the previously compatible types of SPI Flash, almost all SFDP compatible SPI Flash should now work with the library.
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.1.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

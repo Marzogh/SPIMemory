@@ -63,6 +63,26 @@
 #define B(x)          uint32_t(x*BYTE)
 #define KB(x)         uint32_t(x*KiB)
 #define MB(x)         uint32_t(x*MiB)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//					SFDP related defines 						  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define SFDPSIGNATURE 0x50444653
+#define ADDRESSOFSFDPDWORD(x,y) x+((y - 1) * 4)
+#define ADDRESSOFSFDPBYTE(x,y,z) x+((y - 1) * 4)+(z - 1)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//					Fixed SFDP addresses 						  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define SFDP_HEADER_ADDR 0x00
+#define SFDP_SIGNATURE_DWORD 0x01
+#define SFDP_NPH_DWORD 0x02
+#define SFDP_NPH_BYTE 0x03
+#define SFDP_BASIC_PARAM_TABLE_NO 0x01
+#define SFDP_MEMORY_DENSITY_DWORD 0x02
+#define SFDP_SECTOR_MAP_PARAM_TABLE_NO 0x02
+#define SFDP_4KB_ERASE_BYTE 0x02
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -217,6 +237,8 @@
 #define Top(param) ((int *)&param)[1] //0xyy00
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
+#define bit_is_set(x,y) (x & (1 << y))
+#define bit_is_clear(x,y) (~x & (1 << y))
 #ifndef LED_BUILTIN //fix for boards without that definition
   #define LED_BUILTIN 13
 #endif

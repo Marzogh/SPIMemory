@@ -140,7 +140,7 @@
 #endif
 
 #define LIBVER 3
-#define LIBSUBVER 1
+#define LIBSUBVER 2
 #define BUGFIXVER 0
 
 class SPIFlash {
@@ -217,6 +217,7 @@ public:
   //uint32_t freeRAM(void);
 //#endif
   //------------------------------- Public variables ------------------------------------//
+bool       sdfpPresent = false;
 
 private:
 #if defined (ARDUINO_ARCH_SAM)
@@ -259,7 +260,6 @@ private:
   bool     _writeDisable(void);
   bool     _getJedecId(void);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
-  bool     _getSFDP(void);
   bool     _chipID(void);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t _addr, uint32_t size = 1);
@@ -271,6 +271,16 @@ private:
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint8_t  _readStat3(void);
+  bool     _getSFDPTable(uint32_t _address, uint8_t *data_buffer, uint8_t numberOfDWords);
+  uint32_t _getSFDPdword(uint32_t _address, uint8_t dWordNumber);
+  uint16_t _getSFDPword(uint32_t _address, uint8_t dWordNumber, uint8_t startByte);
+  uint8_t  _getSFDPbyte(uint32_t _address, uint8_t dWordNumber, uint8_t byteNumber);
+  bool     _getSFDPbit(uint32_t _address, uint8_t dWordNumber, uint8_t bitNumber);
+  uint32_t _getSFDPTableAddr(uint32_t paramHeaderNum);
+  bool     _checkForSFDP(void);
+  bool     _readSFDPParam(void);
+  bool     _getSFDPFlashParam(void);
+  bool     _getSFDPFlashInstructions(void);
   template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
   template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false, uint8_t _dataType = 0x00);
   //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
@@ -300,13 +310,14 @@ private:
                 uint8_t manufacturerID;
                 uint8_t memoryTypeID;
                 uint8_t capacityID;
-                uint32_t sfdp;
                 uint32_t capacity;
                 uint32_t eraseTime;
               };
               chipID _chip;
+  uint8_t     _noOfParamHeaders;
   uint32_t    currentAddress, _currentAddress = 0;
   uint32_t    _addressOverflow = false;
+  uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr;
   uint8_t _uniqueID[8];
   const uint8_t _capID[14]   =
   {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};

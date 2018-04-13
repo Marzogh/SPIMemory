@@ -134,12 +134,6 @@ bool SPIFlash::_transferAddress(void) {
   _nextByte(WRITE, Higher(_currentAddress));
   _nextByte(WRITE, Hi(_currentAddress));
   _nextByte(WRITE, Lo(_currentAddress));
-  /*if (address4ByteEnabled) {
-    _nextByte(WRITE, _currentAddress >> 24);
-  }
-  _nextByte(WRITE, _currentAddress >> 16);
-  _nextByte(WRITE, _currentAddress >> 8);
-  _nextByte(WRITE, _currentAddress);*/
   return true;
 }
 
@@ -487,35 +481,6 @@ bool SPIFlash::_getJedecId(void) {
   }
 }
 
-bool SPIFlash::_getSFDP(void) {
-  if(!_notBusy()) {
-  	return false;
-  }
-  _currentAddress = 0x00;
-  _beginSPI(READSFDP);
-  _transferAddress();
-  _nextByte(WRITE, DUMMYBYTE);
-  /*for (uint8_t i = 0; i < 4; i++) {
-    _chip.sfdp += (_nextByte(READ) << (8*i));
-  }*/
-  // Modification suggested by @VitorBoss on 13.08.2017.
-  // Ref issue 76 on Github here -->
-  // https://github.com/Marzogh/SPIFlash/issues/76
-  Lo(_chip.sfdp) = _nextByte(READ);
-  Hi(_chip.sfdp) = _nextByte(READ);
-  Higher(_chip.sfdp) = _nextByte(READ);
-  Highest(_chip.sfdp) = _nextByte(READ);
-  CHIP_DESELECT
-  if (_chip.sfdp == 0x50444653) {
-    //Serial.print("_chip.sfdp: ");
-    //Serial.println(_chip.sfdp, HEX);
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 bool SPIFlash::_disableGlobalBlockProtect(void) {
   if (_chip.memoryTypeID == SST25) {
     _readStat1();
@@ -542,42 +507,39 @@ bool SPIFlash::_disableGlobalBlockProtect(void) {
 
 //Identifies the chip
 bool SPIFlash::_chipID(void) {
-  //Get Manfucturer/Device ID so the library can identify the chip
-  //_getSFDP();
-  if (!_getJedecId()) {
-    return false;
+  if (sdfpPresent) {
+    _readSFDPParam();
+    _getSFDPFlashParam();
   }
+  else {
+    if (!_getJedecId()) {
+      return false;
+    }
 
-  if (_chip.manufacturerID == MICROCHIP_MANID) {
-    _disableGlobalBlockProtect();
-  }
+    if (_chip.manufacturerID == MICROCHIP_MANID) {
+      _disableGlobalBlockProtect();
+    }
 
-  if (!_chip.capacity) {
-    if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID) {
-      //Identify capacity
-      for (uint8_t i = 0; i < sizeof(_capID); i++) {
-        if (_chip.capacityID == _capID[i]) {
-          _chip.capacity = (_memSize[i]);
-          _chip.supported = true;
-          return true;
+    if (!_chip.capacity) {
+      if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID) {
+        //Identify capacity
+        for (uint8_t i = 0; i < sizeof(_capID); i++) {
+          if (_chip.capacityID == _capID[i]) {
+            _chip.capacity = (_memSize[i]);
+            _chip.supported = true;
+            return true;
+          }
+        }
+        if (!_chip.capacity) {
+          _troubleshoot(UNKNOWNCAP);
+          return false;
         }
       }
-      if (!_chip.capacity) {
-        _troubleshoot(UNKNOWNCAP);
+      else {
+        _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
         return false;
       }
     }
-    else {
-      _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
-      return false;
-    }
   }
-
-  /*// If the flash memory is > 16 MB enable 4-byte addressing
-  if (_chip.manufacturerID == WINBOND_MANID && _chip.capacity > MB(16)) {
-    if (!_enable4ByteAddressing()) {    // If unable to enable 4-byte addressing
-      return false;
-    }
-  }*/
   return true;
 }
