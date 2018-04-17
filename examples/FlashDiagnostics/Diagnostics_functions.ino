@@ -115,7 +115,7 @@ bool getID() {
   //b3 = (JEDEC >> 0);
 
   clearprintBuffer(&printBuffer[1]);
-  if (!JEDEC && !flash.sdfpPresent) {
+  if (!JEDEC && !flash.sfdpPresent) {
     Serial.println("Unable to establish comms with chip. Please check wiring. Is the chip officially supported? If unable to fix, please raise an issue on Github");
     return false;
   }

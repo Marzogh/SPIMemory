@@ -15,7 +15,7 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 
-#include<SPIFlash.h>
+#include<SPIMemory.h>
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -37,8 +37,9 @@
 #define TRUE 1
 #define FALSE 0
 
-//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
-SPIFlash flash;
+//SPIFlash flash;                   //Use this constructor if your Flash chip does not support the SFDP standard - autoidentification will no longer work and you will be restricted to the flash memory chips listed in ReadMe.md
+//SFDPFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
+SFDPFlash flash;                    
 
 void setup() {
   Serial.begin(BAUD_RATE);
