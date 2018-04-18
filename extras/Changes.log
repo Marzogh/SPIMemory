@@ -13,7 +13,8 @@
 --> Both SPIFlash & SFDPFlash variants of the library will receive all bug-fixes till v4.0.0. However all feature enhancements will only be applied to the SFDPFlash variant from v3.2.0 onwards.
 
 New flash memory chips supported
---> All flash memories compatible with the SFDP standard (as at JESD216B)
+--> All flash memories compatible with the SFDP standard (as at JESD216B) can be used with the constructor ```SFDPFlash```
+--> LE25U40CMC from ON Semiconductor
 
 Bugs squashed
 

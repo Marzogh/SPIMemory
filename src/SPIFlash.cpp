@@ -559,7 +559,7 @@ bool SPIFlash::_chipID(void) {
     }
 
     if (!_chip.capacity) {
-      if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID) {
+      if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID || _chip.manufacturerID == ON_MANID) {
         //Identify capacity
         for (uint8_t i = 0; i < sizeof(_capID); i++) {
           if (_chip.capacityID == _capID[i]) {
@@ -960,7 +960,7 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
       length -= writeBufSz;
       maxBytes = 256;   // Now we can do up to 256 bytes per loop
 
-      if(!_notBusy() || !_writeEnable()){
+      if(!_notBusy(10000L) || !_writeEnable()){
         return false;
       }
 
@@ -979,11 +979,16 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
       return false;
     }
     _currentAddress = _addr;
+    uint8_t _inByte;
     CHIP_SELECT
     _nextByte(WRITE, READDATA);
     _transferAddress();
     for (uint16_t j = 0; j < bufferSize; j++) {
-      if (_nextByte(READ) != data_buffer[j]) {
+      _inByte = _nextByte(READ);
+      if (_inByte != data_buffer[j]) {
+      //if (_nextByte(READ) != data_buffer[j]) {
+      Serial.print("inByte = ");
+      Serial.println(_inByte);
         return false;
       }
     }
