@@ -72,14 +72,16 @@ void pass(bool _status) {
 }
 
 void printUniqueID(void) {
-  Serial.print("Unique ID: ");
   long long _uniqueID = flash.getUniqueID();
-  Serial.print(uint32_t(_uniqueID / 1000000L));
-  Serial.print(uint32_t(_uniqueID % 1000000L));
-  Serial.print(", ");
-  Serial.print("0x");
-  Serial.print(uint32_t(_uniqueID >> 32), HEX);
-  Serial.print(uint32_t(_uniqueID), HEX);
+  if (_uniqueID) {
+    Serial.print("Unique ID: ");
+    Serial.print(uint32_t(_uniqueID / 1000000L));
+    Serial.print(uint32_t(_uniqueID % 1000000L));
+    Serial.print(", ");
+    Serial.print("0x");
+    Serial.print(uint32_t(_uniqueID >> 32), HEX);
+    Serial.print(uint32_t(_uniqueID), HEX);
+  }
 }
 
 bool getID() {
