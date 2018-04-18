@@ -1,10 +1,10 @@
-/* Arduino SPIFlash Library v.3.0.0
+/* Arduino SPIMemory Library v.3.0.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 14/11/2016
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
  * Modified by Prajwal Bhattaram - 02/08/2017
  *
- * This file is part of the Arduino SPIFlash Library. This library is for
+ * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
  * and writing individual data variables, structs and arrays from and to various locations;
  * reading and writing pages; continuous read functions; sector, block and chip erase;
@@ -21,14 +21,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License v3.0
- * along with the Arduino SPIFlash Library.  If not, see
+ * along with the Arduino SPIMemory Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "SPIFlash.h"
+#include "SPIMemory.h"
 
 //Subfunctions for troubleshooting function
-void SPIFlash::_printErrorCode(void) {
+void SPIMemory::_printErrorCode(void) {
   Serial.print("Error code: 0x");
   if (errorcode < 0x10) {
     Serial.print("0");
@@ -36,12 +36,12 @@ void SPIFlash::_printErrorCode(void) {
   Serial.println(errorcode, HEX);
 }
 
-void SPIFlash::_printSupportLink(void) {
+void SPIMemory::_printSupportLink(void) {
   Serial.print("If this does not help resolve/clarify this issue, ");
-  Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIFlash/issues with the details of what your were doing when this error occurred");
+  Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIMemory/issues with the details of what your were doing when this error occurred");
 }
 //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
-void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
+void SPIMemory::troubleshoot(uint8_t _code, bool printoverride) {
   bool _printoverride;
   errorcode = _code;
 #ifdef RUNDIAGNOSTIC
@@ -70,9 +70,6 @@ void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride) {
       case UNKNOWNCHIP:
       Serial.println("Unable to identify chip. Are you sure this chip is supported?");
       Serial.println("Chip details:");
-      Serial.print("manufacturer ID: 0x"); Serial.println(_chip.manufacturerID, HEX);
-      Serial.print("capacity ID: 0x"); Serial.println(_chip.memoryTypeID, HEX);
-      Serial.print("device ID: 0x"); Serial.println(_chip.capacityID, HEX);
       break;
 
       case UNKNOWNCAP:

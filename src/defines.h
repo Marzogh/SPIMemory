@@ -24,6 +24,37 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+ // Defines and variables specific to SAM architecture
+ #if defined (ARDUINO_ARCH_SAM)
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer   _dueSPITransfer
+   #define BEGIN_SPI _dueSPIBegin();
+   extern char _end;
+   extern "C" char *sbrk(int i);
+   //char *ramstart=(char *)0x20070000;
+   //char *ramend=(char *)0x20088000;
+
+ // Specific access configuration for Chip select pin. Includes specific to RTL8195A to access GPIO HAL - @boseji <salearj@hotmail.com> 02.03.17
+ #elif defined (BOARD_RTL8195A)
+   #define CHIP_SELECT   gpio_write(&csPin, 0);
+   #define CHIP_DESELECT gpio_write(&csPin, 1);
+   #define xfer(n)   SPI.transfer(n)
+   #define BEGIN_SPI SPI.begin();
+
+ // Defines and variables specific to SAMD architecture
+ #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer(n)   _spi->transfer(n)
+   #define BEGIN_SPI _spi->begin();
+ #else
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer(n)   SPI.transfer(n)
+   #define BEGIN_SPI SPI.begin();
+ #endif
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //						Common Instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -67,9 +98,19 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					SFDP related defines 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define DWORD(x) x
+#define FIRSTBYTE 0x01
 #define SFDPSIGNATURE 0x50444653
 #define ADDRESSOFSFDPDWORD(x,y) x+((y - 1) * 4)
 #define ADDRESSOFSFDPBYTE(x,y,z) x+((y - 1) * 4)+(z - 1)
+#define KB4ERASE_TYPE 0x0C
+#define KB32ERASE_TYPE 0x0F
+#define KB64ERASE_TYPE 0x10
+#define KB256ERASE_TYPE 0x12
+#define MS1 0b00000000
+#define MS16 0b00000001
+#define MS128 0b00000010
+#define S1    0b00000011
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Fixed SFDP addresses 						  //
@@ -81,7 +122,7 @@
 #define SFDP_BASIC_PARAM_TABLE_NO 0x01
 #define SFDP_MEMORY_DENSITY_DWORD 0x02
 #define SFDP_SECTOR_MAP_PARAM_TABLE_NO 0x02
-#define SFDP_4KB_ERASE_BYTE 0x02
+#define SFDP_ERASE1_BYTE 0x01
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
@@ -235,10 +276,24 @@
 #define Highest(param) ((char *)&param)[3] //0xy000
 #define Low(param) ((int *)&param)[0] //0x00yy
 #define Top(param) ((int *)&param)[1] //0xyy00
+
+// Set bit and clear bit
+// x -> byte, y -> bit
+#define setBit(x, y) x |= (1 << y)
+#define clearBit(x, y) x &= ~(1 << y)
+#define toggleBit(x, y) x ^= (1 << y)
+
+// Query to see if bit is set or cleared.
+// x -> byte, y -> bit
+#define bitIsSet(x, y) x & (1 << y)
+#define bitIsClear(x, y) !(x & (1 << y))
+
+//Set nibbles
+// x -> byte, y -> value to set
+#define setLowerNibble(x, y) x &= 0xF0; x |= (y & 0x0F) // Clear out the lower nibble // OR in the desired mask
+#define setUpperNibble(x, y) x &= 0x0F; x |= (y & 0xF0) // Clear out the lower nibble // OR in the desired mask
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#define bit_is_set(x,y) (x & (1 << y))
-#define bit_is_clear(x,y) (~x & (1 << y))
 #ifndef LED_BUILTIN //fix for boards without that definition
   #define LED_BUILTIN 13
 #endif

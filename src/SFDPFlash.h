@@ -25,26 +25,27 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SPIFLASH_H
-#define SPIFLASH_H
+#ifndef SFDPFLASH_H
+#define SFDPFLASH_H
 
 #include "SPIMemory.h"
 
-class SPIFlash {
+class SFDPFlash {
 public:
   //------------------------------------ Constructor ------------------------------------//
   //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
   #if defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
-  SPIFlash(uint8_t cs = CS, SPIClass *spiinterface=&SPI);
+  SFDPFlash(uint8_t cs = CS, SPIClass *spiinterface=&SPI);
   #elif defined (BOARD_RTL8195A)
-  SPIFlash(PinName cs = CS);
+  SFDPFlash(PinName cs = CS);
   #else
-  SPIFlash(uint8_t cs = CS);
+  SFDPFlash(uint8_t cs = CS);
   #endif
   //----------------------------- Initial / Chip Functions ------------------------------//
   bool     begin(uint32_t flashChipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
+  bool     sfdpPresent(void);
   uint8_t  error(bool verbosity = false);
   uint16_t getManID(void);
   uint32_t getJEDECID(void);
@@ -130,6 +131,7 @@ private:
   void     _dueSPISendChar(const char* buf, size_t len);
 #endif
   //------------------------------- Private functions -----------------------------------//
+  unsigned _createMask(unsigned a, unsigned b);
   void     _troubleshoot(uint8_t _code, bool printoverride = false);
   void     _endSPI(void);
   bool     _disableGlobalBlockProtect(void);
@@ -155,6 +157,17 @@ private:
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint8_t  _readStat3(void);
+  bool     _getSFDPTable(uint32_t _tableAddress, uint8_t *data_buffer, uint8_t numberOfDWords);
+  bool     _getSFDPData(uint32_t _address, uint8_t *data_buffer, uint8_t numberOfBytes);
+  uint32_t _getSFDPdword(uint32_t _tableAddress, uint8_t dWordNumber);
+  uint16_t _getSFDPint(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t startByte);
+  uint8_t  _getSFDPbyte(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t byteNumber);
+  bool     _getSFDPbit(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t bitNumber);
+  uint32_t _getSFDPTableAddr(uint32_t paramHeaderNum);
+  uint32_t _calcSFDPEraseTimeUnits(uint8_t _unitBits);
+  bool     _checkForSFDP(void);
+  bool     _getSFDPEraseParam(void);
+  bool     _getSFDPFlashParam(void);
   template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
   template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false, uint8_t _dataType = 0x00);
   //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
@@ -173,9 +186,10 @@ private:
   #endif
   volatile uint8_t *cs_port;
   bool        pageOverflow, SPIBusState;
+  bool        sfdpAvailable = false;
   bool        chipPoweredDown = false;
   bool        address4ByteEnabled = false;
-  uint8_t     cs_mask, errorcode, stat1, stat2, stat3, _SPCR, _SPSR, _a0, _a1, _a2;
+  uint8_t     cs_mask, stat1, stat2, stat3, _SPCR, _SPSR, _a0, _a1, _a2;
   char READ = 'R';
   char WRITE = 'W';
   float _spifuncruntime = 0;
@@ -185,10 +199,16 @@ private:
                 uint8_t memoryTypeID;
                 uint8_t capacityID;
                 uint32_t capacity;
-                uint32_t eraseTime;
+                //uint32_t eraseTime;
               };
               chipID _chip;
+  struct      eraseParam{
+              bool supported;
+              uint8_t opcode;
+              uint32_t time;
+            } kb4Erase, kb32Erase, kb64Erase, kb256Erase;
   uint8_t     _noOfParamHeaders;
+  uint16_t    _eraseTimeMultiplier;
   uint32_t    currentAddress, _currentAddress = 0;
   uint32_t    _addressOverflow = false;
   uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr;
@@ -209,7 +229,7 @@ private:
 //  3. errorCheck --> Turned on by default. Checks for writing errors
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-template <class T> bool SPIFlash::writeAnything(uint32_t _addr, const T& data, bool errorCheck) {
+template <class T> bool SFDPFlash::writeAnything(uint32_t _addr, const T& data, bool errorCheck) {
   return _write(_addr, data, sizeof(data), errorCheck, _STRUCT_);
 }
 
@@ -218,13 +238,13 @@ template <class T> bool SPIFlash::writeAnything(uint32_t _addr, const T& data, b
 //  1. _addr --> Any address from 0 to maxAddress
 //  2. T& value --> Variable to return data into
 //  3. fastRead --> defaults to false - executes _beginFastRead() if set to true
-template <class T> bool SPIFlash::readAnything(uint32_t _addr, T& data, bool fastRead) {
+template <class T> bool SFDPFlash::readAnything(uint32_t _addr, T& data, bool fastRead) {
   return _read(_addr, data, sizeof(data), fastRead);
 }
 
 //---------------------------------- Private Templates ----------------------------------//
 
-template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType) {
+template <class T> bool SFDPFlash::_writeErrorCheck(uint32_t _addr, const T& value, uint32_t _sz, uint8_t _dataType) {
   if (_isChipPoweredDown() || !_addressCheck(_addr, _sz) || !_notBusy()) {
     return false;
   }
@@ -269,7 +289,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 //      Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 
-template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType) {
+template <class T> bool SFDPFlash::_write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType) {
   bool _retVal;
 #ifdef RUNDIAGNOSTIC
   _spifuncruntime = micros();
@@ -357,7 +377,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
 //  2. T& value --> Variable to return data into
 //  3. _sz --> Size of the variable in bytes (1 byte = 8 bits)
 //  4. fastRead --> defaults to false - executes _beginFastRead() if set to true
-template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead, uint8_t _dataType) {
+template <class T> bool SFDPFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead, uint8_t _dataType) {
   #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
   #endif
@@ -397,4 +417,4 @@ template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, 
   return true;
 }
 
-#endif // _SPIFLASH_H_
+#endif // _SFDPFLASH_H_
