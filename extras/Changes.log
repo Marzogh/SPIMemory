@@ -8,10 +8,22 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 --> Library name changed to SPIMemory
 
+--> Library now has a different structure. Calling the constructor ```SPIFlash flash;``` initialises the library as it was at version 3.1.0 and preserves legacy compatibility (this is guaranteed till v4.0.0 is released) However, calling the new constructor ```SFDPFlash flash;``` initialises the new and upgraded version of the library with all the enhancements listed in the Enhancements section below. This variant of the library is currently in BETA and will merge into and replace the legacy version of the library (with constructor SPIFlash) in version 4.0.0.
+
+--> Both SPIFlash & SFDPFlash variants of the library will receive all bug-fixes till v4.0.0. However all feature enhancements will only be applied to the SFDPFlash variant from v3.2.0 onwards.
+
+New flash memory chips supported
+--> All flash memories compatible with the SFDP standard (as at JESD216B)
+
 Bugs squashed
 
 Enhancements
---> Library now recognises (and prefers SFDP) compatible flash memory. This means, compatibility is no longer limited to a handful of differenc ICs. Along with the previously compatible types of SPI Flash, almost all SFDP compatible SPI Flash should now work with the library.
+If the library is instantiated with the constructor ```SFDPFlash flash();```:
+--> Identifies the flash memory chip using the Serial Flash Discoverable Parameters standard. (JESD216B)
+--> Identifies the following opcodes from the SFDP tables and uses them to read/write data:
+			- eraseSector, eraseBlock32K, eraseBlock64K
+--> Reads timing information from SFDP to accurately time the following operations:
+			- eraseSector, eraseBlock32K, eraseBlock64K
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.1.0 									   	   //
