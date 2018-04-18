@@ -25,7 +25,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 #if defined (ARDUINO_ARCH_SAM)
-#include "SPIFlash.h"
+#include "SPIMemory.h"
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //        Private functions used by Arduino Due DMA operations        //
