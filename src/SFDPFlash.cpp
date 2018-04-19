@@ -30,6 +30,11 @@
 //Instantiate an SPIMemory object
 SPIMemory SPIMem;
 
+//Instantiate a due object if the board is an Arduino Due
+#if defined (ARDUINO_ARCH_SAM)
+DMASAM due;
+#endif
+
 // Constructor
 //If board has multiple SPI interfaces, this constructor lets the user choose between them
 // Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
@@ -193,7 +198,7 @@ bool SFDPFlash::_startSPIBus(void) {
   #endif
 
   #if defined (ARDUINO_ARCH_SAM)
-    _dueSPIInit(DUE_SPI_CLK);
+    due.SPIInit(DUE_SPI_CLK);
   #elif defined (ARDUINO_ARCH_SAMD)
     #ifdef SPI_HAS_TRANSACTION
       _spi->beginTransaction(_settings);
@@ -303,7 +308,7 @@ void SFDPFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
   switch (opcode) {
     case READDATA:
     #if defined (ARDUINO_ARCH_SAM)
-      _dueSPIRecByte(&(*data_buffer), size);
+      due.SPIRecByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_SAMD)
       #ifdef ENABLEZERODMA
         spi_read(&(*data_buffer), size);
@@ -322,7 +327,7 @@ void SFDPFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
 
     case PAGEPROG:
     #if defined (ARDUINO_ARCH_SAM)
-      _dueSPISendByte(&(*data_buffer), size);
+      due.SPISendByte(&(*data_buffer), size);
     #elif defined (ARDUINO_ARCH_SAMD)
       #ifdef ENABLEZERODMA
         spi_write(&(*data_buffer), size);

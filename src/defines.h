@@ -28,8 +28,8 @@
  #if defined (ARDUINO_ARCH_SAM)
    #define CHIP_SELECT   digitalWrite(csPin, LOW);
    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-   #define xfer   _dueSPITransfer
-   #define BEGIN_SPI _dueSPIBegin();
+   #define xfer   due.SPITransfer
+   #define BEGIN_SPI due.SPIBegin();
    extern char _end;
    extern "C" char *sbrk(int i);
    //char *ramstart=(char *)0x20070000;

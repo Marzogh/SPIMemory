@@ -106,29 +106,6 @@ public:
   //------------------------------- Public variables ------------------------------------//
 
 private:
-#if defined (ARDUINO_ARCH_SAM)
-  //-------------------------- Private Arduino Due Functions ----------------------------//
-  void     _dmac_disable(void);
-  void     _dmac_enable(void);
-  void     _dmac_channel_disable(uint32_t ul_num);
-  void     _dmac_channel_enable(uint32_t ul_num);
-  bool     _dmac_channel_transfer_done(uint32_t ul_num);
-  void     _dueSPIDmaRX(uint8_t* dst, uint16_t count);
-  void     _dueSPIDmaRX(char* dst, uint16_t count);
-  void     _dueSPIDmaTX(const uint8_t* src, uint16_t count);
-  void     _dueSPIDmaCharTX(const char* src, uint16_t count);
-  void     _dueSPIBegin(void);
-  void     _dueSPIInit(uint8_t dueSckDivisor);
-  uint8_t  _dueSPITransfer(uint8_t b);
-  uint8_t  _dueSPIRecByte(void);
-  uint8_t  _dueSPIRecByte(uint8_t* buf, size_t len);
-  int8_t   _dueSPIRecChar(void);
-  int8_t   _dueSPIRecChar(char* buf, size_t len);
-  void     _dueSPISendByte(uint8_t b);
-  void     _dueSPISendByte(const uint8_t* buf, size_t len);
-  void     _dueSPISendChar(char b);
-  void     _dueSPISendChar(const char* buf, size_t len);
-#endif
   //------------------------------- Private functions -----------------------------------//
   void     _troubleshoot(uint8_t _code, bool printoverride = false);
   void     _endSPI(void);
