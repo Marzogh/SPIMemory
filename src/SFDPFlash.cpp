@@ -717,6 +717,7 @@ uint32_t SFDPFlash::_calcSFDPEraseTimeUnits(uint8_t _unitBits) {
     case S1:
     return (1000L*1000L);
   }
+  return false;
 }
 
 bool SFDPFlash::_getSFDPEraseParam(void) {
@@ -755,7 +756,7 @@ bool SFDPFlash::_getSFDPEraseParam(void) {
           case KB4ERASE_TYPE:
           kb4Erase.supported = true;
           kb4Erase.opcode = _eraseInfo[i+1];
-          _count = ((_eraseTime.byte[1] & _createMask(0, 0)) << 5) | ((_eraseTime.byte[0] & _createMask(4, 7)) >> 4) + 1;
+          _count = (((_eraseTime.byte[1] & _createMask(0, 0)) << 5) | ((_eraseTime.byte[0] & _createMask(4, 7)) >> 4) + 1);
           _units = _calcSFDPEraseTimeUnits((_eraseTime.byte[1] & _createMask(1, 2)) >> 1);
           kb4Erase.time = (_count * _units * _eraseTimeMultiplier);
           break;
@@ -763,7 +764,7 @@ bool SFDPFlash::_getSFDPEraseParam(void) {
           case KB32ERASE_TYPE:
           kb32Erase.supported = true;
           kb32Erase.opcode = _eraseInfo[i+1];
-          _count = ((_eraseTime.byte[1] & _createMask(3, 7)) >> 3) + 1;
+          _count = (((_eraseTime.byte[1] & _createMask(3, 7)) >> 3) + 1);
           _units = _calcSFDPEraseTimeUnits(_eraseTime.byte[2] & _createMask(0, 1));
           kb32Erase.time = (_count * _units * _eraseTimeMultiplier);
           break;
@@ -771,7 +772,7 @@ bool SFDPFlash::_getSFDPEraseParam(void) {
           case KB64ERASE_TYPE:
           kb64Erase.supported = true;
           kb64Erase.opcode = _eraseInfo[i+1];
-          _count = ((_eraseTime.byte[2] & _createMask(2, 6)) >> 2) + 1;
+          _count = (((_eraseTime.byte[2] & _createMask(2, 6)) >> 2) + 1);
           _units = _calcSFDPEraseTimeUnits(((_eraseTime.byte[2] & _createMask(7, 7)) >> 7) | (_eraseTime.byte[3] & _createMask(0,0)) << 1);
           kb64Erase.time = (_count * _units * _eraseTimeMultiplier);
           break;
@@ -779,7 +780,7 @@ bool SFDPFlash::_getSFDPEraseParam(void) {
           case KB256ERASE_TYPE:
           kb256Erase.supported = true;
           kb256Erase.opcode = _eraseInfo[i+1];
-          _count = ((_eraseTime.byte[3] & _createMask(1, 5)) >> 1) + 1;
+          _count = (((_eraseTime.byte[3] & _createMask(1, 5)) >> 1) + 1);
           _units = _calcSFDPEraseTimeUnits((_eraseTime.byte[3] & _createMask(6, 7)) >> 6);
           kb64Erase.time = (_count * _units) * _eraseTimeMultiplier;
           break;
@@ -804,6 +805,7 @@ bool SFDPFlash::_getSFDPFlashParam(void) {
   Serial.print("dWord 09: 0x");
   Serial.println(_getSFDPdword(_BasicParamTableAddr, DWORD(9)), HEX);
   //(_getSFDPbit(_BasicParamTableAddr, 0x01, int bitNumber));
+  return true;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
