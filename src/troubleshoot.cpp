@@ -1,8 +1,7 @@
-/* Arduino SPIMemory Library v.3.0.0
+/* Arduino SPIMemory Library v.3.2.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 14/11/2016
- * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 02/08/2017
+ * Modified by Prajwal Bhattaram - 20/04/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
