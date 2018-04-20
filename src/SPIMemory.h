@@ -67,12 +67,12 @@
   #include "defines.h"
   #include "SPIFlash.h"
   #include "SFDPFlash.h"
-  #include "SAM_DMASPI.h"
 
 #if defined (ARDUINO_ARCH_SAM)
   #include <malloc.h>
   #include <stdlib.h>
   #include <stdio.h>
+  #include "DMASAM.h"
 #endif
 
 #if defined (ARDUINO_ARCH_SAMD)

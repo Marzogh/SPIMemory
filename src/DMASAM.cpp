@@ -28,7 +28,7 @@
 #include "SPIMemory.h"
 
 // Constructor
-DMASAM::DMASAM(){}
+//DMASAM::DMASAM(){}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //        Private functions used by Arduino Due DMA operations        //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -298,5 +298,7 @@ void DMASAM::SPISendChar(const char* buf, size_t len) {
   // leave RDR empty
   char b = pSpi->SPI_RDR;
 }
+
+DMASAM::due;
 
 #endif

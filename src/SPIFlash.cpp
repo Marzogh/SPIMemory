@@ -31,9 +31,9 @@
 SPIMemory SPIMemory;
 
 //Instantiate a due object if the board is an Arduino Due
-#if defined (ARDUINO_ARCH_SAM)
+/*#if defined (ARDUINO_ARCH_SAM)
 DMASAM due;
-#endif
+#endif*/
 
 // Constructor
 //If board has multiple SPI interfaces, this constructor lets the user choose between them

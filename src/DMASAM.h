@@ -3,7 +3,8 @@
 #include "SPIMemory.h"
 class DMASAM {
 public:
-  DMASAM(void);
+  DMASAM(void){};
+  ~DMASAM(void){};
   void     SPIDmaRX(uint8_t* dst, uint16_t count);
   void     SPIDmaRX(char* dst, uint16_t count);
   void     SPIDmaTX(const uint8_t* src, uint16_t count);
@@ -26,4 +27,7 @@ private:
   void     _dmac_channel_enable(uint32_t ul_num);
   bool     _dmac_channel_transfer_done(uint32_t ul_num);
 };
+
+extern DMASAM due; ///< default DMASAM instance
+
 #endif
