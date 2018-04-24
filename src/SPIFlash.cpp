@@ -794,7 +794,7 @@ bool SPIFlash::eraseChip(void) {
     return false;
   }
 
-	_beginSPI(CHIPERASE);
+	_beginSPI(chipErase.opcode);
   _endSPI();
 
 	while(_readStat1() & BUSY) {

@@ -56,15 +56,23 @@ SPIFlash flash(33);
   - SST25VF064C
   - SST26VF064B
 - Cypress/Spansion
+  - S25FL032P
   - S25FL116K
   - S25FL127S
 - ON Semiconductor
   - LE25U40CMC
+- AMIC
+  - A25L512A0
+- Micron
+  - M25P40
+- Adesto
+  - AT25SF041
 
 ##### Should work with (Similar enough to the ones actually tested with)
 - Winbond (All SPI Flash chips)
 - Microchip (SST25 & SST26 series)
 - Cypress/Spansion (S25FL series)
+- Any flash memory that is compatible with the SFDP standard as defined in JESD216B
 
 ### Installation
 

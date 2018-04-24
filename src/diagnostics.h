@@ -49,6 +49,7 @@
   #define UNABLETO4BYTE        0x0D
   #define UNABLETO3BYTE        0x0E
   #define CHIPISPOWEREDDOWN    0x0F
+  #define NOSFDP               0x10
   #define UNKNOWNERROR         0xFE
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 

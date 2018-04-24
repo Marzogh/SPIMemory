@@ -11,9 +11,13 @@
 --> The library now gathers sfdp information through _chipID(). SFDP information is collected when available, otherwise the library defaults to the pre v3.2.0 version.
 
 New flash memory chips supported
---> All flash memories compatible with the SFDP standard (as at JESD216B) can be used with the constructor ```SFDPFlash```
+--> All flash memories compatible with the SFDP standard (as at JESD216B) should be compatible with the library
 
 --> LE25U40CMC from ON Semiconductor
+--> A25L512A0 from AMIC
+--> M25P40 from Micron
+--> AT25SF041 from Adesto
+--> S25FL032P from Cypress/Spansion
 
 Bugs squashed
 

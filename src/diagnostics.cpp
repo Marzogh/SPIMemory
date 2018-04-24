@@ -52,7 +52,8 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
   #if defined (ARDUINO_ARCH_AVR)
     _printErrorCode();
   #else
-  //Serial.println();
+  Serial.println();
+  Serial.println();
     switch (_code) {
       case SUCCESS:
       Serial.println("Function executed successfully");
@@ -126,13 +127,18 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
       Serial.println("The Flash chip is currently powered down.");
       break;
 
+      case NOSFDP:
+      Serial.println("The Flash chip does not support SFDP.");
+      break;
+
       default:
       Serial.println("Unknown error");
       break;
     }
-    if (_code != SUCCESS) {
+    if (_code == ERRORCHKFAIL || _code == CANTENWRITE || _code == UNKNOWNCHIP || _code == NORESPONSE) {
       _printSupportLink();
     }
+    Serial.println();
   #endif
   }
 }

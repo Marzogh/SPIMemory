@@ -184,18 +184,19 @@ private:
               bool supported;
               uint8_t opcode;
               uint32_t time;
-            } kb4Erase, kb32Erase, kb64Erase, kb256Erase;
+            } kb4Erase, kb32Erase, kb64Erase, kb256Erase, chipErase;
   uint8_t     _noOfParamHeaders;
   uint16_t    _eraseTimeMultiplier;
   uint32_t    currentAddress, _currentAddress = 0;
   uint32_t    _addressOverflow = false;
   uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr;
-  uint8_t _uniqueID[8];
-  const uint8_t _capID[15]   =
-  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01, 0x13};
+  uint8_t     _uniqueID[8];
+  const uint8_t _capID[16]   =
+  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01, 0x13, 0x37};
 
-  const uint32_t _memSize[15]  =
-  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512), MB(4)}; // To understand the _memSize definitions check defines.h
+  const uint32_t _memSize[16]  =
+  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512), MB(4), KB(512)};
+  // To understand the _memSize definitions check defines.h
 };
 
 //--------------------------------- Public Templates ------------------------------------//

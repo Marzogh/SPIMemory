@@ -590,7 +590,7 @@
      #endif
    }
    else {
-     _troubleshoot(UNKNOWNCHIP);
+     _troubleshoot(NOSFDP);
      _chip.sfdpAvailable = false;
    }
    return _chip.sfdpAvailable;
@@ -731,7 +731,6 @@
 
  //Identifies the chip
  bool SPIFlash::_chipID(uint32_t flashChipSize) {
-   _checkForSFDP();
    _getJedecId();
 
    if (_chip.manufacturerID == MICROCHIP_MANID) {
@@ -739,6 +738,7 @@
    }
 
    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin SFDP ID section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+     _checkForSFDP();
    if (_chip.sfdpAvailable) {
      _noOfParamHeaders = _getSFDPbyte(SFDP_HEADER_ADDR, SFDP_NPH_DWORD, SFDP_NPH_BYTE) + 1; // Number of parameter headers is 0 based - i.e. 0x00 means there is 1 header.
      //Serial.print("NPH: ");
@@ -769,14 +769,16 @@
      _getSFDPFlashParam();
    }
    else {
-     kb4Erase.supported = kb32Erase.supported = kb64Erase.supported = true;
+     kb4Erase.supported = kb32Erase.supported = kb64Erase.supported = chipErase.supported = true;
      kb4Erase.opcode = SECTORERASE;
      kb32Erase.opcode = BLOCK32ERASE;
      kb64Erase.opcode = BLOCK64ERASE;
-     kb4Erase.time = 500;
-     kb32Erase.time = kb4Erase.time*2;
-     kb64Erase.time = kb32Erase.time*2;
+     kb4Erase.time = BUSY_TIMEOUT;
+     kb32Erase.time = kb4Erase.time * 8;
+     kb64Erase.time = kb32Erase.time * 4;
      kb256Erase.supported = false;
+     chipErase.opcode = CHIPERASE;
+     chipErase.time = kb64Erase.time * 100L;
    }
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End SFDP ID section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -787,15 +789,22 @@
          Serial.println("No Chip size defined by user. Automated identification initiated.");
        #endif
 
-       if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID || _chip.manufacturerID == ON_MANID) {
+       if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID || _chip.manufacturerID == ON_MANID || _chip.manufacturerID == AMIC_MANID) {
+         if (_chip.manufacturerID == AMIC_MANID) {
+           _chip.capacityID |= _chip.manufacturerID;
+         }
          //Identify capacity
          for (uint8_t i = 0; i < sizeof(_capID); i++) {
            if (_chip.capacityID == _capID[i]) {
              _chip.capacity = (_memSize[i]);
              _chip.JEDECsupport = true;
              _chip.supported = true;
+             #ifdef RUNDIAGNOSTIC
+               Serial.println("Chip identified. This chip is fully supported by the library.");
+             #endif
            }
          }
+         _getJedecId();
          if (!_chip.capacity) {
            _troubleshoot(UNKNOWNCAP);
            return false;
@@ -814,11 +823,18 @@
        _chip.capacity = flashChipSize;
        _chip.supported = false;
      }
-
-     if (_chip.manufacturerID == CYPRESS_MANID) {
-       setClock(SPI_CLK/4);    // Cypress/Spansion chips appear to perform best at SPI_CLK/4
-     }
    }
+
+   if (_chip.manufacturerID == CYPRESS_MANID) {
+     setClock(SPI_CLK/4);    // Cypress/Spansion chips appear to perform best at SPI_CLK/4
+   }
+
+   if ( ((_chip.manufacturerID == MICROCHIP_MANID) && (_chip.memoryTypeID == SST26))\
+   || ((_chip.manufacturerID == MICRON_MANID) && (_chip.memoryTypeID == M25P40))\
+   || ((_chip.manufacturerID == AMIC_MANID) && (_chip.memoryTypeID == A25L512)) ) {
+     chipErase.opcode = ALT_CHIPERASE;
+   }
+
    return true;
  }
 

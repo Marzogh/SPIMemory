@@ -78,6 +78,7 @@
 #define BLOCK32ERASE  0x52
 #define BLOCK64ERASE  0xD8
 #define CHIPERASE     0x60
+#define ALT_CHIPERASE 0xC7    // Some flash chips use a different chip erase command
 #define SUSPEND       0x75
 #define ID            0x90
 #define RESUME        0x7A
@@ -148,9 +149,14 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define MICRON_MANID         0x20
+  #define M25P40               0x20
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ ON ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define ON_MANID             0x62
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define AMIC_MANID           0x37
+  #define A25L512              0x30
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -182,7 +188,7 @@
 #elif defined ENABLEZERODMA
 #define BUSY_TIMEOUT  3500L
 #else
-#define BUSY_TIMEOUT  1000L
+#define BUSY_TIMEOUT  100000L
 #endif
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
