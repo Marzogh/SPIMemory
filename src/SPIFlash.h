@@ -45,6 +45,7 @@ public:
   bool     begin(uint32_t flashChipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
+  bool     sfdpPresent(void);
   uint8_t  error(bool verbosity = false);
   uint16_t getManID(void);
   uint32_t getJEDECID(void);
@@ -107,6 +108,7 @@ public:
 
 private:
   //------------------------------- Private functions -----------------------------------//
+  unsigned _createMask(unsigned a, unsigned b);
   void     _troubleshoot(uint8_t _code, bool printoverride = false);
   void     _endSPI(void);
   bool     _disableGlobalBlockProtect(void);
@@ -121,7 +123,7 @@ private:
   bool     _writeDisable(void);
   bool     _getJedecId(void);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
-  bool     _chipID(void);
+  bool     _chipID(uint32_t flashChipSize = 0);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t _addr, uint32_t size = 1);
   bool     _enable4ByteAddressing(void);
@@ -132,6 +134,17 @@ private:
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint8_t  _readStat3(void);
+  bool     _getSFDPTable(uint32_t _tableAddress, uint8_t *data_buffer, uint8_t numberOfDWords);
+  bool     _getSFDPData(uint32_t _address, uint8_t *data_buffer, uint8_t numberOfBytes);
+  uint32_t _getSFDPdword(uint32_t _tableAddress, uint8_t dWordNumber);
+  uint16_t _getSFDPint(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t startByte);
+  uint8_t  _getSFDPbyte(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t byteNumber);
+  bool     _getSFDPbit(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t bitNumber);
+  uint32_t _getSFDPTableAddr(uint32_t paramHeaderNum);
+  uint32_t _calcSFDPEraseTimeUnits(uint8_t _unitBits);
+  bool     _checkForSFDP(void);
+  bool     _getSFDPEraseParam(void);
+  bool     _getSFDPFlashParam(void);
   template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
   template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false, uint8_t _dataType = 0x00);
   //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
@@ -158,6 +171,8 @@ private:
   float _spifuncruntime = 0;
   struct      chipID {
                 bool supported;
+                bool JEDECsupport;
+                bool sfdpAvailable;
                 uint8_t manufacturerID;
                 uint8_t memoryTypeID;
                 uint8_t capacityID;
@@ -165,7 +180,13 @@ private:
                 uint32_t eraseTime;
               };
               chipID _chip;
+  struct      eraseParam{
+              bool supported;
+              uint8_t opcode;
+              uint32_t time;
+            } kb4Erase, kb32Erase, kb64Erase, kb256Erase;
   uint8_t     _noOfParamHeaders;
+  uint16_t    _eraseTimeMultiplier;
   uint32_t    currentAddress, _currentAddress = 0;
   uint32_t    _addressOverflow = false;
   uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr;
@@ -213,7 +234,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
     _endSPI();
     for (uint16_t i = 0; i < _sz; i++) {
       if (*p++ != _inByte[i]) {
-        _troubleshoot(ERRORCHKFAIL);
+        _troubleshoot(0x0A); //0x0A is ERRORCHKFAIL
         return false;
       }
       else {
@@ -227,7 +248,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
     _transferAddress();
     for (uint16_t i = 0; i < _sz; i++) {
       if (*p++ != _nextByte(READ)) {
-        _troubleshoot(ERRORCHKFAIL);
+        _troubleshoot(0x0A); //0x0A is ERRORCHKFAIL
         _endSPI();
         return false;
       }

@@ -299,6 +299,6 @@ void DMASAM::SPISendChar(const char* buf, size_t len) {
   char b = pSpi->SPI_RDR;
 }
 
-DMASAM due;
+DMASAM due; // default instantiation of DMASAM object
 
 #endif

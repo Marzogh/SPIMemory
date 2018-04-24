@@ -230,27 +230,6 @@
 #define SPI_RX_IDX  2
 // Set DUE SPI clock div (any integer from 2 - 255)
 #define DUE_SPI_CLK 2
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     					   List of Error codes						  //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
- #define SUCCESS              0x00
- #define CALLBEGIN            0x01
- #define UNKNOWNCHIP          0x02
- #define UNKNOWNCAP           0x03
- #define CHIPBUSY             0x04
- #define OUTOFBOUNDS          0x05
- #define CANTENWRITE          0x06
- #define PREVWRITTEN          0x07
- #define LOWRAM               0x08
- #define SYSSUSPEND           0x09
- #define ERRORCHKFAIL         0x0A
- #define NORESPONSE           0x0B
- #define UNSUPPORTEDFUNC      0x0C
- #define UNABLETO4BYTE        0x0D
- #define UNABLETO3BYTE        0x0E
- #define CHIPISPOWEREDDOWN    0x0F
- #define UNKNOWNERROR         0xFE
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
  //     					   List of Supported data types						  //

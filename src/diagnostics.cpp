@@ -24,10 +24,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "SPIMemory.h"
+#include "diagnostics.h"
 
 //Subfunctions for troubleshooting function
-void SPIMemory::_printErrorCode(void) {
+void Diagnostics::_printErrorCode(void) {
   Serial.print("Error code: 0x");
   if (errorcode < 0x10) {
     Serial.print("0");
@@ -35,12 +35,12 @@ void SPIMemory::_printErrorCode(void) {
   Serial.println(errorcode, HEX);
 }
 
-void SPIMemory::_printSupportLink(void) {
+void Diagnostics::_printSupportLink(void) {
   Serial.print("If this does not help resolve/clarify this issue, ");
   Serial.println("please raise an issue at http://www.github.com/Marzogh/SPIMemory/issues with the details of what your were doing when this error occurred");
 }
-//Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
-void SPIMemory::troubleshoot(uint8_t _code, bool printoverride) {
+//Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of SPIMemory.h.
+void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
   bool _printoverride;
   errorcode = _code;
 #ifdef RUNDIAGNOSTIC
@@ -136,3 +136,5 @@ void SPIMemory::troubleshoot(uint8_t _code, bool printoverride) {
   #endif
   }
 }
+
+Diagnostics diagnostics; // default instantiation of Diagnostics object

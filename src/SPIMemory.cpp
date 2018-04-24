@@ -27,6 +27,4 @@
 
 #include "SPIMemory.h"
 
-// Constructor
-SPIMemory::SPIMemory(bool _placeHolder) {
-}
+SPIMemory SPIMemory; // default instantiation of SPIMemory object

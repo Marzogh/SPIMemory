@@ -65,7 +65,7 @@
   #include <SPI.h>
   #include "defines.h"
   #include "SPIFlash.h"
-  #include "SFDPFlash.h"
+  #include "diagnostics.h"
 
 #if defined (ARDUINO_ARCH_SAM)
   #include <malloc.h>
@@ -112,15 +112,12 @@
 class SPIMemory {
 public:
   //------------------------------------ Constructor ------------------------------------//
-  SPIMemory(bool _placeHolder = 0);
+  SPIMemory(void) {};
+  ~SPIMemory(void) {};
   //------------------------------- Public functions -----------------------------------//
-  void     troubleshoot(uint8_t _code, bool printoverride = false);
-
-  uint8_t errorcode;
-private:
-  void     _printErrorCode(void);
-  void     _printSupportLink(void);
 
 };
+
+extern SPIMemory SPIMem; //default SPIMemory instance;
 
 #endif // _SPIMEMORY_H_
