@@ -42,6 +42,7 @@ NOTE: ESP32 boards usually have an SPI Flash already attached to their SS pin, s
 ```
 SPIFlash flash(33);
 ```
+- Adafruit Metro M4 - more testing required before support for this board leaves beta.
 
 #### Flash memory compatibility
 
