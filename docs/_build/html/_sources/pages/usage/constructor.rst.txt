@@ -1,0 +1,5 @@
+.. _Constructor:
+
+#############
+Constructor
+#############
