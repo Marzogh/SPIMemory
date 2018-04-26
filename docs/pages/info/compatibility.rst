@@ -12,29 +12,24 @@ Arduino IDEs supported (actually tested with)
 - IDE v1.6.9-v1.6.12
 - IDE v1.8.1-v1.8.5
 
-Boards
-=======
+Microcontrollers (Boards tested)
+=================================
 
 Completely supported
 ----------------------
-- Arduino Uno
-- Arduino Leonardo
-- Arduino Due
-- Arduino Zero
-- Nucleo-F091RC
-- Adafruit Feather M0
-- Adafruit Feather M0 Express
-- ESP8266 Boards (On the Arduino IDE)
-- Simblee Boards (On the Arduino IDE)
-- Arduino Mega
-- Arduino Micro
-- Arduino Fio
+- ATmega328P (Arduino Uno, Arduino Micro, Arduino Fio, Arduino Nano)
+- ATmega32u4 (Arduino Leonardo, Arduino Fio v3)
+- ATmega2560 (Arduino Mega)
+- ATSAMD21G18 ARM Cortex M0+ (Adafruit Feather M0, Adafruit Feather M0 Express)
+- AT91SAM3X8E ARM Cortex M3 (Arduino Due)
+- ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
+- STM32F091RCT6 (Nucleo-F091RC)
+- ESP8266 Boards (Adafruit ESP8266 Feather)
+- Simblee Boards (Sparkfun Simblee)
 
 In BETA
 ------------
-- ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit `25dff4f <https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3>`_ on 05.04.2018. [#f1]_ [#f2]_
-
-- Adafruit Metro M4 - more testing required before support for this board leaves beta.
+- ESP32 Boards (Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit `25dff4f <https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3>`_ on 05.04.2018. [#f1]_ [#f2]_
 
 Flash memory chips
 ===================

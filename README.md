@@ -23,18 +23,16 @@ This Arduino library is for use with flash memory chips that communicate using t
 #### Boards
 
 ##### Completely supported
-- Arduino Uno
-- Arduino Leonardo
-- Arduino Due
-- Arduino Zero
-- Nucleo-F091RC
-- Adafruit Feather M0
-- Adafruit Feather M0 Express
-- ESP8266 Boards (On the Arduino IDE)
-- Simblee Boards (On the Arduino IDE)
-- Arduino Mega
-- Arduino Micro
-- Arduino Fio
+
+- ATmega328P (Arduino Uno, Arduino Micro, Arduino Fio, Arduino Nano)
+- ATmega32u4 (Arduino Leonardo, Arduino Fio v3)
+- ATmega2560 (Arduino Mega)
+- ATSAMD21G18 ARM Cortex M0+ (Adafruit Feather M0, Adafruit Feather M0 Express)
+- AT91SAM3X8E ARM Cortex M3 (Arduino Due)
+- ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
+- STM32F091RCT6 (Nucleo-F091RC)
+- ESP8266 Boards (Adafruit ESP8266 Feather)
+- Simblee Boards (Sparkfun Simblee)
 
 ##### In BETA
 - ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit <a href = "https://github.com/espressif/arduino-esp32/commit/8ba91b945330303f9013f30da75c49c4d6dd8a09">8ba91b9</a> on 07.11.2017. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```

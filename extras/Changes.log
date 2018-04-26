@@ -19,6 +19,9 @@ New flash memory chips supported
 --> AT25SF041 from Adesto
 --> S25FL032P from Cypress/Spansion
 
+New Microcontrollers supported
+--> ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
+
 Bugs squashed
 
 Enhancements
