@@ -133,12 +133,12 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
       Serial.println("Unable to read Erase Parameters from chip. Reverting to library defaults.");
       break;
 
-      case NOSFDPSECTORERASETIME:
-      Serial.println("Unable to read sector erase time from flash memory. Reverting to library defaults.");
+      case NOSFDPERASETIME:
+      Serial.println("Unable to read erase times from flash memory. Reverting to library defaults.");
       break;
 
-      case NOSFDPCHIPERASETIME:
-      Serial.println("Unable to read chip erase time from flash memory. Reverting to library defaults.");
+      case NOSFDPPROGRAMTIMEPARAM:
+      Serial.println("Unable to read program times from flash memory. Reverting to library defaults.");
       break;
 
       default:

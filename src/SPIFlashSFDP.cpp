@@ -146,32 +146,65 @@ uint32_t SPIFlash::_calcSFDPEraseTimeUnits(uint8_t _unitBits) {
   return false;
 }
 
-bool SPIFlash::_getSFDPEraseParam(void) {
-  uint32_t _eraseInfoAddress;
-  uint8_t _eraseInfo[8];
-  uint8_t _eraseExists = 0;
-  uint8_t _count;
-  uint32_t _units;
-  union {
-    uint32_t dword;
-    uint8_t byte[4];
-  } _eraseTime;
+void SPIFlash::_getSFDPEraseParam(void) {
+  // Get sector erase details if available on SFDP Tables
+  if (_noOfBasicParamDwords >= SFDP_ERASE1_INSTRUCTION_DWORD) {
+    uint32_t _eraseInfoAddress;
+    uint8_t _eraseInfo[8];
+    uint8_t _eraseExists = 0;
+    uint8_t _count;
+    uint32_t _units;
+    union {
+      uint32_t dword;
+      uint8_t byte[4];
+    } _eraseTime;
+    _eraseInfoAddress = ADDRESSOFSFDPDWORD(_BasicParamTableAddr, SFDP_ERASE1_INSTRUCTION_DWORD);
+    _getSFDPData(_eraseInfoAddress, &(*_eraseInfo), 8);
 
-  // Get sector erase details
-  _eraseInfoAddress = ADDRESSOFSFDPDWORD(_BasicParamTableAddr, DWORD(8));
-  _getSFDPData(_eraseInfoAddress, &(*_eraseInfo), 8);
+    for (uint8_t i = 0; i < 8; i++) {
+      _eraseExists += _eraseInfo[i];
+      if (!_eraseExists) { // If faulty SFDP read, then revert to defaults
+          kb4Erase.supported = kb32Erase.supported = kb64Erase.supported = chipErase.supported = true;
+          kb4Erase.opcode = SECTORERASE;
+          kb32Erase.opcode = BLOCK32ERASE;
+          kb64Erase.opcode = BLOCK64ERASE;
+          kb4Erase.time = BUSY_TIMEOUT;
+          kb32Erase.time = kb4Erase.time * 8;
+          kb64Erase.time = kb32Erase.time * 4;
+          kb256Erase.supported = false;
+          chipErase.opcode = CHIPERASE;
+          chipErase.time = kb64Erase.time * 100L;
+        _troubleshoot(NOSFDPERASEPARAM);
+      }
+    }
+    for (uint8_t i = 0; i < 8; i++) {
+      if ((i % 2) == 0) {
+        switch ((_eraseInfo[i])) {
+          case KB4ERASE_TYPE:
+          kb4Erase.supported = true;
+          kb4Erase.opcode = _eraseInfo[i+1];
+          break;
 
-  for (uint8_t i = 0; i < 8; i++) {
-    _eraseExists += _eraseInfo[i];
-  }
+          case KB32ERASE_TYPE:
+          kb32Erase.supported = true;
+          kb32Erase.opcode = _eraseInfo[i+1];
+          break;
 
-  if (!_eraseExists) {
-    _troubleshoot(NOSFDPERASEPARAM);
-    return false;
-  }
-  else {
-    if (_noOfBasicParamDwords > 9) {                   // Some flash memory chips have information abut erase times in DWORD 10 & 11 of SFDP Basic param table.
-      _eraseTime.dword = _getSFDPdword(_BasicParamTableAddr, DWORD(10));
+          case KB64ERASE_TYPE:
+          kb64Erase.supported = true;
+          kb64Erase.opcode = _eraseInfo[i+1];
+          break;
+
+          case KB256ERASE_TYPE:
+          kb256Erase.supported = true;
+          kb256Erase.opcode = _eraseInfo[i+1];
+          break;
+        }
+      }
+    }
+    // Some flash memory chips have information about sector erase times in DWORD 10 of SFDP Basic param table.
+    if (_noOfBasicParamDwords >= SFDP_SECTOR_ERASE_TIME_DWORD) {
+      _eraseTime.dword = _getSFDPdword(_BasicParamTableAddr, SFDP_SECTOR_ERASE_TIME_DWORD);
       _eraseTimeMultiplier = _eraseTime.byte[0];
       setUpperNibble(_eraseTimeMultiplier, 0b0000);
       _eraseTimeMultiplier = 2 * (_eraseTimeMultiplier + 1);  // Refer JESD216B Page 21
@@ -182,32 +215,24 @@ bool SPIFlash::_getSFDPEraseParam(void) {
         if ((i % 2) == 0) {
           switch ((_eraseInfo[i])) {
             case KB4ERASE_TYPE:
-            kb4Erase.supported = true;
-            kb4Erase.opcode = _eraseInfo[i+1];
             _count = (((_eraseTime.byte[1] & _createMask(0, 0)) << 5) | ((_eraseTime.byte[0] & _createMask(4, 7)) >> 4) + 1);
             _units = _calcSFDPEraseTimeUnits((_eraseTime.byte[1] & _createMask(1, 2)) >> 1);
             kb4Erase.time = (_count * _units * _eraseTimeMultiplier);
             break;
 
             case KB32ERASE_TYPE:
-            kb32Erase.supported = true;
-            kb32Erase.opcode = _eraseInfo[i+1];
             _count = (((_eraseTime.byte[1] & _createMask(3, 7)) >> 3) + 1);
             _units = _calcSFDPEraseTimeUnits(_eraseTime.byte[2] & _createMask(0, 1));
             kb32Erase.time = (_count * _units * _eraseTimeMultiplier);
             break;
 
             case KB64ERASE_TYPE:
-            kb64Erase.supported = true;
-            kb64Erase.opcode = _eraseInfo[i+1];
             _count = (((_eraseTime.byte[2] & _createMask(2, 6)) >> 2) + 1);
             _units = _calcSFDPEraseTimeUnits(((_eraseTime.byte[2] & _createMask(7, 7)) >> 7) | (_eraseTime.byte[3] & _createMask(0,0)) << 1);
             kb64Erase.time = (_count * _units * _eraseTimeMultiplier);
             break;
 
             case KB256ERASE_TYPE:
-            kb256Erase.supported = true;
-            kb256Erase.opcode = _eraseInfo[i+1];
             _count = (((_eraseTime.byte[3] & _createMask(1, 5)) >> 1) + 1);
             _units = _calcSFDPEraseTimeUnits((_eraseTime.byte[3] & _createMask(6, 7)) >> 6);
             kb64Erase.time = (_count * _units) * _eraseTimeMultiplier;
@@ -215,37 +240,105 @@ bool SPIFlash::_getSFDPEraseParam(void) {
           }
         }
       }
-      if (_noOfBasicParamDwords > 10) {
+
+      // Some flash memory chips have information about chip erase times in DWORD 11 of SFDP Basic param table.
+      if (_noOfBasicParamDwords >= SFDP_CHIP_ERASE_TIME_DWORD) {
         // Get chip erase details
-        _eraseInfoAddress = 0; // Reset variables
         _eraseInfoAddress = ADDRESSOFSFDPDWORD(_BasicParamTableAddr, DWORD(11));
+        #ifdef RUNDIAGNOSTIC
         Serial.print("_eraseInfoAddress: 0x");
         Serial.println(_eraseInfoAddress, HEX);
+        #endif
         _getSFDPData(_eraseInfoAddress, &(*_eraseInfo), 8);
         chipErase.supported = true; // chipErase.opcode is set in _chipID().
         _count = (((_eraseTime.byte[3] & _createMask(0, 4))) + 1);
         _units = _calcSFDPEraseTimeUnits((_eraseTime.byte[3] & _createMask(5, 6)) >> 5);
         chipErase.time = (_count * _units) * _eraseTimeMultiplier;
+        #ifdef RUNDIAGNOSTIC
         Serial.print("chipErase.time");
         Serial.println(chipErase.time);
+        #endif
       }
+
     }
-    else {                                //If flash memory does not have any sfdp information about erase times
-      if (_noOfBasicParamDwords < 11) {
-        _troubleshoot(NOSFDPCHIPERASETIME);
-        chipErase.opcode = CHIPERASE;
-        chipErase.time = kb64Erase.time * 100L;
-      }
-      if (_noOfBasicParamDwords < 10) {
-        _troubleshoot(NOSFDPSECTORERASETIME);
-        kb4Erase.time = BUSY_TIMEOUT;
-        kb32Erase.time = kb4Erase.time * 8;
-        kb64Erase.time = kb32Erase.time * 4;
-        kb256Erase.supported = false;
-      }
+    else { //If flash memory does not have any sfdp information about sector erase times
+      _troubleshoot(NOSFDPERASETIME);
+      kb4Erase.time = BUSY_TIMEOUT;
+      kb32Erase.time = kb4Erase.time * 8;
+      kb64Erase.time = kb32Erase.time * 4;
+      kb256Erase.supported = false;
+      chipErase.opcode = CHIPERASE;
+      chipErase.time = kb64Erase.time * 100L;
     }
+
   }
-  return true;
+  else {
+    _troubleshoot(NOSFDPERASEPARAM);
+  }
+}
+
+// Gets IO timing information from SFDP tables - if available.
+void SPIFlash::_getSFDPProgramTimeParam(void) {
+  if (_noOfBasicParamDwords >= SFDP_PROGRAM_TIME_DWORD) {
+    union {
+      uint32_t dword;
+      uint8_t byte[4];
+    } _sfdp;
+    uint8_t _count;
+    uint32_t _units;
+
+    _sfdp.dword= _getSFDPdword(_BasicParamTableAddr, SFDP_PROGRAM_TIME_DWORD);
+
+    //Calculate Program time multiplier
+    _prgmTimeMultiplier = (2 * ((_sfdp.byte[1] >> 4) + 1));
+    #ifdef RUNDIAGNOSTIC
+    Serial.print("_prgmTimeMultiplier: ");
+    Serial.println(_prgmTimeMultiplier);
+    #endif
+
+    // Get pageSize
+    //setUpperNibble(_eraseTimeMultiplier, 0b0000);
+    _pageSize = setUpperNibble(_sfdp.byte[1], 0b0000);
+    _pageSize *= 2;
+    #ifdef RUNDIAGNOSTIC
+    Serial.print("_pageSize: ");
+    Serial.println(_pageSize);
+    #endif
+
+    //Calculate Page Program time
+    _count = (((_sfdp.byte[1] & _createMask(0, 4))) + 1);
+    ((_sfdp.byte[1] & _createMask(7, 7)) >> 7) ? (_units = 64) : (_units = 8);
+    _pagePrgmTime = (_count * _units) * _prgmTimeMultiplier;
+    #ifdef RUNDIAGNOSTIC
+    Serial.print("_pagePrgmTime: ");
+    Serial.println(_pagePrgmTime);
+    #endif
+
+    //Calculate First Byte Program time
+    _count = ( ((_sfdp.byte[1] & _createMask(6, 7)) >> 4) | ((_sfdp.byte[2] & _createMask(6, 7)) >> 6) + 1);
+    ((_sfdp.byte[2] & _createMask(5, 5)) >> 5) ? (_units = 8) : (_units = 1);
+    _byteFirstPrgmTime = (_count * _units) * _prgmTimeMultiplier;
+    #ifdef RUNDIAGNOSTIC
+    Serial.print("_byteFirstPrgmTime :");
+    Serial.println(_byteFirstPrgmTime);
+    #endif
+
+    //Calculate Additional Byte Program time
+    _count = ( ((_sfdp.byte[2] & _createMask(4, 1)) >> 1) + 1);
+    (_sfdp.byte[2] & _createMask(0, 0)) ? (_units = 8) : (_units = 1);
+    _byteAddnlPrgmTime = (_count * _units) * _prgmTimeMultiplier;
+    #ifdef RUNDIAGNOSTIC
+    Serial.print("_byteAddnlPrgmTime :");
+    Serial.println(_byteAddnlPrgmTime);
+    #endif
+  }
+  else {
+    _pageSize = SPI_PAGESIZE;
+    _pagePrgmTime = BUSY_TIMEOUT;
+    _byteFirstPrgmTime = BUSY_TIMEOUT;
+    _byteAddnlPrgmTime = BUSY_TIMEOUT;
+    _troubleshoot(NOSFDPPROGRAMTIMEPARAM);
+  }
 }
 
 // Reads and stores any required values from the Basic Flash Parameter table
@@ -260,7 +353,7 @@ bool SPIFlash::_getSFDPFlashParam(void) {
       Serial.println(_SectorMapParamTableAddr, HEX);
       #endif
     }
-    _noOfBasicParamDwords = _getSFDPbyte(SFDP_BASIC_PARAM_TABLE_HDR_ADDR, PARAM_TABLE_LENGTH_DWORD, PARAM_TABLE_LENGTH_BYTE);
+    _noOfBasicParamDwords = _getSFDPbyte(SFDP_BASIC_PARAM_TABLE_HDR_ADDR, SFDP_PARAM_TABLE_LENGTH_DWORD, SFDP_PARAM_TABLE_LENGTH_BYTE);
     _BasicParamTableAddr = _getSFDPTableAddr(SFDP_BASIC_PARAM_TABLE_NO);
     #ifdef RUNDIAGNOSTIC
     Serial.print("SFDP Basic Parameter Address: 0x");
@@ -283,13 +376,12 @@ bool SPIFlash::_getSFDPFlashParam(void) {
   // Get Erase Parameters if available
   _getSFDPEraseParam();
 
-  Serial.print("Parameter Header 01: 0x");
-  Serial.println(_getSFDPdword(0x00, DWORD(4)), HEX);
-  Serial.print("dWord 10: 0x");
-  Serial.println(_getSFDPdword(_BasicParamTableAddr, DWORD(10)), HEX);
-  Serial.print("dWord 9: 0x");
-  Serial.println(_getSFDPdword(_BasicParamTableAddr, DWORD(9)), HEX);
-  //(_getSFDPbit(_BasicParamTableAddr, 0x01, int bitNumber));
+  //Get Program time Parameters
+  _getSFDPProgramTimeParam();
+// TODO Update the use of Program time parameters across the library
+
+  //Serial.print("dWord 9: 0x");
+  //Serial.println(_getSFDPdword(_BasicParamTableAddr, DWORD(9)), HEX);
   return true;
 }
 

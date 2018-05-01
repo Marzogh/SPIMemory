@@ -143,7 +143,8 @@ private:
   uint32_t _getSFDPTableAddr(uint32_t paramHeaderNum);
   uint32_t _calcSFDPEraseTimeUnits(uint8_t _unitBits);
   bool     _checkForSFDP(void);
-  bool     _getSFDPEraseParam(void);
+  void     _getSFDPEraseParam(void);
+  void     _getSFDPProgramTimeParam(void);
   bool     _getSFDPFlashParam(void);
   template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
   template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false, uint8_t _dataType = 0x00);
@@ -186,10 +187,10 @@ private:
               uint32_t time;
             } kb4Erase, kb32Erase, kb64Erase, kb256Erase, chipErase;
   uint8_t     _noOfParamHeaders, _noOfBasicParamDwords;
-  uint16_t    _eraseTimeMultiplier;
+  uint16_t    _eraseTimeMultiplier, _prgmTimeMultiplier, _pageSize;
   uint32_t    currentAddress, _currentAddress = 0;
   uint32_t    _addressOverflow = false;
-  uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr;
+  uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr, _byteFirstPrgmTime, _byteAddnlPrgmTime, _pagePrgmTime;
   uint8_t     _uniqueID[8];
   const uint8_t _capID[16]   =
   {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01, 0x13, 0x37};

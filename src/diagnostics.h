@@ -33,27 +33,27 @@
  //     					   List of Error codes						  //
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-  #define SUCCESS               0x00
-  #define CALLBEGIN             0x01
-  #define UNKNOWNCHIP           0x02
-  #define UNKNOWNCAP            0x03
-  #define CHIPBUSY              0x04
-  #define OUTOFBOUNDS           0x05
-  #define CANTENWRITE           0x06
-  #define PREVWRITTEN           0x07
-  #define LOWRAM                0x08
-  #define SYSSUSPEND            0x09
-  #define ERRORCHKFAIL          0x0A
-  #define NORESPONSE            0x0B
-  #define UNSUPPORTEDFUNC       0x0C
-  #define UNABLETO4BYTE         0x0D
-  #define UNABLETO3BYTE         0x0E
-  #define CHIPISPOWEREDDOWN     0x0F
-  #define NOSFDP                0x10
-  #define NOSFDPERASEPARAM      0x11
-  #define NOSFDPSECTORERASETIME 0x12
-  #define NOSFDPCHIPERASETIME   0x13
-  #define UNKNOWNERROR          0xFE
+  #define SUCCESS                 0x00
+  #define CALLBEGIN               0x01
+  #define UNKNOWNCHIP             0x02
+  #define UNKNOWNCAP              0x03
+  #define CHIPBUSY                0x04
+  #define OUTOFBOUNDS             0x05
+  #define CANTENWRITE             0x06
+  #define PREVWRITTEN             0x07
+  #define LOWRAM                  0x08
+  #define SYSSUSPEND              0x09
+  #define ERRORCHKFAIL            0x0A
+  #define NORESPONSE              0x0B
+  #define UNSUPPORTEDFUNC         0x0C
+  #define UNABLETO4BYTE           0x0D
+  #define UNABLETO3BYTE           0x0E
+  #define CHIPISPOWEREDDOWN       0x0F
+  #define NOSFDP                  0x10
+  #define NOSFDPERASEPARAM        0x11
+  #define NOSFDPERASETIME         0x12
+  #define NOSFDPPROGRAMTIMEPARAM  0x13
+  #define UNKNOWNERROR            0xFE
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
  class Diagnostics {
