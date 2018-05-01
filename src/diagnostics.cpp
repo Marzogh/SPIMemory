@@ -52,8 +52,6 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
   #if defined (ARDUINO_ARCH_AVR)
     _printErrorCode();
   #else
-  Serial.println();
-  Serial.println();
     switch (_code) {
       case SUCCESS:
       Serial.println("Function executed successfully");
@@ -131,6 +129,18 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
       Serial.println("The Flash chip does not support SFDP.");
       break;
 
+      case NOSFDPERASEPARAM:
+      Serial.println("Unable to read Erase Parameters from chip. Reverting to library defaults.");
+      break;
+
+      case NOSFDPSECTORERASETIME:
+      Serial.println("Unable to read sector erase time from flash memory. Reverting to library defaults.");
+      break;
+
+      case NOSFDPCHIPERASETIME:
+      Serial.println("Unable to read chip erase time from flash memory. Reverting to library defaults.");
+      break;
+
       default:
       Serial.println("Unknown error");
       break;
@@ -138,7 +148,6 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
     if (_code == ERRORCHKFAIL || _code == CANTENWRITE || _code == UNKNOWNCHIP || _code == NORESPONSE) {
       _printSupportLink();
     }
-    Serial.println();
   #endif
   }
 }

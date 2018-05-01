@@ -120,6 +120,9 @@
 #define SFDP_SIGNATURE_DWORD 0x01
 #define SFDP_NPH_DWORD 0x02
 #define SFDP_NPH_BYTE 0x03
+#define PARAM_TABLE_LENGTH_DWORD 0x01
+#define PARAM_TABLE_LENGTH_BYTE 0x04
+#define SFDP_BASIC_PARAM_TABLE_HDR_ADDR 0x08
 #define SFDP_BASIC_PARAM_TABLE_NO 0x01
 #define SFDP_MEMORY_DENSITY_DWORD 0x02
 #define SFDP_SECTOR_MAP_PARAM_TABLE_NO 0x02
@@ -183,13 +186,7 @@
 #define VERBOSE       true
 #define PRINTOVERRIDE true
 #define ERASEFUNC     0xEF
-#if defined (SIMBLEE)
-#define BUSY_TIMEOUT  100L
-#elif defined ENABLEZERODMA
-#define BUSY_TIMEOUT  3500L
-#else
-#define BUSY_TIMEOUT  100000L
-#endif
+#define BUSY_TIMEOUT  10000000L
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
 #define BYTE          1L

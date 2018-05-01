@@ -185,7 +185,7 @@ private:
               uint8_t opcode;
               uint32_t time;
             } kb4Erase, kb32Erase, kb64Erase, kb256Erase, chipErase;
-  uint8_t     _noOfParamHeaders;
+  uint8_t     _noOfParamHeaders, _noOfBasicParamDwords;
   uint16_t    _eraseTimeMultiplier;
   uint32_t    currentAddress, _currentAddress = 0;
   uint32_t    _addressOverflow = false;
