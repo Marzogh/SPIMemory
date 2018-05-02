@@ -1,4 +1,7 @@
-Hey there! Thanks for using the SPIFlash library for Arduino. 
+![GitHub pull request check contexts](https://img.shields.io/github/status/contexts/pulls/Marzogh/SPIFlash/1110.svg)
+###### ---------------------------- **DO NOT DELETE OR EDIT** anything above this line ----------------------------
+
+Hey there! Thanks for using the SPIFlash library for Arduino.
 ### Please note that starting 01.03.2018 any Pull request raised here MUST be submitted according to this template or it will be flagged with 'Not enough information'. No action will be taken till all the prerequisite information is provided. If no information is provided for over a month, the pull request will be closed.
 
 # Pull request details

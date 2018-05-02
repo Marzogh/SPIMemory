@@ -15,7 +15,7 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 
-#include<SPIFlash.h>
+#include<SPIMemory.h>
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -37,8 +37,8 @@
 #define TRUE 1
 #define FALSE 0
 
-//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 SPIFlash flash;
+//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -46,7 +46,7 @@ void setup() {
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
   delay(50); //Time to terminal get connected
-  Serial.print(F("Initialising Flash memory"));
+  Serial.print(F("Initialising"));
   for (uint8_t i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
@@ -61,54 +61,48 @@ void setup() {
   //flash.begin(MB(1));
   Serial.println();
   Serial.println();
-  
-  getID();
-  eraseChipTest();
-  eraseSectionTest();
-  eraseBlock64KTest();
-  eraseBlock32KTest();
-  eraseSectorTest();
+
+  if (getID()) {
+    eraseChipTest();
+    eraseSectionTest();
+    eraseBlock64KTest();
+    eraseBlock32KTest();
+    eraseSectorTest();
+    Serial.println();
 
 #if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
-  delay(10);
-  powerDownTest();
-  powerUpTest();
-  Serial.println();
+    delay(10);
+    powerDownTest();
+    powerUpTest();
+    Serial.println();
 #endif
 
-  byteTest();
-  charTest();
-  wordTest();
-  shortTest();
-  uLongTest();
+    byteTest();
+    charTest();
+    wordTest();
+    shortTest();
+    uLongTest();
 #if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
-  delay(10);
+    delay(10);
 #endif
-  longTest();
-  floatTest();
-  structTest();
-  arrayTest();
-  stringTest();
+    longTest();
+    floatTest();
+    structTest();
+    arrayTest();
+    stringTest();
 
 #if !defined(ARDUINO_ARCH_SAM) || !defined(ARDUINO_ARCH_ESP8266)
-  powerDownTest();
-  powerUpTest();
+    Serial.println();
+    powerDownTest();
+    powerUpTest();
 #endif
-  printLine();
-  if (!flash.functionRunTime()) {
-    Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+    printLine();
+    if (!flash.functionRunTime()) {
+      Serial.println(F("To see function runtimes ncomment RUNDIAGNOSTIC in SPIMemory.h."));
+    }
   }
 }
 
 void loop() {
 
 }
-
-void longBlink() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(3000);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(2000);
-}
-

@@ -91,8 +91,8 @@ String inputString, outputString;
 #define BAUD_RATE 115200
 #endif
 
+SPIFlash flash;                   
 //SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
-SPIFlash flash;
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -137,7 +137,7 @@ void loop() {
       sprintf(printBuffer, "Manufacturer ID: %02xh\nMemory Type: %02xh\nCapacity: %02xh", b1, b2, b3);
       Serial.println(printBuffer);
       clearprintBuffer();
-      sprintf(printBuffer, "JEDEC ID: %04lxh", JEDEC);
+      sprintf(printBuffer, "JEDEC ID: %04xh", JEDEC);
       Serial.println(printBuffer);
       printLine();
       printNextCMD();
@@ -572,4 +572,3 @@ void inputAddress(void) {
   addr = Serial.parseInt();
   Serial.println(addr);
 }
-

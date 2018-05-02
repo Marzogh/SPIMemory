@@ -1,9 +1,9 @@
-/* Arduino SPIFlash Library v.3.1.0
+/* Arduino SPIMemory Library v.3.1.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by Prajwal Bhattaram - 24/02/2018
  *
- * This file is part of the Arduino SPIFlash Library. This library is for
+ * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
  * and writing individual data variables, structs and arrays from and to various locations;
  * reading and writing pages; continuous read functions; sector, block and chip erase;
@@ -20,9 +20,40 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License v3.0
- * along with the Arduino SPIFlash Library.  If not, see
+ * along with the Arduino SPIMemory Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+ // Defines and variables specific to SAM architecture
+ #if defined (ARDUINO_ARCH_SAM)
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer   due.SPITransfer
+   #define BEGIN_SPI due.SPIBegin();
+   extern char _end;
+   extern "C" char *sbrk(int i);
+   //char *ramstart=(char *)0x20070000;
+   //char *ramend=(char *)0x20088000;
+
+ // Specific access configuration for Chip select pin. Includes specific to RTL8195A to access GPIO HAL - @boseji <salearj@hotmail.com> 02.03.17
+ #elif defined (BOARD_RTL8195A)
+   #define CHIP_SELECT   gpio_write(&csPin, 0);
+   #define CHIP_DESELECT gpio_write(&csPin, 1);
+   #define xfer(n)   SPI.transfer(n)
+   #define BEGIN_SPI SPI.begin();
+
+ // Defines and variables specific to SAMD architecture
+ #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer(n)   _spi->transfer(n)
+   #define BEGIN_SPI _spi->begin();
+ #else
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer(n)   SPI.transfer(n)
+   #define BEGIN_SPI SPI.begin();
+ #endif
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //						Common Instructions 						  //
@@ -47,6 +78,7 @@
 #define BLOCK32ERASE  0x52
 #define BLOCK64ERASE  0xD8
 #define CHIPERASE     0x60
+#define ALT_CHIPERASE 0xC7    // Some flash chips use a different chip erase command
 #define SUSPEND       0x75
 #define ID            0x90
 #define RESUME        0x7A
@@ -63,6 +95,44 @@
 #define B(x)          uint32_t(x*BYTE)
 #define KB(x)         uint32_t(x*KiB)
 #define MB(x)         uint32_t(x*MiB)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//					SFDP related defines 						  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define DWORD(x) x
+#define FIRSTBYTE 0x01
+#define SFDPSIGNATURE 0x50444653
+#define ADDRESSOFSFDPDWORD(x,y) x+((y - 1) * 4)
+#define ADDRESSOFSFDPBYTE(x,y,z) x+((y - 1) * 4)+(z - 1)
+#define KB4ERASE_TYPE 0x0C
+#define KB32ERASE_TYPE 0x0F
+#define KB64ERASE_TYPE 0x10
+#define KB256ERASE_TYPE 0x12
+#define MS1 0b00000000
+#define MS16 0b00000001
+#define MS128 0b00000010
+#define S1    0b00000011
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//					Fixed SFDP addresses 						  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define SFDP_HEADER_ADDR 0x00
+#define SFDP_SIGNATURE_DWORD 0x01
+#define SFDP_NPH_DWORD 0x02
+#define SFDP_NPH_BYTE 0x03
+#define SFDP_PARAM_TABLE_LENGTH_DWORD 0x01
+#define SFDP_PARAM_TABLE_LENGTH_BYTE 0x04
+#define SFDP_BASIC_PARAM_TABLE_HDR_ADDR 0x08
+#define SFDP_BASIC_PARAM_TABLE_NO 0x01
+#define SFDP_MEMORY_DENSITY_DWORD 0x02
+#define SFDP_SECTOR_MAP_PARAM_TABLE_NO 0x02
+#define SFDP_ERASE1_BYTE 0x01
+#define SFDP_ERASE1_INSTRUCTION_DWORD 0x08
+#define SFDP_ERASE2_INSTRUCTION_DWORD 0x09
+#define SFDP_SECTOR_ERASE_TIME_DWORD 0x0A
+#define SFDP_CHIP_ERASE_TIME_DWORD 0x0B
+#define SFDP_PROGRAM_TIME_DWORD 0x0B
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -87,6 +157,14 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define MICRON_MANID         0x20
+  #define M25P40               0x20
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ ON ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define ON_MANID             0x62
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define AMIC_MANID           0x37
+  #define A25L512              0x30
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -113,19 +191,14 @@
 #define VERBOSE       true
 #define PRINTOVERRIDE true
 #define ERASEFUNC     0xEF
-#if defined (SIMBLEE)
-#define BUSY_TIMEOUT  100L
-#elif defined ENABLEZERODMA
-#define BUSY_TIMEOUT  3500L
-#else
-#define BUSY_TIMEOUT  1000L
-#endif
+#define BUSY_TIMEOUT  10000000L
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
 #define BYTE          1L
 #define KiB           1024L
 #define MiB           KiB * KiB
 #define S             1000L
+#define TIME_TO_PROGRAM(x) (_byteFirstPrgmTime + (_byteAddnlPrgmTime * (x - 1)) )
 
 #if defined (ARDUINO_ARCH_ESP8266)
 #define CS 15
@@ -166,27 +239,6 @@
 #define SPI_RX_IDX  2
 // Set DUE SPI clock div (any integer from 2 - 255)
 #define DUE_SPI_CLK 2
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     					   List of Error codes						  //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
- #define SUCCESS              0x00
- #define CALLBEGIN            0x01
- #define UNKNOWNCHIP          0x02
- #define UNKNOWNCAP           0x03
- #define CHIPBUSY             0x04
- #define OUTOFBOUNDS          0x05
- #define CANTENWRITE          0x06
- #define PREVWRITTEN          0x07
- #define LOWRAM               0x08
- #define SYSSUSPEND           0x09
- #define ERRORCHKFAIL         0x0A
- #define NORESPONSE           0x0B
- #define UNSUPPORTEDFUNC      0x0C
- #define UNABLETO4BYTE        0x0D
- #define UNABLETO3BYTE        0x0E
- #define CHIPISPOWEREDDOWN    0x0F
- #define UNKNOWNERROR         0xFE
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
  //     					   List of Supported data types						  //
@@ -207,7 +259,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                        Bit shift macros                            //
 //                      Thanks to @VitorBoss                          //
-//          https://github.com/Marzogh/SPIFlash/issues/76             //
+//          https://github.com/Marzogh/SPIMemory/issues/76             //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #define Lo(param) ((char *)&param)[0] //0x000y
 #define Hi(param) ((char *)&param)[1] //0x00y0
@@ -215,6 +267,22 @@
 #define Highest(param) ((char *)&param)[3] //0xy000
 #define Low(param) ((int *)&param)[0] //0x00yy
 #define Top(param) ((int *)&param)[1] //0xyy00
+
+// Set bit and clear bit
+// x -> byte, y -> bit
+#define setBit(x, y) x |= (1 << y)
+#define clearBit(x, y) x &= ~(1 << y)
+#define toggleBit(x, y) x ^= (1 << y)
+
+// Query to see if bit is set or cleared.
+// x -> byte, y -> bit
+#define bitIsSet(x, y) x & (1 << y)
+#define bitIsClear(x, y) !(x & (1 << y))
+
+//Set nibbles
+// x -> byte, y -> value to set
+#define setLowerNibble(x, y) x &= 0xF0; x |= (y & 0x0F) // Clear out the lower nibble // OR in the desired mask
+#define setUpperNibble(x, y) x &= 0x0F; x |= (y & 0xF0) // Clear out the lower nibble // OR in the desired mask
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #ifndef LED_BUILTIN //fix for boards without that definition

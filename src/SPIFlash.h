@@ -1,10 +1,10 @@
-/* Arduino SPIFlash Library v.3.1.0
+/* Arduino SPIMemory Library v.3.1.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
  * Modified by Prajwal Bhattaram - 24/02/2018
  *
- * This file is part of the Arduino SPIFlash Library. This library is for
+ * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
  * and writing individual data variables, structs and arrays from and to various locations;
  * reading and writing pages; continuous read functions; sector, block and chip erase;
@@ -21,127 +21,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License v3.0
- * along with the Arduino SPIFlash Library.  If not, see
+ * along with the Arduino SPIMemory Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     Uncomment the code below to run a diagnostic if your flash 	  //
-//                         does not respond                           //
-//                                                                    //
-//      Error codes will be generated and returned on functions       //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define RUNDIAGNOSTIC                                               //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//   Uncomment the code below to increase the speed of the library    //
-//                  by disabling _notPrevWritten()                    //
-//                                                                    //
-// Make sure the sectors being written to have been erased beforehand //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define HIGHSPEED                                                   //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//   Uncomment the code below to disable overflow and force data      //
-//   to only be written to the last address of the flash memory       //
-//    and not rollover to address 0x00 when the end is reached        //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define DISABLEOVERFLOW                                             //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//   Comment out the code below to disable DMA mode on SAMD based     //
-//                            platforms                               //
-//                                                                    //
-//   Change the ZERO_SPISERCOM define below to use other SPI ports    //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define ENABLEZERODMA                                               //
-//#define ZERO_SPISERCOM SERCOM4                                      //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define PRINTNAMECHANGEALERT
-
-  #include <Arduino.h>
-  #include "defines.h"
-  #include <SPI.h>
-
-#if defined (ARDUINO_ARCH_SAM)
-  #include <malloc.h>
-  #include <stdlib.h>
-  #include <stdio.h>
-#endif
-
-#if defined (BOARD_RTL8195A)
-  #ifdef __cplusplus
-    extern "C" {
-  #endif
-
-  #include "gpio_api.h"
-  #include "PinNames.h"
-
-  #ifdef __cplusplus
-    }
-  #endif
-#endif
-
-#ifndef ARCH_STM32
-  #if defined(ARDUINO_ARCH_STM32) || defined(__STM32F1__) || defined(STM32F1) || defined(STM32F3) || defined(STM32F4) || defined(STM32F0xx)
-    #define ARCH_STM32
-  #endif
-#endif
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(ARCH_STM32)
-// RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
-  #define _delay_us(us) delayMicroseconds(us)
-#else
-  #include <util/delay.h>
-#endif
-
-// Defines and variables specific to SAM architecture
-#if defined (ARDUINO_ARCH_SAM)
-  #define CHIP_SELECT   digitalWrite(csPin, LOW);
-  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-  #define xfer   _dueSPITransfer
-  #define BEGIN_SPI _dueSPIBegin();
-  extern char _end;
-  extern "C" char *sbrk(int i);
-  //char *ramstart=(char *)0x20070000;
-  //char *ramend=(char *)0x20088000;
-
-// Specific access configuration for Chip select pin. Includes specific to RTL8195A to access GPIO HAL - @boseji <salearj@hotmail.com> 02.03.17
-#elif defined (BOARD_RTL8195A)
-  #ifdef __cplusplus
-    extern "C" {
-  #endif
-
-  #include "gpio_api.h"
-  #include "PinNames.h"
-
-  #ifdef __cplusplus
-    }
-  #endif
-  #define CHIP_SELECT   gpio_write(&csPin, 0);
-  #define CHIP_DESELECT gpio_write(&csPin, 1);
-  #define xfer(n)   SPI.transfer(n)
-  #define BEGIN_SPI SPI.begin();
-
-// Defines and variables specific to ARM architecture
-#elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
-  #define CHIP_SELECT   digitalWrite(csPin, LOW);
-  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-  #define xfer(n)   _spi->transfer(n)
-  #define BEGIN_SPI _spi->begin();
-#else
-  #define CHIP_SELECT   digitalWrite(csPin, LOW);
-  #define CHIP_DESELECT digitalWrite(csPin, HIGH);
-  #define xfer(n)   SPI.transfer(n)
-  #define BEGIN_SPI SPI.begin();
-#endif
-
-#define LIBVER 3
-#define LIBSUBVER 1
-#define BUGFIXVER 0
+#include "SPIMemory.h"
 
 class SPIFlash {
 public:
@@ -158,6 +45,7 @@ public:
   bool     begin(uint32_t flashChipSize = 0);
   void     setClock(uint32_t clockSpeed);
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
+  bool     sfdpPresent(void);
   uint8_t  error(bool verbosity = false);
   uint16_t getManID(void);
   uint32_t getJEDECID(void);
@@ -219,33 +107,9 @@ public:
   //------------------------------- Public variables ------------------------------------//
 
 private:
-#if defined (ARDUINO_ARCH_SAM)
-  //-------------------------- Private Arduino Due Functions ----------------------------//
-  void     _dmac_disable(void);
-  void     _dmac_enable(void);
-  void     _dmac_channel_disable(uint32_t ul_num);
-  void     _dmac_channel_enable(uint32_t ul_num);
-  bool     _dmac_channel_transfer_done(uint32_t ul_num);
-  void     _dueSPIDmaRX(uint8_t* dst, uint16_t count);
-  void     _dueSPIDmaRX(char* dst, uint16_t count);
-  void     _dueSPIDmaTX(const uint8_t* src, uint16_t count);
-  void     _dueSPIDmaCharTX(const char* src, uint16_t count);
-  void     _dueSPIBegin(void);
-  void     _dueSPIInit(uint8_t dueSckDivisor);
-  uint8_t  _dueSPITransfer(uint8_t b);
-  uint8_t  _dueSPIRecByte(void);
-  uint8_t  _dueSPIRecByte(uint8_t* buf, size_t len);
-  int8_t   _dueSPIRecChar(void);
-  int8_t   _dueSPIRecChar(char* buf, size_t len);
-  void     _dueSPISendByte(uint8_t b);
-  void     _dueSPISendByte(const uint8_t* buf, size_t len);
-  void     _dueSPISendChar(char b);
-  void     _dueSPISendChar(const char* buf, size_t len);
-#endif
   //------------------------------- Private functions -----------------------------------//
+  unsigned _createMask(unsigned a, unsigned b);
   void     _troubleshoot(uint8_t _code, bool printoverride = false);
-  void     _printErrorCode(void);
-  void     _printSupportLink(void);
   void     _endSPI(void);
   bool     _disableGlobalBlockProtect(void);
   bool     _isChipPoweredDown(void);
@@ -259,8 +123,7 @@ private:
   bool     _writeDisable(void);
   bool     _getJedecId(void);
   bool     _getManId(uint8_t *b1, uint8_t *b2);
-  bool     _getSFDP(void);
-  bool     _chipID(void);
+  bool     _chipID(uint32_t flashChipSize = 0);
   bool     _transferAddress(void);
   bool     _addressCheck(uint32_t _addr, uint32_t size = 1);
   bool     _enable4ByteAddressing(void);
@@ -271,6 +134,18 @@ private:
   uint8_t  _readStat1(void);
   uint8_t  _readStat2(void);
   uint8_t  _readStat3(void);
+  bool     _getSFDPTable(uint32_t _tableAddress, uint8_t *data_buffer, uint8_t numberOfDWords);
+  bool     _getSFDPData(uint32_t _address, uint8_t *data_buffer, uint8_t numberOfBytes);
+  uint32_t _getSFDPdword(uint32_t _tableAddress, uint8_t dWordNumber);
+  uint16_t _getSFDPint(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t startByte);
+  uint8_t  _getSFDPbyte(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t byteNumber);
+  bool     _getSFDPbit(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t bitNumber);
+  uint32_t _getSFDPTableAddr(uint32_t paramHeaderNum);
+  uint32_t _calcSFDPEraseTimeUnits(uint8_t _unitBits);
+  bool     _checkForSFDP(void);
+  void     _getSFDPEraseParam(void);
+  void     _getSFDPProgramTimeParam(void);
+  bool     _getSFDPFlashParam(void);
   template <class T> bool _write(uint32_t _addr, const T& value, uint32_t _sz, bool errorCheck, uint8_t _dataType);
   template <class T> bool _read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead = false, uint8_t _dataType = 0x00);
   //template <class T> bool _writeErrorCheck(uint32_t _addr, const T& value);
@@ -297,22 +172,32 @@ private:
   float _spifuncruntime = 0;
   struct      chipID {
                 bool supported;
+                bool JEDECsupport;
+                bool sfdpAvailable;
                 uint8_t manufacturerID;
                 uint8_t memoryTypeID;
                 uint8_t capacityID;
-                uint32_t sfdp;
                 uint32_t capacity;
                 uint32_t eraseTime;
               };
               chipID _chip;
+  struct      eraseParam{
+              bool supported;
+              uint8_t opcode;
+              uint32_t time;
+            } kb4Erase, kb32Erase, kb64Erase, kb256Erase, chipErase;
+  uint8_t     _noOfParamHeaders, _noOfBasicParamDwords;
+  uint16_t    _eraseTimeMultiplier, _prgmTimeMultiplier, _pageSize;
   uint32_t    currentAddress, _currentAddress = 0;
   uint32_t    _addressOverflow = false;
-  uint8_t _uniqueID[8];
-  const uint8_t _capID[14]   =
-  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01};
+  uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr, _byteFirstPrgmTime, _byteAddnlPrgmTime, _pagePrgmTime;
+  uint8_t     _uniqueID[8];
+  const uint8_t _capID[16]   =
+  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01, 0x13, 0x37};
 
-  const uint32_t _memSize[14]  =
-  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512)}; // To understand the _memSize definitions check defines.h
+  const uint32_t _memSize[16]  =
+  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512), MB(4), KB(512)};
+  // To understand the _memSize definitions check defines.h
 };
 
 //--------------------------------- Public Templates ------------------------------------//
@@ -351,7 +236,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
     _endSPI();
     for (uint16_t i = 0; i < _sz; i++) {
       if (*p++ != _inByte[i]) {
-        _troubleshoot(ERRORCHKFAIL);
+        _troubleshoot(0x0A); //0x0A is ERRORCHKFAIL
         return false;
       }
       else {
@@ -365,7 +250,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
     _transferAddress();
     for (uint16_t i = 0; i < _sz; i++) {
       if (*p++ != _nextByte(READ)) {
-        _troubleshoot(ERRORCHKFAIL);
+        _troubleshoot(0x0A); //0x0A is ERRORCHKFAIL
         _endSPI();
         return false;
       }
@@ -473,6 +358,9 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
 //  3. _sz --> Size of the variable in bytes (1 byte = 8 bits)
 //  4. fastRead --> defaults to false - executes _beginFastRead() if set to true
 template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, bool fastRead, uint8_t _dataType) {
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
   if (!_prep(READDATA, _addr, _sz)) {
     return false;
   }
@@ -502,8 +390,10 @@ template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, 
       }
       _endSPI();
     }
-    return true;
   }
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros() - _spifuncruntime;
+  #endif
   return true;
 }
 

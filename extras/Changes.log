@@ -1,6 +1,37 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//										  SPIFlash Library 				 						   //
+//										  SPIMemory Library 				 						   //
 //					  				  		Changes log 									   	   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.2.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						13.04.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+--> Library name changed to SPIMemory
+
+--> The library now gathers sfdp information through _chipID(). SFDP information is collected when available, otherwise the library defaults to the pre v3.2.0 version.
+
+New flash memory chips supported
+--> All flash memories compatible with the SFDP standard (as at JESD216B) should be compatible with the library
+
+--> LE25U40CMC from ON Semiconductor
+--> A25L512A0 from AMIC
+--> M25P40 from Micron
+--> AT25SF041 from Adesto
+--> S25FL032P from Cypress/Spansion
+
+New Microcontrollers supported
+--> ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
+
+Bugs squashed
+
+Enhancements
+If the library is instantiated with the constructor ```SFDPFlash flash();```:
+--> Identifies the flash memory chip using the Serial Flash Discoverable Parameters standard. (JESD216B)
+--> Identifies the following opcodes from the SFDP tables and uses them to read/write data:
+			- eraseSector, eraseBlock32K, eraseBlock64K
+--> Reads timing information from SFDP to accurately time the following operations:
+			- eraseSector, eraseBlock32K, eraseBlock64K
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.1.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
