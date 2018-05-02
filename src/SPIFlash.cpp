@@ -441,16 +441,16 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
       return false;
     }
     _currentAddress = _addr;
-    uint8_t _inByte;
+    //uint8_t _inByte;
     CHIP_SELECT
     _nextByte(WRITE, READDATA);
     _transferAddress();
     for (uint16_t j = 0; j < bufferSize; j++) {
-      _inByte = _nextByte(READ);
-      if (_inByte != data_buffer[j]) {
-      //if (_nextByte(READ) != data_buffer[j]) {
-      Serial.print("inByte = ");
-      Serial.println(_inByte);
+      //_inByte = _nextByte(READ);
+      //if (_inByte != data_buffer[j]) {
+      //Serial.print("inByte = ");
+      //Serial.println(_inByte);
+      if (_nextByte(READ) != data_buffer[j]) {
         return false;
       }
     }
