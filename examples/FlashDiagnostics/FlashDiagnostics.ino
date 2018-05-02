@@ -66,7 +66,7 @@ void setup() {
     printTab(3);
     Serial.print("Function");
     printTab(2);
-    Serial.print("Data I/O test");
+    Serial.print("Test result");
     printTab(3);
     Serial.print("     Runtime");
     printLine();
@@ -98,9 +98,9 @@ void setup() {
       #endif */
     printLine();
     printTab(3);
-    Serial.print("Function");
+    Serial.print("Data type");
     printTab(2);
-    Serial.print("Data I/O test");
+    Serial.print("I/O Result");
     printTab(1);
     Serial.print("      Write time");
     printTab(1);

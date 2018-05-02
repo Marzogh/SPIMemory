@@ -87,6 +87,7 @@ void printUniqueID(void) {
 }
 
 bool getID() {
+  Serial.println();
   Serial.print("SPIMemory Library version: ");
 #ifdef LIBVER
   uint8_t _ver, _subver, _bugfix;
