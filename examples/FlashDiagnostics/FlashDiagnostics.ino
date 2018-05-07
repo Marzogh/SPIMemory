@@ -47,7 +47,7 @@ void setup() {
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
   delay(50); //Time to terminal get connected
-  Serial.print(F("Initialising Flash memory"));
+  Serial.print(F("Initialising"));
   for (uint8_t i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
@@ -99,7 +99,7 @@ void setup() {
 #endif
     printLine();
     if (!flash.functionRunTime()) {
-      Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+      Serial.println(F("To see function runtimes ncomment RUNDIAGNOSTIC in SPIMemory.h."));
     }
   }
 }

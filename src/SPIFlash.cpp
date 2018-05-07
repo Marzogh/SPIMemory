@@ -37,7 +37,7 @@ SPIFlash::SPIFlash(uint8_t cs) {
   pinMode(csPin, OUTPUT);
   CHIP_DESELECT
 }
-#elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
+#elif defined (ARDUINO_ARCH_SAMD) || defined (ARCH_STM32)
 SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
   _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
   csPin = cs;
@@ -110,7 +110,7 @@ uint32_t SPIFlash::getCapacity(void) {
 
 //Returns maximum number of pages
 uint32_t SPIFlash::getMaxPage(void) {
-	return (_chip.capacity / SPI_PAGESIZE);
+	return (_chip.capacity / _pageSize);
 }
 
 //Returns the time taken to run a function. Must be called immediately after a function is run as the variable returned is overwritten each time a function from this library is called. Primarily used in the diagnostics sketch included in the library to track function time.
@@ -389,7 +389,7 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
   if (!_prep(PAGEPROG, _addr, bufferSize)) {
     return false;
   }
-  uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+  uint16_t maxBytes = _pageSize-(_addr % _pageSize);  // Force the first set of bytes to stay within the first page
 
   if (bufferSize <= maxBytes) {
     CHIP_SELECT
@@ -441,16 +441,16 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
       return false;
     }
     _currentAddress = _addr;
-    uint8_t _inByte;
+    //uint8_t _inByte;
     CHIP_SELECT
     _nextByte(WRITE, READDATA);
     _transferAddress();
     for (uint16_t j = 0; j < bufferSize; j++) {
-      _inByte = _nextByte(READ);
-      if (_inByte != data_buffer[j]) {
-      //if (_nextByte(READ) != data_buffer[j]) {
-      Serial.print("inByte = ");
-      Serial.println(_inByte);
+      //_inByte = _nextByte(READ);
+      //if (_inByte != data_buffer[j]) {
+      //Serial.print("inByte = ");
+      //Serial.println(_inByte);
+      if (_nextByte(READ) != data_buffer[j]) {
         return false;
       }
     }
@@ -477,7 +477,7 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSi
   if (!_prep(PAGEPROG, _addr, bufferSize)) {
     return false;
   }
-  uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+  uint16_t maxBytes = _pageSize-(_addr % _pageSize);  // Force the first set of bytes to stay within the first page
 
   if (bufferSize <= maxBytes) {
     CHIP_SELECT
