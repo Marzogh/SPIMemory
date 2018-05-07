@@ -25,12 +25,12 @@ New Microcontrollers supported
 Bugs squashed
 
 Enhancements
-If the library is instantiated with the constructor ```SFDPFlash flash();```:
 --> Identifies the flash memory chip using the Serial Flash Discoverable Parameters standard. (JESD216B)
 --> Identifies the following opcodes from the SFDP tables and uses them to read/write data:
 			- eraseSector, eraseBlock32K, eraseBlock64K
 --> Reads timing information from SFDP to accurately time the following operations:
 			- eraseSector, eraseBlock32K, eraseBlock64K
+- Fixes #125 in commit 10c2b86. The library automatically uses the alternate chip erase code (0xC7) as required (only on fully supported chips)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.1.0 									   	   //

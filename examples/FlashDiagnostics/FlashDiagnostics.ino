@@ -38,11 +38,12 @@
 #define FALSE 0
 
 SPIFlash flash;
+//SPIFlash flash(11);
 //SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 
 void setup() {
   Serial.begin(BAUD_RATE);
-#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32)
+#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32) || defined(NRF5)
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
   delay(50); //Time to terminal get connected
