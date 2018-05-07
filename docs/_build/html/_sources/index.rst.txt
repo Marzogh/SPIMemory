@@ -2,10 +2,10 @@
    sphinx-quickstart on Thu Apr 26 10:22:53 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-:github_url:
+   :github_url:
 .. default-domain:: cpp
 .. highlight:: cpp
-   :lineonthreshold: 4
+   :linenothreshold: 4
 .. |project_name| replace:: SPIFlash
 .. |copyright| replace:: © 2018
 .. |author| replace:: Prajwal Bhattaram
@@ -23,6 +23,7 @@ SPIMemory
    pages/info/installation.rst
    pages/info/compatibility.rst
    pages/usage/index.rst
+   pages/contribute.rst
    pages/license.rst
    Source Code <https://github.com/Marzogh/SPIFlash/tree/master>
 
@@ -71,7 +72,7 @@ This Arduino library is for use with flash memory chips that communicate using t
 --------------------
 
 `Support <http://forum.arduino.cc/index.php?topic=324009>`_
--------
+------------------------------------------------------------
 
 If you are having issues and would like help please ask your question `here on the Arduino Forum <http://forum.arduino.cc/index.php?topic=324009>`_.
 

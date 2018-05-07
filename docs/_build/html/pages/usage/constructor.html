@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Contribute" href="../contribute.html" />
     <link rel="prev" title="API and Usage" href="index.html" /> 
 
   
@@ -91,6 +92,9 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Constructor</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
 </ul>
 
             
@@ -154,6 +158,8 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
       
         <a href="index.html" class="btn btn-neutral" title="API and Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -164,8 +170,99 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="constructor">
-<span id="id1"></span><h1>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="constructor"></span><dl class="class">
+<dt id="_CPPv38SPIFlash">
+<span id="_CPPv28SPIFlash"></span><span id="SPIFlash"></span><em class="property">class </em><code class="descname">SPIFlash</code><a class="headerlink" href="#_CPPv38SPIFlash" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="id1">
+<h1>Constructor<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>A constructor is a special kind of class member function that is executed when an object of that class is instantiated.
+Constructors are typically used to initialize member variables/functions of the class to appropriate default values, or to allow the user to easily initialize those member
+variables/functions to whatever values are desired. <a class="footnote-reference" href="#id4" id="id2">[*]</a></div></blockquote>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The constructor must be called before <cite>void setup()</cite>. The constructor can be any word of your choice. For example, the library can called by the following code where <code class="docutils literal notranslate"><span class="pre">flash</span></code> can be replaced by a constructor of the user’s choice.</li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The constructor is used to call a function from the SPIFlash library.</li>
+</ul>
+<p>For example, in the code below, to call the
+:cpp:func: <cite>readByte()</cite> function from the SPIFlash library, the line of code used is flash.readByte()</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>   <span class="c1">//This is the constructor. This example uses &#39;flash&#39; as the constructor</span>
+
+  <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">readByte</span><span class="p">(...);</span>  <span class="c1">//The constructor &#39;flash&#39; is used to call the function &#39;readByte()&#39; from the library</span>
+  <span class="p">...</span>
+  <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="defining-a-custom-chip-select-pin">
+<h3>Defining a custom Chip Select pin<a class="headerlink" href="#defining-a-custom-chip-select-pin" title="Permalink to this headline">¶</a></h3>
+<p>The library can also called by declaring the <cite>SPIFlash flash(csPin*)</cite> constructor where ‘flash’ can be replaced by a user constructor of choice and <cite>‘csPin’</cite> is the Chip Select pin for the flash module.
+For example the following code sets up the library to use the <cite>pin 33</cite> as the Chip Select pin.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="nf">flash</span><span class="p">(</span><span class="mi">33</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-a-non-default-spi-interface">
+<h3>Using a non-default SPI interface <a class="footnote-reference" href="#id5" id="id3">[†]</a><a class="headerlink" href="#using-a-non-default-spi-interface" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">IMPORTANT:</span> <span class="pre">the</span> <span class="pre">csPin</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">declared</span> <span class="pre">if</span> <span class="pre">using</span> <span class="pre">a</span> <span class="pre">non-default</span> <span class="pre">SPI</span> <span class="pre">interface.</span></code></p>
+<p>All versions of the library &gt;= v3.0.0 support the ability to use any of multiple SPI interfaces (if your µC supports them).</p>
+<p>For example the following code sets up the library to use the SPI1 SPI interface instead of the default SPI0.</p>
+<blockquote>
+<div><p>#include SPIFlash.h</p>
+<p>SPIFlash flash(33, &amp;SPI1);</p>
+<dl class="docutils">
+<dt>void setup() {</dt>
+<dd>…</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[*]</a></td><td><a class="reference external" href="http://www.learncpp.com/cpp-tutorial/85-constructors/">learncpp.com</a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[†]</a></td><td>This is currently only supported on the SAMD and STM32 architectures.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 
@@ -175,6 +272,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="API and Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

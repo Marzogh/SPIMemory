@@ -92,7 +92,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../usage/constructor.html">Constructor</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
 </ul>
 
             
@@ -176,30 +178,26 @@
 <li>IDE v1.6.9-v1.6.12</li>
 <li>IDE v1.8.1-v1.8.5</li>
 </ul>
-<div class="section" id="boards">
-<h3>Boards<a class="headerlink" href="#boards" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="microcontrollers-boards-tested">
+<h3>Microcontrollers (Boards tested)<a class="headerlink" href="#microcontrollers-boards-tested" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="completely-supported">
 <h4>Completely supported<a class="headerlink" href="#completely-supported" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li>Arduino Uno</li>
-<li>Arduino Leonardo</li>
-<li>Arduino Due</li>
-<li>Arduino Zero</li>
-<li>Nucleo-F091RC</li>
-<li>Adafruit Feather M0</li>
-<li>Adafruit Feather M0 Express</li>
-<li>ESP8266 Boards (On the Arduino IDE)</li>
-<li>Simblee Boards (On the Arduino IDE)</li>
-<li>Arduino Mega</li>
-<li>Arduino Micro</li>
-<li>Arduino Fio</li>
+<li>ATmega328P (Arduino Uno, Arduino Micro, Arduino Fio, Arduino Nano)</li>
+<li>ATmega32u4 (Arduino Leonardo, Arduino Fio v3)</li>
+<li>ATmega2560 (Arduino Mega)</li>
+<li>ATSAMD21G18 ARM Cortex M0+ (Adafruit Feather M0, Adafruit Feather M0 Express)</li>
+<li>AT91SAM3X8E ARM Cortex M3 (Arduino Due)</li>
+<li>ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)</li>
+<li>STM32F091RCT6 (Nucleo-F091RC)</li>
+<li>ESP8266 Boards (Adafruit ESP8266 Feather)</li>
+<li>Simblee Boards (Sparkfun Simblee)</li>
 </ul>
 </div>
 <div class="section" id="in-beta">
 <h4>In BETA<a class="headerlink" href="#in-beta" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li>ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit <a class="reference external" href="https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3">25dff4f</a> on 05.04.2018. <a class="footnote-reference" href="#f1" id="id2">[1]</a> <a class="footnote-reference" href="#f2" id="id3">[2]</a></li>
-<li>Adafruit Metro M4 - more testing required before support for this board leaves beta.</li>
+<li>ESP32 Boards (Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit <a class="reference external" href="https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3">25dff4f</a> on 05.04.2018. <a class="footnote-reference" href="#id4" id="id2">[*]</a> <a class="footnote-reference" href="#id5" id="id3">[†]</a></li>
 </ul>
 </div>
 </div>
@@ -253,16 +251,16 @@
 <li>Any flash memory that is compatible with the SFDP standard as defined in JESD216B</li>
 </ul>
 <p class="rubric">Footnotes</p>
-<table class="docutils footnote" frame="void" id="f1" rules="none">
+<table class="docutils footnote" frame="void" id="id4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[*]</a></td><td>ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="f2" rules="none">
+<table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td>ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: <code class="docutils literal"><span class="pre">SPIFlash</span> <span class="pre">flash(33);</span></code></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[†]</a></td><td>ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: <code class="docutils literal notranslate"><span class="pre">SPIFlash</span> <span class="pre">flash(33);</span></code></td></tr>
 </tbody>
 </table>
 </div>
