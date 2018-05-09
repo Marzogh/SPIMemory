@@ -35,7 +35,7 @@ SPIMemory
   :maxdepth: 4
   :caption: Miscellaneous
 
-    pages/contribute.rst
+  pages/contribute.rst
   pages/license.rst
   Source Code <https://github.com/Marzogh/SPIFlash/tree/master>
 
@@ -96,7 +96,6 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
 Features

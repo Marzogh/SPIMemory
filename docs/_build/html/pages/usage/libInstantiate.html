@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Library Instantiation functions &mdash; SPIMemory 0 documentation</title>
+  <title>Library Instantiation &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="License" href="../license.html" />
+    <link rel="next" title="Contribute" href="../contribute.html" />
     <link rel="prev" title="Constructor" href="constructor.html" /> 
 
   
@@ -92,13 +92,15 @@
 <p class="caption"><span class="caption-text">SPIFlash</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Library Instantiation functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Library Instantiation</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Miscellaneous</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
 </ul>
@@ -148,7 +150,7 @@
         
           <li><a href="index.html">API and Usage</a> &raquo;</li>
         
-      <li>Library Instantiation functions</li>
+      <li>Library Instantiation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -164,7 +166,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../license.html" class="btn btn-neutral float-right" title="License" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="constructor.html" class="btn btn-neutral" title="Constructor" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -176,8 +178,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="library-instantiation-functions">
-<h1>Library Instantiation functions<a class="headerlink" href="#library-instantiation-functions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="library-instantiation">
+<h1>Library Instantiation<a class="headerlink" href="#library-instantiation" title="Permalink to this headline">¶</a></h1>
 <p>These functions set up the library for use and should be called as required.</p>
 <hr class="docutils" />
 <div class="section" id="begin-required-for-library-operation">
@@ -193,7 +195,7 @@
 <div><dl class="var">
 <dt id="_CPPv213flashChipSize">
 <span id="flashChipSize__uint32_t"></span>uint32_t <code class="descclassname"></code><code class="descname">flashChipSize</code><a class="headerlink" href="#_CPPv213flashChipSize" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Refer to <code class="docutils literal"><span class="pre">Advanced</span> <span class="pre">use</span></code> below</p>
+<dd><p>Refer to <a class="reference internal" href="#nonsupportedflash"><span class="std std-ref">Using with non-supported flash memory</span></a></p>
 </dd></dl>
 
 </div></blockquote>
@@ -205,21 +207,39 @@
 <li>This function is essential to the functioning of the library and must be called before any other calls are made to the library.</li>
 </ul>
 </div>
-<div class="section" id="advanced-use">
-<h3>Advanced use<a class="headerlink" href="#advanced-use" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>An optional <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can be declared as an argument with this function (if library version &gt; v2.6.0)</li>
-<li>In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in <em>bits</em> as the <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can - in many instances - enable the library to work with the chip</li>
-</ul>
-</div>
 <div class="section" id="related-errors">
 <h3>Related Errors<a class="headerlink" href="#related-errors" title="Permalink to this headline">¶</a></h3>
 <p>If this function is not called the library throws an error - CALLBEGIN. (Refer to  <a class="reference internal" href="errorReporting.html#errorreporting"><span class="std std-ref">Diagnostics &amp; Error reporting</span></a>)</p>
 </div>
+<div class="section" id="advanced-use">
+<h3>Advanced use<a class="headerlink" href="#advanced-use" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="using-with-non-supported-flash-memory">
+<h4>Using with non-supported flash memory<a class="headerlink" href="#using-with-non-supported-flash-memory" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>An optional <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can be declared as an argument with this function (if library version &gt; v2.6.0)</li>
+<li>In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in <em>bytes</em> as the <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can - in many instances - enable the library to work with the chip</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">MB</span><span class="p">(</span><span class="mi">32</span><span class="p">));</span>  <span class="c1">// This sets the flash chip size to 32 Megabytes - Refer to defines.h for the expansion of the MB(32) macro</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <hr class="docutils" />
-<div class="section" id="setclock-use-with-care">
-<h2>setClock() <code class="docutils literal"><span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code><a class="headerlink" href="#setclock-use-with-care" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="setclock-advanced-use-only-use-with-care">
+<h2>setClock() <code class="docutils literal"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code><a class="headerlink" href="#setclock-advanced-use-only-use-with-care" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="_CPPv2N8SPIFlash8setClockE8uint32_t">
 <span id="SPIFlash::setClock__uint32_t"></span>bool <code class="descclassname">SPIFlash::</code><code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N8SPIFlash8setClockE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
@@ -260,6 +280,14 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="id2">
+<h3>Related Errors<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>NONE</p>
+</div>
+<div class="section" id="id3">
+<h3>Advanced use<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>N/A</p>
+</div>
 </div>
 </div>
 
@@ -271,7 +299,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="constructor.html" class="btn btn-neutral" title="Constructor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API and Usage &mdash; SPIMemory 0 documentation</title>
+  <title>Library structure &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Library structure" href="libStructure.html" />
-    <link rel="prev" title="Compatibility" href="../info/compatibility.html" /> 
+    <link rel="next" title="Constructor" href="constructor.html" />
+    <link rel="prev" title="API and Usage" href="index.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -91,10 +91,10 @@
 </ul>
 <p class="caption"><span class="caption-text">SPIFlash</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API and Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Library structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation functions</a></li>
 </ul>
 </li>
 </ul>
@@ -148,13 +148,15 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-      <li>API and Usage</li>
+          <li><a href="index.html">API and Usage</a> &raquo;</li>
+        
+      <li>Library structure</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/usage/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/usage/libStructure.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,10 +166,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="constructor.html" class="btn btn-neutral float-right" title="Constructor" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="API and Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -176,41 +178,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="api-and-usage">
-<span id="usage"></span><h1>API and Usage<a class="headerlink" href="#api-and-usage" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
+  <div class="toctree-wrapper compound" id="libstructure">
 </div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="constructor.html">Constructor</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html#parameters-optional">Parameters <code class="docutils literal"><span class="pre">Optional</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html#what-it-does">What it does</a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html#advanced-use">Advanced Use</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="constructor.html#defining-a-custom-chip-select-pin">Defining a custom Chip Select pin</a></li>
-<li class="toctree-l3"><a class="reference internal" href="constructor.html#using-a-non-default-spi-interface">Using a non-default SPI interface </a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#begin-required-for-library-operation">begin() <code class="docutils literal"><span class="pre">Required</span> <span class="pre">for</span> <span class="pre">library</span> <span class="pre">operation</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#parameters-optional">Parameters <code class="docutils literal"><span class="pre">Optional</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#what-it-does">What it does</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#related-errors">Related Errors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#advanced-use">Advanced use</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#setclock-advanced-use-only-use-with-care">setClock() <code class="docutils literal"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#parameters-non-optional">Parameters <code class="docutils literal"><span class="pre">Non-optional</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#id1">What it does</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#id2">Related Errors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#id3">Advanced use</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<div class="section" id="library-structure">
+<h1>Library structure<a class="headerlink" href="#library-structure" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="constructor">
+<h2>Constructor:<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv28SPIFlash">
+<span id="SPIFlash"></span><em class="property">class </em><code class="descclassname"></code><code class="descname">SPIFlash</code><a class="headerlink" href="#_CPPv28SPIFlash" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="library-instantiation-functions">
+<h3>Library instantiation functions:<a class="headerlink" href="#library-instantiation-functions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="function">
+<dt id="_CPPv2N8SPIFlash5beginE8uint32_t">
+<span id="SPIFlash::begin__uint32_t"></span>bool <code class="descclassname">SPIFlash::</code><code class="descname">begin</code><span class="sig-paren">(</span>uint32_t <em>flashChipSize</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N8SPIFlash5beginE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2N8SPIFlash8setClockE8uint32_t">
+<span id="SPIFlash::setClock__uint32_t"></span>void <code class="descclassname">SPIFlash::</code><code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N8SPIFlash8setClockE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv2N8SPIFlash8readByteE8uint32_tb">
+<span id="SPIFlash::readByte__uint32_t.b"></span>uint8_t <code class="descclassname">SPIFlash::</code><code class="descname">readByte</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N8SPIFlash8readByteE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</div>
 </div>
 </div>
 
@@ -222,10 +220,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="constructor.html" class="btn btn-neutral float-right" title="Constructor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="API and Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

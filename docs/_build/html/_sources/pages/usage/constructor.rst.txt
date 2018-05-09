@@ -1,6 +1,7 @@
 .. _Constructor:
 
 .. cpp:class:: SPIFlash
+.. cpp:function:: SPIFlash::SPIFlash(uint8_t cs = CS, SPIClass *spiinterface = &SPI)
 
 .. default-domain:: cpp
 .. highlight:: cpp
@@ -16,8 +17,19 @@ Constructor
   Constructors are typically used to initialize member variables/functions of the class to appropriate default values, or to allow the user to easily initialize those member
   variables/functions to whatever values are desired. [*]_
 
+************************
+Parameters ``Optional``
+************************
+.. cpp:var:: uint8_t cs
+
+    Refer to :ref:`Defining a custom Chip Select pin <customCSPin>`
+
+.. cpp:var:: SPIClass *spiinterface
+
+    Refer to :ref:`Using a non-default SPI interface <nonDefaultSPI>`
+
 ********************
-Usage
+What it does
 ********************
 
 * The constructor must be called before ``void setup()``. The constructor can be any word of your choice. For example, the library can called by the following code where ``flash`` can be replaced by a constructor of the user's choice.
@@ -41,46 +53,57 @@ For example:
     ...
     }
 
+.. _advancedUseConstructor:
+
 ********************
-Advanced Usage
+Advanced Use
 ********************
 
 -------------------------------------
 
+.. _customCSPin:
+
 Defining a custom Chip Select pin
 ------------------------------------
-The library can also called by declaring the `SPIFlash flash(csPin*)` constructor where 'flash' can be replaced by a user constructor of choice and `'csPin'` is the Chip Select pin for the flash module.
-For example the following code sets up the library to use the `pin 33` as the Chip Select pin.
+The library can also called by declaring the ``cs`` parameter in the constructor where ``cs`` is the uuser defined Chip Select pin for the flash module.
 
 .. code-block:: cpp
 
   #include <SPIMemory.h>
 
-  SPIFlash flash(33);
+  SPIFlash flash(33);   // The library uses the `pin 33` as the Chip Select pin instead of the default
 
   void setup() {
-  ...
+    ...
+  }
+
+  void loop {
+    ...
   }
 
 -------------------------------------
 
+.. _nonDefaultSPI:
 Using a non-default SPI interface [*]_
 ----------------------------------------
 
-.. note::
-  The csPin **MUST** be declared if using a non-default SPI interface.
-
-All versions of the library >= v3.0.0 support the ability to use any of multiple SPI interfaces (if your µC supports them).
-
-For example the following code sets up the library to use the ``SPI1`` SPI interface instead of the default ``SPI0``.
+* The library currently only supports using non-default SPI interfaces on the following architectures:
+    * SAMD
+    * STM32
+* The csPin **MUST** be declared if using a non-default SPI interface.
+* Only available if library > v3.0.0
 
 .. code-block:: cpp
 
-  #include SPIFlash.h
+  #include <SPIMemory.h>
 
-  SPIFlash flash(33, &SPI1);
-
+  SPIFlash flash(33, &SPI1);  // The library now uses the 'SPI1' interface instead of the default 'SPI0'.
+                              // It also uses pin 33 instead of the default Chip Select pin
   void setup() {
+    ...
+  }
+
+  void loop {
     ...
   }
 

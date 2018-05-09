@@ -1,7 +1,7 @@
 .. _InstantiationFunc
 
 #################################
-Library Instantiation functions
+Library Instantiation
 #################################
 
 These functions set up the library for use and should be called as required.
@@ -16,27 +16,49 @@ Parameters ``Optional``
 ----------------------------
   .. cpp:var:: uint32_t flashChipSize
 
-    Refer to ``Advanced use`` below
+    Refer to :ref:`Using with non-supported flash memory <nonSupportedFlash>`
 What it does
 -------------
 * Must be called at the start in ``void setup()``. This function detects the type of chip being used and sets parameters accordingly.
 
 * This function is essential to the functioning of the library and must be called before any other calls are made to the library.
 
-Advanced use
--------------
-* An optional ``flashChipSize`` parameter can be declared as an argument with this function (if library version > v2.6.0)
-
-* In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in *bits* as the ``flashChipSize`` parameter can - in many instances - enable the library to work with the chip
-
 Related Errors
 ---------------
 If this function is not called the library throws an error - CALLBEGIN. (Refer to  :ref:`Diagnostics & Error reporting <ErrorReporting>`)
 
+Advanced use
+-------------
+
+.. _nonSupportedFlash:
+Using with non-supported flash memory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* An optional ``flashChipSize`` parameter can be declared as an argument with this function (if library version > v2.6.0)
+
+* In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in *bytes* as the ``flashChipSize`` parameter can - in many instances - enable the library to work with the chip
+
+For example:
+
+.. code-block:: cpp
+
+  #include <SPIMemory.h>
+
+  SPIFlash flash;
+
+  void setup() {
+    flash.begin(MB(32));  // This sets the flash chip size to 32 Megabytes - Refer to defines.h for the expansion of the MB(32) macro
+    ...
+  }
+
+  void loop() {
+    ...
+  }
+
+
 -----------------------------------------------------------------------------------------------------------
 
 *******************************************************************
-setClock() ``Use with care``
+setClock() ``Advanced use only: Use with care``
 *******************************************************************
 .. cpp:function:: bool SPIFlash::setClock(uint32_t clockSpeed)
 
@@ -71,3 +93,11 @@ For example:
   void loop() {
     ...
   }
+
+Related Errors
+---------------
+NONE
+
+Advanced use
+-------------
+N/A

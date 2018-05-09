@@ -93,14 +93,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation functions</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation functions</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Miscellaneous</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
 </ul>
@@ -183,6 +182,11 @@
 <span id="SPIFlash"></span><em class="property">class </em><code class="descclassname"></code><code class="descname">SPIFlash</code><a class="headerlink" href="#_CPPv28SPIFlash" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="_CPPv2N8SPIFlash8SPIFlashE7uint8_tP8SPIClass">
+<span id="SPIFlash::SPIFlash__uint8_t.SPIClassP"></span><code class="descclassname">SPIFlash::</code><code class="descname">SPIFlash</code><span class="sig-paren">(</span>uint8_t <em>cs</em> = CS, SPIClass *<em>spiinterface</em> = &amp;SPI<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N8SPIFlash8SPIFlashE7uint8_tP8SPIClass" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
 <div class="section" id="id1">
 <h1>Constructor<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
@@ -191,8 +195,23 @@
 Constructors are typically used to initialize member variables/functions of the class to appropriate default values, or to allow the user to easily initialize those member
 variables/functions to whatever values are desired. <a class="footnote-reference" href="#id4" id="id2">[*]</a></p>
 </div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="parameters-optional">
+<h2>Parameters <code class="docutils literal"><span class="pre">Optional</span></code><a class="headerlink" href="#parameters-optional" title="Permalink to this headline">¶</a></h2>
+<dl class="var">
+<dt id="_CPPv22cs">
+<span id="cs__uint8_t"></span>uint8_t <code class="descclassname"></code><code class="descname">cs</code><a class="headerlink" href="#_CPPv22cs" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Refer to <a class="reference internal" href="#customcspin"><span class="std std-ref">Defining a custom Chip Select pin</span></a></p>
+</dd></dl>
+
+<dl class="var">
+<dt id="_CPPv212spiinterface">
+<span id="spiinterface__SPIClassP"></span>SPIClass *<code class="descclassname"></code><code class="descname">spiinterface</code><a class="headerlink" href="#_CPPv212spiinterface" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Refer to <a class="reference internal" href="#nondefaultspi"><span class="std std-ref">Using a non-default SPI interface</span></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="what-it-does">
+<h2>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>The constructor must be called before <code class="docutils literal"><span class="pre">void</span> <span class="pre">setup()</span></code>. The constructor can be any word of your choice. For example, the library can called by the following code where <code class="docutils literal"><span class="pre">flash</span></code> can be replaced by a constructor of the user’s choice.</li>
 <li>The constructor is used to call a function from the SPIFlash library.</li>
@@ -213,37 +232,51 @@ variables/functions to whatever values are desired. <a class="footnote-reference
 </pre></div>
 </div>
 </div>
-<div class="section" id="advanced-usage">
-<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="advanced-use">
+<span id="advanceduseconstructor"></span><h2>Advanced Use<a class="headerlink" href="#advanced-use" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
 <div class="section" id="defining-a-custom-chip-select-pin">
-<h3>Defining a custom Chip Select pin<a class="headerlink" href="#defining-a-custom-chip-select-pin" title="Permalink to this headline">¶</a></h3>
-<p>The library can also called by declaring the <cite>SPIFlash flash(csPin*)</cite> constructor where ‘flash’ can be replaced by a user constructor of choice and <cite>‘csPin’</cite> is the Chip Select pin for the flash module.
-For example the following code sets up the library to use the <cite>pin 33</cite> as the Chip Select pin.</p>
+<span id="customcspin"></span><h3>Defining a custom Chip Select pin<a class="headerlink" href="#defining-a-custom-chip-select-pin" title="Permalink to this headline">¶</a></h3>
+<p>The library can also called by declaring the <code class="docutils literal"><span class="pre">cs</span></code> parameter in the constructor where <code class="docutils literal"><span class="pre">cs</span></code> is the uuser defined Chip Select pin for the flash module.</p>
 <div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
-<span class="n">SPIFlash</span> <span class="nf">flash</span><span class="p">(</span><span class="mi">33</span><span class="p">);</span>
+<span class="n">SPIFlash</span> <span class="nf">flash</span><span class="p">(</span><span class="mi">33</span><span class="p">);</span>   <span class="c1">// The library uses the `pin 33` as the Chip Select pin instead of the default</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
-<span class="p">...</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">loop</span> <span class="p">{</span>
+  <span class="p">...</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
 <hr class="docutils" />
+</div>
 <div class="section" id="using-a-non-default-spi-interface">
 <h3>Using a non-default SPI interface <a class="footnote-reference" href="#id5" id="id3">[†]</a><a class="headerlink" href="#using-a-non-default-spi-interface" title="Permalink to this headline">¶</a></h3>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The csPin <strong>MUST</strong> be declared if using a non-default SPI interface.</p>
-</div>
-<p>All versions of the library &gt;= v3.0.0 support the ability to use any of multiple SPI interfaces (if your µC supports them).</p>
-<p>For example the following code sets up the library to use the <code class="docutils literal"><span class="pre">SPI1</span></code> SPI interface instead of the default <code class="docutils literal"><span class="pre">SPI0</span></code>.</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">SPIFlash.h</span><span class="cp"></span>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>The library currently only supports using non-default SPI interfaces on the following architectures:</dt>
+<dd><ul class="first last">
+<li>SAMD</li>
+<li>STM32</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>The csPin <strong>MUST</strong> be declared if using a non-default SPI interface.</li>
+<li>Only available if library &gt; v3.0.0</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
-<span class="n">SPIFlash</span> <span class="nf">flash</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">SPI1</span><span class="p">);</span>
-
+<span class="n">SPIFlash</span> <span class="nf">flash</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">SPI1</span><span class="p">);</span>  <span class="c1">// The library now uses the &#39;SPI1&#39; interface instead of the default &#39;SPI0&#39;.</span>
+                            <span class="c1">// It also uses pin 33 instead of the default Chip Select pin</span>
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">loop</span> <span class="p">{</span>
   <span class="p">...</span>
 <span class="p">}</span>
 </pre></div>
