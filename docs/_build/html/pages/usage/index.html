@@ -83,16 +83,22 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <p class="caption"><span class="caption-text">SPIMemory</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API and Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation functions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
 </ul>
@@ -171,17 +177,62 @@
   <div class="section" id="api-and-usage">
 <span id="usage"></span><h1>API and Usage<a class="headerlink" href="#api-and-usage" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="constructor.html">Constructor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="constructor.html#defining-a-custom-chip-select-pin">Defining a custom Chip Select pin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="constructor.html#using-a-non-default-spi-interface">Using a non-default SPI interface </a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="libInstantiate.html">Library Instantiation functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#begin-required-for-library-operation">begin() <code class="docutils literal"><span class="pre">Required</span> <span class="pre">for</span> <span class="pre">library</span> <span class="pre">operation</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#parameters-optional">Parameters <code class="docutils literal"><span class="pre">Optional</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#what-it-does">What it does</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#advanced-use">Advanced use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#related-errors">Related Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#setclock-use-with-care">setClock() <code class="docutils literal"><span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#parameters-non-optional">Parameters <code class="docutils literal"><span class="pre">Non-optional</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="libInstantiate.html#id1">What it does</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
+<div class="section" id="constructor">
+<h2>Constructor:<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="_CPPv38SPIFlash">
-<span id="_CPPv28SPIFlash"></span><span id="SPIFlash"></span><em class="property">class </em><code class="descname">SPIFlash</code><br /></dt>
-<dd><dl class="function">
-<dt id="_CPPv3N8SPIFlash8readByteE8uint32_tb">
-<span id="_CPPv2N8SPIFlash8readByteE8uint32_tb"></span><span id="SPIFlash::readByte__uint32_t.b"></span>uint8_t <code class="descname">readByte</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash8readByteE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv28SPIFlash">
+<span id="SPIFlash"></span><em class="property">class </em><code class="descclassname"></code><code class="descname">SPIFlash</code><a class="headerlink" href="#_CPPv28SPIFlash" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-</dd></dl>
+<div class="section" id="library-instantiation-functions">
+<h3>Library instantiation functions:<a class="headerlink" href="#library-instantiation-functions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="function">
+<dt id="_CPPv25begin8uint32_t">
+<span id="begin__uint32_t"></span>bool <code class="descclassname"></code><code class="descname">begin</code><span class="sig-paren">(</span>uint32_t <em>flashChipSize</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv25begin8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
 
+<dl class="function">
+<dt id="_CPPv28setClock8uint32_t">
+<span id="setClock__uint32_t"></span>void <code class="descclassname"></code><code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28setClock8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv28readByte8uint32_tb">
+<span id="readByte__uint32_t.b"></span>uint8_t <code class="descclassname"></code><code class="descname">readByte</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readByte8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</div>
+</div>
 </div>
 
 

@@ -16,16 +16,28 @@ SPIMemory
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
-   :caption: Contents:
+   :maxdepth: 4
+   :caption: SPIMemory
 
    pages/info/about.rst
    pages/info/installation.rst
    pages/info/compatibility.rst
+
+.. toctree::
+   :hidden:
+   :maxdepth: 4
+   :caption: SPIFlash
+
    pages/usage/index.rst
-   pages/contribute.rst
-   pages/license.rst
-   Source Code <https://github.com/Marzogh/SPIFlash/tree/master>
+
+.. toctree::
+  :hidden:
+  :maxdepth: 4
+  :caption: Miscellaneous
+
+    pages/contribute.rst
+  pages/license.rst
+  Source Code <https://github.com/Marzogh/SPIFlash/tree/master>
 
 **********************************************************
  Arduino library for Flash Memory Chips (SPI based only)
