@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Library Instantiation functions" href="libInstantiate.html" />
-    <link rel="prev" title="API and Usage" href="index.html" /> 
+    <link rel="next" title="Library Instantiation" href="libInstantiate.html" />
+    <link rel="prev" title="Library structure" href="libStructure.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -92,8 +92,10 @@
 <p class="caption"><span class="caption-text">SPIFlash</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 </ul>
 </li>
 </ul>
@@ -165,10 +167,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="libInstantiate.html" class="btn btn-neutral float-right" title="Library Instantiation functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libInstantiate.html" class="btn btn-neutral float-right" title="Library Instantiation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="API and Usage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libStructure.html" class="btn btn-neutral" title="Library structure" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -213,10 +215,12 @@ variables/functions to whatever values are desired. <a class="footnote-reference
 <div class="section" id="what-it-does">
 <h2>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>The constructor must be called before <code class="docutils literal"><span class="pre">void</span> <span class="pre">setup()</span></code>. The constructor can be any word of your choice. For example, the library can called by the following code where <code class="docutils literal"><span class="pre">flash</span></code> can be replaced by a constructor of the user’s choice.</li>
+<li>The constructor must be called before <code class="docutils literal"><span class="pre">void</span> <span class="pre">setup()</span></code>. The constructor can be any word of your choice. For example, the library can called by the example code below where <code class="docutils literal"><span class="pre">flash</span></code> can be replaced by a constructor of the user’s choice.</li>
 <li>The constructor is used to call a function from the SPIFlash library.</li>
 </ul>
-<p>For example:</p>
+</div>
+<div class="section" id="example-code">
+<h2>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>   <span class="c1">//This is the constructor. This example uses &#39;flash&#39; as the constructor</span>
@@ -232,9 +236,11 @@ variables/functions to whatever values are desired. <a class="footnote-reference
 </pre></div>
 </div>
 </div>
+<div class="section" id="related-errors-none">
+<h2>Related Errors <code class="docutils literal"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="advanced-use">
 <span id="advanceduseconstructor"></span><h2>Advanced Use<a class="headerlink" href="#advanced-use" title="Permalink to this headline">¶</a></h2>
-<hr class="docutils" />
 <div class="section" id="defining-a-custom-chip-select-pin">
 <span id="customcspin"></span><h3>Defining a custom Chip Select pin<a class="headerlink" href="#defining-a-custom-chip-select-pin" title="Permalink to this headline">¶</a></h3>
 <p>The library can also called by declaring the <code class="docutils literal"><span class="pre">cs</span></code> parameter in the constructor where <code class="docutils literal"><span class="pre">cs</span></code> is the uuser defined Chip Select pin for the flash module.</p>
@@ -254,7 +260,7 @@ variables/functions to whatever values are desired. <a class="footnote-reference
 <hr class="docutils" />
 </div>
 <div class="section" id="using-a-non-default-spi-interface">
-<h3>Using a non-default SPI interface <a class="footnote-reference" href="#id5" id="id3">[†]</a><a class="headerlink" href="#using-a-non-default-spi-interface" title="Permalink to this headline">¶</a></h3>
+<span id="nondefaultspi"></span><h3>Using a non-default SPI interface <a class="footnote-reference" href="#id5" id="id3">[†]</a><a class="headerlink" href="#using-a-non-default-spi-interface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><dl class="first docutils">
 <dt>The library currently only supports using non-default SPI interfaces on the following architectures:</dt>
@@ -306,10 +312,10 @@ variables/functions to whatever values are desired. <a class="footnote-reference
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libInstantiate.html" class="btn btn-neutral float-right" title="Library Instantiation functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libInstantiate.html" class="btn btn-neutral float-right" title="Library Instantiation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="API and Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="libStructure.html" class="btn btn-neutral" title="Library structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

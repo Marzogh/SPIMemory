@@ -32,11 +32,13 @@ Parameters ``Optional``
 What it does
 ********************
 
-* The constructor must be called before ``void setup()``. The constructor can be any word of your choice. For example, the library can called by the following code where ``flash`` can be replaced by a constructor of the user's choice.
+* The constructor must be called before ``void setup()``. The constructor can be any word of your choice. For example, the library can called by the example code below where ``flash`` can be replaced by a constructor of the user's choice.
 
 * The constructor is used to call a function from the SPIFlash library.
 
-For example:
+********************
+Example code:
+********************
 
 .. code-block:: cpp
 
@@ -53,13 +55,15 @@ For example:
     ...
     }
 
+************************
+Related Errors ``None``
+************************
+
 .. _advancedUseConstructor:
 
 ********************
 Advanced Use
 ********************
-
--------------------------------------
 
 .. _customCSPin:
 
@@ -84,6 +88,7 @@ The library can also called by declaring the ``cs`` parameter in the constructor
 -------------------------------------
 
 .. _nonDefaultSPI:
+
 Using a non-default SPI interface [*]_
 ----------------------------------------
 

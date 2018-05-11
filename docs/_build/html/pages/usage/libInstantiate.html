@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Contribute" href="../contribute.html" />
+    <link rel="next" title="Chip ID" href="chipID.html" />
     <link rel="prev" title="Constructor" href="constructor.html" /> 
 
   
@@ -95,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 </ul>
 </li>
 </ul>
@@ -166,7 +167,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chipID.html" class="btn btn-neutral float-right" title="Chip ID" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="constructor.html" class="btn btn-neutral" title="Constructor" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -207,25 +208,47 @@
 <li>This function is essential to the functioning of the library and must be called before any other calls are made to the library.</li>
 </ul>
 </div>
-<div class="section" id="related-errors">
-<h3>Related Errors<a class="headerlink" href="#related-errors" title="Permalink to this headline">¶</a></h3>
-<p>If this function is not called the library throws an error - CALLBEGIN. (Refer to  <a class="reference internal" href="errorReporting.html#errorreporting"><span class="std std-ref">Diagnostics &amp; Error reporting</span></a>)</p>
-</div>
-<div class="section" id="advanced-use">
-<h3>Advanced use<a class="headerlink" href="#advanced-use" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="using-with-non-supported-flash-memory">
-<h4>Using with non-supported flash memory<a class="headerlink" href="#using-with-non-supported-flash-memory" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li>An optional <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can be declared as an argument with this function (if library version &gt; v2.6.0)</li>
-<li>In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in <em>bytes</em> as the <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can - in many instances - enable the library to work with the chip</li>
-</ul>
-<p>For example:</p>
+<div class="section" id="example-code">
+<h3>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">MB</span><span class="p">(</span><span class="mi">32</span><span class="p">));</span>  <span class="c1">// This sets the flash chip size to 32 Megabytes - Refer to defines.h for the expansion of the MB(32) macro</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>  <span class="c1">// This function has to be called first - before any other functions</span>
+                  <span class="c1">// from this library are called</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="related-errors-callbegin-unknowncap-unknownchip">
+<h3>Related Errors <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">UNKNOWNCAP</span></code> <code class="docutils literal"><span class="pre">UNKNOWNCHIP</span></code><a class="headerlink" href="#related-errors-callbegin-unknowncap-unknownchip" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If this function is not called the library throws the error - <code class="docutils literal"><span class="pre">CALLBEGIN</span></code>.</li>
+<li>If the <a class="reference internal" href="chipID.html#getcapacity"><span class="std std-ref">chip’s capacity</span></a> cannot be identified the library throws the error - <code class="docutils literal"><span class="pre">UNKNOWNCAP</span></code>.</li>
+<li>If the <a class="reference internal" href="chipID.html#getjedecid"><span class="std std-ref">chip cannot be ID’d</span></a> the library throws the error - <code class="docutils literal"><span class="pre">UNKNOWNCHIP</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="advanced-use">
+<h3>Advanced use<a class="headerlink" href="#advanced-use" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="using-with-non-supported-flash-memory">
+<span id="nonsupportedflash"></span><h4>Using with non-supported flash memory<a class="headerlink" href="#using-with-non-supported-flash-memory" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>An optional <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can be declared as an argument with this function (if library version &gt; v2.6.0)</li>
+<li>In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in <em>bytes</em> as the <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can - in many instances - enable the library to work with the chip</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">MB</span><span class="p">(</span><span class="mi">32</span><span class="p">));</span>  <span class="c1">// This sets the flash chip size to 32 Megabytes</span>
+                        <span class="c1">// - Refer to defines.h for the expansion of the MB(32) macro</span>
   <span class="p">...</span>
 <span class="p">}</span>
 
@@ -263,7 +286,9 @@
 <li>If required, this function must be called straight after begin().</li>
 <li>This function takes a 32-bit value (in Hertz) as replacement for the default maximum clock speed (104MHz for Winbond NOR flash) thereby initiating future SPI transactions with the user-defined clock speed.</li>
 </ul>
-<p>For example:</p>
+</div>
+<div class="section" id="id2">
+<h3>Example code<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
@@ -280,13 +305,11 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="id2">
-<h3>Related Errors<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p>NONE</p>
+<div class="section" id="related-errors-none">
+<h3>Related Errors <code class="docutils literal"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="section" id="id3">
-<h3>Advanced use<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>N/A</p>
+<div class="section" id="advanced-use-n-a">
+<h3>Advanced use <code class="docutils literal"><span class="pre">N/A</span></code><a class="headerlink" href="#advanced-use-n-a" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>
@@ -299,7 +322,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chipID.html" class="btn btn-neutral float-right" title="Chip ID" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="constructor.html" class="btn btn-neutral" title="Constructor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

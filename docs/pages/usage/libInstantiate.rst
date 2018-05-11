@@ -12,6 +12,7 @@ These functions set up the library for use and should be called as required.
 begin() ``Required for library operation``
 *******************************************************************
 .. cpp:function:: bool SPIFlash::begin(uint32_t flashChipSize = 0)
+
 Parameters ``Optional``
 ----------------------------
   .. cpp:var:: uint32_t flashChipSize
@@ -23,21 +24,8 @@ What it does
 
 * This function is essential to the functioning of the library and must be called before any other calls are made to the library.
 
-Related Errors
----------------
-If this function is not called the library throws an error - CALLBEGIN. (Refer to  :ref:`Diagnostics & Error reporting <ErrorReporting>`)
-
-Advanced use
--------------
-
-.. _nonSupportedFlash:
-Using with non-supported flash memory
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* An optional ``flashChipSize`` parameter can be declared as an argument with this function (if library version > v2.6.0)
-
-* In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in *bytes* as the ``flashChipSize`` parameter can - in many instances - enable the library to work with the chip
-
-For example:
+Example code
+----------------
 
 .. code-block:: cpp
 
@@ -46,7 +34,8 @@ For example:
   SPIFlash flash;
 
   void setup() {
-    flash.begin(MB(32));  // This sets the flash chip size to 32 Megabytes - Refer to defines.h for the expansion of the MB(32) macro
+    flash.begin();  // This function has to be called first - before any other functions
+                    // from this library are called
     ...
   }
 
@@ -55,7 +44,43 @@ For example:
   }
 
 
------------------------------------------------------------------------------------------------------------
+
+Related Errors ``CALLBEGIN`` ``UNKNOWNCAP`` ``UNKNOWNCHIP``
+--------------------------------------------------------------
+* If this function is not called the library throws the error - ``CALLBEGIN``.
+
+* If the :ref:`chip's capacity <getCapacity()>` cannot be identified the library throws the error - ``UNKNOWNCAP``.
+
+* If the :ref:`chip cannot be ID'd <getJEDECID()>` the library throws the error - ``UNKNOWNCHIP``.
+
+Advanced use
+-------------
+
+.. _nonSupportedFlash:
+
+Using with non-supported flash memory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* An optional ``flashChipSize`` parameter can be declared as an argument with this function (if library version > v2.6.0)
+
+* In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in *bytes* as the ``flashChipSize`` parameter can - in many instances - enable the library to work with the chip
+
+.. code-block:: cpp
+
+  #include <SPIMemory.h>
+
+  SPIFlash flash;
+
+  void setup() {
+    flash.begin(MB(32));  // This sets the flash chip size to 32 Megabytes
+                          // - Refer to defines.h for the expansion of the MB(32) macro
+    ...
+  }
+
+  void loop() {
+    ...
+  }
+
+--------------------------------------------
 
 *******************************************************************
 setClock() ``Advanced use only: Use with care``
@@ -76,7 +101,8 @@ What it does
 
 * This function takes a 32-bit value (in Hertz) as replacement for the default maximum clock speed (104MHz for Winbond NOR flash) thereby initiating future SPI transactions with the user-defined clock speed.
 
-For example:
+Example code
+----------------
 
 .. code-block:: cpp
 
@@ -94,10 +120,8 @@ For example:
     ...
   }
 
-Related Errors
----------------
-NONE
+Related Errors ``None``
+------------------------
 
-Advanced use
--------------
-N/A
+Advanced use ``N/A``
+---------------------

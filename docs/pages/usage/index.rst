@@ -6,14 +6,19 @@ API and Usage
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
-   :caption: Contents
+   :maxdepth: 1
+   :caption: Structure
 
    libStructure.rst
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Contents
 
    constructor.rst
+
+.. toctree::
+   :maxdepth: 2
+
    libInstantiate.rst
+   chipID.rst
