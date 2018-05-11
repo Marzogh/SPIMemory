@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Chip ID &mdash; SPIMemory 0 documentation</title>
+  <title>Chip ID SFDP compatibility dependent &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -95,7 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Chip ID</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Chip ID <code class="docutils literal"><span class="pre">SFDP</span> <span class="pre">compatibility</span> <span class="pre">dependent</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -151,7 +151,7 @@
         
           <li><a href="index.html">API and Usage</a> &raquo;</li>
         
-      <li>Chip ID</li>
+      <li>Chip ID <code class="docutils literal"><span class="pre">SFDP</span> <span class="pre">compatibility</span> <span class="pre">dependent</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -179,9 +179,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="chip-id">
-<h1>Chip ID<a class="headerlink" href="#chip-id" title="Permalink to this headline">¶</a></h1>
-<p>These functions help the user identify the chip in use.</p>
+  <div class="section" id="chip-id-sfdp-compatibility-dependent">
+<h1>Chip ID <code class="docutils literal"><span class="pre">SFDP</span> <span class="pre">compatibility</span> <span class="pre">dependent</span></code><a class="headerlink" href="#chip-id-sfdp-compatibility-dependent" title="Permalink to this headline">¶</a></h1>
+<p>A number of functions are available to the library user to identify chip in use.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The library is designed to identify the flash memory chip in use when the <code class="docutils literal"><span class="pre">begin();</span></code> function is called (using the internal function <code class="docutils literal"><span class="pre">_chipID();</span></code>). This happens in two ways:</p>
+<ul class="last simple">
+<li>If the flash memory supports the SFDP standard, then, the SFDP tables are used to identify the chip. The information from the tables is usually enough to let the library execute all functions without impediment, so any Chip ID errors thrown (if any) can be and, are ignored.</li>
+<li>If the flash memory does not support the SFDP standard, three situations can arise:<ul>
+<li>If the chip is officially supported by the library, its can be identified by internal methods.</li>
+<li>If the chip is not officially supported, then the user has to declare the size as an argument when calling the <code class="docutils literal"><span class="pre">begin();</span></code> function. This information is usually enough to let the library execute all functions without impediment, so any Chip ID errors thrown (if any) can be and, are ignored.</li>
+<li>If the chip canot be ID’d and the user does not declare a size in <code class="docutils literal"><span class="pre">begin();</span></code>, the library throws an error - <code class="docutils literal"><span class="pre">UNKNOWNCHIP</span></code> as soon as the function <code class="docutils literal"><span class="pre">begin();</span></code> is called. (Refer to  <a class="reference internal" href="errorReporting.html#errorreporting"><span class="std std-ref">Diagnostics &amp; Error reporting</span></a>)</li>
+</ul>
+</li>
+</ul>
+</div>
 <hr class="docutils" />
 <div class="section" id="getmanid">
 <h2>getManID()<a class="headerlink" href="#getmanid" title="Permalink to this headline">¶</a></h2>

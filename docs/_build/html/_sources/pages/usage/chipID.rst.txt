@@ -4,11 +4,23 @@
 .. highlight:: cpp
   :linenothreshold: 4
 
-#############
-Chip ID
-#############
+####################################################
+Chip ID ``SFDP compatibility dependent``
+####################################################
 
-These functions help the user identify the chip in use.
+A number of functions are available to the library user to identify chip in use.
+
+.. note::
+
+  The library is designed to identify the flash memory chip in use when the ``begin();`` function is called (using the internal function ``_chipID();``). This happens in two ways:
+
+  * If the flash memory supports the SFDP standard, then, the SFDP tables are used to identify the chip. The information from the tables is usually enough to let the library execute all functions without impediment, so any Chip ID errors thrown (if any) can be and, are ignored.
+
+  * If the flash memory does not support the SFDP standard, three situations can arise:
+
+    * If the chip is officially supported by the library, its can be identified by internal methods.
+    * If the chip is not officially supported, then the user has to declare the size as an argument when calling the ``begin();`` function. This information is usually enough to let the library execute all functions without impediment, so any Chip ID errors thrown (if any) can be and, are ignored.
+    * If the chip canot be ID'd and the user does not declare a size in ``begin();``, the library throws an error - ``UNKNOWNCHIP`` as soon as the function ``begin();`` is called. (Refer to  :ref:`Diagnostics & Error reporting <ErrorReporting>`)
 
 --------------------------------------------------
 
