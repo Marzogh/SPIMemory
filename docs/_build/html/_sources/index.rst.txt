@@ -28,7 +28,7 @@ SPIMemory
    :maxdepth: 4
    :caption: SPIFlash
 
-   pages/usage/index.rst
+   pages/SPIFlash/index.rst
 
 .. toctree::
   :hidden:

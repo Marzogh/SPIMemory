@@ -5,8 +5,10 @@
   :linenothreshold: 4
 
 ####################################################
-Chip ID ``SFDP compatibility dependent``
+Chip ID
 ####################################################
+
+``SFDP compatibility dependent``
 
 A number of functions are available to the library user to identify chip in use.
 

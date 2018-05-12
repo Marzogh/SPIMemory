@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; SPIMemory 0 documentation</title>
+  <title>API and Usage &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Compatibility" href="compatibility.html" />
-    <link rel="prev" title="About SPIMemory" href="about.html" /> 
+    <link rel="next" title="Library structure" href="libStructure.html" />
+    <link rel="prev" title="Compatibility" href="../info/compatibility.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -84,18 +84,18 @@
             
             
               <p class="caption"><span class="caption-text">SPIMemory</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="about.html">About SPIMemory</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">SPIFlash</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../usage/index.html">API and Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../usage/libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../usage/constructor.html">Constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../usage/libInstantiate.html">Library Instantiation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../usage/chipID.html">Chip ID <code class="docutils literal notranslate"><span class="pre">SFDP</span> <span class="pre">compatibility</span> <span class="pre">dependent</span></code></a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API and Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 </ul>
 </li>
 </ul>
@@ -149,13 +149,13 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-      <li>Installation</li>
+      <li>API and Usage</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/info/installation.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/SPIFlash/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -165,10 +165,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="compatibility.html" class="btn btn-neutral float-right" title="Compatibility" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="about.html" class="btn btn-neutral" title="About SPIMemory" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -177,23 +177,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation">
-<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="option-1">
-<h2>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Open the Arduino IDE.</li>
-<li>Go to Sketch &gt; Include Library &gt; Manage libraries.</li>
-<li>Search for SPIFlash.</li>
-<li>Install the latest version.</li>
+  <div class="section" id="api-and-usage">
+<span id="usage"></span><h1>API and Usage<a class="headerlink" href="#api-and-usage" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="constructor.html">Constructor</a></li>
 </ul>
 </div>
-<div class="section" id="option-2">
-<h2>Option 2<a class="headerlink" href="#option-2" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Click <a class="reference external" href="https://github.com/Marzogh/SPIFlash/archive/master.zip">here</a></li>
-<li>Unzip the archive that downloads and rename resulting folder to ‘SPIFlash’</li>
-<li>Move the folder to your libraries folder (~/sketches/libraries)</li>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#begin-required-for-library-operation">begin() <code class="docutils literal notranslate"><span class="pre">Required</span> <span class="pre">for</span> <span class="pre">library</span> <span class="pre">operation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#setclock-advanced-use-only-use-with-care">setClock() <code class="docutils literal notranslate"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chipID.html">Chip ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html#getmanid">getManID()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html#getjedecid">getJEDECID()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html#getuniqueid-memory-ic-dependent">getUniqueID()  <code class="docutils literal notranslate"><span class="pre">Memory</span> <span class="pre">IC</span> <span class="pre">dependent</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html#getcapacity">getCapacity()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html#getmaxpage">getMaxPage()</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -206,10 +214,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="compatibility.html" class="btn btn-neutral float-right" title="Compatibility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="about.html" class="btn btn-neutral" title="About SPIMemory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
