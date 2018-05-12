@@ -1,15 +1,15 @@
 .. _Constructor:
 
 .. cpp:class:: SPIFlash
-.. cpp:function:: SPIFlash(uint8_t cs = CS, SPIClass *spiinterface = &SPI)
+.. cpp:function:: SPIFlash::SPIFlash(uint8_t cs = CS, SPIClass *spiinterface = &SPI)
 
 .. default-domain:: cpp
 .. highlight:: cpp
   :linenothreshold: 4
 
-#############
-Constructor
-#############
+##########################
+Constructor ``Mandatory``
+##########################
 
 .. note::
 

@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Chip ID" href="chipID.html" />
-    <link rel="prev" title="Constructor" href="constructor.html" /> 
+    <link rel="prev" title="Constructor Mandatory" href="constructor.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -93,7 +93,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
@@ -171,7 +171,7 @@
         <a href="chipID.html" class="btn btn-neutral float-right" title="Chip ID" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="constructor.html" class="btn btn-neutral" title="Constructor" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="constructor.html" class="btn btn-neutral" title="Constructor Mandatory" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -184,8 +184,8 @@
 <h1>Library Instantiation<a class="headerlink" href="#library-instantiation" title="Permalink to this headline">¶</a></h1>
 <p>These functions set up the library for use and should be called as required.</p>
 <hr class="docutils" />
-<div class="section" id="begin-required-for-library-operation">
-<h2>begin() <code class="docutils literal notranslate"><span class="pre">Required</span> <span class="pre">for</span> <span class="pre">library</span> <span class="pre">operation</span></code><a class="headerlink" href="#begin-required-for-library-operation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="begin-mandatory">
+<h2>begin() <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code><a class="headerlink" href="#begin-mandatory" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="_CPPv35begin8uint32_t">
 <span id="_CPPv25begin8uint32_t"></span><span id="begin__uint32_t"></span>bool <code class="descname">begin</code><span class="sig-paren">(</span>uint32_t <em>flashChipSize</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv35begin8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
@@ -239,8 +239,8 @@
 <li>If the <a class="reference internal" href="chipID.html#getjedecid"><span class="std std-ref">chip cannot be ID’d</span></a> the library throws the error - <code class="docutils literal notranslate"><span class="pre">UNKNOWNCHIP</span></code>.</li>
 </ul>
 </div>
-<div class="section" id="advanced-use">
-<h3>Advanced use<a class="headerlink" href="#advanced-use" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="advanced-use-flashchipsize">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">flashChipSize</span></code><a class="headerlink" href="#advanced-use-flashchipsize" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="using-with-non-supported-flash-memory">
 <span id="nonsupportedflash"></span><h4>Using with non-supported flash memory<a class="headerlink" href="#using-with-non-supported-flash-memory" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
@@ -273,8 +273,8 @@
 <span id="_CPPv28setClock8uint32_t"></span><span id="setClock__uint32_t"></span>void <code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv38setClock8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<div class="section" id="parameters-non-optional">
-<h3>Parameters <code class="docutils literal notranslate"><span class="pre">Non-optional</span></code><a class="headerlink" href="#parameters-non-optional" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="parameters-mandatory">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code><a class="headerlink" href="#parameters-mandatory" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="var">
 <dt id="_CPPv310clockSpeed">
@@ -333,7 +333,7 @@
         <a href="chipID.html" class="btn btn-neutral float-right" title="Chip ID" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="constructor.html" class="btn btn-neutral" title="Constructor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="constructor.html" class="btn btn-neutral" title="Constructor Mandatory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

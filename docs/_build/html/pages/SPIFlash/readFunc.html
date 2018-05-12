@@ -93,7 +93,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Read functions</a></li>
@@ -191,31 +191,200 @@
 <code class="descname">bool readAnything(uint32_t _addr, T&amp; data, bool fastRead = false);</code></dt>
 <dd></dd></dl>
 
-<div class="section" id="parameters-none">
-<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#parameters-none" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="parameters-mandatory-optional">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">Mandatory</span> <span class="pre">&amp;</span> <span class="pre">Optional</span></code><a class="headerlink" href="#parameters-mandatory-optional" title="Permalink to this headline">¶</a></h3>
+<dl class="var">
+<dt id="_CPPv35_addr">
+<span id="_CPPv25_addr"></span><span id="_addr__uint32_t"></span>uint32_t <code class="descname">_addr</code><a class="headerlink" href="#_CPPv35_addr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Address in memory where the data is to be read from. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+</dd></dl>
+
+<dl class="var">
+<dt id="_CPPv34data">
+<span id="_CPPv24data"></span><span id="data__TR"></span>T &amp;<code class="descname">data</code><a class="headerlink" href="#_CPPv34data" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Variable to save the data to. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+</dd></dl>
+
+<dl class="var">
+<dt id="_CPPv38fastRead">
+<span id="_CPPv28fastRead"></span><span id="fastRead__b"></span>bool <code class="descname">fastRead</code><a class="headerlink" href="#_CPPv38fastRead" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Refer to <span class="xref std std-ref">Note on ``fastRead`</span> &lt;noteOnFastRead&gt;` <code class="docutils literal notranslate"><span class="pre">Optional</span></code></p>
+</dd></dl>
+
 </div>
 <div class="section" id="what-it-does">
 <h3>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="returns-any-valid-data-type">
 <h4>Returns <code class="docutils literal notranslate"><span class="pre">Any</span> <span class="pre">valid</span> <span class="pre">data</span> <span class="pre">type</span></code><a class="headerlink" href="#returns-any-valid-data-type" title="Permalink to this headline">¶</a></h4>
+<p>Reads any type of variable / struct (any sized value) (starting) from a specific address and returns it.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function can be used to replace any of the read functions below (except <code class="docutils literal notranslate"><span class="pre">readByteArray()</span></code> and <code class="docutils literal notranslate"><span class="pre">readCharArray()</span></code>). However, if used for anything other than structs, this function runs slower than the data type-specific ones below.</p>
+</div>
 </div>
 </div>
 <div class="section" id="example-code">
 <h3>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//Code goes here</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">testStruct</span> <span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">_byte</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">_int</span> <span class="o">=</span> <span class="mi">269</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">_long</span> <span class="o">=</span> <span class="mi">99432</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">_float</span> <span class="o">=</span> <span class="mf">3.14</span><span class="p">;</span>
+  <span class="n">String</span> <span class="n">_str</span> <span class="o">=</span> <span class="s">&quot;This is a test string&quot;</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">_array</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">};</span>
+<span class="p">}</span> <span class="n">test</span><span class="p">;</span>
+<span class="kt">uint32_t</span> <span class="n">_address</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+  <span class="n">_address</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getAddress</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">test</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;readAnything()&quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">flash</span><span class="p">.</span><span class="n">readAnything</span><span class="p">(</span><span class="n">_address</span><span class="p">,</span> <span class="n">test</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// Function is used to get the data from</span>
+                                             <span class="c1">// address &#39;_address&#39; and save it to the struct &#39;test&#39;</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Failed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Passed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
-<hr class="docutils" />
 <div class="section" id="related-errors-none">
 <h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="section" id="advanced-use-n-a">
-<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#advanced-use-n-a" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="advancedsectionheader">
-<span id="id1"></span><h4>advancedSectionHeader<a class="headerlink" href="#advancedsectionheader" title="Permalink to this headline">¶</a></h4>
-<hr class="docutils" />
+<div class="section" id="advanced-use-fastread">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code><a class="headerlink" href="#advanced-use-fastread" title="Permalink to this headline">¶</a></h3>
+<p>Refer to <a class="reference internal" href="#noteonfastread"><span class="std std-ref">Note on fastRead</span></a></p>
 </div>
+</div>
+<hr class="docutils" />
+<div class="section" id="id1">
+<h2>readAnything()<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt>
+<code class="descname">bool readAnything(uint32_t _addr, T&amp; data, bool fastRead = false);</code></dt>
+<dd></dd></dl>
+
+<div class="section" id="id2">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">Mandatory</span> <span class="pre">&amp;</span> <span class="pre">Optional</span></code><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="var">
+<dt id="_CPPv35_addr">
+<span id="_CPPv25_addr"></span>uint32_t <code class="descname">_addr</code><br /></dt>
+<dd><p>Address in memory where the data is to be read from. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+</dd></dl>
+
+<dl class="var">
+<dt id="_CPPv34data">
+<span id="_CPPv24data"></span>T &amp;<code class="descname">data</code><br /></dt>
+<dd><p>Variable to save the data to. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+</dd></dl>
+
+<dl class="var">
+<dt id="_CPPv38fastRead">
+<span id="_CPPv28fastRead"></span>bool <code class="descname">fastRead</code><br /></dt>
+<dd><p>Refer to <span class="xref std std-ref">Note on ``fastRead`</span> &lt;noteOnFastRead&gt;` <code class="docutils literal notranslate"><span class="pre">Optional</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="id3">
+<h3>What it does<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">Any</span> <span class="pre">valid</span> <span class="pre">data</span> <span class="pre">type</span></code><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<p>Reads any type of variable / struct (any sized value) (starting) from a specific address and returns it.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function can be used to replace any of the read functions below (except <code class="docutils literal notranslate"><span class="pre">readByteArray()</span></code> and <code class="docutils literal notranslate"><span class="pre">readCharArray()</span></code>). However, if used for anything other than structs, this function runs slower than the data type-specific ones below.</p>
+</div>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>Example code:<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">testStruct</span> <span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">_byte</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">_int</span> <span class="o">=</span> <span class="mi">269</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">_long</span> <span class="o">=</span> <span class="mi">99432</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">_float</span> <span class="o">=</span> <span class="mf">3.14</span><span class="p">;</span>
+  <span class="n">String</span> <span class="n">_str</span> <span class="o">=</span> <span class="s">&quot;This is a test string&quot;</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">_array</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">};</span>
+<span class="p">}</span> <span class="n">test</span><span class="p">;</span>
+<span class="kt">uint32_t</span> <span class="n">_address</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+  <span class="n">_address</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getAddress</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">test</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;readAnything()&quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">flash</span><span class="p">.</span><span class="n">readAnything</span><span class="p">(</span><span class="n">_address</span><span class="p">,</span> <span class="n">test</span><span class="p">))</span> <span class="p">{</span> <span class="c1">// Function is used to get the data from</span>
+                                             <span class="c1">// address &#39;_address&#39; and save it to the struct &#39;test&#39;</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Failed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Passed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id7">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code><a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>Refer to <a class="reference internal" href="#noteonfastread"><span class="std std-ref">Note on fastRead</span></a></p>
+<hr class="docutils" />
+<div class="admonition note" id="noteonfastread">
+<p class="first admonition-title">Note</p>
+<p><strong>Note on</strong> <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></p>
+<ul class="simple">
+<li>All read commands take a last boolean argument <code class="docutils literal notranslate"><span class="pre">fastRead</span></code>. This argument defaults to <code class="docutils literal notranslate"><span class="pre">FALSE</span></code>, and does not need to be specified when calling a function.</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByte</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">);</span>
+<span class="c1">//or</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByte</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+<span class="c1">//yields the same results.</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>However, when this argument is set to TRUE, it carries out the Fast Read instruction so data can be read at up to the memory’s maximum frequency.</li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByteArray</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">,</span> <span class="n">bufferToReadTo</span><span class="p">,</span> <span class="n">bufferSize</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+<span class="c1">//instead of</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByteArray</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">,</span> <span class="n">bufferToReadTo</span><span class="p">,</span> <span class="n">bufferSize</span><span class="p">);</span>
+<span class="c1">// will result in faster read speeds for very large data arrays.</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<p class="last"><strong>This is useful only when reading very large amounts of data from the flash memory. If used for small arrays or individual variables, it will slow down the read function.</strong></p>
+</div>
+<hr class="docutils" />
 </div>
 </div>
 </div>

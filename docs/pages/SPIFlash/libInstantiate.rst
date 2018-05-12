@@ -9,7 +9,7 @@ These functions set up the library for use and should be called as required.
 -----------------------------------------------------------------------------------------------------------
 
 *******************************************************************
-begin() ``Required for library operation``
+begin() ``Mandatory``
 *******************************************************************
 .. cpp:function:: bool begin(uint32_t flashChipSize = 0)
 
@@ -58,8 +58,8 @@ Related Errors ``CALLBEGIN`` ``UNKNOWNCAP`` ``UNKNOWNCHIP``
 
 * If the :ref:`chip cannot be ID'd <getJEDECID()>` the library throws the error - ``UNKNOWNCHIP``.
 
-Advanced use
--------------
+Advanced use ``flashChipSize``
+-------------------------------
 
 .. _nonSupportedFlash:
 
@@ -92,7 +92,7 @@ setClock() ``Advanced use only: Use with care``
 *******************************************************************
 .. cpp:function:: void setClock(uint32_t clockSpeed)
 
-Parameters ``Non-optional``
+Parameters ``Mandatory``
 ----------------------------
   .. cpp:var:: uint32_t clockSpeed
 

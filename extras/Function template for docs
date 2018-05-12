@@ -22,6 +22,8 @@ Parameters ``None``
 
 What it does
 -------------
+Returns ``uint16_t``
+~~~~~~~~~~~~~~~~~~~~~~
 
 Example code:
 ---------------------

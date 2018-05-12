@@ -22,6 +22,6 @@ Constructor:
 Library instantiation functions:
 ---------------------------------
 
-  .. cpp:function:: bool SPIFlash::begin(uint32_t flashChipSize = 0)
-  .. cpp:function:: void SPIFlash::setClock(uint32_t clockSpeed)
-  .. cpp:function:: uint8_t SPIFlash::readByte(uint32_t _addr, bool fastRead = false)
+  .. cpp:function:: bool begin(uint32_t flashChipSize = 0)
+  .. cpp:function:: void setClock(uint32_t clockSpeed)
+  .. cpp:function:: uint8_t readByte(uint32_t _addr, bool fastRead = false)

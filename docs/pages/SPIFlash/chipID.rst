@@ -29,7 +29,7 @@ A number of functions are available to the library user to identify chip in use.
 *******************************************************************
 getManID()
 *******************************************************************
-.. cpp:function:: uint16_t SPIFlash::getManID(void)
+.. cpp:function:: uint16_t getManID(void)
 
 Parameters ``None``
 ----------------------------
@@ -51,6 +51,7 @@ Example code:
   SPIFlash flash;
 
   void setup() {
+    flash.begin();
     uint16_t manID = flash.getManID();      // Function is used to get the manufacturer ID and store it as
                                             // a 16 bit unsigned integer
     Serial.print("Chip Manufacturer ID: 0x");
@@ -75,7 +76,7 @@ Advanced use ``N/A``
 *******************************************************************
 getJEDECID()
 *******************************************************************
-.. cpp:function:: uint32_t SPIFlash::getJEDECID(void)
+.. cpp:function:: uint32_t getJEDECID(void)
 
 Parameters ``None``
 ----------------------------
@@ -97,6 +98,7 @@ Example code:
   SPIFlash flash;
 
   void setup() {
+    flash.begin();
     uint32_t JEDEC = flash.getJEDECID();      // Function is used to get the JEDEC ID and store it as
                                               // a 32 bit unsigned integer
     Serial.print("JEDEC ID: 0x");
@@ -123,7 +125,7 @@ Advanced use ``N/A``
 *******************************************************************
 getUniqueID()  ``Memory IC dependent``
 *******************************************************************
-.. cpp:function:: uint64_t SPIFlash::getUniqueID(void)
+.. cpp:function:: uint64_t getUniqueID(void)
 
 Parameters ``None``
 ----------------------------
@@ -145,6 +147,7 @@ Example code:
   SPIFlash flash;
 
   void setup() {
+    flash.begin();
     uint64_t uniqueID = flash.getUniqueID();      // Function is used to get the unique ID and store it as
                                                   // a 64 bit unsigned integer
     Serial.print("Unique ID: 0x");
@@ -169,7 +172,7 @@ Advanced use ``N/A``
 *******************************************************************
 getCapacity()
 *******************************************************************
-.. cpp:function:: uint32_t SPIFlash::getCapacity(void)
+.. cpp:function:: uint32_t getCapacity(void)
 
 Parameters ``None``
 ----------------------------
@@ -191,6 +194,7 @@ Example code:
   SPIFlash flash;
 
   void setup() {
+    flash.begin();
     uint32_t cap = flash.getCapacity();      // Function is used to get the unique ID and store it as
                                                   // a 32 bit unsigned integer
     Serial.print("Capacity: ");
@@ -224,7 +228,7 @@ Advanced use ``N/A``
 *******************************************************************
 getMaxPage()
 *******************************************************************
-.. cpp:function:: uint32_t SPIFlash::getMaxPage(void)
+.. cpp:function:: uint32_t getMaxPage(void)
 
 Parameters ``None``
 ----------------------------
@@ -246,6 +250,7 @@ Example code:
   SPIFlash flash;
 
   void setup() {
+    flash.begin();
     uint32_t maxPage = flash.getMaxPage();  // Function is used to get the number of pages and store it as
                                             // a 32 bit unsigned integer
     Serial.print("Maximum pages: ");

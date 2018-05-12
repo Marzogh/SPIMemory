@@ -93,7 +93,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Chip ID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
@@ -201,8 +201,8 @@
 <div class="section" id="getmanid">
 <h2>getManID()<a class="headerlink" href="#getmanid" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash8getManIDEv">
-<span id="_CPPv2N8SPIFlash8getManIDEv"></span><span id="SPIFlash::getManID__void"></span>uint16_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getManID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash8getManIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38getManIDv">
+<span id="_CPPv28getManIDv"></span><span id="getManID__void"></span>uint16_t <code class="descname">getManID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv38getManIDv" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="parameters-none">
@@ -222,6 +222,7 @@
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
   <span class="kt">uint16_t</span> <span class="n">manID</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getManID</span><span class="p">();</span>      <span class="c1">// Function is used to get the manufacturer ID and store it as</span>
                                           <span class="c1">// a 16 bit unsigned integer</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Chip Manufacturer ID: 0x&quot;</span><span class="p">);</span>
@@ -246,8 +247,8 @@
 <div class="section" id="getjedecid">
 <span id="id1"></span><h2>getJEDECID()<a class="headerlink" href="#getjedecid" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash10getJEDECIDEv">
-<span id="_CPPv2N8SPIFlash10getJEDECIDEv"></span><span id="SPIFlash::getJEDECID__void"></span>uint32_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getJEDECID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash10getJEDECIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv310getJEDECIDv">
+<span id="_CPPv210getJEDECIDv"></span><span id="getJEDECID__void"></span>uint32_t <code class="descname">getJEDECID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv310getJEDECIDv" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="id2">
@@ -267,6 +268,7 @@
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
   <span class="kt">uint32_t</span> <span class="n">JEDEC</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getJEDECID</span><span class="p">();</span>      <span class="c1">// Function is used to get the JEDEC ID and store it as</span>
                                             <span class="c1">// a 32 bit unsigned integer</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;JEDEC ID: 0x&quot;</span><span class="p">);</span>
@@ -296,8 +298,8 @@
 <div class="section" id="getuniqueid-memory-ic-dependent">
 <h2>getUniqueID()  <code class="docutils literal notranslate"><span class="pre">Memory</span> <span class="pre">IC</span> <span class="pre">dependent</span></code><a class="headerlink" href="#getuniqueid-memory-ic-dependent" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash11getUniqueIDEv">
-<span id="_CPPv2N8SPIFlash11getUniqueIDEv"></span><span id="SPIFlash::getUniqueID__void"></span>uint64_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getUniqueID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash11getUniqueIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv311getUniqueIDv">
+<span id="_CPPv211getUniqueIDv"></span><span id="getUniqueID__void"></span>uint64_t <code class="descname">getUniqueID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv311getUniqueIDv" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="id6">
@@ -317,6 +319,7 @@
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
   <span class="kt">uint64_t</span> <span class="n">uniqueID</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getUniqueID</span><span class="p">();</span>      <span class="c1">// Function is used to get the unique ID and store it as</span>
                                                 <span class="c1">// a 64 bit unsigned integer</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Unique ID: 0x&quot;</span><span class="p">);</span>
@@ -341,8 +344,8 @@
 <div class="section" id="getcapacity">
 <span id="id11"></span><h2>getCapacity()<a class="headerlink" href="#getcapacity" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash11getCapacityEv">
-<span id="_CPPv2N8SPIFlash11getCapacityEv"></span><span id="SPIFlash::getCapacity__void"></span>uint32_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getCapacity</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash11getCapacityEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv311getCapacityv">
+<span id="_CPPv211getCapacityv"></span><span id="getCapacity__void"></span>uint32_t <code class="descname">getCapacity</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv311getCapacityv" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="id12">
@@ -362,6 +365,7 @@
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
   <span class="kt">uint32_t</span> <span class="n">cap</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getCapacity</span><span class="p">();</span>      <span class="c1">// Function is used to get the unique ID and store it as</span>
                                                 <span class="c1">// a 32 bit unsigned integer</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Capacity: &quot;</span><span class="p">);</span>
@@ -403,8 +407,8 @@
 <div class="section" id="getmaxpage">
 <h2>getMaxPage()<a class="headerlink" href="#getmaxpage" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash10getMaxPageEv">
-<span id="_CPPv2N8SPIFlash10getMaxPageEv"></span><span id="SPIFlash::getMaxPage__void"></span>uint32_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getMaxPage</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash10getMaxPageEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv310getMaxPagev">
+<span id="_CPPv210getMaxPagev"></span><span id="getMaxPage__void"></span>uint32_t <code class="descname">getMaxPage</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv310getMaxPagev" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="id17">
@@ -424,6 +428,7 @@
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
   <span class="kt">uint32_t</span> <span class="n">maxPage</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getMaxPage</span><span class="p">();</span>  <span class="c1">// Function is used to get the number of pages and store it as</span>
                                           <span class="c1">// a 32 bit unsigned integer</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Maximum pages: &quot;</span><span class="p">);</span>
