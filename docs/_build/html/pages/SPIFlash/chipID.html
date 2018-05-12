@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Contribute" href="../contribute.html" />
+    <link rel="next" title="Read functions" href="readFunc.html" />
     <link rel="prev" title="Library Instantiation" href="libInstantiate.html" /> 
 
   
@@ -96,6 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +168,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="readFunc.html" class="btn btn-neutral float-right" title="Read functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="libInstantiate.html" class="btn btn-neutral" title="Library Instantiation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -209,9 +210,10 @@
 </div>
 <div class="section" id="what-it-does">
 <h3>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Returns the Manufacturer ID as a 16 bit unsigned integer</li>
-</ul>
+<div class="section" id="returns-uint16-t">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">uint16_t</span></code><a class="headerlink" href="#returns-uint16-t" title="Permalink to this headline">¶</a></h4>
+<p>Returns the Manufacturer ID as a 16 bit unsigned integer</p>
+</div>
 </div>
 <div class="section" id="example-code">
 <h3>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
@@ -253,9 +255,10 @@
 </div>
 <div class="section" id="id3">
 <h3>What it does<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Returns the JEDEC ID as a 32 bit unsigned integer</li>
-</ul>
+<div class="section" id="returns-uint32-t">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">uint32_t</span></code><a class="headerlink" href="#returns-uint32-t" title="Permalink to this headline">¶</a></h4>
+<p>Returns the JEDEC ID as a 32 bit unsigned integer</p>
+</div>
 </div>
 <div class="section" id="id4">
 <h3>Example code:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
@@ -302,9 +305,10 @@
 </div>
 <div class="section" id="id7">
 <h3>What it does<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Returns the flash memory chip’s unique ID as a 64 bit unsigned integer</li>
-</ul>
+<div class="section" id="returns-uint64-t">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">uint64_t</span></code><a class="headerlink" href="#returns-uint64-t" title="Permalink to this headline">¶</a></h4>
+<p>Returns the flash memory chip’s unique ID as a 64 bit unsigned integer</p>
+</div>
 </div>
 <div class="section" id="id8">
 <h3>Example code:<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
@@ -346,12 +350,13 @@
 </div>
 <div class="section" id="id13">
 <h3>What it does<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Returns the flash memory chip’s capacity as a 32 bit unsigned integer</li>
-</ul>
-</div>
 <div class="section" id="id14">
-<h3>Example code:<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">uint32_t</span></code><a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<p>Returns the flash memory chip’s capacity as a 32 bit unsigned integer</p>
+</div>
+</div>
+<div class="section" id="id15">
+<h3>Example code:<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
@@ -374,8 +379,8 @@
 <h3>Related Errors  <code class="docutils literal notranslate"><span class="pre">UNKNOWNCAP</span></code><a class="headerlink" href="#related-errors-unknowncap" title="Permalink to this headline">¶</a></h3>
 <p>If the chip’s capacity cannot be determined, the library throws an error - <code class="docutils literal notranslate"><span class="pre">UNKNOWNCAP</span></code> as soon as the function <code class="docutils literal notranslate"><span class="pre">begin();</span></code> is called. (Refer to  <a class="reference internal" href="errorReporting.html#errorreporting"><span class="std std-ref">Diagnostics &amp; Error reporting</span></a>)</p>
 </div>
-<div class="section" id="id15">
-<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id16">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>The way this function executes depends on whether the flash memory chip complies with the SFDP standard.</p>
@@ -402,17 +407,18 @@
 <span id="_CPPv2N8SPIFlash10getMaxPageEv"></span><span id="SPIFlash::getMaxPage__void"></span>uint32_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getMaxPage</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash10getMaxPageEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<div class="section" id="id16">
-<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
-</div>
 <div class="section" id="id17">
-<h3>What it does<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Returns the number of physical <cite>pages</cite> in the flash memory as a 32 bit unsigned integer</li>
-</ul>
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="id18">
-<h3>Example code:<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<h3>What it does<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id19">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">uint32_t</span></code><a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<p>Returns the number of physical <cite>pages</cite> in the flash memory as a 32 bit unsigned integer</p>
+</div>
+</div>
+<div class="section" id="id20">
+<h3>Example code:<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
@@ -431,11 +437,11 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="id19">
-<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id21">
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="section" id="id20">
-<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id22">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>The way this function executes depends on whether the flash memory chip complies with the SFDP standard.</p>
@@ -457,7 +463,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="readFunc.html" class="btn btn-neutral float-right" title="Read functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="libInstantiate.html" class="btn btn-neutral" title="Library Instantiation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

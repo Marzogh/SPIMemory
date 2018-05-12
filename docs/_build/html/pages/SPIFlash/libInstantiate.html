@@ -96,6 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
 </ul>
 </li>
 </ul>
@@ -186,8 +187,8 @@
 <div class="section" id="begin-required-for-library-operation">
 <h2>begin() <code class="docutils literal notranslate"><span class="pre">Required</span> <span class="pre">for</span> <span class="pre">library</span> <span class="pre">operation</span></code><a class="headerlink" href="#begin-required-for-library-operation" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash5beginE8uint32_t">
-<span id="_CPPv2N8SPIFlash5beginE8uint32_t"></span><span id="SPIFlash::begin__uint32_t"></span>bool <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">begin</code><span class="sig-paren">(</span>uint32_t <em>flashChipSize</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash5beginE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv35begin8uint32_t">
+<span id="_CPPv25begin8uint32_t"></span><span id="begin__uint32_t"></span>bool <code class="descname">begin</code><span class="sig-paren">(</span>uint32_t <em>flashChipSize</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv35begin8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="parameters-optional">
@@ -203,10 +204,14 @@
 </div>
 <div class="section" id="what-it-does">
 <h3>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="returns-boolean">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#returns-boolean" title="Permalink to this headline">¶</a></h4>
+<p>The function returns <code class="docutils literal notranslate"><span class="pre">TRUE</span></code> if successfully executed and <code class="docutils literal notranslate"><span class="pre">FALSE</span></code> if otherwise.</p>
 <ul class="simple">
 <li>Must be called at the start in <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setup()</span></code>. This function detects the type of chip being used and sets parameters accordingly.</li>
 <li>This function is essential to the functioning of the library and must be called before any other calls are made to the library.</li>
 </ul>
+</div>
 </div>
 <div class="section" id="example-code">
 <h3>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
@@ -264,8 +269,8 @@
 <div class="section" id="setclock-advanced-use-only-use-with-care">
 <h2>setClock() <code class="docutils literal notranslate"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code><a class="headerlink" href="#setclock-advanced-use-only-use-with-care" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash8setClockE8uint32_t">
-<span id="_CPPv2N8SPIFlash8setClockE8uint32_t"></span><span id="SPIFlash::setClock__uint32_t"></span>bool <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash8setClockE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38setClock8uint32_t">
+<span id="_CPPv28setClock8uint32_t"></span><span id="setClock__uint32_t"></span>void <code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv38setClock8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="parameters-non-optional">
@@ -281,11 +286,14 @@
 </div>
 <div class="section" id="id1">
 <h3>What it does<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="returns-nothing">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">Nothing</span></code><a class="headerlink" href="#returns-nothing" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li>This is an optional function and is used to set the SPI clock speed for all further comms using the library.</li>
 <li>If required, this function must be called straight after begin().</li>
 <li>This function takes a 32-bit value (in Hertz) as replacement for the default maximum clock speed (104MHz for Winbond NOR flash) thereby initiating future SPI transactions with the user-defined clock speed.</li>
 </ul>
+</div>
 </div>
 <div class="section" id="id2">
 <h3>Example code<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>

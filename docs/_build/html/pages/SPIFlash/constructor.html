@@ -96,6 +96,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
 </ul>
 </li>
 </ul>
@@ -185,8 +186,8 @@
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="_CPPv3N8SPIFlash8SPIFlashE7uint8_tP8SPIClass">
-<span id="_CPPv2N8SPIFlash8SPIFlashE7uint8_tP8SPIClass"></span><span id="SPIFlash::SPIFlash__uint8_t.SPIClassP"></span><a class="reference internal" href="#_CPPv3N8SPIFlash8SPIFlashE7uint8_tP8SPIClass" title="SPIFlash::SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">SPIFlash</code><span class="sig-paren">(</span>uint8_t <em>cs</em> = CS, SPIClass *<em>spiinterface</em> = &amp;SPI<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash8SPIFlashE7uint8_tP8SPIClass" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38SPIFlash7uint8_tP8SPIClass">
+<span id="_CPPv28SPIFlash7uint8_tP8SPIClass"></span><span id="SPIFlash__uint8_t.SPIClassP"></span><code class="descname">SPIFlash</code><span class="sig-paren">(</span>uint8_t <em>cs</em> = CS, SPIClass *<em>spiinterface</em> = &amp;SPI<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv38SPIFlash7uint8_tP8SPIClass" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="id1">
@@ -214,10 +215,13 @@ variables/functions to whatever values are desired. <a class="footnote-reference
 </div>
 <div class="section" id="what-it-does">
 <h2>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="returns-nothing">
+<h3>Returns <code class="docutils literal notranslate"><span class="pre">Nothing</span></code><a class="headerlink" href="#returns-nothing" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>The constructor must be called before <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setup()</span></code>. The constructor can be any word of your choice. For example, the library can called by the example code below where <code class="docutils literal notranslate"><span class="pre">flash</span></code> can be replaced by a constructor of the user’s choice.</li>
 <li>The constructor is used to call a function from the SPIFlash library.</li>
 </ul>
+</div>
 </div>
 <div class="section" id="example-code">
 <h2>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>

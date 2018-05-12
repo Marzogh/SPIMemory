@@ -22,3 +22,4 @@ API and Usage
 
    libInstantiate.rst
    chipID.rst
+   readFunc.rst

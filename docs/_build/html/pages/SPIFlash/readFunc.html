@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API and Usage &mdash; SPIMemory 0 documentation</title>
+  <title>Read functions &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Library structure" href="libStructure.html" />
-    <link rel="prev" title="Compatibility" href="../info/compatibility.html" /> 
+    <link rel="next" title="Contribute" href="../contribute.html" />
+    <link rel="prev" title="Chip ID" href="chipID.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -91,12 +91,12 @@
 </ul>
 <p class="caption"><span class="caption-text">SPIFlash</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API and Usage</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Read functions</a></li>
 </ul>
 </li>
 </ul>
@@ -150,13 +150,15 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-      <li>API and Usage</li>
+          <li><a href="index.html">API and Usage</a> &raquo;</li>
+        
+      <li>Read functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/SPIFlash/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/SPIFlash/readFunc.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -166,10 +168,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chipID.html" class="btn btn-neutral" title="Chip ID" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -178,36 +180,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="api-and-usage">
-<span id="usage"></span><h1>API and Usage<a class="headerlink" href="#api-and-usage" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
+  <div class="section" id="read-functions">
+<h1>Read functions<a class="headerlink" href="#read-functions" title="Permalink to this headline">¶</a></h1>
+<p>These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types as can be used as required.</p>
+<hr class="docutils" />
+<div class="section" id="readanything">
+<h2>readAnything()<a class="headerlink" href="#readanything" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt>
+<code class="descname">bool readAnything(uint32_t _addr, T&amp; data, bool fastRead = false);</code></dt>
+<dd></dd></dl>
+
+<div class="section" id="parameters-none">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#parameters-none" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="constructor.html">Constructor</a></li>
-</ul>
+<div class="section" id="what-it-does">
+<h3>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="returns-any-valid-data-type">
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">Any</span> <span class="pre">valid</span> <span class="pre">data</span> <span class="pre">type</span></code><a class="headerlink" href="#returns-any-valid-data-type" title="Permalink to this headline">¶</a></h4>
 </div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#begin-required-for-library-operation">begin() <code class="docutils literal notranslate"><span class="pre">Required</span> <span class="pre">for</span> <span class="pre">library</span> <span class="pre">operation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#setclock-advanced-use-only-use-with-care">setClock() <code class="docutils literal notranslate"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chipID.html">Chip ID</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getmanid">getManID()</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getjedecid">getJEDECID()</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getuniqueid-memory-ic-dependent">getUniqueID()  <code class="docutils literal notranslate"><span class="pre">Memory</span> <span class="pre">IC</span> <span class="pre">dependent</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getcapacity">getCapacity()</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getmaxpage">getMaxPage()</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="readFunc.html#readanything">readAnything()</a></li>
-</ul>
-</li>
-</ul>
+</div>
+<div class="section" id="example-code">
+<h3>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//Code goes here</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="related-errors-none">
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="advanced-use-n-a">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#advanced-use-n-a" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="advancedsectionheader">
+<span id="id1"></span><h4>advancedSectionHeader<a class="headerlink" href="#advancedsectionheader" title="Permalink to this headline">¶</a></h4>
+<hr class="docutils" />
+</div>
+</div>
 </div>
 </div>
 
@@ -219,10 +228,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chipID.html" class="btn btn-neutral" title="Chip ID" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

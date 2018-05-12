@@ -35,8 +35,10 @@ Parameters ``None``
 ----------------------------
 
 What it does
--------------
-* Returns the Manufacturer ID as a 16 bit unsigned integer
+------------
+Returns ``uint16_t``
+~~~~~~~~~~~~~~~~~~~~~~
+Returns the Manufacturer ID as a 16 bit unsigned integer
 
 
 Example code:
@@ -80,7 +82,9 @@ Parameters ``None``
 
 What it does
 -------------
-* Returns the JEDEC ID as a 32 bit unsigned integer
+Returns ``uint32_t``
+~~~~~~~~~~~~~~~~~~~~~~
+Returns the JEDEC ID as a 32 bit unsigned integer
 
 
 Example code:
@@ -126,7 +130,9 @@ Parameters ``None``
 
 What it does
 -------------
-* Returns the flash memory chip's unique ID as a 64 bit unsigned integer
+Returns ``uint64_t``
+~~~~~~~~~~~~~~~~~~~~~~
+Returns the flash memory chip's unique ID as a 64 bit unsigned integer
 
 
 Example code:
@@ -170,7 +176,9 @@ Parameters ``None``
 
 What it does
 -------------
-* Returns the flash memory chip's capacity as a 32 bit unsigned integer
+Returns ``uint32_t``
+~~~~~~~~~~~~~~~~~~~~~~
+Returns the flash memory chip's capacity as a 32 bit unsigned integer
 
 
 Example code:
@@ -223,7 +231,9 @@ Parameters ``None``
 
 What it does
 -------------
-* Returns the number of physical `pages` in the flash memory as a 32 bit unsigned integer
+Returns ``uint32_t``
+~~~~~~~~~~~~~~~~~~~~~~
+Returns the number of physical `pages` in the flash memory as a 32 bit unsigned integer
 
 
 Example code:

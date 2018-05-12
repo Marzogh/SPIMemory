@@ -1,7 +1,7 @@
 .. _Constructor:
 
 .. cpp:class:: SPIFlash
-.. cpp:function:: SPIFlash::SPIFlash(uint8_t cs = CS, SPIClass *spiinterface = &SPI)
+.. cpp:function:: SPIFlash(uint8_t cs = CS, SPIClass *spiinterface = &SPI)
 
 .. default-domain:: cpp
 .. highlight:: cpp
@@ -31,6 +31,9 @@ Parameters ``Optional``
 ********************
 What it does
 ********************
+
+Returns ``Nothing``
+---------------------
 
 * The constructor must be called before ``void setup()``. The constructor can be any word of your choice. For example, the library can called by the example code below where ``flash`` can be replaced by a constructor of the user's choice.
 

@@ -11,15 +11,20 @@ These functions set up the library for use and should be called as required.
 *******************************************************************
 begin() ``Required for library operation``
 *******************************************************************
-.. cpp:function:: bool SPIFlash::begin(uint32_t flashChipSize = 0)
+.. cpp:function:: bool begin(uint32_t flashChipSize = 0)
 
 Parameters ``Optional``
 ----------------------------
   .. cpp:var:: uint32_t flashChipSize
 
     Refer to :ref:`Using with non-supported flash memory <nonSupportedFlash>`
+
 What it does
 -------------
+Returns ``boolean``
+~~~~~~~~~~~~~~~~~~~~~
+The function returns ``TRUE`` if successfully executed and ``FALSE`` if otherwise.
+
 * Must be called at the start in ``void setup()``. This function detects the type of chip being used and sets parameters accordingly.
 
 * This function is essential to the functioning of the library and must be called before any other calls are made to the library.
@@ -85,7 +90,7 @@ Using with non-supported flash memory
 *******************************************************************
 setClock() ``Advanced use only: Use with care``
 *******************************************************************
-.. cpp:function:: bool SPIFlash::setClock(uint32_t clockSpeed)
+.. cpp:function:: void setClock(uint32_t clockSpeed)
 
 Parameters ``Non-optional``
 ----------------------------
@@ -95,6 +100,8 @@ Parameters ``Non-optional``
 
 What it does
 -------------
+Returns ``Nothing``
+~~~~~~~~~~~~~~~~~~~~~
 * This is an optional function and is used to set the SPI clock speed for all further comms using the library.
 
 * If required, this function must be called straight after begin().
