@@ -100,7 +100,7 @@
    if (_chip.manufacturerID == WINBOND_MANID && _addr >= MB(16)) {
      if (!_enable4ByteAddressing()) {    // If unable to enable 4-byte addressing
        return false;
-     }
+     }          // TODO: Add SFDP compatibility here
    }
    switch (opcode) {
      case PAGEPROG:
@@ -430,6 +430,7 @@
      _time++;
    } while ((micros() - _time) < timeout);
    if (timeout <= (micros() - _time)) {
+     _troubleshoot(CHIPBUSY);
      return false;
    }
    return true;
