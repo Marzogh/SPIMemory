@@ -35,7 +35,7 @@ This Arduino library is for use with flash memory chips that communicate using t
 - Simblee Boards (Sparkfun Simblee)
 
 ##### In BETA
-- ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit <a href = "https://github.com/espressif/arduino-esp32/commit/8ba91b945330303f9013f30da75c49c4d6dd8a09">8ba91b9</a> on 07.11.2017. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
+- ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the commit <a href = "https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3">25dff4f</a> on 05.04.2018. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
 NOTE: ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example
 ```
 SPIFlash flash(33);
