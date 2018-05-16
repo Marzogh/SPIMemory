@@ -1,4 +1,4 @@
-.. _advancedWrite:
+.. _writeAdvanced:
 
 .. default-domain:: cpp
 .. highlight:: cpp

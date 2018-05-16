@@ -30,7 +30,7 @@ These functions are designed to read a single variable - of a specific data type
 * Reads a ``float`` from the address specified, and returns it.
 
 .. cpp:function:: bool readStr(uint32_t _addr, String &data, bool fastRead = false)
-* Reads an ``String`` from the address specified, and returns it.
+* Reads a ``String`` from the address specified, and returns it.
 
 Parameters ``Mandatory & Optional``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

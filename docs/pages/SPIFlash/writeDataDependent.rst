@@ -1,4 +1,4 @@
-.. _dataDependentWrite:
+.. _writeDataDependent:
 
 .. default-domain:: cpp
 .. highlight:: cpp
@@ -14,5 +14,5 @@ These functions are designed to write a specific data type to the flash memory. 
    :caption: Types of data type-dependent write functions
    :maxdepth: 1
 
-   singleVariableWrite.rst
-   arrayWrite.rst
+   writeSingleVariable.rst
+   writeArray.rst

@@ -1,4 +1,4 @@
-.. _dataIndependentWrite:
+.. _writeDataIndependent:
 
 .. default-domain:: cpp
 .. highlight:: cpp
@@ -56,7 +56,7 @@ Example code:
     _address = flash.getAddress(sizeof(dataIn));
     Serial.print("Address = ");
     Serial.println(_address);
-    
+
     Serial.print("writeAnything()");
     if (!flash.writeAnything(_address, dataOut)) { // Function is used to write the data to
                                                    // address '_address'

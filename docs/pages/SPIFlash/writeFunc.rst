@@ -18,7 +18,7 @@ There are two basic types of write functions - one that is independent of data t
    :caption: More about Write functions
    :maxdepth: 1
 
-   dataIndependentWrite.rst
-   dataDependentWrite.rst
+   writeDataIndependent.rst
+   writeDataDependent.rst
    writeErrors.rst
-   advancedWrite.rst
+   writeAdvanced.rst

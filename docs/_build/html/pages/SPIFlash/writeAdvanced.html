@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API and Usage &mdash; SPIMemory 0 documentation</title>
+  <title>Advanced use errorCheck HIGHSPEED &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -28,9 +28,7 @@
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Library structure" href="libStructure.html" />
-    <link rel="prev" title="Compatibility" href="../info/compatibility.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -90,8 +88,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">SPIFlash</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API and Usage</a><ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">API and Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
@@ -108,14 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="writeDataIndependent.html">Data type-independent write function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="writeDataDependent.html">Data type-dependent write functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="singleVariableWrite.html">Single variable write functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="writeAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -171,13 +162,13 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-      <li>API and Usage</li>
+      <li>Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/SPIFlash/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/SPIFlash/writeAdvanced.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -185,60 +176,69 @@
   </ul>
 
   
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-  </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="api-and-usage">
-<span id="usage"></span><h1>API and Usage<a class="headerlink" href="#api-and-usage" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
+  <div class="section" id="advanced-use-errorcheck-highspeed">
+<span id="noteonerrorcheck"></span><h1>Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code><a class="headerlink" href="#advanced-use-errorcheck-highspeed" title="Permalink to this headline">¶</a></h1>
+<hr class="docutils" />
+<div class="section" id="errorcheck-warning-data-corruption-likely">
+<h2>errorCheck <code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">Data</span> <span class="pre">corruption</span> <span class="pre">likely</span></code><a class="headerlink" href="#errorcheck-warning-data-corruption-likely" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>All write functions have Error checking turned on by default - i.e. every byte written to the flash memory will be checked against the data provided by the user.</li>
+<li>This is controlled by an optional boolean argument <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code>. This argument defaults to <code class="docutils literal notranslate"><span class="pre">TRUE</span></code>, and does not need to be specified when calling a function.</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">);</span>
+<span class="c1">//or</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+<span class="c1">//yields the same results.</span>
+
+<span class="p">...</span>
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
+<ul class="simple">
+<li>Users who require greater write speeds can disable this function by setting the <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> argument in any write function to <code class="docutils literal notranslate"><span class="pre">NOERRCHK</span></code></li>
 </ul>
+<p>For example:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">,</span> <span class="n">NOERRCHK</span><span class="p">);</span>
+<span class="c1">//instead of</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">);</span>
+<span class="c1">// will result in faster write speeds at the risk of not catching any errors in the writing process.</span>
+
+<span class="p">...</span>
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#begin-mandatory">begin() <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html#setclock-advanced-use-only-use-with-care">setClock() <code class="docutils literal notranslate"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code></a></li>
+<p><strong>This is useful only when the program calls for increased writing speed over data integrity. Data writes cannot be guaranteed free of errors if errorCheck is turned off</strong></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="highspeed-mode-warning-data-corruption-likely">
+<span id="noteonhighspeed"></span><h2>Highspeed mode <code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">Data</span> <span class="pre">corruption</span> <span class="pre">likely</span></code><a class="headerlink" href="#highspeed-mode-warning-data-corruption-likely" title="Permalink to this headline">¶</a></h2>
+<p>The library - by default - checks to see if the address being written to contains pre-existing data. If it finds pre-existing data, it throws the error <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code>. This prevents the write function from running as fast as it theoretically could.</p>
+<p>If the user requires the library to operate at the highest speed possible, they must be sure that the user code does the following before every data write:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Makes sure that the flash memory chip does not contain any data before using it.</li>
+<li>Erases a sector before writing to it.</li>
+<li>Keeps track of addressing and makes sure no two bytes of data are ever written to the same address.</li>
+<li>Tracks previously written addresses in the user code and makes sure to erase them before writing new data at those addresses.</li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chipID.html">Chip ID</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getmanid">getManID()</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getjedecid">getJEDECID()</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getuniqueid-memory-ic-dependent">getUniqueID()  <code class="docutils literal notranslate"><span class="pre">Memory</span> <span class="pre">IC</span> <span class="pre">dependent</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getcapacity">getCapacity()</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chipID.html#getmaxpage">getMaxPage()</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="writeDataIndependent.html">Data type-independent write function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writeDataDependent.html">Data type-dependent write functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="writeAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
-</ul>
-</li>
-</ul>
+</div></blockquote>
+<p>Then, if <code class="docutils literal notranslate"><span class="pre">#define</span> <span class="pre">HIGHSPEED</span></code> is uncommented in <a class="reference external" href="https://github.com/Marzogh/SPIFlash/blob/762a8802f94e8f55713e56ce073aedd8a10bfe8d/src/SPIFlash.h#L45">SPIFlash.h</a> before the user code is compiled and uploaded, the write functions will run as fast as the flash memory hardware will permit them to.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">**WARNING**</span></code></p>
+<p>Please note that using a combination of the methods listed in <a class="reference internal" href="#noteonhighspeed"><span class="std std-ref">High speed mode</span></a> and <a class="reference internal" href="#noteonerrorcheck"><span class="std std-ref">Error checking</span></a> will result in the highest possible write speed from the library. However, this will result in the highest probability of write errors / data corruption as well.</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">**WARNING**</span></code></p>
+</div>
 </div>
 </div>
 
@@ -247,15 +247,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="libStructure.html" class="btn btn-neutral float-right" title="Library structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../info/compatibility.html" class="btn btn-neutral" title="Compatibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

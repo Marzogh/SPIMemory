@@ -1,4 +1,4 @@
-.. _arrayWrite:
+.. _writeArray:
 
 .. default-domain:: cpp
 .. highlight:: cpp
@@ -64,7 +64,7 @@ Example code:
     else {
       Serial.println("Failed");
     }
-    
+
   }
 
   void loop() {

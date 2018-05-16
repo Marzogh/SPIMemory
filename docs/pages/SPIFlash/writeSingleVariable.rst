@@ -1,4 +1,4 @@
-.. _singleVariableWrite:
+.. _writeSingleVariable:
 
 .. default-domain:: cpp
 .. highlight:: cpp
