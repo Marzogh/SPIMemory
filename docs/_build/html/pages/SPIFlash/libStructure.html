@@ -96,7 +96,17 @@
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -204,9 +214,96 @@
 <span id="setClock__uint32_t"></span>void <code class="descclassname"></code><code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28setClock8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
+</div></blockquote>
+</div>
+<div class="section" id="chip-id-functions">
+<h3>Chip ID functions:<a class="headerlink" href="#chip-id-functions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="function">
+<dt id="_CPPv28getManIDv">
+<span id="getManID__void"></span>uint16_t <code class="descclassname"></code><code class="descname">getManID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28getManIDv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv210getJEDECIDv">
+<span id="getJEDECID__void"></span>uint32_t <code class="descclassname"></code><code class="descname">getJEDECID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv210getJEDECIDv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv211getUniqueIDv">
+<span id="getUniqueID__void"></span>uint64_t <code class="descclassname"></code><code class="descname">getUniqueID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv211getUniqueIDv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv211getCapacityv">
+<span id="getCapacity__void"></span>uint32_t <code class="descclassname"></code><code class="descname">getCapacity</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv211getCapacityv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv210getMaxPagev">
+<span id="getMaxPage__void"></span>uint32_t <code class="descclassname"></code><code class="descname">getMaxPage</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv210getMaxPagev" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="read-functions">
+<h3>Read functions:<a class="headerlink" href="#read-functions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">Data</span> <span class="pre">type-independent</span></code></p>
+<dl class="function">
+<dt id="_CPPv212readAnything8uint32_tR1Tb">
+<span id="readAnything__uint32_t.TR.b"></span>bool <code class="descclassname"></code><code class="descname">readAnything</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, T &amp;<em>data</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv212readAnything8uint32_tR1Tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><code class="docutils literal"><span class="pre">Data</span> <span class="pre">type-dependent</span></code></p>
 <dl class="function">
 <dt id="_CPPv28readByte8uint32_tb">
 <span id="readByte__uint32_t.b"></span>uint8_t <code class="descclassname"></code><code class="descname">readByte</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readByte8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv28readChar8uint32_tb">
+<span id="readChar__uint32_t.b"></span>int8_t <code class="descclassname"></code><code class="descname">readChar</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readChar8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv29readShort8uint32_tb">
+<span id="readShort__uint32_t.b"></span>int16_t <code class="descclassname"></code><code class="descname">readShort</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv29readShort8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv28readWord8uint32_tb">
+<span id="readWord__uint32_t.b"></span>uint16_t <code class="descclassname"></code><code class="descname">readWord</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readWord8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv28readLong8uint32_tb">
+<span id="readLong__uint32_t.b"></span>int32_t <code class="descclassname"></code><code class="descname">readLong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readLong8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv29readULong8uint32_tb">
+<span id="readULong__uint32_t.b"></span>uint32_t <code class="descclassname"></code><code class="descname">readULong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv29readULong8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv29readFloat8uint32_tb">
+<span id="readFloat__uint32_t.b"></span>float <code class="descclassname"></code><code class="descname">readFloat</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv29readFloat8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv27readStr8uint32_tR6Stringb">
+<span id="readStr__uint32_t.StringR.b"></span>bool <code class="descclassname"></code><code class="descname">readStr</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, String &amp;<em>data</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv27readStr8uint32_tR6Stringb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv213readByteArray8uint32_tP7uint8_t6size_tb">
+<span id="readByteArray__uint32_t.uint8_tP.s.b"></span>bool <code class="descclassname"></code><code class="descname">readByteArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, uint8_t *<em>data_buffer</em>, size_t <em>bufferSize</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv213readByteArray8uint32_tP7uint8_t6size_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv213readCharArray8uint32_tPc6size_tb">
+<span id="readCharArray__uint32_t.cP.s.b"></span>bool <code class="descclassname"></code><code class="descname">readCharArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, char *<em>data_buffer</em>, size_t <em>buffer_size</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv213readCharArray8uint32_tPc6size_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div></blockquote>
