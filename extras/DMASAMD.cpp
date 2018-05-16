@@ -1,10 +1,10 @@
-/* Arduino SPIFlash Library v.2.6.0
+/* Arduino SPIMemory Library v.2.6.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 30/09/2016
  * Modified by Prajwal Bhattaram - 14/04/2017
  * Original code from @manitou48 <https://github.com/manitou48/Zero/blob/master/SPIdma.ino>
  *
- * This file is part of the Arduino SPIFlash Library. This library is for
+ * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
  * and writing individual data variables, structs and arrays from and to various locations;
  * reading and writing pages; continuous read functions; sector, block and chip erase;
@@ -21,11 +21,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License v3.0
- * along with the Arduino SPIFlash Library.  If not, see
+ * along with the Arduino SPIMemory Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "SPIFlash.h"
+#include "SPIMemory.h"
 
 //--------------------------- Private Arduino Zero Variables ----------------------------//
   Sercom *sercom = (Sercom   *)ZERO_SPISERCOM;  //Set SPI SERCOM
@@ -51,7 +51,7 @@
 //        Private functions used by Arduino Zero DMA operations        //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-void SPIFlash::_zeroDMAC_Handler(void) {
+void SPIMemory::_zeroDMAC_Handler(void) {
   // interrupts DMAC_CHINTENCLR_TERR DMAC_CHINTENCLR_TCMPL DMAC_CHINTENCLR_SUSP
   uint8_t active_channel;
 
@@ -66,7 +66,7 @@ void SPIFlash::_zeroDMAC_Handler(void) {
   __enable_irq();
 }
 
-void SPIFlash::_zeroDma_init() {
+void SPIMemory::_zeroDma_init() {
   // probably on by default
   PM->AHBMASK.reg |= PM_AHBMASK_DMAC ;
   PM->APBBMASK.reg |= PM_APBBMASK_DMAC ;
@@ -77,7 +77,7 @@ void SPIFlash::_zeroDma_init() {
   DMAC->CTRL.reg = DMAC_CTRL_DMAENABLE | DMAC_CTRL_LVLEN(0xf);
 }
 
-void SPIFlash::_zeroSpi_xfr(void *txdata, void *rxdata,  size_t n) {
+void SPIMemory::_zeroSpi_xfr(void *txdata, void *rxdata,  size_t n) {
   uint32_t temp_CHCTRLB_reg;
 
   // set up transmit channel
@@ -140,18 +140,18 @@ void SPIFlash::_zeroSpi_xfr(void *txdata, void *rxdata,  size_t n) {
   DMAC->CHCTRLA.reg &= ~DMAC_CHCTRLA_ENABLE;
 }
 
-void SPIFlash::_zeroSpi_write(void *data,  size_t n) {
+void SPIMemory::_zeroSpi_write(void *data,  size_t n) {
   xtype = DoTX;
   Serial.println("SPI_write started");
   _zeroSpi_xfr(data,rxsink,n);
   Serial.println("WRITE DONE");
 }
-void SPIFlash::_zeroSpi_read(void *data,  size_t n) {
+void SPIMemory::_zeroSpi_read(void *data,  size_t n) {
   xtype = DoRX;
   _zeroSpi_xfr(txsrc,data,n);
   Serial.println("READ DONE");
 }
-void SPIFlash::_zeroSpi_transfer(void *txdata, void *rxdata,  size_t n) {
+void SPIMemory::_zeroSpi_transfer(void *txdata, void *rxdata,  size_t n) {
   xtype = DoTXRX;
   _zeroSpi_xfr(txdata,rxdata,n);
   Serial.println("transfer done");

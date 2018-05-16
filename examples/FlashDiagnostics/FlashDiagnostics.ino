@@ -1,21 +1,21 @@
 /*
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                             FlashDiagnostics.ino                                                              |
-  |                                                               SPIFlash library                                                                |
-  |                                                                   v 3.1.0                                                                     |
+  |                                                               SPIMemory library                                                                |
+  |                                                                   v 3.2.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  04.03.2018                                                                   |
+  |                                                                  02.05.2018                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
-  |                                 uncomment #define RUNDIAGNOSTIC in SPIFlash.h in the library before compiling                                 |
+  |                                 uncomment #define RUNDIAGNOSTIC in SPIMemory.h in the library before compiling                                 |
   |                                             and loading this application onto your Arduino.                                                   |
   |                                                                                                                                               |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 
-#include<SPIFlash.h>
+#include<SPIMemory.h>
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
 // Required for Serial on Zero based boards
@@ -37,8 +37,8 @@
 #define TRUE 1
 #define FALSE 0
 
-//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 SPIFlash flash;
+//SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -46,69 +46,102 @@ void setup() {
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
   delay(50); //Time to terminal get connected
-  Serial.print(F("Initialising Flash memory"));
+  Serial.print(F("Initialising"));
   for (uint8_t i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
   }
   Serial.println();
   randomSeed(analogRead(RANDPIN));
-  //while (!
-  flash.begin();/*) {
-    delay(1000);
-  }*/
+  flash.begin();
   //To use a custom flash memory size (if using memory from manufacturers not officially supported by the library) - declare a size variable according to the list in defines.h
   //flash.begin(MB(1));
-  Serial.println();
-  Serial.println();
-  
-  getID();
-  eraseChipTest();
-  eraseSectionTest();
-  eraseBlock64KTest();
-  eraseBlock32KTest();
-  eraseSectorTest();
 
-#if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
-  delay(10);
-  powerDownTest();
-  powerUpTest();
-  Serial.println();
-#endif
+  if (getID()) {
+    
+    printLine();
+    printTab(7);
+    Serial.print("Testing library code");
+    printLine();
+    printTab(3);
+    Serial.print("Function");
+    printTab(2);
+    Serial.print("Test result");
+    printTab(3);
+    Serial.print("     Runtime");
+    printLine();
+    
+    powerDownTest();
+    Serial.println();
+    powerUpTest();
+    Serial.println();
+    
+    Serial.println();
+    
+    eraseChipTest();
+    Serial.println();
+    eraseSectionTest();
+    Serial.println();
+    eraseBlock64KTest();
+    Serial.println();
+    eraseBlock32KTest();
+    Serial.println();
+    eraseSectorTest();
+    //Serial.println();
 
-  byteTest();
-  charTest();
-  wordTest();
-  shortTest();
-  uLongTest();
-#if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
-  delay(10);
-#endif
-  longTest();
-  floatTest();
-  structTest();
-  arrayTest();
-  stringTest();
 
-#if !defined(ARDUINO_ARCH_SAM) || !defined(ARDUINO_ARCH_ESP8266)
-  powerDownTest();
-  powerUpTest();
-#endif
-  printLine();
-  if (!flash.functionRunTime()) {
-    Serial.println(F("Please uncomment RUNDIAGNOSTIC in SPIFlash.h to see the time taken by each function to run."));
+    /* #if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
+        delay(10);
+        powerDownTest();
+        powerUpTest();
+        Serial.println();
+      #endif */
+    printLine();
+    printTab(3);
+    Serial.print("Data type");
+    printTab(2);
+    Serial.print("I/O Result");
+    printTab(1);
+    Serial.print("      Write time");
+    printTab(1);
+    Serial.print("      Read time");
+    printLine();
+    
+    byteTest();
+    Serial.println();
+    charTest();
+    Serial.println();
+    wordTest();
+    Serial.println();
+    shortTest();
+    Serial.println();
+    uLongTest();
+    Serial.println();
+    /*#if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_ESP8266)
+        delay(10);
+      #endif */
+    longTest();
+    Serial.println();
+    floatTest();
+    Serial.println();
+    structTest();
+    Serial.println();
+    arrayTest();
+    Serial.println();
+    stringTest();
+
+    /* #if !defined(ARDUINO_ARCH_SAM) || !defined(ARDUINO_ARCH_ESP8266)
+        Serial.println();
+        powerDownTest();
+        powerUpTest();
+      #endif */
+    printLine();
+    if (!flash.functionRunTime()) {
+      Serial.println(F("To see function runtimes ncomment RUNDIAGNOSTIC in SPIMemory.h."));
+    }
   }
 }
 
 void loop() {
 
 }
-
-void longBlink() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(3000);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(2000);
-}
-

@@ -1,38 +1,14 @@
-# SPIFlash [![Build Status](https://travis-ci.org/Marzogh/SPIFlash.svg?branch=stable)](https://travis-ci.org/Marzogh/SPIFlash) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIFlash.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIFlash)
-[![GitHub release](https://img.shields.io/github/release/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash)
-[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIFlash/v3.0.0.svg)](https://github.com/Marzogh/SPIFlash/compare/v3.0.1...stable)
-[![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash/pulls)
-[![license](https://img.shields.io/github/license/Marzogh/SPIFlash.svg)](https://github.com/Marzogh/SPIFlash/blob/master/LICENSE)
+# SPIMemory [![Build Status](https://travis-ci.org/Marzogh/SPIMemory.svg?branch=stable)](https://travis-ci.org/Marzogh/SPIMemory) [![DOI](https://zenodo.org/badge/18908/Marzogh/SPIMemory.svg)](https://zenodo.org/badge/latestdoi/18908/Marzogh/SPIMemory)
+[![GitHub release](https://img.shields.io/github/release/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory)
+[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.1.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.1.0...development)
+[![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
+[![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
 
 ## Arduino library for Flash Memory Chips (SPI based only)
-<sup> Download the latest stable release from [here](https://github.com/Marzogh/SPIFlash/releases/latest). Please report any bugs in [issues](https://github.com/Marzogh/SPIFlash/issues/new).</sup>
+<sup> Download the latest stable release from [here](https://github.com/Marzogh/SPIMemory/releases/latest). Please report any bugs in [issues](https://github.com/Marzogh/SPIMemory/issues/new).</sup>
 
 This Arduino library is for use with flash memory chips that communicate using the SPI protocol. In its current form it supports identifying the flash chip and its various features; automatic address allocation and management; writing and reading a number of different types of data, ranging from 8-bit to 32-bit (signed and unsigned) values, floats, Strings, arrays of bytes/chars and structs to and from various locations; sector, block and chip erase; and powering down for low power operation.
-<hr>
-
->### Important note from developer
->The term 'SPI Flash' is a fairly common way to refer to Flash memory chips that communicate over the SPI protocol and there are a number of libraries that are named SPIFlash. When I first started work on this library in 2014, it was mostly as an exercise to improve my embedded systems programming skills. When I asked for it to be included in the list of Arduino libraries, I did not really expect it to go very far or get very popular. But, before I knew it, I was releasing new versions every other month and I found the number of users got way bigger than I imagined it would. The amount of traffic the GitHub repository gets still surprises me.
->
->A few months ago, @LowPowerLab raised an issue ([#83](https://github.com/Marzogh/SPIFlash/issues/83)) about the problems the name of this library was causing the users of his library - also called SPIFlash. The fact that this library is in the Arduino Library manager meant that his users were being asked to upgrade their version of SPIFlash when the libraries were actually different. I can understand how much of an annoyance this can be for a user.
->
->@LowPowerLab's version of SPIFlash has been around for longer than this one and his library is a major part of his commercial line of development boards. Since I am a hobbyist developer (I'm a full-time geneticist & a part-time dabbler in ecology - if you're curious) and this library is not a commercial product with branding and trademarks to worry about, the least I can do is change the name of this library so it stops being an annoyance to @LowPowerLab's customers.
->> On a side note, if you did not know already, @LowPowerLab makes and sells a fantastic line of Arduino compatible boards - the [Moteino](https://lowpowerlab.com/shop/) series - and has developed a fantastic IoT protocol to use with them to add smarts to your home. In January this year, I finally got around to getting my hands on some of his boards and have been playing around with them. They are fantastic! I'd strongly recommend you check them out - if you haven't already done so.
->
->I asked the Arduino developers if there was a way to migrate this library to a new name without breaking the upgrade path ([Issue #6904](https://github.com/arduino/Arduino/issues/6904)) and was told that it was not possible. The only way is to pull my version of SPIFlash from the library manager and ask for a renamed version to be included in the library manager after.
->
->So, this is what I have decided to do.:
->- This version - v3.1.0 - will be the last version to be released under the SPIFlash name.
->- Anyone downloading this version of the library will be able to read this notice in the ReadMe file.
->- Anyone using this version of the library will see a notice in their Serial output directing them to this notice in the ReadMe file. (this can be removed by commenting out the `#define PRINTNAMECHANGEALERT` in `SPIFlash.h`)
->- Version 3.2.0 will be released in a couple of months (in May most likely) under a new name - SPIMemory.
->- This version of SPIFlash will be removed from the library manager then and replaced with the new one.
->
->The only change will have to be made in end-user code will be to change the `#include SPIFlash.h` to `#include SPIMemory.h`. After the name change, rest assured that older versions will remain accessible and the development history of the library will be preserved.
->
->I apologise for any trouble this might cause you as the end user, but, given the facts, it is the only thing I can do to be fair to @LowPowerLab
->
->Thanks again for using `SPIFlash` and I hope you will continue to find it useful in whatever new name it will take on.
 
 <hr>
 
@@ -47,25 +23,24 @@ This Arduino library is for use with flash memory chips that communicate using t
 #### Boards
 
 ##### Completely supported
-- Arduino Uno
-- Arduino Leonardo
-- Arduino Due
-- Arduino Zero
-- Nucleo-F091RC
-- Adafruit Feather M0
-- Adafruit Feather M0 Express
-- ESP8266 Boards (On the Arduino IDE)
-- Simblee Boards (On the Arduino IDE)
-- Arduino Mega
-- Arduino Micro
-- Arduino Fio
+
+- ATmega328P (Arduino Uno, Arduino Micro, Arduino Fio, Arduino Nano)
+- ATmega32u4 (Arduino Leonardo, Arduino Fio v3)
+- ATmega2560 (Arduino Mega)
+- ATSAMD21G18 ARM Cortex M0+ (Adafruit Feather M0, Adafruit Feather M0 Express)
+- AT91SAM3X8E ARM Cortex M3 (Arduino Due)
+- ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
+- STM32F091RCT6 (Nucleo-F091RC)
+- ESP8266 Boards (Adafruit ESP8266 Feather)
+- Simblee Boards (Sparkfun Simblee)
 
 ##### In BETA
 - ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit <a href = "https://github.com/espressif/arduino-esp32/commit/8ba91b945330303f9013f30da75c49c4d6dd8a09">8ba91b9</a> on 07.11.2017. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
-NOTE: ESP32 boards usually have an SPIFlash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example
+NOTE: ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example
 ```
 SPIFlash flash(33);
 ```
+- Adafruit Metro M4 - more testing required before support for this board leaves beta.
 
 #### Flash memory compatibility
 
@@ -79,26 +54,36 @@ SPIFlash flash(33);
   - SST25VF064C
   - SST26VF064B
 - Cypress/Spansion
+  - S25FL032P
   - S25FL116K
   - S25FL127S
+- ON Semiconductor
+  - LE25U40CMC
+- AMIC
+  - A25L512A0
+- Micron
+  - M25P40
+- Adesto
+  - AT25SF041
 
 ##### Should work with (Similar enough to the ones actually tested with)
 - Winbond (All SPI Flash chips)
 - Microchip (SST25 & SST26 series)
 - Cypress/Spansion (S25FL series)
+- Any flash memory that is compatible with the SFDP standard as defined in JESD216B
 
 ### Installation
 
 #### Option 1
 - Open the Arduino IDE.
 - Go to Sketch > Include Library > Manage libraries.
-- Search for SPIFlash.
+- Search for SPIMemory.
 - Install the latest version.
 
 #### Option 2
-- Click on the 'Clone or download' button above the list of files on this <a href = "https://github.com/Marzogh/SPIFlash/tree/master"> page </a>.
+- Click on the 'Clone or download' button above the list of files on this <a href = "https://github.com/Marzogh/SPIMemory/tree/master"> page </a>.
 - Select Download ZIP. A .zip file will download to your computer.
-- Unzip the archive and rename resulting folder to 'SPIFlash'
+- Unzip the archive and rename resulting folder to 'SPIMemory'
 - Move the folder to your libraries folder (~/sketches/libraries)
 
 ### Usage
@@ -114,7 +99,7 @@ SPIFlash flash(33);
     <sub>* Optional</sub>
 
 ##### Notes on Address overflow and Error checking
-- The library has Address overflow enabled by default - i.e. if the last address read/written from/to,  in any function, is 0xFFFFF then, the next address read/written from/to is 0x00000. This can be disabled by uncommenting ```#define DISABLEOVERFLOW``` in SPIFlash.h. (Address overflow only works for Read / Write functions. Erase functions erase only a set number of blocks/sectors irrespective of overflow.)
+- The library has Address overflow enabled by default - i.e. if the last address read/written from/to,  in any function, is 0xFFFFF then, the next address read/written from/to is 0x00000. This can be disabled by uncommenting ```#define DISABLEOVERFLOW``` in SPIMemory.h. (Address overflow only works for Read / Write functions. Erase functions erase only a set number of blocks/sectors irrespective of overflow.)
 - All write functions have Error checking turned on by default - i.e. every byte written to the flash memory will be checked against the data stored on the Arduino. Users who require greater write speeds can disable this function by setting an optional last 'errorCheck' argument in any write function to NOERRCHK - For eg. call the function ```writeByte(address, *data_buffer, NOERRCHK)``` instead of ```writeByte(address, *data_buffer)```.
 
 The library enables the following functions:
@@ -124,13 +109,13 @@ The library enables the following functions:
 <hr>
 
 ###### `begin(_chipsize*)`
-Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly. An optional CHIPSIZE parameter can be declared as an argument with this function. For supported CHIPSIZE values, please refer to the appropriate [wiki section](https://github.com/Marzogh/SPIFlash/wiki/Chipsize) or look at defines.h .
+Must be called at the start in setup(). This function detects the type of chip being used and sets parameters accordingly. An optional CHIPSIZE parameter can be declared as an argument with this function. For supported CHIPSIZE values, please refer to the appropriate [wiki section](https://github.com/Marzogh/SPIMemory/wiki/Chipsize) or look at defines.h .
 
 ###### `setClock(clockSpeed)`
 Must be called straight after begin(). This function takes a 32-bit number as replacement for the default maximum clock speed (104MHz for Winbond NOR flash) thereby initiating future SPI transactions with the user-defined clock speed. Use with care.
 
 ###### `error(_verbosity)`
-Returns the (8-bit) error code generated by the function called immediately before this is called. If the optional VERBOSE argument is used, a verbose troubleshooting report is printed to Serial. Refer to the [Error reporting](https://github.com/Marzogh/SPIFlash/wiki/Error-reporting) section the Wiki for further reference.
+Returns the (8-bit) error code generated by the function called immediately before this is called. If the optional VERBOSE argument is used, a verbose troubleshooting report is printed to Serial. Refer to the [Error reporting](https://github.com/Marzogh/SPIMemory/wiki/Error-reporting) section the Wiki for further reference.
 
 ###### `getManID()`
 Returns the Manufacturer ID as a 16-bit value.
@@ -161,7 +146,7 @@ Returns the maximum number of pages in the flash memory as a 32-bit value.
 
 ###### functionRunTime()
 Returns the time taken to run a function. Must be called immediately after a function is run as the variable returned is overwritten each time a function from this library is called. Primarily used in the diagnostics sketch included in the library to track function time.
-<sub> NOTE: Can only be called when '#define RUNDIAGNOSTIC' is uncommented in SPIFlash.h</sub>
+<sub> NOTE: Can only be called when '#define RUNDIAGNOSTIC' is uncommented in SPIMemory.h</sub>
 
 <hr>
 
@@ -312,12 +297,12 @@ Wakes chip from low power state.
 
 * **0x00**    -    Action completed successfully. No Error.
 * **0x01**    -    *constructor_of_choice*.begin() was not called in void setup()
-* **0x02**    -    Unable to identify chip. Are you sure this is a Winbond Flash chip? Please raise an issue [here](http://www.github.com/Marzogh/SPIFlash/issues) with your chip type and I will try to add support to your chip
-* **0x03**    -    Unable to identify capacity. Please raise an issue [here](http://www.github.com/Marzogh/SPIFlash/issues) with your chip type and I will work on adding support to your chip
-* **0x04**    -    Chip is busy. Make sure all pins have been connected properly. If it still doesn't work,please raise an issue [here](http://www.github.com/Marzogh/SPIFlash/issues) with the details of what your were doing when this error occurred
+* **0x02**    -    Unable to identify chip. Are you sure this is a Winbond Flash chip? Please raise an issue [here](http://www.github.com/Marzogh/SPIMemory/issues) with your chip type and I will try to add support to your chip
+* **0x03**    -    Unable to identify capacity. Please raise an issue [here](http://www.github.com/Marzogh/SPIMemory/issues) with your chip type and I will work on adding support to your chip
+* **0x04**    -    Chip is busy. Make sure all pins have been connected properly. If it still doesn't work,please raise an issue [here](http://www.github.com/Marzogh/SPIMemory/issues) with the details of what your were doing when this error occurred
 * **0x05**    -    Page overflow has been disabled and the address called exceeds the memory
-* **0x06**    -    Unable to Enable Writing to chip. Please make sure the HOLD & WRITEPROTECT pins are connected properly to VCC & GND respectively. If you are still facing issues, please raise an issue [here](http://www.github.com/Marzogh/SPIFlash/issues) with the details of what your were doing when this error occurred
-* **0x07**    -    This sector already contains data. Please make sure the sectors being written to are erased. If you are still facing issues, please raise an issue [here](http://www.github.com/Marzogh/SPIFlash/issues) with the details of what your were doing when this error occurred.
+* **0x06**    -    Unable to Enable Writing to chip. Please make sure the HOLD & WRITEPROTECT pins are connected properly to VCC & GND respectively. If you are still facing issues, please raise an issue [here](http://www.github.com/Marzogh/SPIMemory/issues) with the details of what your were doing when this error occurred
+* **0x07**    -    This sector already contains data. Please make sure the sectors being written to are erased. If you are still facing issues, please raise an issue [here](http://www.github.com/Marzogh/SPIMemory/issues) with the details of what your were doing when this error occurred.
 * **0x08**    -    You are running low on SRAM. Please optimise your program for better RAM usage
 * **0x09**    -    Unable to suspend/resume operation.
 * **0x0A**    -    Write Function has failed errorcheck.
@@ -325,7 +310,7 @@ Wakes chip from low power state.
 * **0x0C**    -    This function is not supported by the flash memory hardware.
 * **0x0D**    -    Unable to enable 4-byte addressing.
 * **0x0E**    -    Unable to disable 4-byte addressing.
-* **0xFE**    -    Unknown error. Please raise an issue [here](http://www.github.com/Marzogh/SPIFlash/issues) with the details of what your were doing when this error occurred
+* **0xFE**    -    Unknown error. Please raise an issue [here](http://www.github.com/Marzogh/SPIMemory/issues) with the details of what your were doing when this error occurred
 <hr>
 
 ###### How to get data off Flash memory via Serial

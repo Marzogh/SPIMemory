@@ -1,4 +1,13 @@
-Hey there! Thanks for using the SPIFlash library for Arduino. 
+![GitHub issue state](https://img.shields.io/github/issues/detail/s/Marzogh/SPIFlash/979.svg)
+![GitHub issue title](https://img.shields.io/github/issues/detail/title/Marzogh/SPIFlash/1290.svg)
+![GitHub issue author](https://img.shields.io/github/issues/detail/u/Marzogh/SPIFlash/979.svg)
+![GitHub issue label](https://img.shields.io/github/issues/detail/label/Marzogh/SPIFlash/979.svg)
+![GitHub issue comments](https://img.shields.io/github/issues/detail/comments/Marzogh/SPIFlash/979.svg)
+![GitHub issue age](https://img.shields.io/github/issues/detail/age/Marzogh/SPIFlash/979.svg)
+![GitHub issue last update](https://img.shields.io/github/issues/detail/last-update/Marzogh/SPIFlash/979.svg)
+###### ---------------------------- **DO NOT DELETE OR EDIT** anything above this line ----------------------------
+
+Hey there! Thanks for using the SPIFlash library for Arduino.
 ### Please note that starting 01.03.2018 any issue raised here MUST be submitted according to this template or it will be flagged with 'Not enough information'. No action will be taken till all the prerequisite information is provided. If no information is provided for over a month, the issue will be closed.
 
 **Note: For support questions, please use the [Arduino Forums](http://forum.arduino.cc/index.php?topic=324009.0). This repository's issues are reserved for feature requests and bug reports.**
@@ -9,13 +18,13 @@ Hey there! Thanks for using the SPIFlash library for Arduino.
   - [ ] bug report
   - [ ] feature request
   - [ ] support request => Please do not submit support request here, see note at the top of this template.
-  
+
 Do the checklist before filing an issue:
 
 - [ ] Is this something you can **debug and fix**? Send a pull request! Bug fixes and documentation fixes are welcome.
 - [ ] Is this an idea for a feature? Post the feature request as an issue here with a title that clearly says "Feature Request".
 - [ ] Is this a bug that you cannot fix? Post the bug report as an issue here with a title that cleary says "Bug Report".
-  
+
 When opening an issue please include the following details:
 -------------------------------------------------------------
 
@@ -30,21 +39,21 @@ When opening an issue please include the following details:
 
 --------------------------
 ###### Bug reports only
-- If this is a bug report - 
+- If this is a bug report -
 
 - [ ] Make sure you have run FlashDiagnostics.ino with ``` #define RUNDIAGNOSTICS ``` uncommented in SPIFlash.h. **List any error codes** that pop up in your Serial output when you run FlashDiagnostics.ino.here:
       Error codes
       ------------
-        - 
+        -
         -
         -
         -
         -
 - [ ] If you have a problem with a particular function, call the flash.error() function (after you have made sure you have started up your Serial port with a ``` Serial.begin(BAUD) ``` ). Provide details of the function, the data given to/ expected from the function and the error code here: (**Please repeat this for every function you have an error with***)
-        Function - 
-        Data - 
-        Error code - 
-- [ ] Provide a **minimal code snippet** example that reproduces the bug. Please make sure you wrap any code in the proper code blocks like below 
+        Function -
+        Data -
+        Error code -
+- [ ] Provide a **minimal code snippet** example that reproduces the bug. Please make sure you wrap any code in the proper code blocks like below
 ```
 ```CODE HERE```
 ```
