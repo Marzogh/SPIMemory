@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                3.2
+                3.2.0
               </div>
             
           
@@ -82,17 +82,53 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="pages/info/about.html">About SPIMemory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/info/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/info/compatibility.html">Compatibility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pages/usage/index.html">API and Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pages/usage/constructor.html">Constructor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/SPIFlash/about.html">About SPIFlash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/SPIFlash/index.html">API and Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pages/SPIFlash/libStructure.html">Library structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/SPIFlash/constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/SPIFlash/libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/SPIFlash/chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/SPIFlash/readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/readDataIndependent.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/readDataDependent.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pages/SPIFlash/readSingleVariable.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pages/SPIFlash/readArray.html">Array read functions</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/SPIFlash/writeFunc.html">Write functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/writeDataIndependent.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/writeDataDependent.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pages/SPIFlash/writeSingleVariable.html">Single variable write functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pages/SPIFlash/writeArray.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code> <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/writeAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/license.html">License</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIMemory/tree/master">Source Code</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
 </ul>
 
             
@@ -132,8 +168,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -146,10 +180,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            
-              <!-- User defined GitHub URL -->
-              <a href="" class="fa fa-github"> Edit on GitHub</a>
-            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -171,40 +202,43 @@
             
   <div class="section" id="spimemory">
 <h1>SPIMemory<a class="headerlink" href="#spimemory" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
-<div class="section" id="arduino-library-for-flash-memory-chips-spi-based-only">
-<h2>Arduino library for Flash Memory Chips (SPI based only)<a class="headerlink" href="#arduino-library-for-flash-memory-chips-spi-based-only" title="Permalink to this headline">¶</a></h2>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<a class="reference external image-reference" href="http://spiflash.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/spiflash/badge/?version=latest" /></a>
+<p><strong>Status of documentation</strong></p>
+<p>In progress (16.05.2018 &#64; 2045 hrs AEST)</p>
+<p><strong>Status of library code</strong></p>
 <a class="reference external image-reference" href="https://travis-ci.org/Marzogh/SPIFlash"><img alt="https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master" src="https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://zenodo.org/badge/latestdoi/35823047"><img alt="https://zenodo.org/badge/35823047.svg" src="https://zenodo.org/badge/35823047.svg" /></a>
-<img alt="Github release" src="https://img.shields.io/github/release/Marzogh/SPIFlash.svg" /><img alt="Github All Releases" src="https://img.shields.io/github/downloads/Marzogh/SPIFlash/total.svg" /><img alt="Github commits (since latest release)" src="https://img.shields.io/github/commits-since/Marzogh/SPIFlash/v3.0.0.svg" /><img alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/Marzogh/SPIFlash.svg" /><img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/Marzogh/SPIFlash.svg" /><img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/Marzogh/SPIFlash.svg" /><img alt="license" src="https://img.shields.io/github/license/Marzogh/SPIFlash.svg" /><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/cdnjs/cdnjs.svg" /><p>This Arduino library is for use with flash memory chips that communicate using the SPI protocol. In its current form it supports identifying the flash chip and its various features; automatic address allocation and management; writing and reading a number of different types of data, ranging from 8-bit to 32-bit (signed and unsigned) values, floats, Strings, arrays of bytes/chars and structs to and from various locations; sector, block and chip erase; and powering down for low power operation.</p>
-<div class="section" id="contribute">
-<h3><a class="reference internal" href="pages/contribute.html#contribute"><span class="std std-ref">Contribute</span></a><a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="id1">
-<h3><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>If you are having issues and would like help please ask your question <a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">here on the Arduino Forum</a>.</p>
-</div>
-<div class="section" id="license">
-<h3><a class="reference internal" href="pages/license.html#license"><span class="std std-ref">License</span></a><a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
-<p>The project is licensed under the GNU GPLv3 license.</p>
-<div class="section" id="indices-and-tables">
-<h4>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<img alt="Github release" src="https://img.shields.io/github/release/Marzogh/SPIFlash.svg" /><img alt="Github All Releases" src="https://img.shields.io/github/downloads/Marzogh/SPIFlash/total.svg" /><img alt="Github commits (since latest release)" src="https://img.shields.io/github/commits-since/Marzogh/SPIFlash/v3.0.0.svg" /><img alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/Marzogh/SPIFlash.svg" /><img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/Marzogh/SPIFlash.svg" /><img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/Marzogh/SPIFlash.svg" /><img alt="license" src="https://img.shields.io/github/license/Marzogh/SPIFlash.svg" /><img alt="GitHub contributors" class="last" src="https://img.shields.io/github/contributors/cdnjs/cdnjs.svg" /></div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/info/about.html">About SPIMemory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/info/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/info/compatibility.html">Compatibility</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="features">
-<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Be awesome</li>
-<li>Make things faster</li>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/SPIFlash/about.html">About SPIFlash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/SPIFlash/index.html">API and Usage</a></li>
 </ul>
 </div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIMemory/tree/master">Source Code</a></li>
+</ul>
 </div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="status-stats">
+<h1>Status &amp; stats<a class="headerlink" href="#status-stats" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

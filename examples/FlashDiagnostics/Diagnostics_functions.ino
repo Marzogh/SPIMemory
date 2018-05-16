@@ -1,22 +1,22 @@
 /*
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                          FlashDiagnostic_functions.ino                                                        |
-  |                                                               SPIFlash library                                                                |
-  |                                                                   v 3.1.0                                                                     |
+  |                                                               SPIMemory library                                                                |
+  |                                                                   v 3.2.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  04.03.2018                                                                   |
+  |                                                                  02.05.2018                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
-  |                                 uncomment #define RUNDIAGNOSTIC in SPIFlash.h in the library before compiling                                 |
+  |                                 uncomment #define RUNDIAGNOSTIC in SPIMemory.h in the library before compiling                                 |
   |                                             and loading this application onto your Arduino.                                                   |
   |                                                                                                                                               |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 */
 void printLine() {
   Serial.println();
-  for (uint8_t i = 0; i < 230; i++) {
+  for (uint8_t i = 0; i < 125; i++) {
     Serial.print("-");
   }
   Serial.println();
@@ -28,26 +28,16 @@ void printTab(uint8_t _times) {
   }
 }
 
-void clearprintBuffer(char *bufPtr) {
-  for (uint8_t i = 0; i < 128; i++) {
-    //printBuffer[i] = 0;
-    *bufPtr++ = 0;
-  }
-}
-
 void printTime(uint32_t _wTime, uint32_t _rTime) {
-  if (_rTime != 0) {
     printTab(2);
-    Serial.print("Write Time: ");
+  if (_rTime != 0) {
     printTimer(_wTime);
-    Serial.print(F(","));
-    printTab(1);
-    Serial.print("Read Time: ");
+    printTab(3);
     printTimer(_rTime);
   }
   else {
-    printTab(2);
-    Serial.print(F("Time: "));
+    printTab(1);
+    Serial.print("      ");
     printTimer(_wTime);
   }
 }
@@ -61,7 +51,7 @@ void printTimer(uint32_t _us) {
   }
   else if (_us > 1000) {
     float _ms = _us / (float)1000;
-    Serial.print(_ms, 3);
+    Serial.print(_ms, 2);
     Serial.print(" ms");
   }
   else {
@@ -73,7 +63,7 @@ void printTimer(uint32_t _us) {
 
 void pass(bool _status) {
   printTab(1);
-  Serial.print("Data I/O test ");
+  Serial.print("   ");
   if (_status) {
     Serial.print("PASS");
   }
@@ -97,67 +87,43 @@ void printUniqueID(void) {
 }
 
 bool getID() {
-  char printBuffer[128];
-  printLine();
-  for (uint8_t i = 0; i < 68; i++) {
-    Serial.print(F(" "));
-  }
-  Serial.print("Version");
+  Serial.println();
+  Serial.print("SPIMemory Library version: ");
 #ifdef LIBVER
   uint8_t _ver, _subver, _bugfix;
   flash.libver(&_ver, &_subver, &_bugfix);
-  clearprintBuffer(&printBuffer[1]);
-  sprintf(printBuffer, ": %d.%d.%d", _ver, _subver, _bugfix);
-  Serial.print(printBuffer);
+  Serial.print(_ver);
+  Serial.print(".");
+  Serial.print(_subver);
+  Serial.print(".");
+  Serial.println(_bugfix);
 #else
-  Serial.print(F("< 2.5.0"));
+  Serial.println(F("< 2.5.0"));
 #endif
-  printLine();
-
-  for (uint8_t i = 0; i < 80; i++) {
-    Serial.print(F(" "));
-  }
-  Serial.print(F("Get ID"));
-  printLine();
-  //uint8_t b1, b2;
-  //uint16_t b3;
-  //uint32_t JEDEC = flash.getJEDECID();
-  //uint32_t maxPage = flash.getMaxPage();
-  //uint32_t capacity = flash.getCapacity();
-  //b1 = (JEDEC >> 16);
-  //b2 = (JEDEC >> 8);
-  //b3 = (JEDEC >> 0);
-
-  clearprintBuffer(&printBuffer[1]);
-  if (!flash.getJEDECID()) {
+  Serial.println();
+  uint32_t JEDEC = flash.getJEDECID();
+  if (!JEDEC) {
     Serial.println("No comms. Check wiring. Is chip supported? If unable to fix, raise an issue on Github");
     return false;
   }
   else {
-    uint32_t JEDEC = flash.getJEDECID();
-    printTab(3);
     Serial.print("JEDEC ID: 0x");
     Serial.println(JEDEC, HEX);
     Serial.print("Man ID: 0x");
-    Serial.println(JEDEC >> 16);
-    printTab(3);
+    Serial.println(uint8_t(JEDEC >> 16), HEX);
     Serial.print("Memory ID: 0x");
-    Serial.println(JEDEC >> 8);
-    printTab(3);
-    Serial.print("Capacity:");
+    Serial.println(uint8_t(JEDEC >> 8), HEX);
+    Serial.print("Capacity: ");
     Serial.println(flash.getCapacity());
-    printTab(3);
-    Serial.print("Max Pages");
+    Serial.print("Max Pages: ");
     Serial.println(flash.getMaxPage());
-    printTab(3);
     printUniqueID();
-    printLine();
-    return true;
+    
   }
+  return true;
 }
 
 void byteTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   uint8_t _data, _d;
@@ -174,7 +140,7 @@ void byteTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Byte: ");
+  Serial.print ("Byte");
   printTab(2);
 
   if (_data == _d) {
@@ -184,10 +150,10 @@ void byteTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void charTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   int8_t _data, _d;
@@ -204,7 +170,7 @@ void charTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Char: ");
+  Serial.print ("Char");
   printTab(2);
   if (_data == _d) {
     pass(TRUE);
@@ -213,10 +179,10 @@ void charTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void wordTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   uint16_t _data, _d;
@@ -233,7 +199,7 @@ void wordTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Word: ");
+  Serial.print ("Word");
   printTab(2);
   if (_data == _d) {
     pass(TRUE);
@@ -242,10 +208,10 @@ void wordTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void shortTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   int16_t _data, _d;
@@ -262,7 +228,7 @@ void shortTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Short: ");
+  Serial.print ("Short");
   printTab(2);
   if (_data == _d) {
     pass(TRUE);
@@ -271,10 +237,10 @@ void shortTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void uLongTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   uint32_t _data, _d;
@@ -291,7 +257,7 @@ void uLongTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("ULong: ");
+  Serial.print ("ULong");
   printTab(2);
   if (_data == _d) {
     pass(TRUE);
@@ -300,10 +266,10 @@ void uLongTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void longTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   int32_t _data, _d;
@@ -320,7 +286,7 @@ void longTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Long: ");
+  Serial.print ("Long");
   printTab(2);
   if (_data == _d) {
     pass(TRUE);
@@ -329,10 +295,10 @@ void longTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void floatTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   float _data, _d;
@@ -349,7 +315,7 @@ void floatTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Float: ");
+  Serial.print ("Float");
   printTab(2);
   if (_data == _d) {
     pass(TRUE);
@@ -358,6 +324,7 @@ void floatTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void stringTest() {
@@ -377,8 +344,8 @@ void stringTest() {
 
 
   printTab(3);
-  Serial.print ("String: ");
-  printTab(1);
+  Serial.print ("String");
+  printTab(2);
   if (_data == _d) {
     pass(TRUE);
   }
@@ -386,18 +353,10 @@ void stringTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_ESP8266)
-  Serial.println();
-  printLine();
-  if (!flash.functionRunTime()) {
-    Serial.println(F("For function runtimes uncomment RUNDIAGNOSTIC in SPIMemory.h"));
-  }
-#endif
+  
 }
 
 void structTest() {
-  Serial.println();
   struct Test {
     uint16_t s1;
     float s2;
@@ -434,8 +393,8 @@ void structTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Struct: ");
-  printTab(1);
+  Serial.print ("Struct");
+  printTab(2);
   if ((_d.s1 == _data.s1) && (_d.s2 == _data.s2) && (_d.s3 == _data.s3) && (_d.s4 == _data.s4) && (_d.s5 == _data.s5) && (_d.structofstruct.b1 == _data.structofstruct.b1) && (_d.structofstruct.b1 == _data.structofstruct.b1)) {
     pass(TRUE);
   }
@@ -443,10 +402,10 @@ void structTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
+  
 }
 
 void arrayTest() {
-  Serial.println();
   uint32_t wTime = 0;
   uint32_t rTime, addr;
   uint8_t _d[256], _data[256];
@@ -466,7 +425,8 @@ void arrayTest() {
   rTime = flash.functionRunTime();
 
   printTab(3);
-  Serial.print ("Byte Array: ");
+  Serial.print ("Byte Array");
+  printTab(1);
   for (uint16_t i = 0; i < 256; i++) {
     if (_data[i] != i) {
       pass(FALSE);
@@ -474,14 +434,13 @@ void arrayTest() {
   }
   pass(TRUE);
   printTime(wTime, rTime);
-  Serial.println();
+  
 }
 
 void powerDownTest() {
-  Serial.println();
   uint32_t _time;
   printTab(3);
-  Serial.print("Power Down:");
+  Serial.print("Power Down");
   printTab(1);
   if (flash.powerDown()) {
     _time = flash.functionRunTime();
@@ -493,13 +452,13 @@ void powerDownTest() {
     printTab(2);
     Serial.print("Not all chips support power down. Check your datasheet.");
   }
+  
 }
 
 void powerUpTest() {
-  Serial.println();
   uint32_t _time;
   printTab(3);
-  Serial.print("Power Up: ");
+  Serial.print("Power Up");
   printTab(1);
   if (flash.powerUp()) {
     _time = flash.functionRunTime();
@@ -509,14 +468,15 @@ void powerUpTest() {
   else {
     pass(FALSE);
   }
+  
 }
 
 void eraseSectorTest() {
-  Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   printTab(3);
-  Serial.print("Erase 4KB: ");
+  Serial.print("Erase 4KB");
+  printTab(1);
   if (flash.eraseSector(_addr)) {
     _time = flash.functionRunTime();
     pass(TRUE);
@@ -525,14 +485,15 @@ void eraseSectorTest() {
   else {
     pass(FALSE);
   }
+  
 }
 
 void eraseSectionTest() {
-  Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   printTab(3);
-  Serial.print("Erase 72KB: ");
+  Serial.print("Erase 72KB");
+  printTab(1);
   if (flash.eraseSection(_addr, KB(72))) {
     _time = flash.functionRunTime();
     pass(TRUE);
@@ -541,14 +502,15 @@ void eraseSectionTest() {
   else {
     pass(FALSE);
   }
+  
 }
 
 void eraseBlock32KTest() {
-  Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   printTab(3);
-  Serial.print("Erase 32KB: ");
+  Serial.print("Erase 32KB");
+  printTab(1);
   if (flash.eraseBlock32K(_addr)) {
     _time = flash.functionRunTime();
     pass(TRUE);
@@ -557,14 +519,15 @@ void eraseBlock32KTest() {
   else {
     pass(FALSE);
   }
+  
 }
 
 void eraseBlock64KTest() {
-  Serial.println();
   uint32_t _time, _addr;
   _addr = random(0, 0xFFFFF);
   printTab(3);
-  Serial.print("Erase 64KB: ");
+  Serial.print("Erase 64KB");
+  printTab(1);
   if (flash.eraseBlock64K(_addr)) {
     _time = flash.functionRunTime();
     pass(TRUE);
@@ -573,13 +536,13 @@ void eraseBlock64KTest() {
   else {
     pass(FALSE);
   }
+  
 }
 
 void eraseChipTest() {
-  Serial.println();
   uint32_t _time;
   printTab(3);
-  Serial.print("Erase Chip: ");
+  Serial.print("Erase Chip");
   printTab(1);
   if (flash.eraseChip()) {
     _time = flash.functionRunTime();
@@ -589,5 +552,6 @@ void eraseChipTest() {
   else {
     pass(FALSE);
   }
+  
 }
 

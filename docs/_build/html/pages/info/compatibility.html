@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="API and Usage" href="../usage/index.html" />
+    <link rel="next" title="About SPIFlash" href="../SPIFlash/about.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                3.2
+                3.2.0
               </div>
             
           
@@ -83,16 +83,53 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">About SPIMemory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Compatibility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/index.html">API and Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../usage/constructor.html">Constructor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../SPIFlash/about.html">About SPIFlash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SPIFlash/index.html">API and Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/libStructure.html">Library structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/readDataIndependent.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/readDataDependent.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/readSingleVariable.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/readArray.html">Array read functions</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/writeFunc.html">Write functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/writeDataIndependent.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/writeDataDependent.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/writeSingleVariable.html">Single variable write functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/writeArray.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code> <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/writeAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIMemory/tree/master">Source Code</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 
             
@@ -154,7 +191,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../usage/index.html" class="btn btn-neutral float-right" title="API and Usage" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../SPIFlash/about.html" class="btn btn-neutral float-right" title="About SPIFlash" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -176,30 +213,26 @@
 <li>IDE v1.6.9-v1.6.12</li>
 <li>IDE v1.8.1-v1.8.5</li>
 </ul>
-<div class="section" id="boards">
-<h3>Boards<a class="headerlink" href="#boards" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="microcontrollers-boards-tested">
+<h3>Microcontrollers (Boards tested)<a class="headerlink" href="#microcontrollers-boards-tested" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="completely-supported">
 <h4>Completely supported<a class="headerlink" href="#completely-supported" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li>Arduino Uno</li>
-<li>Arduino Leonardo</li>
-<li>Arduino Due</li>
-<li>Arduino Zero</li>
-<li>Nucleo-F091RC</li>
-<li>Adafruit Feather M0</li>
-<li>Adafruit Feather M0 Express</li>
-<li>ESP8266 Boards (On the Arduino IDE)</li>
-<li>Simblee Boards (On the Arduino IDE)</li>
-<li>Arduino Mega</li>
-<li>Arduino Micro</li>
-<li>Arduino Fio</li>
+<li>ATmega328P (Arduino Uno, Arduino Micro, Arduino Fio, Arduino Nano)</li>
+<li>ATmega32u4 (Arduino Leonardo, Arduino Fio v3)</li>
+<li>ATmega2560 (Arduino Mega)</li>
+<li>ATSAMD21G18 ARM Cortex M0+ (Adafruit Feather M0, Adafruit Feather M0 Express)</li>
+<li>AT91SAM3X8E ARM Cortex M3 (Arduino Due)</li>
+<li>ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)</li>
+<li>STM32F091RCT6 (Nucleo-F091RC)</li>
+<li>ESP8266 Boards (Adafruit ESP8266 Feather)</li>
+<li>Simblee Boards (Sparkfun Simblee)</li>
 </ul>
 </div>
 <div class="section" id="in-beta">
 <h4>In BETA<a class="headerlink" href="#in-beta" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li>ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit <a class="reference external" href="https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3">25dff4f</a> on 05.04.2018. <a class="footnote-reference" href="#f1" id="id2">[1]</a> <a class="footnote-reference" href="#f2" id="id3">[2]</a></li>
-<li>Adafruit Metro M4 - more testing required before support for this board leaves beta.</li>
+<li>ESP32 Boards (Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit <a class="reference external" href="https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3">25dff4f</a> on 05.04.2018. <a class="footnote-reference" href="#id4" id="id2">[*]</a> <a class="footnote-reference" href="#id5" id="id3">[†]</a></li>
 </ul>
 </div>
 </div>
@@ -253,16 +286,16 @@
 <li>Any flash memory that is compatible with the SFDP standard as defined in JESD216B</li>
 </ul>
 <p class="rubric">Footnotes</p>
-<table class="docutils footnote" frame="void" id="f1" rules="none">
+<table class="docutils footnote" frame="void" id="id4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[*]</a></td><td>ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="f2" rules="none">
+<table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td>ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: <code class="docutils literal"><span class="pre">SPIFlash</span> <span class="pre">flash(33);</span></code></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[†]</a></td><td>ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: <code class="docutils literal notranslate"><span class="pre">SPIFlash</span> <span class="pre">flash(33);</span></code></td></tr>
 </tbody>
 </table>
 </div>
@@ -278,7 +311,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../usage/index.html" class="btn btn-neutral float-right" title="API and Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../SPIFlash/about.html" class="btn btn-neutral float-right" title="About SPIFlash" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

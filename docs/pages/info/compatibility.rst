@@ -29,7 +29,7 @@ Completely supported
 
 In BETA
 ------------
-- ESP32 Boards (Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit `25dff4f <https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3>`_ on 05.04.2018. [#f1]_ [#f2]_
+- ESP32 Boards (Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the current commit `25dff4f <https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3>`_ on 05.04.2018. [*]_ [*]_
 
 Flash memory chips
 ===================
@@ -72,5 +72,5 @@ Should work with (Similar enough to the ones actually tested with)
 - Any flash memory that is compatible with the SFDP standard as defined in JESD216B
 
 .. rubric:: Footnotes
-.. [#f1] ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.
-.. [#f2] ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: ``SPIFlash flash(33);``
+.. [*] ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.
+.. [*] ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: ``SPIFlash flash(33);``

@@ -7,7 +7,7 @@
 #######################################
 
 SPIFlash	KEYWORD1
-SFDPFlash	KEYWORD1
+SPIMemory	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
