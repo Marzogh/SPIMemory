@@ -93,10 +93,31 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../SPIFlash/index.html">API and Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../SPIFlash/libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../SPIFlash/libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../SPIFlash/chipID.html">Chip ID</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/readFunc.html">Read functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/dataIndependentRead.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/dataDependentRead.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/singleVariableRead.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/arrayRead.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/advancedRead.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/writeFunc.html">Write functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/dataIndependentWrite.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/dataDependentWrite.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/singleVariableWrite.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/arrayWrite.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/advancedWrite.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -270,7 +291,7 @@
 <table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[†]</a></td><td>ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: <code class="docutils literal"><span class="pre">SPIFlash</span> <span class="pre">flash(33);</span></code></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[†]</a></td><td>ESP32 boards usually have an SPI Flash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example: <code class="docutils literal notranslate"><span class="pre">SPIFlash</span> <span class="pre">flash(33);</span></code></td></tr>
 </tbody>
 </table>
 </div>

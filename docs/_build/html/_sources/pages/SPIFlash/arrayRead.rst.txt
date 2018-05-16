@@ -7,9 +7,11 @@
 Array read functions
 ---------------------
 .. cpp:function:: bool readByteArray(uint32_t _addr, uint8_t *data_buffer, size_t bufferSize, bool fastRead = false)
+
 * Reads an ``array of bytes`` from the address specified, and saves the values to the ``data_buffer`` array provided.
 
 .. cpp:function:: bool readCharArray(uint32_t _addr, char *data_buffer, size_t buffer_size, bool fastRead = false)
+
 * Reads an ``array of chars`` from the address specified, and saves the values to the ``data_buffer`` array provided.
 
 Parameters ``Mandatory & Optional``
@@ -19,12 +21,15 @@ Parameters ``Mandatory & Optional``
 Address in memory where the data is to be read from. ``Mandatory``
 
 .. cpp:var:: uint8_t *data_buffer
+
 Pointer to data buffer to write the array to. ``Mandatory``
 
 .. cpp:var:: size_t buffer_size
+
 Size of the array to be read out from flash memory. ``Mandatory``
 
 .. cpp:var:: bool fastRead
+
 Refer to :ref:`Advanced use <noteOnFastRead>` ``Optional``
 
 What they do
@@ -65,7 +70,7 @@ Example code:
       Serial.print(", ");
     }
     Serial.println();
-    
+
   }
 
   void loop() {

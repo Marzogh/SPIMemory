@@ -93,7 +93,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
@@ -103,8 +103,8 @@
 <li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
@@ -114,8 +114,8 @@
 <li class="toctree-l4"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedWrite.html">Advanced use <code class="docutils literal"><span class="pre">errorCheck</span></code> <code class="docutils literal"><span class="pre">HIGHSPEED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedWrite.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -209,83 +209,83 @@
 <h1>Single variable read functions<a class="headerlink" href="#single-variable-read-functions" title="Permalink to this headline">¶</a></h1>
 <p>These functions are designed to read a single variable - of a specific data type - from the flash memory. Each supported type of variable has a function specific to it - as listed below:</p>
 <dl class="function">
-<dt id="_CPPv28readByte8uint32_tb">
-<span id="readByte__uint32_t.b"></span>uint8_t <code class="descclassname"></code><code class="descname">readByte</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readByte8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38readByte8uint32_tb">
+<span id="_CPPv28readByte8uint32_tb"></span><span id="readByte__uint32_t.b"></span>uint8_t <code class="descname">readByte</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads an unsigned 8 bit integer (a <code class="docutils literal"><span class="pre">byte</span></code>) from the address specified, and returns it.</li>
+<li>Reads an unsigned 8 bit integer (a <code class="docutils literal notranslate"><span class="pre">byte</span></code>) from the address specified, and returns it.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv28readChar8uint32_tb">
-<span id="readChar__uint32_t.b"></span>int8_t <code class="descclassname"></code><code class="descname">readChar</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readChar8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38readChar8uint32_tb">
+<span id="_CPPv28readChar8uint32_tb"></span><span id="readChar__uint32_t.b"></span>int8_t <code class="descname">readChar</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads a signed 8 bit integer (a <code class="docutils literal"><span class="pre">char</span></code>) from the address specified, and returns it.</li>
+<li>Reads a signed 8 bit integer (a <code class="docutils literal notranslate"><span class="pre">char</span></code>) from the address specified, and returns it.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv29readShort8uint32_tb">
-<span id="readShort__uint32_t.b"></span>int16_t <code class="descclassname"></code><code class="descname">readShort</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv29readShort8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv39readShort8uint32_tb">
+<span id="_CPPv29readShort8uint32_tb"></span><span id="readShort__uint32_t.b"></span>int16_t <code class="descname">readShort</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads a signed 16 bit integer (a <code class="docutils literal"><span class="pre">short</span></code>) from the address specified, and returns it.</li>
+<li>Reads a signed 16 bit integer (a <code class="docutils literal notranslate"><span class="pre">short</span></code>) from the address specified, and returns it.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv28readWord8uint32_tb">
-<span id="readWord__uint32_t.b"></span>uint16_t <code class="descclassname"></code><code class="descname">readWord</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readWord8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38readWord8uint32_tb">
+<span id="_CPPv28readWord8uint32_tb"></span><span id="readWord__uint32_t.b"></span>uint16_t <code class="descname">readWord</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads an unsigned 16 bit integer (a <code class="docutils literal"><span class="pre">word</span></code>) from the address specified, and returns it.</li>
+<li>Reads an unsigned 16 bit integer (a <code class="docutils literal notranslate"><span class="pre">word</span></code>) from the address specified, and returns it.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv28readLong8uint32_tb">
-<span id="readLong__uint32_t.b"></span>int32_t <code class="descclassname"></code><code class="descname">readLong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28readLong8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38readLong8uint32_tb">
+<span id="_CPPv28readLong8uint32_tb"></span><span id="readLong__uint32_t.b"></span>int32_t <code class="descname">readLong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads a signed 32 bit integer (a <code class="docutils literal"><span class="pre">long</span></code>) from the address specified, and returns it.</li>
+<li>Reads a signed 32 bit integer (a <code class="docutils literal notranslate"><span class="pre">long</span></code>) from the address specified, and returns it.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv29readULong8uint32_tb">
-<span id="readULong__uint32_t.b"></span>uint32_t <code class="descclassname"></code><code class="descname">readULong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv29readULong8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv39readULong8uint32_tb">
+<span id="_CPPv29readULong8uint32_tb"></span><span id="readULong__uint32_t.b"></span>uint32_t <code class="descname">readULong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads an unsigned 32 bit integer (an <code class="docutils literal"><span class="pre">unsigned</span> <span class="pre">long</span></code>) from the address specified, and returns it.</li>
+<li>Reads an unsigned 32 bit integer (an <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span></code>) from the address specified, and returns it.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv29readFloat8uint32_tb">
-<span id="readFloat__uint32_t.b"></span>float <code class="descclassname"></code><code class="descname">readFloat</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv29readFloat8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv39readFloat8uint32_tb">
+<span id="_CPPv29readFloat8uint32_tb"></span><span id="readFloat__uint32_t.b"></span>float <code class="descname">readFloat</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads a <code class="docutils literal"><span class="pre">float</span></code> from the address specified, and returns it.</li>
+<li>Reads a <code class="docutils literal notranslate"><span class="pre">float</span></code> from the address specified, and returns it.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv27readStr8uint32_tR6Stringb">
-<span id="readStr__uint32_t.StringR.b"></span>bool <code class="descclassname"></code><code class="descname">readStr</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, String &amp;<em>data</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv27readStr8uint32_tR6Stringb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv37readStr8uint32_tR6Stringb">
+<span id="_CPPv27readStr8uint32_tR6Stringb"></span><span id="readStr__uint32_t.StringR.b"></span>bool <code class="descname">readStr</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, String &amp;<em>data</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads an <code class="docutils literal"><span class="pre">String</span></code> from the address specified, and returns it.</li>
+<li>Reads an <code class="docutils literal notranslate"><span class="pre">String</span></code> from the address specified, and returns it.</li>
 </ul>
 <div class="section" id="parameters-mandatory-optional">
-<h2>Parameters <code class="docutils literal"><span class="pre">Mandatory</span> <span class="pre">&amp;</span> <span class="pre">Optional</span></code><a class="headerlink" href="#parameters-mandatory-optional" title="Permalink to this headline">¶</a></h2>
+<h2>Parameters <code class="docutils literal notranslate"><span class="pre">Mandatory</span> <span class="pre">&amp;</span> <span class="pre">Optional</span></code><a class="headerlink" href="#parameters-mandatory-optional" title="Permalink to this headline">¶</a></h2>
 <dl class="var">
-<dt id="_CPPv25_addr">
-<span id="_addr__uint32_t"></span>uint32_t <code class="descclassname"></code><code class="descname">_addr</code><a class="headerlink" href="#_CPPv25_addr" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv35_addr">
+<span id="_CPPv25_addr"></span><span id="_addr__uint32_t"></span>uint32_t <code class="descname">_addr</code><br /></dt>
 <dd></dd></dl>
 
-<p>Address in memory where the data is to be read from. <code class="docutils literal"><span class="pre">Mandatory</span></code></p>
+<p>Address in memory where the data is to be read from. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
 <dl class="var">
-<dt id="_CPPv28fastRead">
-<span id="fastRead__b"></span>bool <code class="descclassname"></code><code class="descname">fastRead</code><a class="headerlink" href="#_CPPv28fastRead" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38fastRead">
+<span id="_CPPv28fastRead"></span><span id="fastRead__b"></span>bool <code class="descname">fastRead</code><br /></dt>
 <dd></dd></dl>
 
-<p>Refer to <span class="xref std std-ref">Advanced use</span> <code class="docutils literal"><span class="pre">Optional</span></code></p>
+<p>Refer to <a class="reference internal" href="advancedRead.html#noteonfastread"><span class="std std-ref">Advanced use</span></a> <code class="docutils literal notranslate"><span class="pre">Optional</span></code></p>
 </div>
 <div class="section" id="what-they-do">
 <h2>What they do<a class="headerlink" href="#what-they-do" title="Permalink to this headline">¶</a></h2>
@@ -293,7 +293,7 @@
 </div>
 <div class="section" id="example-code">
 <h2>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 

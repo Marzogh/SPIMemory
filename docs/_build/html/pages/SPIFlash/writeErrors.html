@@ -93,7 +93,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
@@ -103,8 +103,8 @@
 <li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
@@ -114,8 +114,8 @@
 <li class="toctree-l4"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedWrite.html">Advanced use <code class="docutils literal"><span class="pre">errorCheck</span></code> <code class="docutils literal"><span class="pre">HIGHSPEED</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedWrite.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -175,7 +175,7 @@
         
           <li><a href="writeFunc.html">Write functions</a> &raquo;</li>
         
-      <li>Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></li>
+      <li>Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -204,12 +204,12 @@
            <div itemprop="articleBody">
             
   <div class="section" id="related-errors-chipispowereddown-callbegin-outofbounds-chipbusy">
-<h1>Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code><a class="headerlink" href="#related-errors-chipispowereddown-callbegin-outofbounds-chipbusy" title="Permalink to this headline">¶</a></h1>
+<h1>Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code><a class="headerlink" href="#related-errors-chipispowereddown-callbegin-outofbounds-chipbusy" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li>If the chip has previously been powered down and hasn’t been powered up prior to calling this function, the library throws the error <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code></li>
-<li>If <code class="docutils literal"><span class="pre">begin()</span></code> has not been called in <code class="docutils literal"><span class="pre">void</span> <span class="pre">setup()</span></code>, the library throws the error <code class="docutils literal"><span class="pre">CALLBEGIN</span></code></li>
-<li>If the address to be read from is out of bounds - i.e. greater than the available memory on the chip - and <span class="xref std std-ref">address overflow</span> has been disabled, the library throws the error <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code></li>
-<li>If the chip is busy executing the a command passed to it previously or is locked up, the library throws the error <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></li>
+<li>If the chip has previously been powered down and hasn’t been powered up prior to calling this function, the library throws the error <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code></li>
+<li>If <code class="docutils literal notranslate"><span class="pre">begin()</span></code> has not been called in <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setup()</span></code>, the library throws the error <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code></li>
+<li>If the address to be read from is out of bounds - i.e. greater than the available memory on the chip - and <span class="xref std std-ref">address overflow</span> has been disabled, the library throws the error <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code></li>
+<li>If the chip is busy executing the a command passed to it previously or is locked up, the library throws the error <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></li>
 </ul>
 </div>
 

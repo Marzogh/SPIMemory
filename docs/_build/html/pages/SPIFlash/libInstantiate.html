@@ -93,10 +93,31 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dataIndependentWrite.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dataDependentWrite.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="singleVariableWrite.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedWrite.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -185,18 +206,18 @@
 <p>These functions set up the library for use and should be called as required.</p>
 <hr class="docutils" />
 <div class="section" id="begin-mandatory">
-<h2>begin() <code class="docutils literal"><span class="pre">Mandatory</span></code><a class="headerlink" href="#begin-mandatory" title="Permalink to this headline">¶</a></h2>
+<h2>begin() <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code><a class="headerlink" href="#begin-mandatory" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv25begin8uint32_t">
-<span id="begin__uint32_t"></span>bool <code class="descclassname"></code><code class="descname">begin</code><span class="sig-paren">(</span>uint32_t <em>flashChipSize</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv25begin8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv35begin8uint32_t">
+<span id="_CPPv25begin8uint32_t"></span><span id="begin__uint32_t"></span>bool <code class="descname">begin</code><span class="sig-paren">(</span>uint32_t <em>flashChipSize</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv35begin8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="parameters-optional">
-<h3>Parameters <code class="docutils literal"><span class="pre">Optional</span></code><a class="headerlink" href="#parameters-optional" title="Permalink to this headline">¶</a></h3>
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">Optional</span></code><a class="headerlink" href="#parameters-optional" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="var">
-<dt id="_CPPv213flashChipSize">
-<span id="flashChipSize__uint32_t"></span>uint32_t <code class="descclassname"></code><code class="descname">flashChipSize</code><a class="headerlink" href="#_CPPv213flashChipSize" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv313flashChipSize">
+<span id="_CPPv213flashChipSize"></span><span id="flashChipSize__uint32_t"></span>uint32_t <code class="descname">flashChipSize</code><a class="headerlink" href="#_CPPv313flashChipSize" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Refer to <a class="reference internal" href="#nonsupportedflash"><span class="std std-ref">Using with non-supported flash memory</span></a></p>
 </dd></dl>
 
@@ -205,17 +226,17 @@
 <div class="section" id="what-it-does">
 <h3>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="returns-boolean">
-<h4>Returns <code class="docutils literal"><span class="pre">boolean</span></code><a class="headerlink" href="#returns-boolean" title="Permalink to this headline">¶</a></h4>
-<p>The function returns <code class="docutils literal"><span class="pre">TRUE</span></code> if successfully executed and <code class="docutils literal"><span class="pre">FALSE</span></code> if otherwise.</p>
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#returns-boolean" title="Permalink to this headline">¶</a></h4>
+<p>The function returns <code class="docutils literal notranslate"><span class="pre">TRUE</span></code> if successfully executed and <code class="docutils literal notranslate"><span class="pre">FALSE</span></code> if otherwise.</p>
 <ul class="simple">
-<li>Must be called at the start in <code class="docutils literal"><span class="pre">void</span> <span class="pre">setup()</span></code>. This function detects the type of chip being used and sets parameters accordingly.</li>
+<li>Must be called at the start in <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setup()</span></code>. This function detects the type of chip being used and sets parameters accordingly.</li>
 <li>This function is essential to the functioning of the library and must be called before any other calls are made to the library.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="example-code">
 <h3>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
@@ -232,22 +253,22 @@
 </div>
 </div>
 <div class="section" id="related-errors-callbegin-unknowncap-unknownchip">
-<h3>Related Errors <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">UNKNOWNCAP</span></code> <code class="docutils literal"><span class="pre">UNKNOWNCHIP</span></code><a class="headerlink" href="#related-errors-callbegin-unknowncap-unknownchip" title="Permalink to this headline">¶</a></h3>
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">UNKNOWNCAP</span></code> <code class="docutils literal notranslate"><span class="pre">UNKNOWNCHIP</span></code><a class="headerlink" href="#related-errors-callbegin-unknowncap-unknownchip" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>If this function is not called the library throws the error - <code class="docutils literal"><span class="pre">CALLBEGIN</span></code>.</li>
-<li>If the <a class="reference internal" href="chipID.html#getcapacity"><span class="std std-ref">chip’s capacity</span></a> cannot be identified the library throws the error - <code class="docutils literal"><span class="pre">UNKNOWNCAP</span></code>.</li>
-<li>If the <a class="reference internal" href="chipID.html#getjedecid"><span class="std std-ref">chip cannot be ID’d</span></a> the library throws the error - <code class="docutils literal"><span class="pre">UNKNOWNCHIP</span></code>.</li>
+<li>If this function is not called the library throws the error - <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code>.</li>
+<li>If the <a class="reference internal" href="chipID.html#getcapacity"><span class="std std-ref">chip’s capacity</span></a> cannot be identified the library throws the error - <code class="docutils literal notranslate"><span class="pre">UNKNOWNCAP</span></code>.</li>
+<li>If the <a class="reference internal" href="chipID.html#getjedecid"><span class="std std-ref">chip cannot be ID’d</span></a> the library throws the error - <code class="docutils literal notranslate"><span class="pre">UNKNOWNCHIP</span></code>.</li>
 </ul>
 </div>
 <div class="section" id="advanced-use-flashchipsize">
-<h3>Advanced use <code class="docutils literal"><span class="pre">flashChipSize</span></code><a class="headerlink" href="#advanced-use-flashchipsize" title="Permalink to this headline">¶</a></h3>
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">flashChipSize</span></code><a class="headerlink" href="#advanced-use-flashchipsize" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="using-with-non-supported-flash-memory">
 <span id="nonsupportedflash"></span><h4>Using with non-supported flash memory<a class="headerlink" href="#using-with-non-supported-flash-memory" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li>An optional <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can be declared as an argument with this function (if library version &gt; v2.6.0)</li>
-<li>In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in <em>bytes</em> as the <code class="docutils literal"><span class="pre">flashChipSize</span></code> parameter can - in many instances - enable the library to work with the chip</li>
+<li>An optional <code class="docutils literal notranslate"><span class="pre">flashChipSize</span></code> parameter can be declared as an argument with this function (if library version &gt; v2.6.0)</li>
+<li>In an instance where the library is being used with a flash memory chip that is not officially supported by the Library, declaring the chip storage size in <em>bytes</em> as the <code class="docutils literal notranslate"><span class="pre">flashChipSize</span></code> parameter can - in many instances - enable the library to work with the chip</li>
 </ul>
-<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
@@ -267,18 +288,18 @@
 </div>
 <hr class="docutils" />
 <div class="section" id="setclock-advanced-use-only-use-with-care">
-<h2>setClock() <code class="docutils literal"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code><a class="headerlink" href="#setclock-advanced-use-only-use-with-care" title="Permalink to this headline">¶</a></h2>
+<h2>setClock() <code class="docutils literal notranslate"><span class="pre">Advanced</span> <span class="pre">use</span> <span class="pre">only:</span> <span class="pre">Use</span> <span class="pre">with</span> <span class="pre">care</span></code><a class="headerlink" href="#setclock-advanced-use-only-use-with-care" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="_CPPv28setClock8uint32_t">
-<span id="setClock__uint32_t"></span>void <code class="descclassname"></code><code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv28setClock8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv38setClock8uint32_t">
+<span id="_CPPv28setClock8uint32_t"></span><span id="setClock__uint32_t"></span>void <code class="descname">setClock</code><span class="sig-paren">(</span>uint32_t <em>clockSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv38setClock8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="section" id="parameters-mandatory">
-<h3>Parameters <code class="docutils literal"><span class="pre">Mandatory</span></code><a class="headerlink" href="#parameters-mandatory" title="Permalink to this headline">¶</a></h3>
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code><a class="headerlink" href="#parameters-mandatory" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="var">
-<dt id="_CPPv210clockSpeed">
-<span id="clockSpeed__uint32_t"></span>uint32_t <code class="descclassname"></code><code class="descname">clockSpeed</code><a class="headerlink" href="#_CPPv210clockSpeed" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv310clockSpeed">
+<span id="_CPPv210clockSpeed"></span><span id="clockSpeed__uint32_t"></span>uint32_t <code class="descname">clockSpeed</code><a class="headerlink" href="#_CPPv310clockSpeed" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A 32 bit unsigned integer that represents SPI Clock Speed in Hertz</p>
 </dd></dl>
 
@@ -287,7 +308,7 @@
 <div class="section" id="id1">
 <h3>What it does<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="returns-nothing">
-<h4>Returns <code class="docutils literal"><span class="pre">Nothing</span></code><a class="headerlink" href="#returns-nothing" title="Permalink to this headline">¶</a></h4>
+<h4>Returns <code class="docutils literal notranslate"><span class="pre">Nothing</span></code><a class="headerlink" href="#returns-nothing" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li>This is an optional function and is used to set the SPI clock speed for all further comms using the library.</li>
 <li>If required, this function must be called straight after begin().</li>
@@ -297,7 +318,7 @@
 </div>
 <div class="section" id="id2">
 <h3>Example code<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
 
 <span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
 
@@ -314,10 +335,10 @@
 </div>
 </div>
 <div class="section" id="related-errors-none">
-<h3>Related Errors <code class="docutils literal"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Permalink to this headline">¶</a></h3>
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="advanced-use-n-a">
-<h3>Advanced use <code class="docutils literal"><span class="pre">N/A</span></code><a class="headerlink" href="#advanced-use-n-a" title="Permalink to this headline">¶</a></h3>
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#advanced-use-n-a" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>
