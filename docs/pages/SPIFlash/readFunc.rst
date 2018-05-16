@@ -8,7 +8,7 @@
 Read functions
 ###################################
 
-These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types as can be used as required.
+These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types and can be used as required.
 
 There are two basic types of read functions - one that is independent of data type being read, the other is dependent on the data type. Please refer to the links below for further details.
 

@@ -30,7 +30,7 @@ Returns ``TRUE`` if successful, ``FALSE`` if unsuccessful
 
 
 .. note::
-  This function can be used to replace any of the read functions below (except ``readByteArray()`` and ``readCharArray()``). However, if used for anything other than structs, this function runs slower than the data type-specific ones below.
+  This function can be used to replace any of the other read functions (except ``readByteArray()`` and ``readCharArray()``). However, if used for anything other than structs, this function runs slower than the data type-specific ones.
 
 Example code:
 ~~~~~~~~~~~~~~

@@ -40,19 +40,25 @@ Example code:
 
   SPIFlash flash;
 
-  uint8_t dataIn;     // This data type should be changed depending on the type of data
-                        // being read from the flash memory
+  #define _bufferSize 8
+
+  uint8_t dataIn[_bufferSize];
+  // This data type should be changed depending on the type of data being read from the flash memory
   uint32_t _address;
 
   void setup() {
     flash.begin();
     _address = flash.getAddress(sizeof(dataIn));
-    dataIn = flash.readByte(_address);    // This function should be changed depending on the type of data
-                                          // being read from the flash memory
+    dataIn = flash.readByteArray(_address, dataIn, _bufferSize);
+    // This function should be changed depending on the type of data being read from the flash memory
     Serial.print("Address = ");
     Serial.println(_address);
-    Serial.print("Data read : 0x");
-    Serial.println(dataIn, HEX);
+    Serial.print("Data read: ");
+    for (uint8_t i = 0; i < _bufferSize; i++) {
+      Serial.print(dataIn[i]);
+      Serial.print(", ");
+    }
+    Serial.println();
   }
 
   void loop() {
