@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data type-dependent read functions &mdash; SPIMemory 0 documentation</title>
+  <title>Data type-dependent write functions &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Single variable read functions" href="singleVariableRead.html" />
-    <link rel="prev" title="Data type-independent read function" href="dataIndependentRead.html" /> 
+    <link rel="next" title="Single variable read functions" href="singleVariableWrite.html" />
+    <link rel="prev" title="Data type-independent write function" href="dataIndependentWrite.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -96,9 +96,9 @@
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="readFunc.html">Read functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Data type-dependent read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
 </ul>
@@ -107,9 +107,9 @@
 <li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dataIndependentWrite.html">Data type-independent write function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dataDependentWrite.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Data type-dependent write functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="singleVariableWrite.html">Single variable read functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
 </ul>
@@ -173,15 +173,15 @@
         
           <li><a href="index.html">API and Usage</a> &raquo;</li>
         
-          <li><a href="readFunc.html">Read functions</a> &raquo;</li>
+          <li><a href="writeFunc.html">Write functions</a> &raquo;</li>
         
-      <li>Data type-dependent read functions</li>
+      <li>Data type-dependent write functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/SPIFlash/dataDependentRead.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/SPIFlash/dataDependentWrite.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -191,10 +191,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="singleVariableRead.html" class="btn btn-neutral float-right" title="Single variable read functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="singleVariableWrite.html" class="btn btn-neutral float-right" title="Single variable read functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="dataIndependentRead.html" class="btn btn-neutral" title="Data type-independent read function" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dataIndependentWrite.html" class="btn btn-neutral" title="Data type-independent write function" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -203,14 +203,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="data-type-dependent-read-functions">
-<h1>Data type-dependent read functions<a class="headerlink" href="#data-type-dependent-read-functions" title="Permalink to this headline">¶</a></h1>
-<p>These functions are designed to read a specific data type from the flash memory. There are two types of data type-dependent read functions as listed below</p>
+  <div class="section" id="data-type-dependent-write-functions">
+<h1>Data type-dependent write functions<a class="headerlink" href="#data-type-dependent-write-functions" title="Permalink to this headline">¶</a></h1>
+<p>These functions are designed to write a specific data type to the flash memory. There are two types of data type-dependent write functions as listed below</p>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Types of data type-dependent read functions</span></p>
+<p class="caption"><span class="caption-text">Types of data type-dependent write functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="singleVariableWrite.html">Single variable read functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
 </ul>
 </div>
 </div>
@@ -223,10 +223,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="singleVariableRead.html" class="btn btn-neutral float-right" title="Single variable read functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="singleVariableWrite.html" class="btn btn-neutral float-right" title="Single variable read functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="dataIndependentRead.html" class="btn btn-neutral" title="Data type-independent read function" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dataIndependentWrite.html" class="btn btn-neutral" title="Data type-independent write function" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

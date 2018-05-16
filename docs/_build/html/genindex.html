@@ -106,6 +106,17 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="pages/SPIFlash/writeFunc.html">Write functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/dataIndependentWrite.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/dataDependentWrite.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pages/SPIFlash/singleVariableWrite.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pages/SPIFlash/arrayWrite.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/writeErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/SPIFlash/advancedWrite.html">Advanced use <code class="docutils literal"><span class="pre">errorCheck</span></code> <code class="docutils literal"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -184,16 +195,18 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pages/SPIFlash/arrayRead.html#_CPPv25_addr">_addr (C++ member)</a>, <a href="pages/SPIFlash/dataIndependentRead.html#_CPPv25_addr">[1]</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv25_addr">[2]</a>
+      <li><a href="pages/SPIFlash/arrayRead.html#_CPPv25_addr">_addr (C++ member)</a>, <a href="pages/SPIFlash/arrayWrite.html#_CPPv25_addr">[1]</a>, <a href="pages/SPIFlash/dataIndependentRead.html#_CPPv25_addr">[2]</a>, <a href="pages/SPIFlash/dataIndependentWrite.html#_CPPv25_addr">[3]</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv25_addr">[4]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv25_addr">[5]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -206,6 +219,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pages/SPIFlash/arrayRead.html#_CPPv211buffer_size">buffer_size (C++ member)</a>
+</li>
+      <li><a href="pages/SPIFlash/arrayWrite.html#_CPPv210bufferSize">bufferSize (C++ member)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -225,11 +240,19 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pages/SPIFlash/dataIndependentRead.html#_CPPv24data">data (C++ member)</a>
+      <li><a href="pages/SPIFlash/dataIndependentRead.html#_CPPv24data">data (C++ member)</a>, <a href="pages/SPIFlash/dataIndependentWrite.html#_CPPv24data">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pages/SPIFlash/arrayRead.html#_CPPv211data_buffer">data_buffer (C++ member)</a>
+      <li><a href="pages/SPIFlash/arrayRead.html#_CPPv211data_buffer">data_buffer (C++ member)</a>, <a href="pages/SPIFlash/arrayWrite.html#_CPPv211data_buffer">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/SPIFlash/arrayWrite.html#_CPPv210errorCheck">errorCheck (C++ member)</a>, <a href="pages/SPIFlash/dataIndependentWrite.html#_CPPv210errorCheck">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -237,7 +260,7 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pages/SPIFlash/arrayRead.html#_CPPv28fastRead">fastRead (C++ member)</a>, <a href="pages/SPIFlash/dataIndependentRead.html#_CPPv28fastRead">[1]</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28fastRead">[2]</a>
+      <li><a href="pages/SPIFlash/arrayRead.html#_CPPv28fastRead">fastRead (C++ member)</a>, <a href="pages/SPIFlash/dataIndependentRead.html#_CPPv28fastRead">[1]</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28fastRead">[2]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv28fastRead">[3]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -269,27 +292,27 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pages/SPIFlash/dataIndependentRead.html#_CPPv212readAnything8uint32_tR1Tb">readAnything (C++ function)</a>, <a href="pages/SPIFlash/libStructure.html#_CPPv212readAnything8uint32_tR1Tb">[1]</a>
 </li>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readByte8uint32_tb">readByte (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readByte8uint32_tb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readByte8uint32_tb">readByte (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readByte8uint32_tb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv28readByte8uint32_tb">[2]</a>
 </li>
       <li><a href="pages/SPIFlash/arrayRead.html#_CPPv213readByteArray8uint32_tP7uint8_t6size_tb">readByteArray (C++ function)</a>, <a href="pages/SPIFlash/libStructure.html#_CPPv213readByteArray8uint32_tP7uint8_t6size_tb">[1]</a>
 </li>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readChar8uint32_tb">readChar (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readChar8uint32_tb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readChar8uint32_tb">readChar (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readChar8uint32_tb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv28readChar8uint32_tb">[2]</a>
 </li>
       <li><a href="pages/SPIFlash/arrayRead.html#_CPPv213readCharArray8uint32_tPc6size_tb">readCharArray (C++ function)</a>, <a href="pages/SPIFlash/libStructure.html#_CPPv213readCharArray8uint32_tPc6size_tb">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv29readFloat8uint32_tb">readFloat (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv29readFloat8uint32_tb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv29readFloat8uint32_tb">readFloat (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv29readFloat8uint32_tb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv29readFloat8uint32_tb">[2]</a>
 </li>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readLong8uint32_tb">readLong (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readLong8uint32_tb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readLong8uint32_tb">readLong (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readLong8uint32_tb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv28readLong8uint32_tb">[2]</a>
 </li>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv29readShort8uint32_tb">readShort (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv29readShort8uint32_tb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv29readShort8uint32_tb">readShort (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv29readShort8uint32_tb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv29readShort8uint32_tb">[2]</a>
 </li>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv27readStr8uint32_tR6Stringb">readStr (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv27readStr8uint32_tR6Stringb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv27readStr8uint32_tR6Stringb">readStr (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv27readStr8uint32_tR6Stringb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv27readStr8uint32_tR6Stringb">[2]</a>
 </li>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv29readULong8uint32_tb">readULong (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv29readULong8uint32_tb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv29readULong8uint32_tb">readULong (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv29readULong8uint32_tb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv29readULong8uint32_tb">[2]</a>
 </li>
-      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readWord8uint32_tb">readWord (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readWord8uint32_tb">[1]</a>
+      <li><a href="pages/SPIFlash/libStructure.html#_CPPv28readWord8uint32_tb">readWord (C++ function)</a>, <a href="pages/SPIFlash/singleVariableRead.html#_CPPv28readWord8uint32_tb">[1]</a>, <a href="pages/SPIFlash/singleVariableWrite.html#_CPPv28readWord8uint32_tb">[2]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -306,6 +329,20 @@
       <li><a href="pages/SPIFlash/constructor.html#_CPPv2N8SPIFlash8SPIFlashE7uint8_tP8SPIClass">SPIFlash::SPIFlash (C++ function)</a>
 </li>
       <li><a href="pages/SPIFlash/constructor.html#_CPPv212spiinterface">spiinterface (C++ member)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/SPIFlash/dataIndependentWrite.html#_CPPv213writeAnything8uint32_tRK1Tb">writeAnything (C++ function)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/SPIFlash/arrayWrite.html#_CPPv214writeByteArray8uint32_tP7uint8_t6size_tb">writeByteArray (C++ function)</a>
+</li>
+      <li><a href="pages/SPIFlash/arrayWrite.html#_CPPv214writeCharArray8uint32_tPc6size_tb">writeCharArray (C++ function)</a>
 </li>
   </ul></td>
 </tr></table>

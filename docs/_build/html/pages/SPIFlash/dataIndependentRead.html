@@ -104,7 +104,18 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use of Read functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dataIndependentWrite.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dataDependentWrite.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedWrite.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -218,7 +229,7 @@
 <span id="fastRead__b"></span>bool <code class="descclassname"></code><code class="descname">fastRead</code><a class="headerlink" href="#_CPPv28fastRead" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<p>Refer to <a class="reference internal" href="advancedRead.html#noteonfastread"><span class="std std-ref">Advanced use</span></a> <code class="docutils literal"><span class="pre">Optional</span></code></p>
+<p>Refer to <a class="reference internal" href="advancedWrite.html#noteonfastread"><span class="std std-ref">Advanced use</span></a> <code class="docutils literal"><span class="pre">Optional</span></code></p>
 </div>
 <div class="section" id="what-it-does">
 <h2>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h2>
@@ -228,7 +239,7 @@
 <p>Returns <code class="docutils literal"><span class="pre">TRUE</span></code> if successful, <code class="docutils literal"><span class="pre">FALSE</span></code> if unsuccessful</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This function can be used to replace any of the read functions below (except <code class="docutils literal"><span class="pre">readByteArray()</span></code> and <code class="docutils literal"><span class="pre">readCharArray()</span></code>). However, if used for anything other than structs, this function runs slower than the data type-specific ones below.</p>
+<p class="last">This function can be used to replace any of the other read functions (except <code class="docutils literal"><span class="pre">readByteArray()</span></code> and <code class="docutils literal"><span class="pre">readCharArray()</span></code>). However, if used for anything other than structs, this function runs slower than the data type-specific ones.</p>
 </div>
 </div>
 </div>

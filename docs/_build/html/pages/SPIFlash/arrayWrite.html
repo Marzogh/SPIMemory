@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Array read functions &mdash; SPIMemory 0 documentation</title>
+  <title>Array write functions &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" href="readErrors.html" />
-    <link rel="prev" title="Single variable read functions" href="singleVariableRead.html" /> 
+    <link rel="next" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" href="writeErrors.html" />
+    <link rel="prev" title="Single variable read functions" href="singleVariableWrite.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -96,22 +96,22 @@
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="readFunc.html">Read functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Array read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dataIndependentWrite.html">Data type-independent write function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dataDependentWrite.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l3 current"><a class="reference internal" href="dataDependentWrite.html">Data type-dependent write functions</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="singleVariableWrite.html">Single variable read functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Array write functions</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
@@ -173,17 +173,17 @@
         
           <li><a href="index.html">API and Usage</a> &raquo;</li>
         
-          <li><a href="readFunc.html">Read functions</a> &raquo;</li>
+          <li><a href="writeFunc.html">Write functions</a> &raquo;</li>
         
-          <li><a href="dataDependentRead.html">Data type-dependent read functions</a> &raquo;</li>
+          <li><a href="dataDependentWrite.html">Data type-dependent write functions</a> &raquo;</li>
         
-      <li>Array read functions</li>
+      <li>Array write functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/SPIFlash/arrayRead.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/SPIFlash/arrayWrite.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -193,10 +193,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="readErrors.html" class="btn btn-neutral float-right" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="writeErrors.html" class="btn btn-neutral float-right" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="singleVariableRead.html" class="btn btn-neutral" title="Single variable read functions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="singleVariableWrite.html" class="btn btn-neutral" title="Single variable read functions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -205,23 +205,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="array-read-functions">
-<h1>Array read functions<a class="headerlink" href="#array-read-functions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="array-write-functions">
+<h1>Array write functions<a class="headerlink" href="#array-write-functions" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="_CPPv213readByteArray8uint32_tP7uint8_t6size_tb">
-<span id="readByteArray__uint32_t.uint8_tP.s.b"></span>bool <code class="descclassname"></code><code class="descname">readByteArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, uint8_t *<em>data_buffer</em>, size_t <em>bufferSize</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv213readByteArray8uint32_tP7uint8_t6size_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv214writeByteArray8uint32_tP7uint8_t6size_tb">
+<span id="writeByteArray__uint32_t.uint8_tP.s.b"></span>bool <code class="descclassname"></code><code class="descname">writeByteArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, uint8_t *<em>data_buffer</em>, size_t <em>bufferSize</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv214writeByteArray8uint32_tP7uint8_t6size_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads an <code class="docutils literal"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">bytes</span></code> from the address specified, and saves the values to the <code class="docutils literal"><span class="pre">data_buffer</span></code> array provided.</li>
+<li>Writes an <code class="docutils literal"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">bytes</span></code> to the address specified.</li>
 </ul>
 <dl class="function">
-<dt id="_CPPv213readCharArray8uint32_tPc6size_tb">
-<span id="readCharArray__uint32_t.cP.s.b"></span>bool <code class="descclassname"></code><code class="descname">readCharArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, char *<em>data_buffer</em>, size_t <em>buffer_size</em>, bool <em>fastRead</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv213readCharArray8uint32_tPc6size_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv214writeCharArray8uint32_tPc6size_tb">
+<span id="writeCharArray__uint32_t.cP.s.b"></span>bool <code class="descclassname"></code><code class="descname">writeCharArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, char *<em>data_buffer</em>, size_t <em>bufferSize</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv214writeCharArray8uint32_tPc6size_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <ul class="simple">
-<li>Reads an <code class="docutils literal"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">chars</span></code> from the address specified, and saves the values to the <code class="docutils literal"><span class="pre">data_buffer</span></code> array provided.</li>
+<li>Writes an <code class="docutils literal"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">chars</span></code> to the address specified.</li>
 </ul>
 <div class="section" id="parameters-mandatory-optional">
 <h2>Parameters <code class="docutils literal"><span class="pre">Mandatory</span> <span class="pre">&amp;</span> <span class="pre">Optional</span></code><a class="headerlink" href="#parameters-mandatory-optional" title="Permalink to this headline">¶</a></h2>
@@ -230,33 +230,33 @@
 <span id="_addr__uint32_t"></span>uint32_t <code class="descclassname"></code><code class="descname">_addr</code><a class="headerlink" href="#_CPPv25_addr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<p>Address in memory where the data is to be read from. <code class="docutils literal"><span class="pre">Mandatory</span></code></p>
+<p>Address in memory where the data is to be written to. <code class="docutils literal"><span class="pre">Mandatory</span></code></p>
 <dl class="var">
 <dt id="_CPPv211data_buffer">
 <span id="data_buffer__uint8_tP"></span>uint8_t *<code class="descclassname"></code><code class="descname">data_buffer</code><a class="headerlink" href="#_CPPv211data_buffer" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<p>Pointer to data buffer to write the array to. <code class="docutils literal"><span class="pre">Mandatory</span></code></p>
+<p>Pointer to data buffer to write the array from. <code class="docutils literal"><span class="pre">Mandatory</span></code></p>
 <dl class="var">
-<dt id="_CPPv211buffer_size">
-<span id="buffer_size__s"></span>size_t <code class="descclassname"></code><code class="descname">buffer_size</code><a class="headerlink" href="#_CPPv211buffer_size" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv210bufferSize">
+<span id="bufferSize__s"></span>size_t <code class="descclassname"></code><code class="descname">bufferSize</code><a class="headerlink" href="#_CPPv210bufferSize" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<p>Size of the array to be read out from flash memory. <code class="docutils literal"><span class="pre">Mandatory</span></code></p>
+<p>Size of the array to be written out to flash memory. <code class="docutils literal"><span class="pre">Mandatory</span></code></p>
 <dl class="var">
-<dt id="_CPPv28fastRead">
-<span id="fastRead__b"></span>bool <code class="descclassname"></code><code class="descname">fastRead</code><a class="headerlink" href="#_CPPv28fastRead" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv210errorCheck">
+<span id="errorCheck__b"></span>bool <code class="descclassname"></code><code class="descname">errorCheck</code><a class="headerlink" href="#_CPPv210errorCheck" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<p>Refer to <span class="xref std std-ref">Advanced use</span> <code class="docutils literal"><span class="pre">Optional</span></code></p>
+<p>Refer to <a class="reference internal" href="advancedWrite.html#noteonerrorcheck"><span class="std std-ref">Advanced use</span></a> <code class="docutils literal"><span class="pre">Optional</span></code></p>
 </div>
 <div class="section" id="what-they-do">
 <h2>What they do<a class="headerlink" href="#what-they-do" title="Permalink to this headline">¶</a></h2>
-<p>Return the array of values of the datatype and size specified by the user, that is stored (starting) at the address provided</p>
+<p>Write the array of values of the datatype and size specified by the user, to the address provided</p>
 </div>
 <div class="section" id="returns-boolean">
 <h2>Returns <code class="docutils literal"><span class="pre">boolean</span></code><a class="headerlink" href="#returns-boolean" title="Permalink to this headline">¶</a></h2>
-<p>Returns <code class="docutils literal"><span class="pre">TRUE</span></code> if data read successfully, else returns <code class="docutils literal"><span class="pre">FALSE</span></code></p>
+<p>Returns <code class="docutils literal"><span class="pre">TRUE</span></code> if data written successfully, else returns <code class="docutils literal"><span class="pre">FALSE</span></code></p>
 </div>
 <div class="section" id="example-code">
 <h2>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
@@ -266,8 +266,8 @@
 
 <span class="cp">#define _bufferSize 8</span>
 
-<span class="kt">uint8_t</span> <span class="n">dataIn</span><span class="p">[</span><span class="n">_bufferSize</span><span class="p">];</span>
-<span class="c1">// This data type should be changed depending on the type of data being read from the flash memory</span>
+<span class="kt">uint8_t</span> <span class="n">dataOut</span><span class="p">[</span><span class="n">_bufferSize</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">};</span>
+<span class="c1">// This data type should be changed depending on the type of data being written to the flash memory</span>
 <span class="kt">uint32_t</span> <span class="n">_address</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
@@ -276,15 +276,14 @@
   <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Address = &quot;</span><span class="p">);</span>
   <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">_address</span><span class="p">);</span>
 
-  <span class="n">dataIn</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">readByteArray</span><span class="p">(</span><span class="n">_address</span><span class="p">,</span> <span class="n">dataIn</span><span class="p">,</span> <span class="n">_bufferSize</span><span class="p">);</span>
-  <span class="c1">// This function should be changed depending on the type of data being read from the flash memory</span>
-
-  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Data read: &quot;</span><span class="p">);</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">_bufferSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">dataIn</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-    <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Data write: &quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">flash</span><span class="p">.</span><span class="n">writeByteArray</span><span class="p">(</span><span class="n">_address</span><span class="p">,</span> <span class="n">dataOut</span><span class="p">,</span> <span class="n">_bufferSize</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// This function should be changed depending on the type of data being written to the flash memory</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span> <span class="p">(</span><span class="s">&quot;Successful&quot;</span><span class="p">);</span>
   <span class="p">}</span>
-  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">();</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Failed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
 
 <span class="p">}</span>
 
@@ -303,10 +302,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="readErrors.html" class="btn btn-neutral float-right" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="writeErrors.html" class="btn btn-neutral float-right" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="singleVariableRead.html" class="btn btn-neutral" title="Single variable read functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="singleVariableWrite.html" class="btn btn-neutral" title="Single variable read functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

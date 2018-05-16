@@ -1,28 +1,28 @@
-.. _dataIndependentRead:
+.. _dataIndependentWrite:
 
 .. default-domain:: cpp
 .. highlight:: cpp
   :linenothreshold: 4
 
 *******************************************************************
-Data type-independent read function
+Data type-independent write function
 *******************************************************************
-.. cpp:function:: bool readAnything(uint32_t _addr, T& data, bool fastRead = false)
+.. cpp:function:: bool writeAnything(uint32_t _addr, const T& data, bool errorCheck = true)
 
 Parameters ``Mandatory & Optional``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. cpp:var:: uint32_t _addr
-Address in memory where the data is to be read from. ``Mandatory``
+Address in memory where the data is to be written to. ``Mandatory``
 
 .. cpp:var:: T& data
-Variable to save the data to. ``Mandatory``
+Variable to write. ``Mandatory``
 
-.. cpp:var:: bool fastRead
-Refer to :ref:`Advanced use <noteOnFastRead>` ``Optional``
+.. cpp:var:: bool errorCheck
+Refer to :ref:`Advanced use <noteOnErrorCheck>` ``Optional``
 
 What it does
 ~~~~~~~~~~~~~~
-Reads any type of variable / struct (any sized value) (starting) from a specific address and saves it to the variable ``T& data`` provided as an argument.
+Writes any type of variable / struct (any sized value) (starting) from a specific address (user provided)
 
 Returns ``boolean``
 ^^^^^^^^^^^^^^^^^^^^^
@@ -30,7 +30,7 @@ Returns ``TRUE`` if successful, ``FALSE`` if unsuccessful
 
 
 .. note::
-  This function can be used to replace any of the other read functions (except ``readByteArray()`` and ``readCharArray()``). However, if used for anything other than structs, this function runs slower than the data type-specific ones.
+  This function can be used to replace any of the other write functions (except ``writeByteArray()`` and ``writeCharArray()``). However, if used for anything other than structs, this function runs slower than the data type-specific ones.
 
 Example code:
 ~~~~~~~~~~~~~~
@@ -48,7 +48,7 @@ Example code:
     float _float = 3.14;
     String _str = "This is a test string";
     uint8_t _array[8] = {0,1,2,3,4,5,6,7};
-  } dataIn;
+  } dataOut;
   uint32_t _address;
 
   void setup() {
@@ -56,9 +56,10 @@ Example code:
     _address = flash.getAddress(sizeof(dataIn));
     Serial.print("Address = ");
     Serial.println(_address);
-    Serial.print("readAnything()");
-    if (!flash.readAnything(_address, dataIn)) { // Function is used to get the data from
-                                               // address '_address' and save it to the struct 'test'
+    
+    Serial.print("writeAnything()");
+    if (!flash.writeAnything(_address, dataOut)) { // Function is used to write the data to
+                                                   // address '_address'
       Serial.println("Failed");
     }
     else {
