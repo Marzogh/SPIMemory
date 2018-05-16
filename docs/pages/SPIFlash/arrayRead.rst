@@ -31,6 +31,10 @@ What they do
 ~~~~~~~~~~~~~~
 Return the array of values of the datatype and size specified by the user, that is stored (starting) at the address provided
 
+Returns ``boolean``
+~~~~~~~~~~~~~~~~~~~~~~
+Returns ``TRUE`` if data read successfully, else returns ``FALSE``
+
 Example code:
 ~~~~~~~~~~~~~~
 
