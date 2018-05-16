@@ -1,4 +1,4 @@
-.. _arrayRead:
+.. _readArray:
 
 .. default-domain:: cpp
 .. highlight:: cpp

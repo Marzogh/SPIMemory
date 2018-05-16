@@ -28,7 +28,9 @@
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Array write functions" href="writeArray.html" />
+    <link rel="prev" title="Data type-dependent write functions" href="writeDataDependent.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -57,7 +59,7 @@
             
             
               <div class="version">
-                3.2
+                3.2.0
               </div>
             
           
@@ -81,37 +83,38 @@
               
             
             
-              <p class="caption"><span class="caption-text">SPIMemory</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
 </ul>
 <p class="caption"><span class="caption-text">SPIFlash</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">API and Usage</a><ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About SPIFlash</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readDataIndependent.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readDataDependent.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="readSingleVariable.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="readArray.html">Array read functions</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="writeDataIndependent.html">Data type-independent write function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="writeDataDependent.html">Data type-dependent write functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="arrayWrite.html">Array write functions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="writeDataDependent.html">Data type-dependent write functions</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Single variable write functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="writeArray.html">Array write functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code> <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="writeAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
 </ul>
 </li>
@@ -121,8 +124,12 @@
 <p class="caption"><span class="caption-text">Miscellaneous</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIMemory/tree/master">Source Code</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 
             
@@ -168,6 +175,12 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
+          <li><a href="index.html">API and Usage</a> &raquo;</li>
+        
+          <li><a href="writeFunc.html">Write functions</a> &raquo;</li>
+        
+          <li><a href="writeDataDependent.html">Data type-dependent write functions</a> &raquo;</li>
+        
       <li>Single variable write functions</li>
     
     
@@ -181,6 +194,15 @@
     
   </ul>
 
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="writeArray.html" class="btn btn-neutral float-right" title="Array write functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="writeDataDependent.html" class="btn btn-neutral" title="Data type-dependent write functions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
   
   <hr/>
 </div>
@@ -322,6 +344,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="writeArray.html" class="btn btn-neutral float-right" title="Array write functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="writeDataDependent.html" class="btn btn-neutral" title="Data type-dependent write functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

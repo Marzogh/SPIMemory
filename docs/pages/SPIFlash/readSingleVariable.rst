@@ -1,4 +1,4 @@
-.. _singleVariableRead:
+.. _readSingleVariable:
 
 .. default-domain:: cpp
 .. highlight:: cpp

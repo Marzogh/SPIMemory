@@ -1,4 +1,4 @@
-.. _dataDependentRead:
+.. _readDataDependent:
 
 .. default-domain:: cpp
 .. highlight:: cpp
@@ -14,5 +14,5 @@ These functions are designed to read a specific data type from the flash memory.
    :caption: Types of data type-dependent read functions
    :maxdepth: 1
 
-   singleVariableRead.rst
-   arrayRead.rst
+   readSingleVariable.rst
+   readArray.rst

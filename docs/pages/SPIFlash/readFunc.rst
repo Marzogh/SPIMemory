@@ -18,7 +18,7 @@ There are two basic types of read functions - one that is independent of data ty
    :caption: More about Read functions
    :maxdepth: 1
 
-   dataIndependentRead.rst
-   dataDependentRead.rst
+   readDataIndependent.rst
+   readDataDependent.rst
    readErrors.rst
-   advancedRead.rst
+   readAdvanced.rst

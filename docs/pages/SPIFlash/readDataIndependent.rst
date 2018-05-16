@@ -1,4 +1,4 @@
-.. _dataIndependentRead:
+.. _readDataIndependent:
 
 .. default-domain:: cpp
 .. highlight:: cpp
