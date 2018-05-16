@@ -96,7 +96,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../SPIFlash/constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../SPIFlash/libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../SPIFlash/chipID.html">Chip ID</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/readFunc.html">Read functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../SPIFlash/readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/dataIndependentRead.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/dataDependentRead.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/singleVariableRead.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../SPIFlash/arrayRead.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SPIFlash/advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -185,7 +195,7 @@
 <ul class="simple">
 <li>Open the Arduino IDE.</li>
 <li>Go to Sketch &gt; Include Library &gt; Manage libraries.</li>
-<li>Search for SPIFlash.</li>
+<li>Search for SPIMemory.</li>
 <li>Install the latest version.</li>
 </ul>
 </div>
@@ -193,7 +203,7 @@
 <h2>Option 2<a class="headerlink" href="#option-2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Click <a class="reference external" href="https://github.com/Marzogh/SPIFlash/archive/master.zip">here</a></li>
-<li>Unzip the archive that downloads and rename resulting folder to ‘SPIFlash’</li>
+<li>Unzip the archive that downloads and rename resulting folder to ‘SPIMemory’</li>
 <li>Move the folder to your libraries folder (~/sketches/libraries)</li>
 </ul>
 </div>

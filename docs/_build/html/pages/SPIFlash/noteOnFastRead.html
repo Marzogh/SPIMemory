@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Read functions &mdash; SPIMemory 0 documentation</title>
+  <title>Advanced use fastRead &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Data type-independent read function" href="dataIndependentRead.html" />
-    <link rel="prev" title="Chip ID" href="chipID.html" /> 
+    <link rel="next" title="Contribute" href="../contribute.html" />
+    <link rel="prev" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" href="readErrors.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Read functions</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="readFunc.html">Read functions</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
@@ -104,7 +104,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -162,13 +162,15 @@
         
           <li><a href="index.html">API and Usage</a> &raquo;</li>
         
-      <li>Read functions</li>
+          <li><a href="readFunc.html">Read functions</a> &raquo;</li>
+        
+      <li>Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/SPIFlash/readFunc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/SPIFlash/noteOnFastRead.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -178,10 +180,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="dataIndependentRead.html" class="btn btn-neutral float-right" title="Data type-independent read function" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chipID.html" class="btn btn-neutral" title="Chip ID" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="readErrors.html" class="btn btn-neutral" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -190,20 +192,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="read-functions">
-<h1>Read functions<a class="headerlink" href="#read-functions" title="Permalink to this headline">¶</a></h1>
-<p>These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types as can be used as required.</p>
-<p>There are two basic types of read functions - one that is independent of data type being read, the other is dependent on the data type. Please refer to the links below for further details.</p>
-<hr class="docutils" />
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">More about Read functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+  <div class="section" id="advanced-use-fastread">
+<h1>Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code><a class="headerlink" href="#advanced-use-fastread" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>All read commands take a last boolean argument <code class="docutils literal"><span class="pre">fastRead</span></code>. This argument defaults to <code class="docutils literal"><span class="pre">FALSE</span></code>, and does not need to be specified when calling a function.</li>
 </ul>
+<p>For example:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByte</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">);</span>
+<span class="c1">//or</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByte</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+<span class="c1">//yields the same results.</span>
+
+<span class="p">...</span>
+</pre></div>
 </div>
+<ul class="simple">
+<li>However, when this argument is set to TRUE, it carries out the Fast Read instruction so data can be read at up to the memory’s maximum frequency.</li>
+</ul>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByteArray</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">,</span> <span class="n">bufferToReadTo</span><span class="p">,</span> <span class="n">bufferSize</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+<span class="c1">//instead of</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">readByteArray</span><span class="p">(</span><span class="n">addressToReadFrom</span><span class="p">,</span> <span class="n">bufferToReadTo</span><span class="p">,</span> <span class="n">bufferSize</span><span class="p">);</span>
+<span class="c1">// will result in faster read speeds for very large data arrays.</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<p><strong>This is useful only when reading very large amounts of data from the flash memory. If used for small arrays or individual variables, it will slow down the read function.</strong></p>
 </div>
 
 
@@ -214,10 +234,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dataIndependentRead.html" class="btn btn-neutral float-right" title="Data type-independent read function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chipID.html" class="btn btn-neutral" title="Chip ID" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="readErrors.html" class="btn btn-neutral" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Read functions &mdash; SPIMemory 0 documentation</title>
+  <title>Data type-dependent read functions &mdash; SPIMemory 0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Data type-independent read function" href="dataIndependentRead.html" />
-    <link rel="prev" title="Chip ID" href="chipID.html" /> 
+    <link rel="next" title="Single variable read functions" href="singleVariableRead.html" />
+    <link rel="prev" title="Data type-independent read function" href="dataIndependentRead.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -96,15 +96,13 @@
 <li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal"><span class="pre">Mandatory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Read functions</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="readFunc.html">Read functions</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Data type-dependent read functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -162,13 +160,15 @@
         
           <li><a href="index.html">API and Usage</a> &raquo;</li>
         
-      <li>Read functions</li>
+          <li><a href="readFunc.html">Read functions</a> &raquo;</li>
+        
+      <li>Data type-dependent read functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/pages/SPIFlash/readFunc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/SPIFlash/dataDependentRead.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -178,10 +178,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="dataIndependentRead.html" class="btn btn-neutral float-right" title="Data type-independent read function" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="singleVariableRead.html" class="btn btn-neutral float-right" title="Single variable read functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chipID.html" class="btn btn-neutral" title="Chip ID" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dataIndependentRead.html" class="btn btn-neutral" title="Data type-independent read function" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -190,18 +190,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="read-functions">
-<h1>Read functions<a class="headerlink" href="#read-functions" title="Permalink to this headline">¶</a></h1>
-<p>These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types as can be used as required.</p>
-<p>There are two basic types of read functions - one that is independent of data type being read, the other is dependent on the data type. Please refer to the links below for further details.</p>
-<hr class="docutils" />
+  <div class="section" id="data-type-dependent-read-functions">
+<h1>Data type-dependent read functions<a class="headerlink" href="#data-type-dependent-read-functions" title="Permalink to this headline">¶</a></h1>
+<p>These functions are designed to read a specific data type from the flash memory. There are two types of data type-dependent read functions as listed below</p>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">More about Read functions</span></p>
+<p class="caption"><span class="caption-text">Types of data type-dependent read functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal"><span class="pre">fastRead</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
 </ul>
 </div>
 </div>
@@ -214,10 +210,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dataIndependentRead.html" class="btn btn-neutral float-right" title="Data type-independent read function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="singleVariableRead.html" class="btn btn-neutral float-right" title="Single variable read functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chipID.html" class="btn btn-neutral" title="Chip ID" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dataIndependentRead.html" class="btn btn-neutral" title="Data type-independent read function" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
