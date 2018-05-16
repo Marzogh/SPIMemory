@@ -25,7 +25,7 @@ New Microcontrollers supported
 Bugs squashed
 
 Enhancements
-If the library is instantiated with the constructor ```SFDPFlash flash();```:
+The library now does the following - if the flash memory chip is compatible with the SFDP standard:
 --> Identifies the flash memory chip using the Serial Flash Discoverable Parameters standard. (JESD216B)
 --> Identifies the following opcodes from the SFDP tables and uses them to read/write data:
 			- eraseSector, eraseBlock32K, eraseBlock64K
