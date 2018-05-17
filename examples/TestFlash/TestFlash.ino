@@ -87,30 +87,37 @@ String inputString, outputString;
 
 #if defined (SIMBLEE)
 #define BAUD_RATE 250000
+#define RANDPIN 1
 #else
 #define BAUD_RATE 115200
+#if defined(ARCH_STM32)
+#define RANDPIN PA0
+#else
+#define RANDPIN A0
+#endif
 #endif
 
-SPIFlash flash(11);                   
+SPIFlash flash;                   
 //SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 
 void setup() {
+  
   Serial.begin(BAUD_RATE);
-  #if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32)
-    while (!Serial) ; // Wait for Serial monitor to open
-  #endif
+#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32) || defined(NRF5)
+  while (!Serial) ; // Wait for Serial monitor to open
+#endif
   delay(50); //Time to terminal get connected
-  Serial.print(F("Initialising Flash memory"));
-  for (int i = 0; i < 10; ++i)
+  Serial.print(F("Initialising"));
+  for (uint8_t i = 0; i < 10; ++i)
   {
     Serial.print(F("."));
   }
   Serial.println();
-#if defined (CHIPSIZE)
-  flash.begin(CHIPSIZE); //use flash.begin(CHIPSIZE) if using non-Winbond flash (Refer to '#define CHIPSIZE' above)
-#else
+  randomSeed(analogRead(RANDPIN));
   flash.begin();
-#endif
+  //To use a custom flash memory size (if using memory from manufacturers not officially supported by the library) - declare a size variable according to the list in defines.h
+  //flash.begin(MB(1));
+  
   Serial.println();
   Serial.println();
   commandList();

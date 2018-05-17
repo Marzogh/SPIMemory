@@ -430,6 +430,8 @@ void arrayTest() {
   for (uint16_t i = 0; i < 256; i++) {
     if (_data[i] != i) {
       pass(FALSE);
+      Serial.print(i);
+      Serial.print(", ");
     }
   }
   pass(TRUE);

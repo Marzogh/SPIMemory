@@ -462,22 +462,23 @@
 
  //Checks the device ID to establish storage parameters
  bool SPIFlash::_getManId(uint8_t *b1, uint8_t *b2) {
- 	if(!_notBusy())
- 		return false;
- 	_beginSPI(MANID);
+   if(!_notBusy()) {
+     return false;
+   }
+   _beginSPI(MANID);
    _nextByte(READ);
    _nextByte(READ);
    _nextByte(READ);
    *b1 = _nextByte(READ);
    *b2 = _nextByte(READ);
    CHIP_DESELECT
- 	return true;
+   return true;
  }
 
  //Checks for presence of chip by requesting JEDEC ID
  bool SPIFlash::_getJedecId(void) {
    if(!_notBusy()) {
-   	return false;
+     return false;
    }
    _beginSPI(JEDECID);
  	_chip.manufacturerID = _nextByte(READ);		// manufacturer id
@@ -519,85 +520,82 @@
 
  //Identifies the chip
  bool SPIFlash::_chipID(uint32_t flashChipSize) {
+   //set some default values
+   kb4Erase.supported = kb32Erase.supported = kb64Erase.supported = chipErase.supported = true;
+   kb4Erase.opcode = SECTORERASE;
+   kb32Erase.opcode = BLOCK32ERASE;
+   kb64Erase.opcode = BLOCK64ERASE;
+   kb4Erase.time = BUSY_TIMEOUT;
+   kb32Erase.time = kb4Erase.time * 8;
+   kb64Erase.time = kb32Erase.time * 4;
+   kb256Erase.supported = false;
+   chipErase.opcode = CHIPERASE;
+   chipErase.time = kb64Erase.time * 100L;
+
    _getJedecId();
 
-   if (_chip.manufacturerID == MICROCHIP_MANID) {
-     _disableGlobalBlockProtect();
+   for (uint8_t i = 0; i < sizeof(_supportedManID); i++) {
+     if (_chip.manufacturerID == _supportedManID[i]) {
+       _chip.supportedMan = true;
+       break;
+     }
    }
 
-   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin SFDP ID section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-     _checkForSFDP();
-   if (_chip.sfdpAvailable) {
-     _getSFDPFlashParam();
-   }
-   else {
-     kb4Erase.supported = kb32Erase.supported = kb64Erase.supported = chipErase.supported = true;
-     kb4Erase.opcode = SECTORERASE;
-     kb32Erase.opcode = BLOCK32ERASE;
-     kb64Erase.opcode = BLOCK64ERASE;
-     kb4Erase.time = BUSY_TIMEOUT;
-     kb32Erase.time = kb4Erase.time * 8;
-     kb64Erase.time = kb32Erase.time * 4;
-     kb256Erase.supported = false;
-     chipErase.opcode = CHIPERASE;
-     chipErase.time = kb64Erase.time * 100L;
+   for (uint8_t i = 0; i < sizeof(_altChipEraseReq); i++) {
+     if (_chip.memoryTypeID == _altChipEraseReq[i]) {
+       chipErase.opcode = ALT_CHIPERASE;
+       break;
+     }
    }
 
- //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End SFDP ID section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-   if (!_chip.capacity) {
-     if (!flashChipSize) {
-       #ifdef RUNDIAGNOSTIC
-         Serial.println("No Chip size defined by user. Automated identification initiated.");
-       #endif
+     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Begin SFDP ID section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    #ifdef USES_SFDP
+     if (_checkForSFDP()) {
+       _getSFDPFlashParam();
+     }
+    #endif
+     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End SFDP ID section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-       if (_chip.manufacturerID == WINBOND_MANID || _chip.manufacturerID == MICROCHIP_MANID || _chip.manufacturerID == CYPRESS_MANID || _chip.manufacturerID == ADESTO_MANID || _chip.manufacturerID == MICRON_MANID || _chip.manufacturerID == ON_MANID || _chip.manufacturerID == AMIC_MANID) {
-         if (_chip.manufacturerID == AMIC_MANID) {
-           _chip.capacityID |= _chip.manufacturerID;
-         }
-         //Identify capacity
-         for (uint8_t i = 0; i < sizeof(_capID); i++) {
-           if (_chip.capacityID == _capID[i]) {
-             _chip.capacity = (_memSize[i]);
-             _chip.JEDECsupport = true;
-             _chip.supported = true;
-             #ifdef RUNDIAGNOSTIC
-               Serial.println("Chip identified. This chip is fully supported by the library.");
-             #endif
-           }
-         }
-         _getJedecId();
-         if (!_chip.capacity) {
-           _troubleshoot(UNKNOWNCAP);
-           return false;
-         }
-       }
-       else {
-         _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
-         return false;
+   if (_chip.supportedMan) {
+     #ifdef RUNDIAGNOSTIC
+       Serial.println("No Chip size defined by user. Automated identification initiated.");
+     #endif
+     //Identify capacity
+     for (uint8_t j = 0; j < sizeof(_capID); j++) {
+       if (_chip.capacityID == _capID[j]) {
+         _chip.capacity = (_memSize[j]);
+         _chip.supported = true;
+         #ifdef RUNDIAGNOSTIC
+           Serial.println("Chip identified. This chip is fully supported by the library.");
+         #endif
+         return true;
        }
      }
-     else {
+   }
+   else {
+     _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
+     return false;
+   }
+
+   if (!_chip.capacity) {
+
+     if (flashChipSize) {
        // If a custom chip size is defined
        #ifdef RUNDIAGNOSTIC
        Serial.println("Custom Chipsize defined");
        #endif
        _chip.capacity = flashChipSize;
        _chip.supported = false;
+       return true;
      }
-   }
 
-   if (_chip.manufacturerID == CYPRESS_MANID) {
-     setClock(SPI_CLK/4);    // Cypress/Spansion chips appear to perform best at SPI_CLK/4
-   }
+     else {
+       _troubleshoot(UNKNOWNCAP);
+       return false;
+     }
 
-   if ( ((_chip.manufacturerID == MICROCHIP_MANID) && (_chip.memoryTypeID == SST26))\
-   || ((_chip.manufacturerID == MICRON_MANID) && (_chip.memoryTypeID == M25P40))\
-   || ((_chip.manufacturerID == AMIC_MANID) && (_chip.memoryTypeID == A25L512)) ) {
-     chipErase.opcode = ALT_CHIPERASE;
    }
-
-   return true;
  }
 
  //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.

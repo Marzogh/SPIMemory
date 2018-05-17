@@ -172,7 +172,7 @@ private:
   float _spifuncruntime = 0;
   struct      chipID {
                 bool supported;
-                bool JEDECsupport;
+                bool supportedMan;
                 bool sfdpAvailable;
                 uint8_t manufacturerID;
                 uint8_t memoryTypeID;
@@ -198,6 +198,10 @@ private:
   const uint32_t _memSize[16]  =
   {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512), MB(4), KB(512)};
   // To understand the _memSize definitions check defines.h
+
+  const uint8_t _supportedManID[7] = {WINBOND_MANID, MICROCHIP_MANID, CYPRESS_MANID, ADESTO_MANID, MICRON_MANID, ON_MANID, AMIC_MANID};
+
+  const uint8_t _altChipEraseReq[3] = {A25L512, M25P40, SST26};
 };
 
 //--------------------------------- Public Templates ------------------------------------//

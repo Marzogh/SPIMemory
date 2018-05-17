@@ -48,7 +48,7 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
 #elif defined (RUNDIAGNOSTIC) && defined (ARDUINO_ARCH_AVR)
   _printErrorCode();
 #endif
-#if !defined (RUNDIAGNOSTIC) 
+#if !defined (RUNDIAGNOSTIC)
   _printoverride = printoverride;
 #endif
   if (_printoverride) {

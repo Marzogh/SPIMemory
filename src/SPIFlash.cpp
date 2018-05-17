@@ -360,7 +360,47 @@ bool SPIFlash::readStr(uint32_t _addr, String &data, bool fastRead) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _BYTE_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _BYTE_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if(!_prep(PAGEPROG, _addr, sizeof(data))) {
+    return false;
+  }
+
+  _beginSPI(PAGEPROG);
+  _nextByte(WRITE, data);
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    _currentAddress = _addr;
+    uint8_t dataIn;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    dataIn = _nextByte(READ);
+    _endSPI();
+    if (dataIn != data) {
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return false;
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 // Writes a char of data to a specific location in a page.
@@ -371,7 +411,47 @@ bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeChar(uint32_t _addr, int8_t data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _CHAR_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _CHAR_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if(!_prep(PAGEPROG, _addr, sizeof(data))) {
+    return false;
+  }
+
+  _beginSPI(PAGEPROG);
+  _nextByte(WRITE, data);
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    _currentAddress = _addr;
+    int8_t dataIn;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    dataIn = _nextByte(READ);
+    _endSPI();
+    if (dataIn != data) {
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return false;
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 // Writes an array of bytes starting from a specific location in a page.
@@ -389,101 +469,13 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
   if (!_prep(PAGEPROG, _addr, bufferSize)) {
     return false;
   }
-  uint16_t maxBytes = _pageSize-(_addr % _pageSize);  // Force the first set of bytes to stay within the first page
+  uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
 
   if (bufferSize <= maxBytes) {
     CHIP_SELECT
     _nextByte(WRITE, PAGEPROG);
     _transferAddress();
     //_nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
-    for (uint16_t i = 0; i < bufferSize; ++i) {
-      _nextByte(WRITE, data_buffer[i]);
-    }
-    CHIP_DESELECT
-  }
-  else {
-    uint16_t length = bufferSize;
-    uint16_t writeBufSz;
-    uint16_t data_offset = 0;
-
-    do {
-      writeBufSz = (length<=maxBytes) ? length : maxBytes;
-
-      CHIP_SELECT
-      _nextByte(WRITE, PAGEPROG);
-      _transferAddress();
-      for (uint16_t i = 0; i < writeBufSz; ++i) {
-        _nextByte(WRITE, data_buffer[data_offset + i]);
-      }
-      CHIP_DESELECT
-
-      _currentAddress += writeBufSz;
-      data_offset += writeBufSz;
-      length -= writeBufSz;
-      maxBytes = 256;   // Now we can do up to 256 bytes per loop
-
-      if(!_notBusy(10000L) || !_writeEnable()){
-        return false;
-      }
-
-    } while (length > 0);
-  }
-
-  if (!errorCheck) {
-    _endSPI();
-    #ifdef RUNDIAGNOSTIC
-      _spifuncruntime = micros() - _spifuncruntime;
-    #endif
-    return true;
-  }
-  else {
-    if (!_notBusy()) {
-      return false;
-    }
-    _currentAddress = _addr;
-    //uint8_t _inByte;
-    CHIP_SELECT
-    _nextByte(WRITE, READDATA);
-    _transferAddress();
-    for (uint16_t j = 0; j < bufferSize; j++) {
-      //_inByte = _nextByte(READ);
-      //if (_inByte != data_buffer[j]) {
-      //Serial.print("inByte = ");
-      //Serial.println(_inByte);
-      if (_nextByte(READ) != data_buffer[j]) {
-        return false;
-      }
-    }
-    _endSPI();
-    #ifdef RUNDIAGNOSTIC
-      _spifuncruntime = micros() - _spifuncruntime;
-    #endif
-    return true;
-  }
-}
-
-// Writes an array of bytes starting from a specific location in a page.
-//  Takes four arguments -
-//    1. _addr --> Any address - from 0 to capacity
-//    2. data_buffer --> The pointer to the array of chars be written to a particular location on a page
-//    3. bufferSize --> Size of the array of chars - in number of bytes
-//    4. errorCheck --> Turned on by default. Checks for writing errors
-// WARNING: You can only write to previously erased memory locations (see datasheet).
-// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
-bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSize, bool errorCheck) {
-  #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
-  #endif
-  if (!_prep(PAGEPROG, _addr, bufferSize)) {
-    return false;
-  }
-  uint16_t maxBytes = _pageSize-(_addr % _pageSize);  // Force the first set of bytes to stay within the first page
-
-  if (bufferSize <= maxBytes) {
-    CHIP_SELECT
-    _nextByte(WRITE, PAGEPROG);
-    _transferAddress();
-    //_nextBuf(PAGEPROG, (uint8_t*) &data_buffer[0], bufferSize);
     for (uint16_t i = 0; i < bufferSize; ++i) {
       _nextByte(WRITE, data_buffer[i]);
     }
@@ -545,6 +537,89 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSi
   }
 }
 
+// Writes an array of bytes starting from a specific location in a page.
+//  Takes four arguments -
+//    1. _addr --> Any address - from 0 to capacity
+//    2. data_buffer --> The pointer to the array of chars be written to a particular location on a page
+//    3. bufferSize --> Size of the array of chars - in number of bytes
+//    4. errorCheck --> Turned on by default. Checks for writing errors
+// WARNING: You can only write to previously erased memory locations (see datasheet).
+// Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
+bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSize, bool errorCheck) {
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if (!_prep(PAGEPROG, _addr, bufferSize)) {
+    return false;
+  }
+  uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+
+  if (bufferSize <= maxBytes) {
+    CHIP_SELECT
+    _nextByte(WRITE, PAGEPROG);
+    _transferAddress();
+    //_nextBuf(PAGEPROG, &data_buffer[0], bufferSize);
+    for (uint16_t i = 0; i < bufferSize; ++i) {
+      _nextByte(WRITE, data_buffer[i]);
+    }
+    CHIP_DESELECT
+  }
+  else {
+    uint16_t length = bufferSize;
+    uint16_t writeBufSz;
+    uint16_t data_offset = 0;
+
+    do {
+      writeBufSz = (length<=maxBytes) ? length : maxBytes;
+
+      CHIP_SELECT
+      _nextByte(WRITE, PAGEPROG);
+      _transferAddress();
+      for (uint16_t i = 0; i < writeBufSz; ++i) {
+        _nextByte(WRITE, data_buffer[data_offset + i]);
+      }
+      CHIP_DESELECT
+
+      _currentAddress += writeBufSz;
+      data_offset += writeBufSz;
+      length -= writeBufSz;
+      maxBytes = 256;   // Now we can do up to 256 bytes per loop
+
+      if(!_notBusy() || !_writeEnable()){
+        return false;
+      }
+
+    } while (length > 0);
+  }
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    _currentAddress = _addr;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint16_t j = 0; j < bufferSize; j++) {
+      if ((char)_nextByte(READ) != data_buffer[j]) {
+        return false;
+      }
+    }
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+}
+
 // Writes an unsigned int as two bytes starting from a specific location in a page.
 //  Takes three arguments -
 //    1. _addr --> Any address - from 0 to capacity
@@ -553,7 +628,54 @@ bool SPIFlash::writeCharArray(uint32_t _addr, char *data_buffer, size_t bufferSi
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeWord(uint32_t _addr, uint16_t data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _WORD_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _WORD_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if(!_prep(PAGEPROG, _addr, sizeof(data))) {
+    return false;
+  }
+
+  _beginSPI(PAGEPROG);
+  for (uint8_t i = 0; i < sizeof(data); i++) {
+    _nextByte(WRITE, data >> (8*i));
+  }
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    union {
+      uint8_t byte[2];
+      uint16_t word;
+    } dataIn;
+    _currentAddress = _addr;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint8_t i = 0; i < sizeof(data); i++) {
+      dataIn.byte[i] = _nextByte(READ);
+    }
+    _endSPI();
+    if (dataIn.word != data) {
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return false;
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 // Writes a signed int as two bytes starting from a specific location in a page
@@ -564,7 +686,54 @@ bool SPIFlash::writeWord(uint32_t _addr, uint16_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeShort(uint32_t _addr, int16_t data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _SHORT_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _SHORT_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if(!_prep(PAGEPROG, _addr, sizeof(data))) {
+    return false;
+  }
+
+  _beginSPI(PAGEPROG);
+  for (uint8_t i = 0; i < sizeof(data); i++) {
+    _nextByte(WRITE, data >> (8*i));
+  }
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    union {
+      uint8_t byte[2];
+      int16_t short_;
+    } dataIn;
+    _currentAddress = _addr;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint8_t i = 0; i < sizeof(data); i++) {
+      dataIn.byte[i] = _nextByte(READ);
+    }
+    _endSPI();
+    if (dataIn.short_ != data) {
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return false;
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 // Writes an unsigned long as four bytes starting from a specific location in a page.
@@ -575,7 +744,54 @@ bool SPIFlash::writeShort(uint32_t _addr, int16_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeULong(uint32_t _addr, uint32_t data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _ULONG_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _ULONG_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if(!_prep(PAGEPROG, _addr, sizeof(data))) {
+    return false;
+  }
+
+  _beginSPI(PAGEPROG);
+  for (uint8_t i = 0; i < sizeof(data); i++) {
+    _nextByte(WRITE, data >> (8*i));
+  }
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    union {
+      uint8_t byte[4];
+      uint32_t uLong;
+    } dataIn;
+    _currentAddress = _addr;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint8_t i = 0; i < sizeof(data); i++) {
+      dataIn.byte[i] = _nextByte(READ);
+    }
+    _endSPI();
+    if (dataIn.uLong != data) {
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return false;
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 // Writes a signed long as four bytes starting from a specific location in a page
@@ -586,7 +802,54 @@ bool SPIFlash::writeULong(uint32_t _addr, uint32_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeLong(uint32_t _addr, int32_t data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _LONG_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _LONG_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if(!_prep(PAGEPROG, _addr, sizeof(data))) {
+    return false;
+  }
+
+  _beginSPI(PAGEPROG);
+  for (uint8_t i = 0; i < sizeof(data); i++) {
+    _nextByte(WRITE, data >> (8*i));
+  }
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    union {
+      uint8_t byte[4];
+      int32_t Long;
+    } dataIn;
+    _currentAddress = _addr;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint8_t i = 0; i < sizeof(data); i++) {
+      dataIn.byte[i] = _nextByte(READ);
+    }
+    _endSPI();
+    if (dataIn.Long != data) {
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return false;
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 // Writes a float as four bytes starting from a specific location in a page
@@ -597,7 +860,60 @@ bool SPIFlash::writeLong(uint32_t _addr, int32_t data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _FLOAT_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _FLOAT_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+  if(!_prep(PAGEPROG, _addr, sizeof(data))) {
+    return false;
+  }
+
+  union {
+    float Float;
+    uint8_t byte[sizeof(float)];
+  } dataOut;
+  dataOut.Float = data;
+
+  _beginSPI(PAGEPROG);
+  for (uint8_t i = 0; i < sizeof(data); i++) {
+    _nextByte(WRITE, dataOut.byte[i]);
+  }
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    union {
+      uint8_t byte[4];
+      float Float;
+    } dataIn;
+    _currentAddress = _addr;
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint8_t i = 0; i < sizeof(data); i++) {
+      dataIn.byte[i] = _nextByte(READ);
+    }
+    _endSPI();
+    if (dataIn.Float != data) {
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return false;
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 // Writes a string to a specific location on a page
