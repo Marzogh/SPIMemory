@@ -24,39 +24,39 @@ SPIMemory
 
   **Status of library code**
 
-  .. image:: https://travis-ci.org/Marzogh/SPIFlash.svg?branch=master
-      :target: https://travis-ci.org/Marzogh/SPIFlash
+  .. image:: https://travis-ci.org/Marzogh/SPIMemory.svg?branch=master
+    :target: https://travis-ci.org/Marzogh/SPIMemory
 
   .. image:: https://zenodo.org/badge/35823047.svg
-     :target: https://zenodo.org/badge/latestdoi/35823047
+      :target: https://zenodo.org/badge/latestdoi/35823047
 
-  .. image:: https://img.shields.io/github/release/Marzogh/SPIFlash.svg
+  .. image:: https://img.shields.io/github/release/Marzogh/SPIMemory.svg
      :alt: Github release
 
-  .. image:: https://img.shields.io/github/downloads/Marzogh/SPIFlash/total.svg
+  .. image:: https://img.shields.io/github/downloads/Marzogh/SPIMemory/total.svg
      :alt: Github All Releases
 
-  .. image:: https://img.shields.io/github/commits-since/Marzogh/SPIFlash/v3.0.0.svg
+  .. image:: https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.0.0.svg
      :alt: Github commits (since latest release)
 
 
-  .. image:: https://img.shields.io/github/issues-raw/Marzogh/SPIFlash.svg
+  .. image:: https://img.shields.io/github/issues-raw/Marzogh/SPIMemory.svg
      :alt: GitHub open issues
 
 
-  .. image:: https://img.shields.io/github/issues-closed-raw/Marzogh/SPIFlash.svg
+  .. image:: https://img.shields.io/github/issues-closed-raw/Marzogh/SPIMemory.svg
      :alt: GitHub closed issues
 
 
-  .. image:: https://img.shields.io/github/issues-pr/Marzogh/SPIFlash.svg
+  .. image:: https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg
      :alt: GitHub pull requests
 
 
-  .. image:: https://img.shields.io/github/license/Marzogh/SPIFlash.svg
+  .. image:: https://img.shields.io/github/license/Marzogh/SPIMemory.svg
      :alt: license
 
 
-  .. image:: https://img.shields.io/github/contributors/cdnjs/cdnjs.svg
+  .. image:: https://img.shields.io/github/contributors/Marzogh/SPIMemory.svg
      :alt: GitHub contributors
 
 .. toctree::
