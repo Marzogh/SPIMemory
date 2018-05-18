@@ -384,21 +384,23 @@ bool SPIFlash::writeByte(uint32_t _addr, uint8_t data, bool errorCheck) {
       return false;
     }
     _currentAddress = _addr;
-    uint8_t dataIn;
     CHIP_SELECT
     _nextByte(WRITE, READDATA);
     _transferAddress();
-    dataIn = _nextByte(READ);
-    _endSPI();
-    if (dataIn != data) {
+    if (data != _nextByte(READ)) {
+      _endSPI();
       #ifdef RUNDIAGNOSTIC
         _spifuncruntime = micros() - _spifuncruntime;
       #endif
       return false;
     }
-    #ifdef RUNDIAGNOSTIC
-      _spifuncruntime = micros() - _spifuncruntime;
-    #endif
+    else {
+      _endSPI();
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return true;
+    }
   }
   return true;
 }
@@ -435,21 +437,23 @@ bool SPIFlash::writeChar(uint32_t _addr, int8_t data, bool errorCheck) {
       return false;
     }
     _currentAddress = _addr;
-    int8_t dataIn;
     CHIP_SELECT
     _nextByte(WRITE, READDATA);
     _transferAddress();
-    dataIn = _nextByte(READ);
-    _endSPI();
-    if (dataIn != data) {
+    if (data != (int8_t)_nextByte(READ)) {
+      _endSPI();
       #ifdef RUNDIAGNOSTIC
         _spifuncruntime = micros() - _spifuncruntime;
       #endif
       return false;
     }
-    #ifdef RUNDIAGNOSTIC
-      _spifuncruntime = micros() - _spifuncruntime;
-    #endif
+    else {
+      _endSPI();
+      #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+      #endif
+      return true;
+    }
   }
   return true;
 }
@@ -492,6 +496,7 @@ bool SPIFlash::writeByteArray(uint32_t _addr, uint8_t *data_buffer, size_t buffe
       CHIP_SELECT
       _nextByte(WRITE, PAGEPROG);
       _transferAddress();
+      //_nextBuf(PAGEPROG, &data_buffer[data_offset], writeBufSz);
       for (uint16_t i = 0; i < writeBufSz; ++i) {
         _nextByte(WRITE, data_buffer[data_offset + i]);
       }
@@ -926,6 +931,8 @@ bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
 bool SPIFlash::writeStr(uint32_t _addr, String &data, bool errorCheck) {
   return _write(_addr, data, sizeof(data), errorCheck, _STRING_);
 }
+
+
 
 // Erases a number of sectors or blocks as needed by the data being input.
 //  Takes an address and the size of the data being input as the arguments and erases the block/s of memory containing the address.
