@@ -510,7 +510,7 @@ void printPage(uint32_t _address, uint8_t outputType) {
     Serial.begin(115200);
 
   char buffer[24];
-  sprintf(buffer, "Reading address (%04x)", _address);
+  sprintf(buffer, "Reading address 0x(%04x)", _address);
   Serial.println(buffer);
 
   uint8_t data_buffer[SPI_PAGESIZE];
