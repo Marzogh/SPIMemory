@@ -427,7 +427,7 @@
      {
        return true;
      }
-     _time++;
+
    } while ((micros() - _time) < timeout);
    if (timeout <= (micros() - _time)) {
      _troubleshoot(CHIPBUSY);
