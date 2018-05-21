@@ -10,6 +10,15 @@
 Bugs squashed
 --> Fixes issue #135 : The addition of the SFDP checking to _chipID resulted in a sudden (very large) increase in compiled code size. As of the current version (v3.2.1), SFDP checking is an user controlled option. To get the library to work with SFDP compatible flash memory that is not officially supported, the user must uncomment '//#define USES_SFDP' in 'SPIMemory.h'.
 
+Enhancements
+--> The way the basic functions execute has been modified to keep the function runtime the same (or improved) while reducing their memory footprint.
+
+				Test sketch - FlashDiagnostics.ino from v3.2.0 with #RUNDIAGNOSTIC uncommented
+				Test platform - Arduino Pro Mini 8MHz 3.3V
+				Library version: v3.1.0			Compiled code size - 20500 bytes
+				Library version: v3.2.0			Compiled code size - 23010 bytes (12% larger than v3.1.0)
+				Library version: v3.2.1			Compiled code size - 18658 bytes (9% smaller than v3.1.0)
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.2.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
