@@ -1009,7 +1009,7 @@ bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
         _timeFactor = kb4Erase.time;
       }
       if(!_notBusy(_timeFactor * 1000L)) {
-        return false;	//Datasheet says erasing a sector takes 400ms max
+        return false;
       }
       if (j == noOfEraseRunsB4Boundary) {
         if (!_prep(ERASEFUNC, (_addr + (_sz - _addressOverflow)), _sz)) {

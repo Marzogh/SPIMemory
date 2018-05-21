@@ -29,7 +29,7 @@ void printTab(uint8_t _times) {
 }
 
 void printTime(uint32_t _wTime, uint32_t _rTime) {
-    printTab(2);
+  printTab(2);
   if (_rTime != 0) {
     printTimer(_wTime);
     printTab(3);
@@ -118,7 +118,7 @@ bool getID() {
     Serial.print("Max Pages: ");
     Serial.println(flash.getMaxPage());
     printUniqueID();
-    
+
   }
   return true;
 }
@@ -150,7 +150,7 @@ void byteTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void charTest() {
@@ -179,7 +179,7 @@ void charTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void wordTest() {
@@ -208,7 +208,7 @@ void wordTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void shortTest() {
@@ -237,7 +237,7 @@ void shortTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void uLongTest() {
@@ -266,7 +266,7 @@ void uLongTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void longTest() {
@@ -295,7 +295,7 @@ void longTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void floatTest() {
@@ -324,7 +324,7 @@ void floatTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void stringTest() {
@@ -353,7 +353,7 @@ void stringTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void structTest() {
@@ -402,7 +402,7 @@ void structTest() {
     pass(FALSE);
   }
   printTime(wTime, rTime);
-  
+
 }
 
 void arrayTest() {
@@ -436,7 +436,7 @@ void arrayTest() {
   }
   pass(TRUE);
   printTime(wTime, rTime);
-  
+
 }
 
 void powerDownTest() {
@@ -454,7 +454,7 @@ void powerDownTest() {
     printTab(2);
     Serial.print("Not all chips support power down. Check your datasheet.");
   }
-  
+
 }
 
 void powerUpTest() {
@@ -470,7 +470,7 @@ void powerUpTest() {
   else {
     pass(FALSE);
   }
-  
+
 }
 
 void eraseSectorTest() {
@@ -487,7 +487,7 @@ void eraseSectorTest() {
   else {
     pass(FALSE);
   }
-  
+
 }
 
 void eraseSectionTest() {
@@ -504,7 +504,7 @@ void eraseSectionTest() {
   else {
     pass(FALSE);
   }
-  
+
 }
 
 void eraseBlock32KTest() {
@@ -521,7 +521,7 @@ void eraseBlock32KTest() {
   else {
     pass(FALSE);
   }
-  
+
 }
 
 void eraseBlock64KTest() {
@@ -538,7 +538,7 @@ void eraseBlock64KTest() {
   else {
     pass(FALSE);
   }
-  
+
 }
 
 void eraseChipTest() {
@@ -554,6 +554,6 @@ void eraseChipTest() {
   else {
     pass(FALSE);
   }
-  
+
 }
 

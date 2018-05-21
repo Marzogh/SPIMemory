@@ -26,14 +26,19 @@
 
 #ifndef SPIMEMORY_H
 #define SPIMEMORY_H
-//#define USES_SFDP
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//    Uncomment the code below to enable SFDP discovery - especially  //
+//                    if using an unsupported chip                    //
+//                                                                    //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define USES_SFDP                                                   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
 //                         does not respond                           //
 //                                                                    //
 //      Error codes will be generated and returned on functions       //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//#define RUNDIAGNOSTIC                                               //
+#define RUNDIAGNOSTIC                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -108,7 +113,7 @@
 
 #define LIBVER 3
 #define LIBSUBVER 2
-#define BUGFIXVER 0
+#define BUGFIXVER 1
 
 class SPIMemory {
 public:
@@ -116,6 +121,8 @@ public:
   SPIMemory(void) {};
   ~SPIMemory(void) {};
   //------------------------------- Public functions -----------------------------------//
+  //------------------------------- Public variables -----------------------------------//
+
 
 };
 
