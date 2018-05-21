@@ -184,7 +184,6 @@ uint64_t SPIFlash::getUniqueID(void) {
 // Takes the size of the data as an argument and returns a 32-bit address
 // All addresses in the in the sketch must be obtained via this function or not at all.
 uint32_t SPIFlash::getAddress(uint16_t size) {
-  bool _loopedOver = false;
   if (!_addressCheck(currentAddress, size)){
     return false;
 	}

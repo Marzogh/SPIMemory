@@ -166,6 +166,7 @@ private:
   bool        pageOverflow, SPIBusState;
   bool        chipPoweredDown = false;
   bool        address4ByteEnabled = false;
+  bool        _loopedOver = false;
   uint8_t     cs_mask, errorcode, stat1, stat2, stat3, _SPCR, _SPSR, _a0, _a1, _a2;
   char READ = 'R';
   char WRITE = 'W';
