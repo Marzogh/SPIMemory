@@ -15,12 +15,12 @@ Bugs squashed
 Enhancements
 --> The way the basic functions execute has been modified to keep the function runtime the same (or improved) while reducing their memory footprint.
 
-		Test sketch - FlashDiagnostics.ino from v3.2.0 with #RUNDIAGNOSTIC uncommented
+		Test sketch - FlashDiagnostics.ino from v3.2.0 with #RUNDIAGNOSTIC commented out
 		Test platform - Arduino Pro Mini 8MHz 3.3V
-		Library version: v3.1.0			Compiled code size - 20500 bytes (SFDP discovery not supported)
-		Library version: v3.2.0			Compiled code size - 23010 bytes (SFDP discovery supported & on by default) (12% larger than v3.1.0)
-		Library version: v3.2.1			Compiled code size - 18660 bytes (SFDP discovery turned off) (9% smaller than v3.1.0)
-		Library version: v3.2.1			Compiled code size - 21698 bytes (SFDP discovery turned on) (5% larger than v3.1.0)
+		Library version: v3.1.0			Compiled code size - 17652 bytes (SFDP discovery not supported)
+		Library version: v3.2.0			Compiled code size - 20104 bytes (SFDP discovery supported & on by default) (13.9% larger than v3.1.0)
+		Library version: v3.2.1			Compiled code size - 15316 bytes (SFDP discovery turned off) (13.75% smaller than v3.1.0)
+		Library version: v3.2.1			Compiled code size - 17854 bytes (SFDP discovery turned on) (1.1% larger than v3.1.0)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.2.0 									   	   //

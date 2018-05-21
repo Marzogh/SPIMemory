@@ -1,8 +1,8 @@
-/* Arduino SPIMemory Library v.3.1.0
+/* Arduino SPIMemory Library v.3.2.1
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 24/02/2018
+ * Modified by Prajwal Bhattaram - 21/05/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -234,7 +234,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
     return false;
   }
   const uint8_t* p = (const uint8_t*)(const void*)&value;
-  if (_dataType == _STRUCT_) {
+  /*if (_dataType == _STRUCT_) {
     uint8_t _inByte[_sz];
     _beginSPI(READDATA);
     _nextBuf(READDATA, &(*_inByte), _sz);
@@ -249,7 +249,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
       }
     }
   }
-  else {
+  else {*/
     CHIP_SELECT
     _nextByte(WRITE, READDATA);
     _transferAddress();
@@ -261,7 +261,7 @@ template <class T> bool SPIFlash::_writeErrorCheck(uint32_t _addr, const T& valu
       }
     }
     _endSPI();
-  }
+  //}
   return true;
 }
 
@@ -288,57 +288,51 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   //Serial.print("_addrIn: ");
   //Serial.println(_addrIn, HEX);
   const uint8_t* p = ((const uint8_t*)(const void*)&value);
-//Serial.print(F("Address being written to: "));
-//Serial.println(_addr);
+  //Serial.print(F("Address being written to: "));
+  //Serial.println(_addr);
+  uint32_t length = _sz;
+  uint16_t maxBytes = SPI_PAGESIZE-(_addrIn % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+
   if (!SPIBusState) {
     _startSPIBus();
   }
   CHIP_SELECT
   _nextByte(WRITE, PAGEPROG);
   _transferAddress();
-    //If data is only one byte (8 bits) long
-  if (_sz == 0x01) {
-    _nextByte(WRITE, *p);
+
+  if (maxBytes > length) {
+    for (uint16_t i = 0; i < length; ++i) {
+      _nextByte(WRITE, *p++);
+    }
     CHIP_DESELECT
   }
-  else { //If data is longer than one byte (8 bits)
-    uint32_t length = _sz;
-    uint16_t maxBytes = SPI_PAGESIZE-(_addrIn % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+  else {
+    uint32_t writeBufSz;
+    uint16_t data_offset = 0;
 
-    if (maxBytes > length) {
-      for (uint16_t i = 0; i < length; ++i) {
+    do {
+      writeBufSz = (length<=maxBytes) ? length : maxBytes;
+
+      for (uint16_t i = 0; i < writeBufSz; ++i) {
         _nextByte(WRITE, *p++);
       }
       CHIP_DESELECT
-    }
-    else {
-      uint32_t writeBufSz;
-      uint16_t data_offset = 0;
-
-      do {
-        writeBufSz = (length<=maxBytes) ? length : maxBytes;
-
-        for (uint16_t i = 0; i < writeBufSz; ++i) {
-          _nextByte(WRITE, *p++);
+      if (!_addressOverflow) {
+        _currentAddress += writeBufSz;
+      }
+      else {
+        if (data_offset >= _addressOverflow) {
+          _currentAddress = 0x00;
+          _addressOverflow = false;
         }
-        CHIP_DESELECT
-        if (!_addressOverflow) {
-          _currentAddress += writeBufSz;
-        }
-        else {
-          if (data_offset >= _addressOverflow) {
-            _currentAddress = 0x00;
-            _addressOverflow = false;
-          }
-        }
-        data_offset += writeBufSz;
-        length -= writeBufSz;
-        maxBytes = SPI_PAGESIZE;   // Now we can do up to 256 bytes per loop
-        if(!_notBusy() || !_writeEnable()) {
-          return false;
-        }
-      } while (length > 0);
-    }
+      }
+      data_offset += writeBufSz;
+      length -= writeBufSz;
+      maxBytes = SPI_PAGESIZE;   // Now we can do up to 256 bytes per loop
+      if(!_notBusy() || !_writeEnable()) {
+        return false;
+      }
+    } while (length > 0);
   }
 
   if (!errorCheck) {

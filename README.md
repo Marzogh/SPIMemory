@@ -97,6 +97,9 @@ SPIFlash flash(33);
 
     <sub>* Optional</sub>
 
+##### Note on SFDP discovery
+As of v3.2.1, SFDP parameter discovery is an user controlled option. To get the library to work with SFDP compatible flash memory chips that are not officially supported by the library, the user must uncomment '//#define USES_SFDP' in 'SPIMemory.h'.
+
 ##### Notes on Address overflow and Error checking
 - The library has Address overflow enabled by default - i.e. if the last address read/written from/to,  in any function, is 0xFFFFF then, the next address read/written from/to is 0x00000. This can be disabled by uncommenting ```#define DISABLEOVERFLOW``` in SPIMemory.h. (Address overflow only works for Read / Write functions. Erase functions erase only a set number of blocks/sectors irrespective of overflow.)
 - All write functions have Error checking turned on by default - i.e. every byte written to the flash memory will be checked against the data stored on the Arduino. Users who require greater write speeds can disable this function by setting an optional last 'errorCheck' argument in any write function to NOERRCHK - For eg. call the function ```writeByte(address, *data_buffer, NOERRCHK)``` instead of ```writeByte(address, *data_buffer)```.

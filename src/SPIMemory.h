@@ -1,7 +1,7 @@
-/* Arduino SPIMemory Library v.3.2.0
+/* Arduino SPIMemory Library v.3.2.1
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 18/04/2018
- * Modified by Prajwal Bhattaram - 20/04/2018
+ * Modified by Prajwal Bhattaram - 21/05/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -31,14 +31,16 @@
 //                    if using an unsupported chip                    //
 //                                                                    //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define USES_SFDP                                                   //
+//#define USES_SFDP                                                   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //     Uncomment the code below to run a diagnostic if your flash 	  //
 //                         does not respond                           //
 //                                                                    //
 //      Error codes will be generated and returned on functions       //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define RUNDIAGNOSTIC                                               //
+//#define RUNDIAGNOSTIC                                               //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -49,6 +51,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //#define HIGHSPEED                                                   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //   Uncomment the code below to disable overflow and force data      //
 //   to only be written to the last address of the flash memory       //
@@ -59,7 +62,7 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //   Comment out the code below to disable DMA mode on SAMD based     //
-//                            platforms                               //
+//                        platforms (In ALPHA)                        //
 //                                                                    //
 //   Change the ZERO_SPISERCOM define below to use other SPI ports    //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
