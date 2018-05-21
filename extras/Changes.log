@@ -10,6 +10,8 @@
 Bugs squashed
 --> Fixes issue #135 : The addition of the SFDP checking to _chipID resulted in a sudden (very large) increase in compiled code size. As of the current version (v3.2.1), SFDP checking is an user controlled option. To get the library to work with SFDP compatible flash memory that is not officially supported, the user must uncomment '//#define USES_SFDP' in 'SPIMemory.h'.
 
+--> Moved `bool _loopedOver` from being a local variable in `_getAddress()` to a global one. Now it actually does what it was meant to do - i.e. prevent looping over data a second time.
+
 Enhancements
 --> The way the basic functions execute has been modified to keep the function runtime the same (or improved) while reducing their memory footprint.
 
