@@ -1,7 +1,7 @@
-/* Arduino SPIMemory Library v.3.1.0
+/* Arduino SPIMemory Library v.3.2.1
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 24/02/2018
+ * Modified by Prajwal Bhattaram - 21/05/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Winbond NOR flash memory modules. In its current form it enables reading
@@ -191,7 +191,7 @@
 #define VERBOSE       true
 #define PRINTOVERRIDE true
 #define ERASEFUNC     0xEF
-#define BUSY_TIMEOUT  10000000L
+#define BUSY_TIMEOUT  1000000000L
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
 #define BYTE          1L
