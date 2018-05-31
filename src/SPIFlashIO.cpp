@@ -531,6 +531,7 @@
    kb256Erase.supported = false;
    chipErase.opcode = CHIPERASE;
    chipErase.time = kb64Erase.time * 100L;
+   _pageSize = SPI_PAGESIZE;
 
    _getJedecId();
 
