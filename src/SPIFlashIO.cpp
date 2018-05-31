@@ -575,8 +575,17 @@
      }
    }
    else {
-     _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
-     return false;
+     if (_chip.sfdpAvailable) {
+       #ifdef RUNDIAGNOSTIC
+         Serial.println("SFDP ID finished.");
+       #endif
+       return true;
+     }
+     else {
+       _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
+       return false;
+     }
+
    }
 
    if (!_chip.capacity) {
