@@ -560,7 +560,7 @@
 
    if (_chip.supportedMan) {
      #ifdef RUNDIAGNOSTIC
-       Serial.println("No Chip size defined by user. Automated identification initiated.");
+       Serial.println("No Chip size defined by user. Checking library support.");
      #endif
      //Identify capacity
      for (uint8_t j = 0; j < sizeof(_capID); j++) {
