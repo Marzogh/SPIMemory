@@ -27,7 +27,7 @@ This Arduino library is for use with flash memory chips that communicate using t
 - ATmega328P (Arduino Uno, Arduino Micro, Arduino Fio, Arduino Nano)
 - ATmega32u4 (Arduino Leonardo, Arduino Fio v3)
 - ATmega2560 (Arduino Mega)
-- ATSAMD21G18 ARM Cortex M0+ (Adafruit Feather M0, Adafruit Feather M0 Express)
+- ATSAMD21G18 ARM Cortex M0+ (Adafruit Feather M0, Adafruit Feather M0 Express, Adafruit ItsyBitsy M0 Express)
 - AT91SAM3X8E ARM Cortex M3 (Arduino Due)
 - ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
 - STM32F091RCT6 (Nucleo-F091RC)
@@ -47,6 +47,7 @@ SPIFlash flash(33);
 - Winbond
   - W25Q16BV
   - W25Q64FV
+  - W25Q64JV
   - W25Q80BV
   - W25Q256FV
 - Microchip
@@ -64,6 +65,8 @@ SPIFlash flash(33);
   - M25P40
 - Adesto
   - AT25SF041
+- Giga devices
+  - GD25Q16C (Used on the Adafruit ItsyBitsy M0 Express)
 
 ##### Should work with (Similar enough to the ones actually tested with)
 - Winbond (All SPI Flash chips)
