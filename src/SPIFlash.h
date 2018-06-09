@@ -163,7 +163,8 @@ private:
   gpio_t      csPin;
   #endif
   volatile uint8_t *cs_port;
-  bool        pageOverflow, SPIBusState;
+  bool        pageOverflow;
+  bool        SPIBusState = false;
   bool        chipPoweredDown = false;
   bool        address4ByteEnabled = false;
   bool        _loopedOver = false;
