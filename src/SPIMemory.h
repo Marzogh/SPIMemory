@@ -73,6 +73,7 @@
   #include <SPI.h>
   #include "defines.h"
   #include "SPIFlash.h"
+  #include "SPIFram.h"
   #include "diagnostics.h"
 
 #if defined (ARDUINO_ARCH_SAM)
