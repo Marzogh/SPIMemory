@@ -87,6 +87,7 @@
 #define RELEASE       0xAB
 #define READSFDP      0x5A
 #define UNIQUEID      0x4B
+#define FRAMSERNO     0xC3
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
@@ -151,6 +152,7 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define CYPRESS_MANID         0x01
+  #define RAMTRON_FRAM_MANID    0xC2
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define ADESTO_MANID         0x1F
