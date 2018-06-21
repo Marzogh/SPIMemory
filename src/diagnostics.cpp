@@ -69,7 +69,8 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
 
       case UNKNOWNCHIP:
       Serial.println("Unable to identify chip. Are you sure this chip is supported?");
-      Serial.println("Chip details:");
+      //Serial.println("Chip details:");
+      //TODO: Insert a diagnostics subroutine here.
       break;
 
       case UNKNOWNCAP:
@@ -124,7 +125,7 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
       break;
 
       case CHIPISPOWEREDDOWN:
-      Serial.println("The Flash chip is currently powered down.");
+      Serial.println("The chip is currently powered down.");
       break;
 
       case NOSFDP:

@@ -181,7 +181,7 @@ uint64_t SPIFlash::getUniqueID(void) {
 
 //Gets the next available address for use.
 // Takes the size of the data as an argument and returns a 32-bit address
-// All addresses in the in the sketch must be obtained via this function or not at all.
+// This function can be called anytime - even if there is preexisting data on the flash chip. It will simply find the next empty address block for the data.
 uint32_t SPIFlash::getAddress(uint16_t size) {
   if (!_addressCheck(currentAddress, size)){
     return false;

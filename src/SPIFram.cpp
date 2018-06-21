@@ -154,7 +154,7 @@ uint64_t SPIFram::getUniqueID(void) {
 
 //Gets the next available address for use.
 // Takes the size of the data as an argument and returns a 32-bit address
-// All addresses in the in the sketch must be obtained via this function or not at all.
+// This function can be called anytime - even if there is preexisting data on the flash chip. It will simply find the next empty address block for the data.
 uint32_t SPIFram::getAddress(uint16_t size) {
   if (!_addressCheck(currentAddress, size)){
     return false;
@@ -893,7 +893,7 @@ bool SPIFram::eraseSection(uint32_t _addr, uint32_t _sz) {
   _nextByte(WRITE, Hi(_addr));
   _nextByte(WRITE, Lo(_addr));
   for (uint32_t i = 0; i < _sz; i++) {
-    _nextByte(WRITE, 0x00);
+    _nextByte(WRITE, NULLBYTE);
   }
   CHIP_DESELECT
 
@@ -920,7 +920,7 @@ bool SPIFram::eraseChip(void) {
   _nextByte(WRITE, Hi(_startingAddress));
   _nextByte(WRITE, Lo(_startingAddress));
   for (uint32_t i = 0; i < _chip.capacity; i++) {
-    _nextByte(WRITE, 0x00);
+    _nextByte(WRITE, NULLBYTE);
   }
   CHIP_DESELECT
 
