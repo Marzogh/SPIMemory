@@ -82,6 +82,7 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
   bool retVal = _chipID(flashChipSize);
   _endSPI();
   chipPoweredDown = false;
+  _disableGlobalBlockProtect();
   return retVal;
 }
 
