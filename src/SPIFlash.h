@@ -193,11 +193,11 @@ private:
   uint32_t    _addressOverflow = false;
   uint32_t    _BasicParamTableAddr, _SectorMapParamTableAddr, _byteFirstPrgmTime, _byteAddnlPrgmTime, _pagePrgmTime;
   uint8_t     _uniqueID[8];
-  const uint8_t _capID[16]   =
-  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x43, 0x4B, 0x00, 0x01, 0x13, 0x37};
+  const uint8_t _capID[18]   =
+  {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x41, 0x42, 0x43, 0x4B, 0x00, 0x01, 0x13, 0x37};
 
-  const uint32_t _memSize[16]  =
-  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(8), MB(8), KB(256), KB(512), MB(4), KB(512)};
+  const uint32_t _memSize[18]  =
+  {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(2), MB(4), MB(8), MB(8), KB(256), KB(512), MB(4), KB(512)};
   // To understand the _memSize definitions check defines.h
 
   const uint8_t _supportedManID[8] = {WINBOND_MANID, MICROCHIP_MANID, CYPRESS_MANID, ADESTO_MANID, MICRON_MANID, ON_MANID, GIGA_MANID, AMIC_MANID};
