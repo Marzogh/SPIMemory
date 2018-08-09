@@ -12,14 +12,15 @@ This Arduino library is for use with flash memory chips that communicate using t
 
 <hr>
 
-### Compatibility
+### IDE Compatibility (actually tested with)
 
-#### IDEs supported (actually tested with)
 - Arduino IDE v1.5.x
 - Arduino IDE v1.6.x
 - Arduino IDE v1.8.x
 
-#### Currently supported platforms
+<hr>
+
+### Platform compatibility
 
 | Micro controllers | Dev boards tested with | Notes |
 | ----------------- | ---------------------- | ----- |
@@ -37,38 +38,32 @@ This Arduino library is for use with flash memory chips that communicate using t
 <sup>£ </sup><sub> ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the commit <a href = "https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3">25dff4f</a> on 05.04.2018. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
 NOTE: ESP32 boards usually have an SPI Flash already attached to their default SS pin, so the user has to explicitly declare the `ChipSelect` pin being used with the constructor</sub>
 
-#### Flash memory compatibility
+<hr>
 
-##### Completely supported (Actually tested with)
-- Winbond
-  - W25Q16BV
-  - W25Q64FV
-  - W25Q64JV
-  - W25Q80BV
-  - W25Q256FV
-- Microchip
-  - SST25VF064C
-  - SST26VF064B
-- Cypress/Spansion
-  - S25FL032P
-  - S25FL116K
-  - S25FL127S
-- ON Semiconductor
-  - LE25U40CMC
-- AMIC
-  - A25L512A0
-- Micron
-  - M25P40
-- Adesto
-  - AT25SF041
-- Giga devices
-  - GD25Q16C (Used on the Adafruit ItsyBitsy M0 Express)
+### Flash memory compatibility - Actually tested with
 
-##### Should work with (Similar enough to the ones actually tested with)
-- Winbond (All SPI Flash chips)
-- Microchip (SST25 & SST26 series)
-- Cypress/Spansion (S25FL series)
-- Any flash memory that is compatible with the SFDP standard as defined in JESD216B
+| Manufacturer | Flash IC | Notes |
+| ------------ | -------- | ----- |
+| Winbond | W25Q16BV <br> W25Q64FV <br> W25Q64JV <br> W25Q80BV <br> W25Q256FV | Should work with the W25QXXXBV, W25QXXXFV & <br> W25QXXXJV families |
+| Microchip | SST25VF064C <br> SST26VF064B | Should work with the SST25 & SST26 families |
+| Cypress/Spansion | S25FL032P <br> S25FL116K <br> S25FL127S | Should work with the S25FL family |
+| ON Semiconductor | LE25U40CMC  |  |
+| AMIC| A25L512A0  |  |
+| Micron| M25P40  |  |
+| Adesto| AT25SF041  |  |
+| Giga devices| GD25Q16C  | (Used on the Adafruit ItsyBitsy M0 Express) |
+
+##### Should work with any flash memory that is compatible with the SFDP standard as defined in JESD216B
+
+<hr>
+
+### FRAM memory compatibility - Actually tested with
+
+| Manufacturer | Flash IC | Notes |
+| ------------ | -------- | ----- |
+| Cypress/Spansion | FM25W256 | Should work with the FM25W family |
+
+<hr>
 
 ### Installation
 
