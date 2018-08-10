@@ -2,7 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 19/06/2018
+ * Modified by Prajwal Bhattaram - 11/08/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -367,6 +367,7 @@ template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, 
     uint8_t* p = (uint8_t*)(void*)&value;
 
     if (_dataType == _STRING_) {
+      _sz++;
       char _inChar[_sz];
       _beginSPI(READDATA);
       _nextBuf(READDATA, (uint8_t*) &(*_inChar), _sz);
@@ -378,12 +379,11 @@ template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, 
     else {
       CHIP_SELECT
       if (fastRead) {
-        _nextByte(WRITE, FASTREAD);
+        _beginSPI(FASTREAD);
       }
       else {
-        _nextByte(WRITE, READDATA);
+        _beginSPI(READDATA);
       }
-      _transferAddress();
       for (uint16_t i = 0; i < _sz; i++) {
         *p++ =_nextByte(READ);
       }

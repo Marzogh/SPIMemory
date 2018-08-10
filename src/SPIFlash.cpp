@@ -2,7 +2,7 @@
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 19/06/2018
+ * Modified by Prajwal Bhattaram - 11/08/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -348,7 +348,49 @@ float SPIFlash::readFloat(uint32_t _addr, bool fastRead) {
 //    2. outputString --> String variable to write the output to
 //    3. fastRead --> defaults to false - executes _beginFastRead() if set to true
 bool SPIFlash::readStr(uint32_t _addr, String &data, bool fastRead) {
-  return _read(_addr, data, sizeof(data), fastRead);
+  //return _read(_addr, data, sizeof(data), fastRead, _STRING_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+
+  uint32_t _sz = 0;
+
+  if (!_prep(READDATA, _addr, _sz)) {
+    return false;
+  }
+  else {
+    if (fastRead) {
+      _beginSPI(FASTREAD);
+    }
+    else {
+      _beginSPI(READDATA);
+    }
+    for (uint16_t i = 0; i < sizeof(_sz); i++) {
+      _sz |= (_nextByte(READ) << (8*i));
+    }
+    _endSPI();
+  }
+
+  char _inChar[_sz];
+
+  if (!_addressCheck((_addr + sizeof(_sz)), _sz) || !_notBusy()) {
+    return false;
+	}
+  if(fastRead) {
+    _beginSPI(FASTREAD);
+  }
+  else {
+    _beginSPI(READDATA);
+  }
+  _nextBuf(READDATA, (uint8_t*) &(*_inChar), _sz);
+  _endSPI();
+
+  data = String(_inChar);
+
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros() - _spifuncruntime;
+  #endif
+	return true;
 }
 
 // Writes a byte of data to a specific location in a page.
@@ -928,7 +970,64 @@ bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeStr(uint32_t _addr, String &data, bool errorCheck) {
-  return _write(_addr, data, sizeof(data), errorCheck, _STRING_);
+  //return _write(_addr, data, sizeof(data), errorCheck, _STRING_);
+  #ifdef RUNDIAGNOSTIC
+    _spifuncruntime = micros();
+  #endif
+
+  uint32_t _sz = (sizeof(char)*(data.length()+1));
+
+  if(!_prep(PAGEPROG, _addr, (_sz + sizeof(_sz)))) {
+    return false;
+  }
+
+  char _outCharArray[_sz];
+  data.toCharArray(_outCharArray, _sz);
+
+  _beginSPI(PAGEPROG);
+  for (uint8_t i = 0; i < sizeof(_sz); i++) {
+    _nextByte(WRITE, _sz >> (8*i));
+  }
+  for (uint8_t i = 0; i < _sz; i++) {
+    _nextByte(WRITE, _outCharArray[i]);
+  }
+  CHIP_DESELECT
+
+  if (!errorCheck) {
+    _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+    return true;
+  }
+  else {
+    if (!_notBusy()) {
+      return false;
+    }
+    _currentAddress = (_addr + sizeof(_sz));
+    char _inCharArray[_sz];
+
+    CHIP_SELECT
+    _nextByte(WRITE, READDATA);
+    _transferAddress();
+    for (uint8_t i = 0; i < _sz; i++) {
+      _inCharArray[i] = _nextByte(READ);
+    }
+    _endSPI();
+
+    for (uint8_t i = 0; i < _sz; i++) {
+      if (_inCharArray[i] != _outCharArray[i]) {
+        #ifdef RUNDIAGNOSTIC
+          _spifuncruntime = micros() - _spifuncruntime;
+          #endif
+          return false;
+        }
+    }
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
+  }
+  return true;
 }
 
 
