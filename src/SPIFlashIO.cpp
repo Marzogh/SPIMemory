@@ -175,7 +175,7 @@
      #ifdef SPI_HAS_TRANSACTION
        SPI.beginTransaction(_settings);
      #else
-       SPI.setClockDivider(SPI_CLOCK_DIV4);
+       SPI.setClockDivider(_clockdiv);
        SPI.setDataMode(SPI_MODE0);
        SPI.setBitOrder(MSBFIRST);
      #endif

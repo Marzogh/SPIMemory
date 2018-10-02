@@ -43,7 +43,11 @@ public:
   #endif
   //----------------------------- Initial / Chip Functions ------------------------------//
   bool     begin(uint32_t flashChipSize = 0);
+  #ifdef SPI_HAS_TRANSACTION
   void     setClock(uint32_t clockSpeed);
+  #else
+  void     setClock(uint8_t clockdiv);
+  #endif
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     sfdpPresent(void);
   uint8_t  error(bool verbosity = false);
@@ -153,6 +157,9 @@ private:
   //-------------------------------- Private variables ----------------------------------//
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
+    bool _settings_set = false;
+  #else
+    uint8_t _clockdiv;
   #endif
   //If multiple SPI ports are available this variable is used to choose between them (SPI, SPI1, SPI2 etc.)
   SPIClass *_spi;
