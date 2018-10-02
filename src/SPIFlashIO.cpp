@@ -52,11 +52,11 @@
      return false;
  	}
 
-   //Serial.print("_chip.capacity: ");
+   //Serial.print(F("_chip.capacity: "));
    //Serial.println(_chip.capacity, HEX);
 
    if (_submittedAddress + size >= _chip.capacity) {
-     //Serial.print("_submittedAddress + size: ");
+     //Serial.print(F("_submittedAddress + size: "));
      //Serial.println(_submittedAddress + size, HEX);
    #ifdef DISABLEOVERFLOW
      _troubleshoot(OUTOFBOUNDS);
@@ -64,7 +64,7 @@
    #else
      _addressOverflow = ((_submittedAddress + size) - _chip.capacity);
      _currentAddress = _addr;
-     //Serial.print("_addressOverflow: ");
+     //Serial.print(F("_addressOverflow: "));
      //Serial.println(_addressOverflow, HEX);
      return true;					// At end of memory - (pageOverflow)
    #endif
@@ -74,7 +74,7 @@
      _currentAddress = _addr;
      return true;				// Not at end of memory if (address < _chip.capacity)
    }
-   //Serial.print("_currentAddress: ");
+   //Serial.print(F("_currentAddress: "));
    //Serial.println(_currentAddress, HEX);
  }
 
@@ -559,7 +559,7 @@
 
    if (_chip.supportedMan) {
      #ifdef RUNDIAGNOSTIC
-       Serial.println("No Chip size defined by user. Automated identification initiated.");
+       Serial.println(F("No Chip size defined by user. Automated identification initiated."));
      #endif
      //Identify capacity
      for (uint8_t j = 0; j < sizeof(_capID); j++) {
@@ -567,7 +567,7 @@
          _chip.capacity = (_memSize[j]);
          _chip.supported = true;
          #ifdef RUNDIAGNOSTIC
-           Serial.println("Chip identified. This chip is fully supported by the library.");
+           Serial.println(F("Chip identified. This chip is fully supported by the library."));
          #endif
          return true;
        }
@@ -583,7 +583,7 @@
      if (flashChipSize) {
        // If a custom chip size is defined
        #ifdef RUNDIAGNOSTIC
-       Serial.println("Custom Chipsize defined");
+       Serial.println(F("Custom Chipsize defined"));
        #endif
        _chip.capacity = flashChipSize;
        _chip.supported = false;

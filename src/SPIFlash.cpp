@@ -67,11 +67,11 @@ SPIFlash::SPIFlash(uint8_t cs) {
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef RUNDIAGNOSTIC
-  Serial.println("Chip Diagnostics initiated.");
+  Serial.println(F("Chip Diagnostics initiated."));
   Serial.println();
 #endif
 #ifdef HIGHSPEED
-  Serial.println("Highspeed mode initiated.");
+  Serial.println(F("Highspeed mode initiated."));
   Serial.println();
 #endif
   BEGIN_SPI
@@ -958,9 +958,9 @@ bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
   KB32Blocks = (noOf4KBEraseRuns % 16) / 8;
   KB4Blocks = (noOf4KBEraseRuns % 8);
   totalBlocks = KB64Blocks + KB32Blocks + KB4Blocks;
-  //Serial.print("noOf4KBEraseRuns: ");
+  //Serial.print(F("noOf4KBEraseRuns: "));
   //Serial.println(noOf4KBEraseRuns);
-  //Serial.print("totalBlocks: ");
+  //Serial.print(F("totalBlocks: "));
   //Serial.println(totalBlocks);
 
   uint16_t _eraseFuncOrder[totalBlocks];
@@ -986,7 +986,7 @@ bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
     noOfEraseRunsB4Boundary = (_sz - _addressOverflow)/16;
     noOfEraseRunsB4Boundary += ((_sz - _addressOverflow) % 16) / 8;
     noOfEraseRunsB4Boundary += ((_sz - _addressOverflow) % 8);
-    //Serial.print("noOfEraseRunsB4Boundary: ");
+    //Serial.print(F("noOfEraseRunsB4Boundary: "));
     //Serial.println(noOfEraseRunsB4Boundary);
   }
   if (!_addressOverflow) {
@@ -995,7 +995,7 @@ bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
       _endSPI();
 
 
-      //Serial.print("_eraseFuncOrder: 0x");
+      //Serial.printF("_eraseFuncOrder: 0x"));
       //Serial.println(_eraseFuncOrder[j], HEX);
 
       uint16_t _timeFactor = 0;
@@ -1015,7 +1015,7 @@ bool SPIFlash::eraseSection(uint32_t _addr, uint32_t _sz) {
         if (!_prep(ERASEFUNC, (_addr + (_sz - _addressOverflow)), _sz)) {
           return false;
         }
-        //Serial.print("Overflow triggered");
+        //Serial.print(F("Overflow triggered"));
       }
     }
   }

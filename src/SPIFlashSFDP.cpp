@@ -115,7 +115,7 @@ bool SPIFlash::_checkForSFDP(void) {
   if (_getSFDPdword(SFDP_HEADER_ADDR, SFDP_SIGNATURE_DWORD) == SFDPSIGNATURE) {
     _chip.sfdpAvailable = true;
     #ifdef RUNDIAGNOSTIC
-    Serial.println("SFDP available");
+    Serial.println(F("SFDP available"));
     #endif
   }
   else {

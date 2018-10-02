@@ -285,7 +285,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
     return false;
   }
   _addrIn = _currentAddress;
-  //Serial.print("_addrIn: ");
+  //Serial.print(F("_addrIn: "));
   //Serial.println(_addrIn, HEX);
   const uint8_t* p = ((const uint8_t*)(const void*)&value);
   //Serial.print(F("Address being written to: "));

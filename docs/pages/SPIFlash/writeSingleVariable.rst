@@ -69,16 +69,16 @@ Example code:
   void setup() {
     flash.begin();
     _address = flash.getAddress(sizeof(dataIn));
-    Serial.print("Address = ");
+    Serial.print(F("Address = "));
     Serial.println(_address);
 
-    Serial.print("Data write ");
+    Serial.print(F("Data write "));
     // This function should be changed depending on the type of data being written to the flash memory
     if (flash.writeStr(_address, dataOut)) {
-      Serial.println("successful");
+      Serial.println(F("successful"));
     }
     else {
-      Serial.println("failed");
+      Serial.println(F("failed"));
     }
   }
 
