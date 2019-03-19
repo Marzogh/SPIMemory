@@ -385,6 +385,10 @@ template <class T> bool SPIFlash::_read(uint32_t _addr, T& value, uint32_t _sz, 
       }
       _transferAddress();
       for (uint16_t i = 0; i < _sz; i++) {
+        if(fastRead && i == 0) {  
+          _nextByte(READ);  // Skip the dummy byte data cycle needed for the fast byte instruction
+          continue;
+        }
         *p++ =_nextByte(READ);
       }
       _endSPI();
