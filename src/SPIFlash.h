@@ -312,7 +312,11 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
 
     do {
       writeBufSz = (length<=maxBytes) ? length : maxBytes;
-
+      if(_currentAddress % SPI_PAGESIZE==0){//<<<<<<<<<<<<<<<<<
+        CHIP_SELECT
+        _nextByte(WRITE, PAGEPROG);
+        _transferAddress();
+	    }
       for (uint16_t i = 0; i < writeBufSz; ++i) {
         _nextByte(WRITE, *p++);
       }
