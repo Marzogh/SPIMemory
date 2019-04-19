@@ -188,6 +188,7 @@
 #define NULLBYTE      0x00
 #define NULLINT       0x0000
 #define NO_CONTINUE   0x00
+#define NOVERBOSE     0x00
 #define PASS          0x01
 #define FAIL          0x00
 #define NOOVERFLOW    false
