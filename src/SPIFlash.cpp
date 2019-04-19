@@ -970,28 +970,69 @@ bool SPIFlash::writeFloat(uint32_t _addr, float data, bool errorCheck) {
 // WARNING: You can only write to previously erased memory locations (see datasheet).
 // Use the eraseSector()/eraseBlock32K/eraseBlock64K commands to first clear memory (write 0xFFs)
 bool SPIFlash::writeStr(uint32_t _addr, String &data, bool errorCheck) {
-  //return _write(_addr, data, sizeof(data), errorCheck, _STRING_);
+
   #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros();
+  _spifuncruntime = micros();
   #endif
 
   uint32_t _sz = (sizeof(char)*(data.length()+1));
 
-  if(!_prep(PAGEPROG, _addr, (_sz + sizeof(_sz)))) {
-    return false;
-  }
-
   char _outCharArray[_sz];
   data.toCharArray(_outCharArray, _sz);
+
+  if(_isChipPoweredDown() || !_addressCheck(_addr, sizeof(_sz)) || !_notPrevWritten(_addr, sizeof(_sz)+_sz) || !_notBusy() || !_writeEnable()) {
+    return false;
+  }
 
   _beginSPI(PAGEPROG);
   for (uint8_t i = 0; i < sizeof(_sz); i++) {
     _nextByte(WRITE, _sz >> (8*i));
   }
-  for (uint8_t i = 0; i < _sz; i++) {
-    _nextByte(WRITE, _outCharArray[i]);
-  }
   CHIP_DESELECT
+  _endSPI();
+
+  if(!_addressCheck(_addr+sizeof(_sz), _sz) || !_notBusy() || !_writeEnable()) {
+    return false;
+  }
+  uint16_t maxBytes = SPI_PAGESIZE-(_addr % SPI_PAGESIZE);  // Force the first set of bytes to stay within the first page
+
+  if (_sz <= maxBytes) {
+    CHIP_SELECT
+    _nextByte(WRITE, PAGEPROG);
+    _transferAddress();
+    //_nextBuf(PAGEPROG, &_outCharArray[0], _sz);
+    for (uint16_t i = 0; i < _sz; ++i) {
+      _nextByte(WRITE, _outCharArray[i]);
+    }
+    CHIP_DESELECT
+  }
+  else {
+    uint16_t length = _sz;
+    uint16_t writeBufSz;
+    uint16_t data_offset = 0;
+
+    do {
+      writeBufSz = (length<=maxBytes) ? length : maxBytes;
+
+      CHIP_SELECT
+      _nextByte(WRITE, PAGEPROG);
+      _transferAddress();
+      for (uint16_t i = 0; i < writeBufSz; ++i) {
+        _nextByte(WRITE, _outCharArray[data_offset + i]);
+      }
+      CHIP_DESELECT
+
+      _currentAddress += writeBufSz;
+      data_offset += writeBufSz;
+      length -= writeBufSz;
+      maxBytes = 256;   // Now we can do up to 256 bytes per loop
+
+      if(!_notBusy() || !_writeEnable()){
+        return false;
+      }
+
+    } while (length > 0);
+  }
 
   if (!errorCheck) {
     _endSPI();
