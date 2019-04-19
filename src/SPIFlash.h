@@ -312,7 +312,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
 
     do {
       writeBufSz = (length<=maxBytes) ? length : maxBytes;
-      if(_currentAddress % SPI_PAGESIZE==0){//<<<<<<<<<<<<<<<<<
+      if(_currentAddress % SPI_PAGESIZE==0){
         CHIP_SELECT
         _nextByte(WRITE, PAGEPROG);
         _transferAddress();
@@ -341,6 +341,9 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
 
   if (!errorCheck) {
     _endSPI();
+    #ifdef RUNDIAGNOSTIC
+      _spifuncruntime = micros() - _spifuncruntime;
+    #endif
     return true;
   }
   else {
