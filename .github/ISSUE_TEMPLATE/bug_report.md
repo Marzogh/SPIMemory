@@ -68,7 +68,7 @@ Add any other context about the problem here.
 
 <hr>
 
-_Make sure to add **all the information needed to understand the bug/feature** so that someone can help. If any essential information is missing we'll add the 'Needs more information' label and close the issue until there is enough information._
+_Make sure to add **all the information needed to understand the bug** so that someone can help. If any essential information is missing we'll add the 'Needs more information' label and close the issue until there is enough information._
 
 ![GitHub issue state](https://img.shields.io/github/issues/detail/s/Marzogh/SPIFlash/14.svg) ![GitHub issue title](https://img.shields.io/github/issues/detail/title/Marzogh/SPIFlash/14.svg)
 ![GitHub issue author](https://img.shields.io/github/issues/detail/u/Marzogh/SPIFlash/14.svg) ![GitHub issue label](https://img.shields.io/github/issues/detail/label/Marzogh/SPIFlash/14.svg) ![GitHub issue comments](https://img.shields.io/github/issues/detail/comments/Marzogh/SPIFlash/14.svg)
