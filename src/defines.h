@@ -1,12 +1,11 @@
-/* Arduino SPIFlash Library v.2.6.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+/* Arduino SPIMemory Library v.3.3.0
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 14/04/2017
+ * Modified by Prajwal Bhattaram - 20/04/2019
  *
- * This file is part of the Arduino SPIFlash Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * This file is part of the Arduino SPIMemory Library. This library is for
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -20,120 +19,196 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License v3.0
- * along with the Arduino SPIFlash Library.  If not, see
+ * along with the Arduino SPIMemory Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
+
+ // Defines and variables specific to SAM architecture
+ #if defined (ARDUINO_ARCH_SAM)
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer   due.SPITransfer
+   #define BEGIN_SPI due.SPIBegin();
+   extern char _end;
+   extern "C" char *sbrk(int i);
+   //char *ramstart=(char *)0x20070000;
+   //char *ramend=(char *)0x20088000;
+
+ // Specific access configuration for Chip select pin. Includes specific to RTL8195A to access GPIO HAL - @boseji <salearj@hotmail.com> 02.03.17
+ #elif defined (BOARD_RTL8195A)
+   #define CHIP_SELECT   gpio_write(&csPin, 0);
+   #define CHIP_DESELECT gpio_write(&csPin, 1);
+   #define xfer(n)   SPI.transfer(n)
+   #define BEGIN_SPI SPI.begin();
+
+ // Defines and variables specific to SAMD architecture
+ #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer(n)   _spi->transfer(n)
+   #define BEGIN_SPI _spi->begin();
+ #else
+   #define CHIP_SELECT   digitalWrite(csPin, LOW);
+   #define CHIP_DESELECT digitalWrite(csPin, HIGH);
+   #define xfer(n)   SPI.transfer(n)
+   #define BEGIN_SPI SPI.begin();
+ #endif
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //						Common Instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-#define	MANID        0x90
-#define PAGEPROG     0x02
-#define READDATA     0x03
-#define FASTREAD     0x0B
-#define WRITEDISABLE 0x04
-#define READSTAT1    0x05
-#define READSTAT2    0x35
-#define WRITESTAT    0x01
-#define WRITEENABLE  0x06
-#define SECTORERASE  0x20
-#define BLOCK32ERASE 0x52
-#define CHIPERASE    0xC7
-#define SUSPEND      0x75
-#define ID           0x90
-#define RESUME       0x7A
-#define JEDECID      0x9F
-#define RELEASE      0xAB
-#define POWERDOWN    0xB9
-#define BLOCK64ERASE 0xD8
-#define READSFDP     0x5A
+#define	MANID         0x90
+#define PAGEPROG      0x02
+#define READDATA      0x03
+#define FASTREAD      0x0B
+#define WRITEDISABLE  0x04
+#define READSTAT1     0x05
+#define READSTAT2     0x35
+#define READSTAT3     0x15
+#define WRITESTATEN   0x50
+#define WRITESTAT1    0x01
+#define WRITESTAT2    0x31
+#define WRITESTAT3    0x11
+#define WRITEENABLE   0x06
+#define ADDR4BYTE_EN  0xB7
+#define ADDR4BYTE_DIS 0xE9
+#define SECTORERASE   0x20
+#define BLOCK32ERASE  0x52
+#define BLOCK64ERASE  0xD8
+#define CHIPERASE     0x60
+#define ALT_CHIPERASE 0xC7    // Some flash chips use a different chip erase command
+#define SUSPEND       0x75
+#define ID            0x90
+#define RESUME        0x7A
+#define JEDECID       0x9F
+#define POWERDOWN     0xB9
+#define RELEASE       0xAB
+#define READSFDP      0x5A
+#define UNIQUEID      0x4B
+#define FRAMSERNO     0xC3
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
-//            B = Bytes; KB = Kilo bits; MB = Mega bits               //
+//            B = Bytes; KiB = Kilo Bytes; MiB = Mega Bytes           //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#define B1            1L
-#define B2            2L
-#define B4            4L
-#define B8            8L
-#define B16           16L
-#define B32           32L
-#define B64           64L
-#define B80           80L
-#define B128          128L
-#define B256          256L
-#define B512          512L
-#define KB1           B1 * K
-#define KB2           B2 * K
-#define KB4           B4 * K
-#define KB8           B8 * K
-#define KB16          B16 * K
-#define KB32          B32 * K
-#define KB64          B64 * K
-#define KB128         B128 * K
-#define KB256         B256 * K
-#define KB512         B512 * K
-#define MB1           B1 * M
-#define MB2           B2 * M
-#define MB4           B4 * M
-#define MB8           B8 * M
-#define MB16          B16 * M
-#define MB32          B32 * M
-#define MB64          B64 * M
-#define MB128         B128 * M
-#define MB256         B256 * M
-#define MB512         B512 * M
+#define B(x)          uint32_t(x*BYTE)
+#define KB(x)         uint32_t(x*KiB)
+#define MB(x)         uint32_t(x*MiB)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//					SFDP related defines 						  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define DWORD(x) x
+#define FIRSTBYTE 0x01
+#define SFDPSIGNATURE 0x50444653
+#define ADDRESSOFSFDPDWORD(x,y) x+((y - 1) * 4)
+#define ADDRESSOFSFDPBYTE(x,y,z) x+((y - 1) * 4)+(z - 1)
+#define KB4ERASE_TYPE 0x0C
+#define KB32ERASE_TYPE 0x0F
+#define KB64ERASE_TYPE 0x10
+#define KB256ERASE_TYPE 0x12
+#define MS1 0b00000000
+#define MS16 0b00000001
+#define MS128 0b00000010
+#define S1    0b00000011
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//					Fixed SFDP addresses 						  //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define SFDP_HEADER_ADDR 0x00
+#define SFDP_SIGNATURE_DWORD 0x01
+#define SFDP_NPH_DWORD 0x02
+#define SFDP_NPH_BYTE 0x03
+#define SFDP_PARAM_TABLE_LENGTH_DWORD 0x01
+#define SFDP_PARAM_TABLE_LENGTH_BYTE 0x04
+#define SFDP_BASIC_PARAM_TABLE_HDR_ADDR 0x08
+#define SFDP_BASIC_PARAM_TABLE_NO 0x01
+#define SFDP_MEMORY_DENSITY_DWORD 0x02
+#define SFDP_SECTOR_MAP_PARAM_TABLE_NO 0x02
+#define SFDP_ERASE1_BYTE 0x01
+#define SFDP_ERASE1_INSTRUCTION_DWORD 0x08
+#define SFDP_ERASE2_INSTRUCTION_DWORD 0x09
+#define SFDP_SECTOR_ERASE_TIME_DWORD 0x0A
+#define SFDP_CHIP_ERASE_TIME_DWORD 0x0B
+#define SFDP_PROGRAM_TIME_DWORD 0x0B
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //					Chip specific instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define WINBOND_MANID		 0xEF
-  #define PAGESIZE	 0x100
+//~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define WINBOND_MANID         0xEF
+  #define SPI_PAGESIZE          0x100
+  #define WINBOND_WRITE_DELAY   0x02
+  #define WINBOND_WREN_TIMEOUT  10L
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define MICROCHIP_MANID		 0xBF
+//~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MICROCHIP_MANID       0xBF
+  #define SST25                 0x25
+  #define SST26                 0x26
+  #define ULBPR                 0x98    //Global Block Protection Unlock (Ref sections 4.1.1 & 5.37 of datasheet)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define CYPRESS_MANID         0x01
+  #define RAMTRON_FRAM_MANID    0xC2
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define ADESTO_MANID         0x1F
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MICRON_MANID         0x20
+  #define M25P40               0x20
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ ON ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define ON_MANID             0x62
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Giga ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define GIGA_MANID            0xC8
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define AMIC_MANID           0x37
+  #define A25L512              0x30
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define BUSY          0x01
 #if defined (ARDUINO_ARCH_ESP32)
-#define SPI_CLK       20000000
+#define SPI_CLK       20000000        //Hz equivalent of 20MHz
 #else
-#define SPI_CLK       104000000       //Hex equivalent of 104MHz
+#define SPI_CLK       104000000       //Hz equivalent of 104MHz
 #endif
 #define WRTEN         0x02
 #define SUS           0x80
 #define WSE           0x04
 #define WSP           0x08
+#define ADS           0x01            // Current Address mode in Status register 3
 #define DUMMYBYTE     0xEE
 #define NULLBYTE      0x00
 #define NULLINT       0x0000
 #define NO_CONTINUE   0x00
+#define NOVERBOSE     0x00
 #define PASS          0x01
 #define FAIL          0x00
 #define NOOVERFLOW    false
 #define NOERRCHK      false
 #define VERBOSE       true
-#if defined (SIMBLEE)
-#define BUSY_TIMEOUT  100L
-#else
-#define BUSY_TIMEOUT  10L
-#endif
+#define PRINTOVERRIDE true
+#define ERASEFUNC     0xEF
+#define BUSY_TIMEOUT  1000000000L
 #define arrayLen(x)   (sizeof(x) / sizeof(*x))
 #define lengthOf(x)   (sizeof(x))/sizeof(byte)
-#define K             1024L
-#define M             K * K
+#define BYTE          1L
+#define KiB           1024L
+#define MiB           KiB * KiB
 #define S             1000L
+#define TIME_TO_PROGRAM(x) (_byteFirstPrgmTime + (_byteAddnlPrgmTime * (x - 1)) )
 
 #if defined (ARDUINO_ARCH_ESP8266)
 #define CS 15
 #elif defined (ARDUINO_ARCH_SAMD)
 #define CS 10
-#elif defined __AVR_ATtiny85__
-#define CS 5
 /*********************************************************************************************
 // Declaration of the Default Chip select pin name for RTL8195A
 // Note: This has been shifted due to a bug identified in the HAL layer SPI driver
@@ -169,23 +244,52 @@
 #define SPI_RX_IDX  2
 // Set DUE SPI clock div (any integer from 2 - 255)
 #define DUE_SPI_CLK 2
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     					   List of Error codes						  //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
- #define SUCCESS      0x00
- #define CALLBEGIN    0x01
- #define UNKNOWNCHIP  0x02
- #define UNKNOWNCAP   0x03
- #define CHIPBUSY     0x04
- #define OUTOFBOUNDS  0x05
- #define CANTENWRITE  0x06
- #define PREVWRITTEN  0x07
- #define LOWRAM       0x08
- #define SYSSUSPEND   0x09
- #define UNSUPPORTED  0x0A
- #define ERRORCHKFAIL 0x0B
- #define NORESPONSE   0x0C
- #define UNKNOWNERROR 0xFE
 
  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+ //     					   List of Supported data types						  //
+ //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+  #define _BYTE_              0x01
+  #define _CHAR_              0x02
+  #define _WORD_              0x03
+  #define _SHORT_             0x04
+  #define _ULONG_             0x05
+  #define _LONG_              0x06
+  #define _FLOAT_             0x07
+  #define _STRING_            0x08
+  #define _BYTEARRAY_         0x09
+  #define _CHARARRAY_         0x0A
+  #define _STRUCT_            0x0B
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//                        Bit shift macros                            //
+//                      Thanks to @VitorBoss                          //
+//          https://github.com/Marzogh/SPIMemory/issues/76             //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+#define Lo(param) ((char *)&param)[0] //0x000y
+#define Hi(param) ((char *)&param)[1] //0x00y0
+#define Higher(param) ((char *)&param)[2] //0x0y00
+#define Highest(param) ((char *)&param)[3] //0xy000
+#define Low(param) ((int *)&param)[0] //0x00yy
+#define Top(param) ((int *)&param)[1] //0xyy00
+
+// Set bit and clear bit
+// x -> byte, y -> bit
+#define setBit(x, y) x |= (1 << y)
+#define clearBit(x, y) x &= ~(1 << y)
+#define toggleBit(x, y) x ^= (1 << y)
+
+// Query to see if bit is set or cleared.
+// x -> byte, y -> bit
+#define bitIsSet(x, y) x & (1 << y)
+#define bitIsClear(x, y) !(x & (1 << y))
+
+//Set nibbles
+// x -> byte, y -> value to set
+#define setLowerNibble(x, y) x &= 0xF0; x |= (y & 0x0F) // Clear out the lower nibble // OR in the desired mask
+#define setUpperNibble(x, y) x &= 0x0F; x |= (y & 0xF0) // Clear out the lower nibble // OR in the desired mask
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+#ifndef LED_BUILTIN //fix for boards without that definition
+  #define LED_BUILTIN 13
+#endif

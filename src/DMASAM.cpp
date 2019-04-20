@@ -1,13 +1,12 @@
-/* Arduino SPIFlash Library v.2.6.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+/* Arduino SPIMemory Library v.3.3.0
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 30/09/2016
- * Modified by Prajwal Bhattaram - 14/04/2017
  * Original code from @manitou48 <https://github.com/manitou48/DUEZoo/blob/master/dmaspi.ino>
+ * Modified by Prajwal Bhattaram - 19/06/2018
  *
- * This file is part of the Arduino SPIFlash Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * This file is part of the Arduino SPIMemory Library. This library is for
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -21,37 +20,39 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License v3.0
- * along with the Arduino SPIFlash Library.  If not, see
+ * along with the Arduino SPIMemory Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 #if defined (ARDUINO_ARCH_SAM)
-#include "SPIFlash.h"
+#include "SPIMemory.h"
 
+// Constructor
+//DMASAM::DMASAM(){}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //        Private functions used by Arduino Due DMA operations        //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Disable DMA Controller
-void SPIFlash::_dmac_disable() {
+void DMASAM::_dmac_disable() {
   DMAC->DMAC_EN &= (~DMAC_EN_ENABLE);
 }
 // Enable DMA Controller.
-void SPIFlash::_dmac_enable() {
+void DMASAM::_dmac_enable() {
   DMAC->DMAC_EN = DMAC_EN_ENABLE;
 }
 // Disable DMA Channel
-void SPIFlash::_dmac_channel_disable(uint32_t ul_num) {
+void DMASAM::_dmac_channel_disable(uint32_t ul_num) {
   DMAC->DMAC_CHDR = DMAC_CHDR_DIS0 << ul_num;
 }
 // Enable DMA Channel
-void SPIFlash::_dmac_channel_enable(uint32_t ul_num) {
+void DMASAM::_dmac_channel_enable(uint32_t ul_num) {
   DMAC->DMAC_CHER = DMAC_CHER_ENA0 << ul_num;
 }
 // Poll for transfer complete
-bool SPIFlash::_dmac_channel_transfer_done(uint32_t ul_num) {
+bool DMASAM::_dmac_channel_transfer_done(uint32_t ul_num) {
   return (DMAC->DMAC_CHSR & (DMAC_CHSR_ENA0 << ul_num)) ? false : true;
 }
 // start RX DMA
-void SPIFlash::_dueSPIDmaRX(uint8_t* dst, uint16_t count) {
+void DMASAM::SPIDmaRX(uint8_t* dst, uint16_t count) {
   _dmac_channel_disable(SPI_DMAC_RX_CH);
   DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_SADDR = (uint32_t)&SPI0->SPI_RDR;
   DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_DADDR = (uint32_t)dst;
@@ -65,7 +66,7 @@ void SPIFlash::_dueSPIDmaRX(uint8_t* dst, uint16_t count) {
     DMAC_CFG_SRC_H2SEL | DMAC_CFG_SOD | DMAC_CFG_FIFOCFG_ASAP_CFG;
   _dmac_channel_enable(SPI_DMAC_RX_CH);
 }
-void SPIFlash::_dueSPIDmaRX(char* dst, uint16_t count) {
+void DMASAM::SPIDmaRX(char* dst, uint16_t count) {
   _dmac_channel_disable(SPI_DMAC_RX_CH);
   DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_SADDR = (uint32_t)&SPI0->SPI_RDR;
   DMAC->DMAC_CH_NUM[SPI_DMAC_RX_CH].DMAC_DADDR = (uint32_t)dst;
@@ -80,7 +81,7 @@ void SPIFlash::_dueSPIDmaRX(char* dst, uint16_t count) {
   _dmac_channel_enable(SPI_DMAC_RX_CH);
 }
 // start TX DMA
-void SPIFlash::_dueSPIDmaTX(const uint8_t* src, uint16_t count) {
+void DMASAM::SPIDmaTX(const uint8_t* src, uint16_t count) {
   static uint8_t ff = 0XFF;
   uint32_t src_incr = DMAC_CTRLB_SRC_INCR_INCREMENTING;
   if (!src) {
@@ -104,7 +105,7 @@ void SPIFlash::_dueSPIDmaTX(const uint8_t* src, uint16_t count) {
   _dmac_channel_enable(SPI_DMAC_TX_CH);
 }
 
-void SPIFlash::_dueSPIDmaCharTX(const char* src, uint16_t count) {
+void DMASAM::SPIDmaCharTX(const char* src, uint16_t count) {
   static char ff = 0XFF;
   uint32_t src_incr = DMAC_CTRLB_SRC_INCR_INCREMENTING;
   if (!src) {
@@ -128,7 +129,7 @@ void SPIFlash::_dueSPIDmaCharTX(const char* src, uint16_t count) {
   _dmac_channel_enable(SPI_DMAC_TX_CH);
 }
 
-void SPIFlash::_dueSPIBegin() {
+void DMASAM::SPIBegin() {
   PIO_Configure(
       g_APinDescription[PIN_SPI_MOSI].pPort,
       g_APinDescription[PIN_SPI_MOSI].ulPinType,
@@ -161,7 +162,7 @@ void SPIFlash::_dueSPIBegin() {
 #endif  // USE_SAM3X_DMAC
 }
 //  initialize SPI controller
-void SPIFlash::_dueSPIInit(uint8_t dueSckDivisor) {
+void DMASAM::SPIInit(uint8_t dueSckDivisor) {
 #if ENABLE_SPI_TRANSACTIONS
   SPI.beginTransaction(SPISettings());
 #endif  // ENABLE_SPI_TRANSACTIONS
@@ -178,7 +179,7 @@ void SPIFlash::_dueSPIInit(uint8_t dueSckDivisor) {
   // enable SPI
   pSpi->SPI_CR |= SPI_CR_SPIEN;
 }
-uint8_t SPIFlash::_dueSPITransfer(uint8_t b) {
+uint8_t DMASAM::SPITransfer(uint8_t b) {
   Spi* pSpi = SPI0;
 
   pSpi->SPI_TDR = b;
@@ -187,19 +188,19 @@ uint8_t SPIFlash::_dueSPITransfer(uint8_t b) {
   return b;
 }
 // SPI receive a byte
-uint8_t SPIFlash::_dueSPIRecByte() {
-  return _dueSPITransfer(0XFF);
+uint8_t DMASAM::SPIRecByte() {
+  return SPITransfer(0XFF);
 }
 // SPI receive multiple bytes
-uint8_t SPIFlash::_dueSPIRecByte(uint8_t* buf, size_t len) {
+uint8_t DMASAM::SPIRecByte(uint8_t* buf, size_t len) {
   Spi* pSpi = SPI0;
   int rtn = 0;
 #if USE_SAM3X_DMAC
   // clear overrun error
   uint32_t s = pSpi->SPI_SR;
 
-  _dueSPIDmaRX(buf, len);
-  _dueSPIDmaTX(0, len);
+  SPIDmaRX(buf, len);
+  SPIDmaTX(0, len);
 
   uint32_t m = millis();
   while (!_dmac_channel_transfer_done(SPI_DMAC_RX_CH)) {
@@ -221,19 +222,19 @@ uint8_t SPIFlash::_dueSPIRecByte(uint8_t* buf, size_t len) {
   return rtn;
 }
 // SPI receive a char
-int8_t SPIFlash::_dueSPIRecChar() {
-  return _dueSPITransfer(0XFF);
+int8_t DMASAM::SPIRecChar() {
+  return SPITransfer(0XFF);
 }
 // SPI receive multiple chars
-int8_t SPIFlash::_dueSPIRecChar(char* buf, size_t len) {
+int8_t DMASAM::SPIRecChar(char* buf, size_t len) {
   Spi* pSpi = SPI0;
   char rtn = 0;
 #if USE_SAM3X_DMAC
   // clear overrun error
   uint32_t s = pSpi->SPI_SR;
 
-  _dueSPIDmaRX(buf, len);
-  _dueSPIDmaTX(0, len);
+  SPIDmaRX(buf, len);
+  SPIDmaTX(0, len);
 
   uint32_t m = millis();
   while (!_dmac_channel_transfer_done(SPI_DMAC_RX_CH)) {
@@ -255,14 +256,14 @@ int8_t SPIFlash::_dueSPIRecChar(char* buf, size_t len) {
   return rtn;
 }
 // SPI send a byte
-void SPIFlash::_dueSPISendByte(uint8_t b) {
-  _dueSPITransfer(b);
+void DMASAM::SPISendByte(uint8_t b) {
+  SPITransfer(b);
 }
 
-void SPIFlash::_dueSPISendByte(const uint8_t* buf, size_t len) {
+void DMASAM::SPISendByte(const uint8_t* buf, size_t len) {
   Spi* pSpi = SPI0;
 #if USE_SAM3X_DMAC
-  _dueSPIDmaTX(buf, len);
+  SPIDmaTX(buf, len);
   while (!_dmac_channel_transfer_done(SPI_DMAC_TX_CH)) {}
 #else  // #if USE_SAM3X_DMAC
   while ((pSpi->SPI_SR & SPI_SR_TXEMPTY) == 0) {}
@@ -276,14 +277,14 @@ void SPIFlash::_dueSPISendByte(const uint8_t* buf, size_t len) {
   uint8_t b = pSpi->SPI_RDR;
 }
 // SPI send a char
-void SPIFlash::_dueSPISendChar(char b) {
-  _dueSPITransfer(b);
+void DMASAM::SPISendChar(char b) {
+  SPITransfer(b);
 }
 //SPI send multiple chars
-void SPIFlash::_dueSPISendChar(const char* buf, size_t len) {
+void DMASAM::SPISendChar(const char* buf, size_t len) {
   Spi* pSpi = SPI0;
 #if USE_SAM3X_DMAC
-  _dueSPIDmaCharTX(buf, len);
+  SPIDmaCharTX(buf, len);
   while (!_dmac_channel_transfer_done(SPI_DMAC_TX_CH)) {}
 #else  // #if USE_SAM3X_DMAC
   while ((pSpi->SPI_SR & SPI_SR_TXEMPTY) == 0) {}
@@ -296,5 +297,7 @@ void SPIFlash::_dueSPISendChar(const char* buf, size_t len) {
   // leave RDR empty
   char b = pSpi->SPI_RDR;
 }
+
+DMASAM due; // default instantiation of DMASAM object
 
 #endif

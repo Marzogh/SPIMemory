@@ -1,6 +1,208 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//										  SPIFlash Library 				 						   //
+//										  SPIMemory Library 				 						   //
 //					  				  		Changes log 									   	   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.3.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						20.04.2019											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Library now supports FRAM memory (In BETA). Documentation for this is in progress.
+
+Bugs squashed:
+--> Fixed a major bug causing issues with page boundaries in writeAnything and writeStr. Thanks for your help @jacky4566 (Issue #151)
+--> Fixed a major bug with reading Strings (Issue #143)
+--> @incorvia fixed a bug by initialising the SPIBusState to false
+--> Fixes bug that causes ballooning of pagesize when SFDP is not read. This is because no default _pageSize value was set in this scenario. This has now been fixed.
+--> Fixed a major bug in how SFDP data is used to calculate chip capacity. The previous version of the library returned a wrong value. This has now been fixed. Refer to comments in _getSFDPFlashParam(void) for further details.
+
+Enhancements:
+--> Reduce SRAM footprint when running Diagnostics.ino. Thanks @rambo (PR #157)
+--> Officially supports the ESP32 (tested on the ESP32 Feather)
+--> Now supports FRAM memory chips via the `SPIFram` constructor
+--> Changed Diagnostics output in _chipID() to match situation better.
+--> Fixed _chipID() to run more efficiently.
+
+New flash memory chips supported:
+--> GD25Q16C from Giga devices (Used on the Adafruit ItsyBitsy M0 Express)
+--> W25Q64JV from Winbond
+--> SST26VF016B & SST26VF032B from Microchip. (Thanks @mix86)
+
+New FRAM memory chips supported:
+--> FM25W256 from Cypress
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.2.1 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						13.04.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+Bugs squashed
+--> Fixes issue #135 : The addition of the SFDP checking to _chipID resulted in a sudden (very large) increase in compiled code size. As of the current version (v3.2.1), SFDP checking is an user controlled option. To get the library to work with SFDP compatible flash memory that is not officially supported, the user must uncomment '//#define USES_SFDP' in 'SPIMemory.h'.
+
+--> Moved `bool _loopedOver` from being a local variable in `getAddress()` to a global one. Now it actually does what it was meant to do - i.e. prevent looping over data a second time.
+
+Enhancements
+--> The way the basic functions execute has been modified to keep the function runtime the same (or improved) while reducing their memory footprint.
+
+		Test sketch - FlashDiagnostics.ino from v3.2.0 with #RUNDIAGNOSTIC commented out
+		Test platform - Arduino Pro Mini 8MHz 3.3V
+		Library version: v3.1.0			Compiled code size - 17652 bytes (SFDP discovery not supported)
+		Library version: v3.2.0			Compiled code size - 20104 bytes (SFDP discovery supported & on by default) (13.9% larger than v3.1.0)
+		Library version: v3.2.1			Compiled code size - 15316 bytes (SFDP discovery turned off) (13.75% smaller than v3.1.0)
+		Library version: v3.2.1			Compiled code size - 17854 bytes (SFDP discovery turned on) (1.1% larger than v3.1.0)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.2.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						13.04.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+--> Library name changed to SPIMemory
+
+--> The library now gathers sfdp information through _chipID(). SFDP information is collected when available, otherwise the library defaults to the pre v3.2.0 version.
+
+New flash memory chips supported
+--> All flash memories compatible with the SFDP standard (as at JESD216B) should be compatible with the library
+
+--> LE25U40CMC from ON Semiconductor
+--> A25L512A0 from AMIC
+--> M25P40 from Micron
+--> AT25SF041 from Adesto
+--> S25FL032P from Cypress/Spansion
+
+New Microcontrollers supported
+--> ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
+
+Bugs squashed
+
+Enhancements
+The library now does the following - if the flash memory chip is compatible with the SFDP standard:
+--> Identifies the flash memory chip using the Serial Flash Discoverable Parameters standard. (JESD216B)
+--> Identifies the following opcodes from the SFDP tables and uses them to read/write data:
+			- eraseSector, eraseBlock32K, eraseBlock64K
+--> Reads timing information from SFDP to accurately time the following operations:
+			- eraseSector, eraseBlock32K, eraseBlock64K
+- Fixes #125 in commit 10c2b86. The library automatically uses the alternate chip erase code (0xC7) as required (only on fully supported chips)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.1.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						24.02.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+--> Library name change notice inserted into flash.begin(). This notice can be dismissed by commenting out the instance of `#define PRINTNAMECHANGEALERT` in SPIFlash.h. Please refer to the Readme file for further details.
+
+Bugs squashed
+--> An error with how _addressCheck() works with data that spans the memory boundary - when rolling over from address '_chip.capacity' to address '0x00' - has been fixed. In previous versions this caused issues with writing complex data structures across the memory boundary and led to many _writeErrorCheck() failures. Fixes issue #112
+
+--> An error with how _writeErrorCheck() worked has been resolved. Writing structs is now as stable as other functions are. Fixes #106
+
+--> All compilation-time, non-critical errors have been fixed.
+
+Enhancements:
+--> A new function - 'flash.eraseSection(address, size)' - has been introduced in this version. When a user requires a large and variable (between writes) amount of data to be written to the flash memory on the fly and to have the correct amount of space erased to fit the data, this function will automatically calculate and erase the right amount of space to fit the data. Please note that if the the amount of data being written is consistently the same size, the pre-existing 'flash.eraseSector()', 'flash.eraseBlock32K()' and 'flash.eraseBlock64K()' functions will operate a lot faster.
+
+--> Updated Diagnostics.ino to include eraseSection().
+
+--> All I/O functions now check to see if the flash chip is powered down. If it is, they prevent the function from running and returns an error. A new error code 'CHIPISPOWEREDDOWN' will be returned upon calling flash.error().
+
+
+New flash memory chips supported:
+--> S25FL127S
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.0.1 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						10.12.2017											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs squashed:
+****************
+Thanks for catching and fixing the following @hanyazou (PR #101)
+--> Added missing break statements in SPIFlash::_beginSPI() because that lacks some essential break statement in switch/case. (commit 1: 1de2c10)
+--> The library did not wait until the busy bit in SR1 was cleared. Timeout argument of _notBusy() must be in micro-second. 500L means 500 micro seconds which is too short to wait for completion of erase command. Added " * 1000" to the arguments. (commit 2: 9633c2f)
+--> Modified TestFlash.ino to check error of erase commands execution. (commit 3: a179306)
+****************
+--> Fixes a major bug that was causing input Arrays to be overwritten by zeros during the writeByteArray() / writeCharArray() process. Thanks for catching this @hanyazou. (Issue #102)
+
+New flash memory chips supported:
+--> S25FL127S
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.0.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						09.08.2017											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs Squashed:
+--> The writeByteArray() & writeCharArray() bug that occurred when writing arrays that spanned page boundaries (squashed in v2.5.0), stayed around to haunt the other functions. Writing any data larger than a single byte that spanned page boundaries would cause the data to wrap around to the beginning of the page. The likelihood of this occurring was slim - no one has reported it to date. However, just in case, this has now been squashed in this release.
+
+Deprecations:
+--> Going forward the ATTiny85 is no longer officially supported.
+--> The library no longer supports using the page number + offset combination instead of addresses. If your code requires you to use a page number + offset combination, use the following code to help
+													address = (pagenumber << 8) + offset.
+													_____________________________________
+												 (32 bit) |     (16 bit)     | (8 bit)
+--> The constructor no longer takes the pageOverflow variable as an argument. Page overflow is globally enabled by default and can be disabled by including a "#define DISABLEOVERFLOW" at the beginning of SPIFlash.h.
+
+New Boards supported:
+--> Nucleo-F091RC
+--> Adafruit Feather M0
+
+New Flash manufacturers supported:
+--> Microchip (SST25 & SST26 series)
+--> Cypress
+--> Spansion
+
+Enhancements:
+--> Confirmed to work with SPANSION/CYPRESS & MICROCHIP (Both SST25 & SST26 series).
+--> If not using an officially supported chip, use the following variation of flash.begin() :
+			flash.begin(flashChipSize);
+
+			where flashChipSize is indicated in Bytes, Kilobytes or Megabytes. (Refer to the next two items in this change log)
+--> Including 'flashChipSize' in flash.begin() compiles more efficiently than in previous versions.
+--> The way memory size is indicated by the users in flash.begin(flashChipSize) has changed - please refer to defines.h or the wiki for further information. The new method enables users to define any custom size unlike the previous version where only a limited number of predetermined sizes were available to use.
+--> Library faster than before (Refer to Library speed comparison in the extras folder for timing details):
+
+	Improvements in speed in v3.0.0 when compared to v2.7.0 (values in percentage of time v3.0.0 is faster than v2.7.0)
+				(+) writeByte																		-> +3%
+				(+) writeChar 																	-> +6%
+				(+) writeWord																		-> +3%
+				(+) writeShort 																	-> +5%
+				(+) writeULong 																	-> +7%
+				(+) writeLong | readLong												-> +7%	 |   +7%
+				(+) writeFloat																	-> +7%
+				(+) writeStr | readStr													-> +57%  |   +61%
+				(+) writeAnything | readAnything (struct)				-> +25%  |   +20%
+				(+) writeByteArray | readByteArray (256 bytes)	-> +18%  |   +45%
+				(+) eraseSector																	-> +99%
+				(+) eraseBlock32K																-> +99.4%
+				(+) eraseBlock64K																-> +99.5%
+				(+) eraseChip																		-> +12%
+
+--> Constructor changed to enable user to choose one of multiple SPI ports - if available. Look at wiki for further info
+--> When RUNDIAGNOSTIC is uncommented in SPIFlash.h, users now have access to a new function called flash.functionRunTime() which can be called after any library I/O function is run. flash.functionRunTime() returns the time taken by the previous function to run, in microseconds (as a float). An example use case can be found when the FlashDiagnostics sketch is run with RUNDIAGNOSTIC uncommented.
+--> _notBusy() is faster
+--> Completely re-written FlashDiagnostics - uses fewer resources, compatible with more chips and boards
+--> All functions except the Byte/Char Array Read/Write functions now call an internal _write/_read function for increased ease of compilation, execution and troubleshooting
+--> Restructured the internal _troubleshoot() function to be better human readable and faster to compile.
+--> Added a function `getUniqueID()` which returns the unique ID of the flash memory chip as a 64-bit integer.
+--> Added an internal _readStat3() function to enable 4-byte addressing when using flash memory larger than 128 MB
+--> 4-byte addressing enabled in flash memory larger than 128 MB. This is currently only supported on the W25Q256 and W25Q512. More chips will be supported on a case-by-case basis
+--> getAddress() function now works anytime it is called - even if there is preexisting data on the chip
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 2.7.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						17.04.2017											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Bugs Squashed:
+--> ATTiny85 support available again.
+
+Deletions:
+-->
+
+New Boards supported:
+--> Arduino Zero now fully supported.
+
+Enhancements:
+--> Compatible with the ESP32 core for Arduino as of the current commit <a href = "https://github.com/espressif/arduino-esp32/tree/9618eec19ea470bb59b9a25ebeb8c0c516ca89cc">9618eec</a> on 02.08.2017. For some unknown reason, SPI clock speeds higher than board speed/4 are not stable and so, the clock speed for ESP32 dev boards has currently been throttled to 20MHz.
+NOTE: ESP32 boards usually have an SPIFlash already attached to their SS pin, so the user has to declare the ChipSelect pin being used when the constructor is declared - for example
+```
+SPIFlash flash(33);
+```
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 2.6.0 									   	   //
 //									Author: Prajwal Bhattaram									   //

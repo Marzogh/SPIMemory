@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced use errorCheck HIGHSPEED &mdash; SPIMemory 0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Contribute" href="../contribute.html" />
+    <link rel="prev" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY PREVWRITTEN" href="writeErrors.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> SPIMemory
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About SPIFlash</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="readDataIndependent.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readDataDependent.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="readSingleVariable.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="readArray.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="writeDataIndependent.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writeDataDependent.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="writeSingleVariable.html">Single variable write functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="writeArray.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code> <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIMemory/tree/master">Source Code</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SPIMemory</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API and Usage</a> &raquo;</li>
+        
+          <li><a href="writeFunc.html">Write functions</a> &raquo;</li>
+        
+      <li>Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/pages/SPIFlash/writeAdvanced.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="writeErrors.html" class="btn btn-neutral" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY PREVWRITTEN" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-use-errorcheck-highspeed">
+<span id="noteonerrorcheck"></span><h1>Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code><a class="headerlink" href="#advanced-use-errorcheck-highspeed" title="Permalink to this headline">¶</a></h1>
+<hr class="docutils" />
+<div class="section" id="errorcheck-warning-data-corruption-likely">
+<h2>errorCheck <code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">Data</span> <span class="pre">corruption</span> <span class="pre">likely</span></code><a class="headerlink" href="#errorcheck-warning-data-corruption-likely" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>All write functions have Error checking turned on by default - i.e. every byte written to the flash memory will be checked against the data provided by the user.</li>
+<li>This is controlled by an optional boolean argument <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code>. This argument defaults to <code class="docutils literal notranslate"><span class="pre">TRUE</span></code>, and does not need to be specified when calling a function.</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">);</span>
+<span class="c1">//or</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+<span class="c1">//yields the same results.</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Users who require greater write speeds can disable this function by setting the <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> argument in any write function to <code class="docutils literal notranslate"><span class="pre">NOERRCHK</span></code></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="c1">//Calling</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">,</span> <span class="n">NOERRCHK</span><span class="p">);</span>
+<span class="c1">//instead of</span>
+<span class="n">flash</span><span class="p">.</span><span class="n">writeByte</span><span class="p">(</span><span class="n">addressToWriteTo</span><span class="p">,</span> <span class="n">byteOfData</span><span class="p">);</span>
+<span class="c1">// will result in faster write speeds at the risk of not catching any errors in the writing process.</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<p><strong>This is useful only when the program calls for increased writing speed over data integrity. Data writes cannot be guaranteed free of errors if errorCheck is turned off</strong></p>
+<hr class="docutils" />
+</div>
+<div class="section" id="highspeed-mode-warning-data-corruption-likely">
+<span id="noteonhighspeed"></span><h2>Highspeed mode <code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">Data</span> <span class="pre">corruption</span> <span class="pre">likely</span></code><a class="headerlink" href="#highspeed-mode-warning-data-corruption-likely" title="Permalink to this headline">¶</a></h2>
+<p>The library - by default - checks to see if the address being written to contains pre-existing data. If it finds pre-existing data, it throws the error <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code>. This prevents the write function from running as fast as it theoretically could.</p>
+<p>If the user requires the library to operate at the highest speed possible, they must be sure that the user code does the following before every data write:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Makes sure that the flash memory chip does not contain any data before using it.</li>
+<li>Erases a sector before writing to it.</li>
+<li>Keeps track of addressing and makes sure no two bytes of data are ever written to the same address.</li>
+<li>Tracks previously written addresses in the user code and makes sure to erase them before writing new data at those addresses.</li>
+</ul>
+</div></blockquote>
+<p>Then, if <code class="docutils literal notranslate"><span class="pre">#define</span> <span class="pre">HIGHSPEED</span></code> is uncommented in <a class="reference external" href="https://github.com/Marzogh/SPIFlash/blob/762a8802f94e8f55713e56ce073aedd8a10bfe8d/src/SPIFlash.h#L45">SPIFlash.h</a> before the user code is compiled and uploaded, the write functions will run as fast as the flash memory hardware will permit them to.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">**WARNING**</span></code></p>
+<p>Please note that using a combination of the methods listed in <a class="reference internal" href="#noteonhighspeed"><span class="std std-ref">High speed mode</span></a> and <a class="reference internal" href="#noteonerrorcheck"><span class="std std-ref">Error checking</span></a> will result in the highest possible write speed from the library. However, this will result in the highest probability of write errors / data corruption as well.</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">**WARNING**</span></code></p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="writeErrors.html" class="btn btn-neutral" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY PREVWRITTEN" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Prajwal Bhattaram.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

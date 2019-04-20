@@ -3,17 +3,19 @@ sudo: false
 before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/Marzogh/Travis-CI/master/install.sh)
 script:
-  #- build_main_platforms
-  - build_platform uno
-  - build_platform due
+  - build_main_platforms
+  #- build_platform rtl8195a
+  #- build_platform uno
+  #- build_platform due
   #- build_platform zero
-  - build_platform esp8266
-  - build_platform leonardo
-  - build_platform rtl8195a
-  - build_platform simblee
-  - build_platform mega
-  - build_platform fio
-  - build_platform micro
+  #- build_platform esp8266
+  #- build_platform leonardo
+  #- build_platform mega
+  #- build_platform rtl8195a
+  #- build_platform simblee
+  #- build_platform cplayClassic
+  #- build_platform cplayExpress
+  #- build_platform trinket
 notifications:
   email:
     on_success: change
