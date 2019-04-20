@@ -54,16 +54,16 @@ Example code:
   void setup() {
     flash.begin();
     _address = flash.getAddress(sizeof(dataIn));
-    Serial.print("Address = ");
+    Serial.print(F("Address = "));
     Serial.println(_address);
 
-    Serial.print("writeAnything()");
+    Serial.print(F("writeAnything()"));
     if (!flash.writeAnything(_address, dataOut)) { // Function is used to write the data to
                                                    // address '_address'
-      Serial.println("Failed");
+      Serial.println(F("Failed"));
     }
     else {
-      Serial.println("Passed");
+      Serial.println(F("Passed"));
     }
     ...
   }

@@ -54,7 +54,7 @@ Example code:
     flash.begin();
     uint16_t manID = flash.getManID();      // Function is used to get the manufacturer ID and store it as
                                             // a 16 bit unsigned integer
-    Serial.print("Chip Manufacturer ID: 0x");
+    Serial.print(F("Chip Manufacturer ID: 0x"));
     Serial.println(manID, HEX);                  // The manufacturer ID is printed as a Hexadecimal number
     ...
   }
@@ -101,7 +101,7 @@ Example code:
     flash.begin();
     uint32_t JEDEC = flash.getJEDECID();      // Function is used to get the JEDEC ID and store it as
                                               // a 32 bit unsigned integer
-    Serial.print("JEDEC ID: 0x");
+    Serial.print(F("JEDEC ID: 0x"));
     Serial.println(JEDEC, HEX);                  // The JEDEC ID is printed as a Hexadecimal number
     ...
   }
@@ -150,7 +150,7 @@ Example code:
     flash.begin();
     uint64_t uniqueID = flash.getUniqueID();      // Function is used to get the unique ID and store it as
                                                   // a 64 bit unsigned integer
-    Serial.print("Unique ID: 0x");
+    Serial.print(F("Unique ID: 0x"));
     Serial.println(uniqueID, HEX);                  // The unique ID is printed as a Hexadecimal number
     ...
   }
@@ -197,7 +197,7 @@ Example code:
     flash.begin();
     uint32_t cap = flash.getCapacity();      // Function is used to get the unique ID and store it as
                                                   // a 32 bit unsigned integer
-    Serial.print("Capacity: ");
+    Serial.print(F("Capacity: "));
     Serial.println(cap);               // The unique ID is printed as a decimal number - in bytes
     ...
   }
@@ -253,7 +253,7 @@ Example code:
     flash.begin();
     uint32_t maxPage = flash.getMaxPage();  // Function is used to get the number of pages and store it as
                                             // a 32 bit unsigned integer
-    Serial.print("Maximum pages: ");
+    Serial.print(F("Maximum pages: "));
     Serial.println(maxPage);                  // The number of pages is printed
     ...
   }
