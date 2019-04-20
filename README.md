@@ -5,7 +5,7 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
 
-## Arduino library for Flash Memory Chips (SPI based only)
+## Arduino library for Flash & FRAM Memory Chips (SPI based only)
 <sup> Download the latest stable release from [here](https://github.com/Marzogh/SPIMemory/releases/latest). Please report any bugs in [issues](https://github.com/Marzogh/SPIMemory/issues/new).</sup>
 
 This Arduino library is for use with flash memory chips that communicate using the SPI protocol. In its current form it supports identifying the flash chip and its various features; automatic address allocation and management; writing and reading a number of different types of data, ranging from 8-bit to 32-bit (signed and unsigned) values, floats, Strings, arrays of bytes/chars and structs to and from various locations; sector, block and chip erase; and powering down for low power operation.
@@ -32,11 +32,10 @@ This Arduino library is for use with flash memory chips that communicate using t
 | ATSAMD51J19 (ARM Cortex M4) | Adafruit Metro M4 | - |
 | STM32F091RCT6 | Nucleo-F091RC | |
 | ESP8266 | Adafruit ESP8266 Feather, <br> Sparkfun ESP8266 Thing | - |
-| ESP32 | Adafruit ESP32 Feather, <br> Sparkfun ESP32 Thing | In BETA. Refer to footnote<sup>£</sup> below. |
+| ESP32 | Adafruit ESP32 Feather, <br> Sparkfun ESP32 Thing | Onboard flash memory. Refer to footnote<sup>£</sup> below. |
 | Simblee | Sparkfun Simblee | - |
 
-<sup>£ </sup><sub> ESP32 Boards (Tested on the Adafruit ESP32 Feather) The library is known to work with the ESP32 core as of the commit <a href = "https://github.com/espressif/arduino-esp32/tree/25dff4f044151f7f766c64b9d2ad90398472e6b3">25dff4f</a> on 05.04.2018. ```ESP32 support will remain in beta till the ESP32 core can be installed via the Arduino boards manager.```
-NOTE: ESP32 boards usually have an SPI Flash already attached to their default SS pin, so the user has to explicitly declare the `ChipSelect` pin being used with the constructor</sub>
+<sup>£ </sup><sub> ESP32 boards usually have an SPI Flash already attached to their default SS pin, so the user has to explicitly declare the `ChipSelect` pin being used with the constructor</sub>
 
 <hr>
 
@@ -45,7 +44,7 @@ NOTE: ESP32 boards usually have an SPI Flash already attached to their default S
 | Manufacturer | Flash IC | Notes |
 | ------------ | -------- | ----- |
 | Winbond | W25Q16BV <br> W25Q64FV <br> W25Q64JV <br> W25Q80BV <br> W25Q256FV | Should work with the W25QXXXBV, W25QXXXFV & <br> W25QXXXJV families |
-| Microchip | SST25VF064C <br> SST26VF064B | Should work with the SST25 & SST26 families |
+| Microchip | SST25VF064C <br> SST26VF016B <br> SST26VF032B <br> SST26VF064B | Should work with the SST25 & SST26 families |
 | Cypress/Spansion | S25FL032P <br> S25FL116K <br> S25FL127S | Should work with the S25FL family |
 | ON Semiconductor | LE25U40CMC  |  |
 | AMIC| A25L512A0  |  |
@@ -81,6 +80,8 @@ NOTE: ESP32 boards usually have an SPI Flash already attached to their default S
 
 ### Usage
 
+#### SPIFlash
+
 - The library is called by declaring the```SPIFlash flash(csPin*)``` constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
 
     <sub>* Optional. Do not include csPin if using the default slave select pin for your board.</sub>
@@ -99,6 +100,18 @@ As of v3.2.1, SFDP parameter discovery is an user controlled option. To get the 
 
 
 - All write functions have Error checking turned on by default - i.e. every byte written to the flash memory will be checked against the data stored on the Arduino. Users who require greater write speeds can disable this function by setting an optional last 'errorCheck' argument in any write function to NOERRCHK - For eg. call the function ```writeByte(address, *data_buffer, NOERRCHK)``` instead of ```writeByte(address, *data_buffer)```.
+
+#### SPIFram <sup>^</sup>
+
+- The library is called by declaring the```SPIFram fram(csPin*)``` constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
+
+    <sub>* Optional. Do not include csPin if using the default slave select pin for your board.</sub>
+- Every version of the library >= v3.0.0 supports the ability to use any of multiple SPI interfaces (if your micro-controller supports them). Switching to use another SPI interface is done by calling ```SPIFram fram(csPin, &SPI1);``` (or &SPI2 and so on), instead of ```SPIFram fram(csPin)```.
+
+    <sub>* NOTE: This is currently only officially supported on the SAMD and STM32 architectures.</sub>
+- Also make sure to include ```fram.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of flash chip installed and load the right parameters.
+
+<sup>^</sup> <sub> Currently in BETA. The methods in SPIFram are not final and subject to change over the next few revisions.</sub>
 
 The library enables the following functions:
 <hr>
