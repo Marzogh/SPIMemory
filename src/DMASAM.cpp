@@ -1,5 +1,5 @@
 /* Arduino SPIMemory Library v.3.3.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 30/09/2016
  * Original code from @manitou48 <https://github.com/manitou48/DUEZoo/blob/master/dmaspi.ino>
  * Modified by Prajwal Bhattaram - 19/06/2018

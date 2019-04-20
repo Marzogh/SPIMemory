@@ -1,5 +1,5 @@
 /* Arduino SPIMemory Library v.3.3.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 14/11/2016
  * Modified by Prajwal Bhattaram - 19/06/2018
  *
