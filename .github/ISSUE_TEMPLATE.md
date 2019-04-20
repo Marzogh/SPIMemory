@@ -1,65 +1,21 @@
-![GitHub issue state](https://img.shields.io/github/issues/detail/s/Marzogh/SPIFlash/14.svg) ![GitHub issue title](https://img.shields.io/github/issues/detail/title/Marzogh/SPIFlash/14.svg)
-![GitHub issue author](https://img.shields.io/github/issues/detail/u/Marzogh/SPIFlash/14.svg) ![GitHub issue label](https://img.shields.io/github/issues/detail/label/Marzogh/SPIFlash/14.svg) ![GitHub issue comments](https://img.shields.io/github/issues/detail/comments/Marzogh/SPIFlash/14.svg)
-![GitHub issue age](https://img.shields.io/github/issues/detail/age/Marzogh/SPIFlash/14.svg) ![GitHub issue last update](https://img.shields.io/github/issues/detail/last-update/Marzogh/SPIFlash/14.svg)
-###### ---------------------------- **DO NOT DELETE OR EDIT** anything above this line ----------------------------
+##### Any bug report / feature request raised here MUST be submitted according to the respective templates or they will be flagged with 'Not enough information'. No action will be taken till all the prerequisite information (according to the right template) is provided. If no information is provided for over a month after the 'Not enough information' label is applied, the issue will be closed.
+
+##### For support questions (for example, tutorials on how to use the library), please use the [Arduino Forums](http://forum.arduino.cc/index.php?topic=324009.0). This repository's issues are reserved for feature requests and bug reports.
 
 
-Hey there! Thanks for using the SPIFlash library for Arduino.
-### Please note that starting 01.03.2018 any issue raised here MUST be submitted according to this template or it will be flagged with 'Not enough information'. No action will be taken till all the prerequisite information is provided. If no information is provided for over a month, the issue will be closed.
+Hey there! Thanks for using the SPIFlash library for Arduino. Please explain your issue in a clear and succinct manner - using code examples if required - below.
 
-**Note: For support questions, please use the [Arduino Forums](http://forum.arduino.cc/index.php?topic=324009.0). This repository's issues are reserved for feature requests and bug reports.**
 
-# Issue details
+<hr>
 
-**I'm submitting a ...**
-  - [ ] bug report
-  - [ ] feature request
-  - [ ] support request => Please do not submit support request here, see note at the top of this template.
+###### DO NOT DELETE OR EDIT anything below this
 
-Do the checklist before filing an issue:
+<hr>
 
-- [ ] Is this something you can **debug and fix**? Send a pull request! Bug fixes and documentation fixes are welcome.
-- [ ] Is this an idea for a feature? Post the feature request as an issue here with a title that clearly says "Feature Request".
-- [ ] Is this a bug that you cannot fix? Post the bug report as an issue here with a title that clearly says "Bug Report".
+<sub> <b> Note 1: _Make sure to add **all the information needed to understand the bug** so that someone can help. If any essential information is missing we'll add the 'Needs more information' label and close the issue until there is enough information._ </b></sub>
 
-When opening an issue please include the following details:
--------------------------------------------------------------
+<sub> <b> Note 2: For support questions (for example, tutorials on how to use the library), please use the [Arduino Forums](http://forum.arduino.cc/index.php?topic=324009.0). This repository's issues are reserved for feature requests and bug reports. </b></sub>
 
-- [ ] Do you want to request a *feature* or report a *bug*?
-- [ ] Which library version are you using?
-- [ ] Which Arduino IDE version are you compiling the library on?
-- [ ] Which OS are you compiling your code on? [Linux / Mac / Windows]
-- [ ] Which micro controller platform are you using?
-- [ ] Which Flash memory module are you using?
-- [ ] What is the current behavior?
-- [ ] What is the expected behavior?
+<hr>
 
---------------------------
-###### Bug reports only
-- If this is a bug report -
-
-- [ ] Make sure you have run FlashDiagnostics.ino with ``` #define RUNDIAGNOSTICS ``` uncommented in SPIFlash.h. Paste the **relevant sections** of the output from your Serial console when you run FlashDiagnostics.ino.here:
-```
-```FlashDiagnostics output```
-```
-- [ ] If you have a problem with a particular function, call the flash.error() function (after you have made sure you have started up your Serial port with a ``` Serial.begin(BAUD) ``` ). Provide details of the function, the data given to/ expected from the function and the error code here: (**Please repeat this for every function you have an error with***)
-        Function -
-        Data -
-        Error code -
-- [ ] Provide a **minimal code snippet** example that reproduces the bug (If you're using one of the examples that came with the library, just tell us which one). Please make sure you wrap any code in the proper code blocks like below
-```
-```CODE HERE```
-```
-- [ ] Provide **screenshots** where appropriate
-- [ ] Provide **wiring diagram** where appropriate
-
------------------------------
-###### Feature Requests only
-
-- [ ] If this is a feature request, what is the motivation / use case for changing the behavior?
-
-----------------------------
-
-- [ ] Other information (e.g. detailed explanation, related issues, suggestions how to fix, links for us to have context etc.)
-
-_Make sure to add **all the information needed to understand the bug/feature** so that someone can help. If the info is missing we'll add the 'Needs more information' label and close the issue until there is enough information._
+![GitHub issue state](https://img.shields.io/github/issues/detail/s/Marzogh/SPIFlash/14.svg) ![GitHub issue title](https://img.shields.io/github/issues/detail/title/Marzogh/SPIFlash/14.svg) ![GitHub issue author](https://img.shields.io/github/issues/detail/u/Marzogh/SPIFlash/14.svg) ![GitHub issue label](https://img.shields.io/github/issues/detail/label/Marzogh/SPIFlash/14.svg) ![GitHub issue comments](https://img.shields.io/github/issues/detail/comments/Marzogh/SPIFlash/14.svg) ![GitHub issue age](https://img.shields.io/github/issues/detail/age/Marzogh/SPIFlash/14.svg) ![GitHub issue last update](https://img.shields.io/github/issues/detail/last-update/Marzogh/SPIFlash/14.svg)
