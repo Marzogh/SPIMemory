@@ -1,6 +1,6 @@
 # SPIMemory [![Build Status](https://travis-ci.org/Marzogh/SPIMemory.svg?branch=master)](https://travis-ci.org/Marzogh/SPIMemory) [![DOI](https://zenodo.org/badge/35823047.svg)](https://zenodo.org/badge/latestdoi/35823047)
 [![GitHub release](https://img.shields.io/github/release/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory)
-[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.1.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.1.0...development)
+[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.2.1.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.2.1...v3.3.0)
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
