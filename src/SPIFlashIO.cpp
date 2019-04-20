@@ -79,7 +79,7 @@
 
  // Checks to see if the block of memory has been previously written to
  bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
-   uint8_t _dat;
+   //uint8_t _dat;
    _beginSPI(READDATA);
    for (uint32_t i = 0; i < size; i++) {
      if (_nextByte(READ) != 0xFF) {
@@ -605,6 +605,7 @@
      }
 
    }
+   return true;
  }
 
  //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
