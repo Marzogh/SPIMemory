@@ -1,5 +1,5 @@
 /* Arduino SPIMemory Library v.3.3.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 18/04/2018
  * Modified by Prajwal Bhattaram - 19/06/2018
  *
@@ -113,7 +113,7 @@ bool SPIFlash::_checkForSFDP(void) {
   if (_getSFDPdword(SFDP_HEADER_ADDR, SFDP_SIGNATURE_DWORD) == SFDPSIGNATURE) {
     _chip.sfdpAvailable = true;
     #ifdef RUNDIAGNOSTIC
-    Serial.println("SFDP available");
+    Serial.println(F("SFDP available"));
     #endif
   }
   else {

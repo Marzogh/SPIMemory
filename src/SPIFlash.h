@@ -1,8 +1,8 @@
 /* Arduino SPIMemory Library v.3.3.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 11/08/2018
+ * Modified by Prajwal Bhattaram - 20/04/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -285,7 +285,7 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
     return false;
   }
   _addrIn = _currentAddress;
-  //Serial.print("_addrIn: ");
+  //Serial.print(F("_addrIn: "));
   //Serial.println(_addrIn, HEX);
   const uint8_t* p = ((const uint8_t*)(const void*)&value);
   //Serial.print(F("Address being written to: "));

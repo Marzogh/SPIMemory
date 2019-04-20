@@ -1,7 +1,7 @@
 /* Arduino SPIMemory Library v.3.3.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 19/06/2018
+ * Modified by Prajwal Bhattaram - 20/04/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,

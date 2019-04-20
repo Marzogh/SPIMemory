@@ -23,7 +23,7 @@ Hey there! Thanks for using the SPIFlash library for Arduino.
 
 
 
-* **What is the new behavior (if this is a feature change)?**
+* **What is the new behavior?** (if this is a feature change)
 
 
 

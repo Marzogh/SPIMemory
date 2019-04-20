@@ -4,15 +4,20 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.3.0 									   	   //
 //									Author: Prajwal Bhattaram									   //
-//					  						13.04.2018											   //
+//					  						20.04.2019											   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-Library now supports FRAM memory. Refer to the RAM section of the ReadMe file for more information
+Library now supports FRAM memory (In BETA). Documentation for this is in progress.
 
 Bugs squashed:
---> Fixed a major bug in how SFDP data is used to calculate chip capacity. The previous version of the library returned a wrong value. This has now been fixed. Refer to comments in _getSFDPFlashParam(void) for further details.
+--> Fixed a major bug causing issues with page boundaries in writeAnything and writeStr. Thanks for your help @jacky4566 (Issue #151)
+--> Fixed a major bug with reading Strings (Issue #143)
+--> @incorvia fixed a bug by initialising the SPIBusState to false
 --> Fixes bug that causes ballooning of pagesize when SFDP is not read. This is because no default _pageSize value was set in this scenario. This has now been fixed.
+--> Fixed a major bug in how SFDP data is used to calculate chip capacity. The previous version of the library returned a wrong value. This has now been fixed. Refer to comments in _getSFDPFlashParam(void) for further details.
 
 Enhancements:
+--> Reduce SRAM footprint when running Diagnostics.ino. Thanks @rambo (PR #157)
+--> Officially supports the ESP32 (tested on the ESP32 Feather)
 --> Now supports FRAM memory chips via the `SPIFram` constructor
 --> Changed Diagnostics output in _chipID() to match situation better.
 --> Fixed _chipID() to run more efficiently.
@@ -20,6 +25,7 @@ Enhancements:
 New flash memory chips supported:
 --> GD25Q16C from Giga devices (Used on the Adafruit ItsyBitsy M0 Express)
 --> W25Q64JV from Winbond
+--> SST26VF016B & SST26VF032B from Microchip. (Thanks @mix86)
 
 New FRAM memory chips supported:
 --> FM25W256 from Cypress

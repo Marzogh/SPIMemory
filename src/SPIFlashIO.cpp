@@ -1,8 +1,8 @@
 /* Arduino SPIMemory Library v.3.3.0
- * Copyright (C) 2017 by Prajwal Bhattaram
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 19/06/2018
+ * Modified by Prajwal Bhattaram - 20/04/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -51,11 +51,11 @@
      return false;
  	}
 
-   //Serial.print("_chip.capacity: ");
+   //Serial.print(F("_chip.capacity: "));
    //Serial.println(_chip.capacity, HEX);
 
    if (_submittedAddress + size >= _chip.capacity) {
-     //Serial.print("_submittedAddress + size: ");
+     //Serial.print(F("_submittedAddress + size: "));
      //Serial.println(_submittedAddress + size, HEX);
    #ifdef DISABLEOVERFLOW
      _troubleshoot(OUTOFBOUNDS);
@@ -63,7 +63,7 @@
    #else
      _addressOverflow = ((_submittedAddress + size) - _chip.capacity);
      _currentAddress = _addr;
-     //Serial.print("_addressOverflow: ");
+     //Serial.print(F("_addressOverflow: "));
      //Serial.println(_addressOverflow, HEX);
      return true;					// At end of memory - (pageOverflow)
    #endif
@@ -73,7 +73,7 @@
      _currentAddress = _addr;
      return true;				// Not at end of memory if (address < _chip.capacity)
    }
-   //Serial.print("_currentAddress: ");
+   //Serial.print(F("_currentAddress: "));
    //Serial.println(_currentAddress, HEX);
  }
 
@@ -559,7 +559,7 @@
 
    if (_chip.supportedMan) {
      #ifdef RUNDIAGNOSTIC
-       Serial.println("No Chip size defined by user. Checking library support.");
+       Serial.println(F("No Chip size defined by user. Checking library support."));
      #endif
      //Identify capacity
      for (uint8_t j = 0; j < sizeof(_capID); j++) {
@@ -567,7 +567,7 @@
          _chip.capacity = (_memSize[j]);
          _chip.supported = true;
          #ifdef RUNDIAGNOSTIC
-           Serial.println("Chip identified. This chip is fully supported by the library.");
+           Serial.println(F("Chip identified. This chip is fully supported by the library."));
          #endif
          return true;
        }
@@ -592,7 +592,7 @@
      if (flashChipSize) {
        // If a custom chip size is defined
        #ifdef RUNDIAGNOSTIC
-       Serial.println("Custom Chipsize defined");
+       Serial.println(F("Custom Chipsize defined"));
        #endif
        _chip.capacity = flashChipSize;
        _chip.supported = false;
