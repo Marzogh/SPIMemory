@@ -2,9 +2,9 @@
 
 ##### For support questions (for example, tutorials on how to use the library), please use the [Arduino Forums](http://forum.arduino.cc/index.php?topic=324009.0). This repository's issues are reserved for feature requests and bug reports.
 
+<hr>
 
-Hey there! Thanks for using the SPIFlash library for Arduino. Please explain your issue in a clear and succinct manner - using code examples if required - below.
-
+Hey there! Thanks for using the SPIFlash library for Arduino. Please explain your issue in a clear and succinct manner - using code examples if required - here.
 
 <hr>
 
