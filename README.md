@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
+[![Join the chat at https://gitter.im/SPIMemory/community](https://badges.gitter.im/SPIMemory/community.svg)](https://gitter.im/SPIMemory/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Arduino library for Flash & FRAM Memory Chips (SPI based only)
 <sup> Download the latest stable release from [here](https://github.com/Marzogh/SPIMemory/releases/latest). Please report any bugs in [issues](https://github.com/Marzogh/SPIMemory/issues/new).</sup>
