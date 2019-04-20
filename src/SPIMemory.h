@@ -115,8 +115,8 @@
 #endif
 
 #define LIBVER 3
-#define LIBSUBVER 2
-#define BUGFIXVER 1
+#define LIBSUBVER 3
+#define BUGFIXVER 0
 
 class SPIMemory {
 public:
