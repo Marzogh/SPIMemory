@@ -1,12 +1,11 @@
-/* Arduino SPIMemory Library v.3.2.1
+/* Arduino SPIMemory Library v.3.3.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 21/05/2018
+ * Modified by Prajwal Bhattaram - 19/06/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -87,6 +86,7 @@
 #define RELEASE       0xAB
 #define READSFDP      0x5A
 #define UNIQUEID      0x4B
+#define FRAMSERNO     0xC3
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
@@ -151,6 +151,7 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define CYPRESS_MANID         0x01
+  #define RAMTRON_FRAM_MANID    0xC2
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define ADESTO_MANID         0x1F
@@ -161,6 +162,9 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ ON ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define ON_MANID             0x62
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Giga ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define GIGA_MANID            0xC8
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define AMIC_MANID           0x37
@@ -184,6 +188,7 @@
 #define NULLBYTE      0x00
 #define NULLINT       0x0000
 #define NO_CONTINUE   0x00
+#define NOVERBOSE     0x00
 #define PASS          0x01
 #define FAIL          0x00
 #define NOOVERFLOW    false

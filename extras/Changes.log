@@ -2,6 +2,28 @@
 //										  SPIMemory Library 				 						   //
 //					  				  		Changes log 									   	   //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//				 	 						Version 3.3.0 									   	   //
+//									Author: Prajwal Bhattaram									   //
+//					  						13.04.2018											   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+Library now supports FRAM memory. Refer to the RAM section of the ReadMe file for more information
+
+Bugs squashed:
+--> Fixed a major bug in how SFDP data is used to calculate chip capacity. The previous version of the library returned a wrong value. This has now been fixed. Refer to comments in _getSFDPFlashParam(void) for further details.
+--> Fixes bug that causes ballooning of pagesize when SFDP is not read. This is because no default _pageSize value was set in this scenario. This has now been fixed.
+
+Enhancements:
+--> Now supports FRAM memory chips via the `SPIFram` constructor
+--> Changed Diagnostics output in _chipID() to match situation better.
+--> Fixed _chipID() to run more efficiently.
+
+New flash memory chips supported:
+--> GD25Q16C from Giga devices (Used on the Adafruit ItsyBitsy M0 Express)
+--> W25Q64JV from Winbond
+
+New FRAM memory chips supported:
+--> FM25W256 from Cypress
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //				 	 						Version 3.2.1 									   	   //
 //									Author: Prajwal Bhattaram									   //
 //					  						13.04.2018											   //

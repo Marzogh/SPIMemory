@@ -1,12 +1,11 @@
-/* Arduino SPIMemory Library v.3.2.0
+/* Arduino SPIMemory Library v.3.3.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 14/11/2016
- * Modified by Prajwal Bhattaram - 20/04/2018
+ * Modified by Prajwal Bhattaram - 19/06/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -70,7 +69,8 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
 
       case UNKNOWNCHIP:
       Serial.println(F("Unable to identify chip. Are you sure this chip is supported?"));
-      Serial.println(F("Chip details:"));
+      //Serial.println(F("Chip details:"));
+      //TODO: Insert a diagnostics subroutine here.
       break;
 
       case UNKNOWNCAP:
@@ -125,7 +125,7 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
       break;
 
       case CHIPISPOWEREDDOWN:
-      Serial.println(F("The Flash chip is currently powered down."));
+      Serial.println(F("The chip is currently powered down."));
       break;
 
       case NOSFDP:
