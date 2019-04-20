@@ -58,16 +58,16 @@ Example code:
   void setup() {
     flash.begin();
     _address = flash.getAddress(sizeof(dataIn));
-    Serial.print("Address = ");
+    Serial.print(F("Address = "));
     Serial.println(_address);
 
     dataIn = flash.readByteArray(_address, dataIn, _bufferSize);
     // This function should be changed depending on the type of data being read from the flash memory
 
-    Serial.print("Data read: ");
+    Serial.print(F("Data read: "));
     for (uint8_t i = 0; i < _bufferSize; i++) {
       Serial.print(dataIn[i]);
-      Serial.print(", ");
+      Serial.print(F(", "));
     }
     Serial.println();
 
