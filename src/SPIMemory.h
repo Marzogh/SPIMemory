@@ -1,12 +1,11 @@
-/* Arduino SPIMemory Library v.3.2.1
+/* Arduino SPIMemory Library v.3.3.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 18/04/2018
- * Modified by Prajwal Bhattaram - 21/05/2018
+ * Modified by Prajwal Bhattaram - 02/04/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -74,6 +73,7 @@
   #include <SPI.h>
   #include "defines.h"
   #include "SPIFlash.h"
+  #include "SPIFram.h"
   #include "diagnostics.h"
 
 #if defined (ARDUINO_ARCH_SAM)
@@ -115,8 +115,8 @@
 #endif
 
 #define LIBVER 3
-#define LIBSUBVER 2
-#define BUGFIXVER 1
+#define LIBSUBVER 3
+#define BUGFIXVER 0
 
 class SPIMemory {
 public:

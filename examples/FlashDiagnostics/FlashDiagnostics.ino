@@ -59,7 +59,7 @@ void setup() {
   //flash.begin(MB(1));
 
   if (getID()) {
-    
+
     printLine();
     printTab(7);
     Serial.print("Testing library code");
@@ -71,14 +71,14 @@ void setup() {
     printTab(3);
     Serial.print("     Runtime");
     printLine();
-    
+
     powerDownTest();
     Serial.println();
     powerUpTest();
     Serial.println();
-    
+
     Serial.println();
-    
+
     eraseChipTest();
     Serial.println();
     eraseSectionTest();
@@ -107,7 +107,7 @@ void setup() {
     printTab(1);
     Serial.print("      Read time");
     printLine();
-    
+
     byteTest();
     Serial.println();
     charTest();

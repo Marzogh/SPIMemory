@@ -54,15 +54,15 @@ Example code:
   void setup() {
     flash.begin();
     _address = flash.getAddress(sizeof(dataIn));
-    Serial.print("Address = ");
+    Serial.print(F("Address = "));
     Serial.println(_address);
-    Serial.print("readAnything()");
+    Serial.print(F("readAnything()"));
     if (!flash.readAnything(_address, dataIn)) { // Function is used to get the data from
                                                // address '_address' and save it to the struct 'test'
-      Serial.println("Failed");
+      Serial.println(F("Failed"));
     }
     else {
-      Serial.println("Passed");
+      Serial.println(F("Passed"));
     }
     ...
   }
