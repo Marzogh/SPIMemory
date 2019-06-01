@@ -76,7 +76,7 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 - The way the basic functions execute has been modified to keep the function runtime the same (or improved) while reducing their memory footprint.
 
 | Test sketch  | Test platform |
-|:-----:|:-----:|:-----:|
+|:-----:|:-----:|
 |FlashDiagnostics.ino from v3.2.0<br>with #RUNDIAGNOSTIC commented out | Arduino Pro Mini 8MHz 3.3V |
 
 
