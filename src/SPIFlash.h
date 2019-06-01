@@ -157,7 +157,7 @@ private:
   //-------------------------------- Private variables ----------------------------------//
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
-    bool _settings_set = false;
+    bool _SPISettingsSet = false;
   #else
     uint8_t _clockdiv;
   #endif

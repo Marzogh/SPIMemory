@@ -123,7 +123,7 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
-  if (!_settings_set) {
+  if (!_SPISettingsSet) {
     _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
   }
 #else
@@ -143,7 +143,7 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef SPI_HAS_TRANSACTION
 void SPIFlash::setClock(uint32_t clockSpeed) {
   _settings = SPISettings(clockSpeed, MSBFIRST, SPI_MODE0);
-  _settings_set = true;
+  _SPISettingsSet = true;
 }
 #else
 void SPIFlash::setClock(uint8_t clockdiv) {
