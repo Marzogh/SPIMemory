@@ -22,7 +22,7 @@ SPIFlash flash(int8_t *SPIPinsArray);
 ```
 can be used (only with ESP32 boards as of now) to enable the use of custom SPI pins. ```SPIPinsArray``` has to be a 4 element array containing the custom SPI pin numbers (as signed integers - int8_t) in the following order - sck, miso, mosi, ss. Refer to the wiki for more information. Resolves #113
 - Created new error code `NOCHIPSELECTDECLARED` for errors with declaring custom SPI pins.
-- Using other SPI ports (HSPI, VSPI, SPI1, SPI2 etc.) is now also supported on ESP32 boards - along with SAMD and STM32 boards (supported since v3.0.0). Resolves #117
+- Using other SPI ports (HSPI, VSPI, SPI1, SPI2 etc.) is now also supported on ESP32 boards - along with SAMD and STM32 boards (supported since v3.0.0). Resolves #177
 
 ###### New flash memory chips supported:
 
