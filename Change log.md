@@ -25,6 +25,7 @@ SPIFlash flash(int8_t *SPIPinsArray);
 can be used (only with ESP32 boards as of now) to enable the use of custom SPI pins. ```SPIPinsArray``` has to be a 4 element array containing the custom SPI pin numbers (as signed integers - int8_t) in the following order - sck, miso, mosi, ss. Refer to the wiki for more information. Resolves #113
 - Created new error code `NOCHIPSELECTDECLARED` for errors with declaring custom SPI pins.
 - Using other SPI ports (HSPI, VSPI, SPI1, SPI2 etc.) is now also supported on ESP32 boards - along with SAMD and STM32 boards (supported since v3.0.0). Resolves #177
+- Formatted and merged pull request #153. This changes the way [setClock()](https://github.com/Marzogh/SPIMemory/wiki/Library-instantiation-functions#setclockclockspeed) works and allows for the definition of clock speed before the SPI Bus is instantiated. Refer to [wiki](https://github.com/Marzogh/SPIMemory/wiki/Library-instantiation-functions#setclockclockspeed) for further details. Thanks @rambo.
 
 ###### New flash memory chips supported:
 
