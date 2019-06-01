@@ -10,7 +10,9 @@
 >This Arduino library is for use with flash and FRAM memory chips that communicate using the SPI protocol. In its current form it supports identifying the flash/FRAM chip and its various features; automatic address allocation and management; writing and reading a number of different types of data, ranging from 8-bit to 32-bit (signed and unsigned) values, floats, Strings, arrays of bytes/chars and structs to and from various locations; sector, block and chip erase; and powering down for low power operation.
 
 <hr>
+
 ## Version 3.4.0 (In progress)
+
 #### Release date TBA
 
 ###### Bugs squashed:
@@ -30,7 +32,9 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 
 
 <hr>
+
 ## Version 3.3.0
+
 #### Release date 20.04.2019
 
 >Library now supports FRAM memory (In BETA). Documentation for this is in progress.
@@ -58,7 +62,9 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 - FM25W256 from Cypress
 
 <hr>
+
 ## Version 3.2.1
+
 #### Release date 13.04.2018
 
 ###### Bugs squashed
@@ -82,7 +88,9 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 | v3.2.1 | 17854 bytes | SFDP discovery turned on | 1.1% larger than v3.1.0 |
 
 <hr>
+
 ## Version 3.2.0
+
 #### Release date 24.01.2018
 
 - Library name changed to SPIMemory
@@ -99,7 +107,7 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 - S25FL032P from Cypress/Spansion
 
 ###### New Microcontrollers supported
---> ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
+- ATSAMD51J19 ARM Cortex M4 (Adafruit Metro M4)
 
 ###### Enhancements
 The library now does the following - if the flash memory chip is compatible with the SFDP standard:
@@ -115,9 +123,12 @@ The library now does the following - if the flash memory chip is compatible with
 - Fixes #125 in commit 10c2b86. The library automatically uses the alternate chip erase code (0xC7) as required (only on fully supported chips)
 
 <hr>
+
 ## Version 3.1.0
+
 #### Release date 24.01.2018
-- Library name change notice inserted into `flash.begin()`. This notice can be dismissed by commenting out the instance of `#define PRINTNAMECHANGEALERT` in SPIFlash.h. Please refer to the Readme file for further details.
+
+>Library name change notice inserted into `flash.begin()`. This notice can be dismissed by commenting out the instance of `#define PRINTNAMECHANGEALERT` in SPIFlash.h. Please refer to the Readme file for further details.
 
 Bugs squashed
 - An error with how `_addressCheck()` works with data that spans the memory boundary - when rolling over from address `_chip.capacity` to address `0x00` - has been fixed. In previous versions this caused issues with writing complex data structures across the memory boundary and led to many `_writeErrorCheck()` failures. Fixes issue #112
@@ -137,7 +148,9 @@ Bugs squashed
 - S25FL127S
 
 <hr>
+
 ## Version 3.0.1
+
 #### Release date 10.12.2017
 
 ###### Bugs squashed:
@@ -149,12 +162,14 @@ Bugs squashed
 
 - Fixes a major bug that was causing input Arrays to be overwritten by zeros during the writeByteArray() / writeCharArray() process. Thanks for catching this @hanyazou. (Issue #102)
 
-New flash memory chips supported:
+###### New flash memory chips supported:
 - S25FL127S
 
 
 <hr>
+
 ## Version 3.0.0
+
 #### Release date 09.08.2017
 
 ###### Bugs Squashed:
@@ -226,7 +241,9 @@ flash.begin(flashChipSize)
 - `getAddress()` function now works anytime it is called - even if there is preexisting data on the chip
 
 <hr>
+
 ## Version 2.7.0
+
 #### Release date 17.04.2017
 
 ###### Bugs Squashed:
@@ -242,7 +259,9 @@ flash.begin(flashChipSize)
 `SPIFlash flash(33);`_ </small>
 
 <hr>
+
 ## Version 2.6.0
+
 #### Release date 16.04.2017
 
 ###### Bugs Squashed:
@@ -277,7 +296,9 @@ flash.begin(flashChipSize)
 
 
 <hr>
+
 ## Version 2.5.0
+
 #### Release date 13.11.2016
 
 ###### Bugs Squashed:
@@ -303,7 +324,9 @@ flash.begin(flashChipSize)
 --> Reduces the program storage space in the uC's flash (AVR Boards only)
 
 <hr>
+
 ## Version 2.4.0
+
 #### Release date 11.09.2016
 
 ###### Bugs Squashed:
@@ -336,22 +359,31 @@ flash.begin(flashChipSize)
 - Using this library with an ESP8266 board defaults to using GPIO15 as the Slave Select - unless something different is explicitly specified in the constructor.
 
 <hr>
+
 ## Version 2.3.1
+
 #### Release date 19.06.2016
-- W25Q256FV support added. (Thanks [Stanislav-Povolotsky](https://github.com/Marzogh/SPIMemory/pull/26)!)
+
+- W25Q256FV support added. (Thanks [@Stanislav-Povolotsky](https://github.com/Marzogh/SPIMemory/pull/26)!)
 - Cleaned up redundant code in TestFlash.ino and SPIFlash.h
 
 <hr>
+
 ## Version 2.3.0
+
 #### Release date 04.06.2016
+
 - ESP8266 compatibility added
 - Compatible with Arduino Fio and Micro
 - Now compatible with Arduino IDE v1.6.9
-- Compatible with Arduino-Makefile. (Thanks [Raphael](https://github.com/Marzogh/SPIMemory/pull/21) !)
+- Compatible with Arduino-Makefile. (Thanks [@rnestler](https://github.com/Marzogh/SPIMemory/pull/21) !)
 
 <hr>
+
 ## Version 2.2.0
+
 #### Release date 24.11.2015
+
 - When `#RUNDIAGNOSTIC` is uncommented, the `_troubleshoot()` function is now optimised for different µCs
 - Added the ability to check if the address has been previously written to before initiating a write
 	operation.
@@ -362,7 +394,9 @@ flash.begin(flashChipSize)
 - Added `getAddressEx.ino` to show how `getAdress()` works.
 
 <hr>
+
 ## Version 2.1.1
+
 #### Release date 24.10.2015
 
 - Fixed bugs that prevented the following functions from working properly
@@ -373,7 +407,9 @@ flash.begin(flashChipSize)
 	* `resumeProg()`
 
 <hr>
+
 ## Version 2.1.0
+
 #### Release date 18.10.2015
 
 - Arduino Due compatible - refer to wiki for further details
@@ -394,8 +430,11 @@ flash.begin(flashChipSize)
 	respectively
 
 <hr>
+
 ## Version 2.0.0
+
 #### Release date 12.10.2015
+
 - Sped up all functions atleast 25x
 - Compatible with ATTiny85
 - All Read/Write/Erase functions can now take either (page number & offset) or (address) as arguments (Except `readPage()` & `printPage()`)
@@ -420,7 +459,9 @@ flash.begin(flashChipSize)
 	<sub> They can be used by uncommenting them in the SPIFlash.cpp file. However, be warned, this particular block of code has only been tested with the Arduino	IDE (1.6.5) and only with 8-bit AVR based Arduino boards and will not be supported any further.</sub>
 
 <hr>
+
 ## Version 1.3.2
+
 #### Release date 09.10.2015
 
 
