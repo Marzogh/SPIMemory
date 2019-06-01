@@ -33,12 +33,13 @@ class SPIFlash {
 public:
   //------------------------------------ Constructor ------------------------------------//
   //New Constructor to Accept the PinNames as a Chip select Parameter - @boseji <salearj@hotmail.com> 02.03.17
-  #if defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
+  #if defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32) || defined(ARDUINO_ARCH_ESP32)
   SPIFlash(uint8_t cs = CS, SPIClass *spiinterface=&SPI);
   #elif defined (BOARD_RTL8195A)
   SPIFlash(PinName cs = CS);
   #else
   SPIFlash(uint8_t cs = CS);
+  SPIFlash(int8_t *SPIPinsArray);
   #endif
   //----------------------------- Initial / Chip Functions ------------------------------//
   bool     begin(uint32_t flashChipSize = 0);
@@ -153,14 +154,28 @@ private:
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
   #endif
+
   //If multiple SPI ports are available this variable is used to choose between them (SPI, SPI1, SPI2 etc.)
   SPIClass *_spi;
+
   #if !defined (BOARD_RTL8195A)
   uint8_t     csPin;
   #else
   // Object declaration for the GPIO HAL type for csPin - @boseji <salearj@hotmail.com> 02.03.17
   gpio_t      csPin;
   #endif
+
+  // Variables specific to using non-standard SPI (currently only tested with ESP32)
+  struct _SPIPins {
+    int8_t sck = -1;
+    int8_t miso = -1;
+    int8_t mosi = -1;
+    int8_t ss = -1;
+  };
+  _SPIPins _nonStdSPI;
+  //_SPIPins _stdSPI;
+  uint8_t _SPIInUse;
+
   volatile uint8_t *cs_port;
   bool        pageOverflow;
   bool        SPIBusState = false;
