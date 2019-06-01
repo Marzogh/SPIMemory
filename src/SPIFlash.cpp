@@ -123,7 +123,13 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
-  _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+  if (!_settings_set) {
+    _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+  }
+#else
+  if (!_clockdiv) {
+    _clockdiv = SPI_CLOCK_DIV2;
+  }
 #endif
   bool retVal = _chipID(flashChipSize);
   _endSPI();
@@ -137,6 +143,11 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef SPI_HAS_TRANSACTION
 void SPIFlash::setClock(uint32_t clockSpeed) {
   _settings = SPISettings(clockSpeed, MSBFIRST, SPI_MODE0);
+  _settings_set = true;
+}
+#else
+void SPIFlash::setClock(uint8_t clockdiv) {
+  _clockdiv = clockdiv;
 }
 #endif
 
