@@ -200,7 +200,7 @@ address = (pagenumber << 8) + offset.
 flash.begin(flashChipSize)
 ```
 
-	where flashChipSize is indicated in Bytes, Kilobytes or Megabytes. (Refer to the next two items in this change log)
+ where flashChipSize is indicated in Bytes, Kilobytes or Megabytes. (Refer to the next two items in this change log)
 
 - Including 'flashChipSize' in flash.begin() compiles more efficiently than in previous versions.
 - The way memory size is indicated by the users in flash.begin(flashChipSize) has changed - please refer to defines.h or the wiki for further information. The new method enables users to define any custom size unlike the previous version where only a limited number of predetermined sizes were available to use.
