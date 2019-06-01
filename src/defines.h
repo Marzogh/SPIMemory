@@ -42,11 +42,13 @@
    #define BEGIN_SPI SPI.begin();
 
  // Defines and variables specific to SAMD architecture
- #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
+ #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)|| defined(ARDUINO_ARCH_ESP32)
    #define CHIP_SELECT   digitalWrite(csPin, LOW);
    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
    #define xfer(n)   _spi->transfer(n)
    #define BEGIN_SPI _spi->begin();
+
+ // Defines and variables not specific to any architecture
  #else
    #define CHIP_SELECT   digitalWrite(csPin, LOW);
    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
@@ -174,6 +176,8 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define BUSY          0x01
+#define STDSPI        0x0A
+#define ALTSPI     0x0B
 #if defined (ARDUINO_ARCH_ESP32)
 #define SPI_CLK       20000000        //Hz equivalent of 20MHz
 #else

@@ -51,6 +51,7 @@
   #define NOSFDPERASEPARAM        0x11
   #define NOSFDPERASETIME         0x12
   #define NOSFDPPROGRAMTIMEPARAM  0x13
+  #define NOCHIPSELECTDECLARED    0x14
   #define UNKNOWNERROR            0xFE
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 

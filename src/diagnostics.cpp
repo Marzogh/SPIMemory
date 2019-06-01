@@ -144,6 +144,10 @@ void Diagnostics::troubleshoot(uint8_t _code, bool printoverride) {
       Serial.println(F("Unable to read program times from flash memory. Reverting to library defaults."));
       break;
 
+      case NOCHIPSELECTDECLARED:
+      Serial.println(F("No Chip Select pin defined in the custom SPI Array."));
+      break;
+
       default:
       Serial.println(F("Unknown error"));
       break;

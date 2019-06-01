@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
+[![Join the chat at https://gitter.im/SPIMemory/community](https://badges.gitter.im/SPIMemory/community.svg)](https://gitter.im/SPIMemory/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Arduino library for Flash & FRAM Memory Chips (SPI based only)
 <sup> Download the latest stable release from [here](https://github.com/Marzogh/SPIMemory/releases/latest). Please report any bugs in [issues](https://github.com/Marzogh/SPIMemory/issues/new).</sup>
@@ -88,6 +89,7 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 - Every version of the library >= v3.0.0 supports the ability to use any of multiple SPI interfaces (if your micro-controller supports them). Switching to use another SPI interface is done by calling ```SPIFlash flash(csPin, &SPI1);``` (or &SPI2 and so on), instead of ```SPIFlash flash(csPin)```.
 
     <sub>* NOTE: This is currently only supported on the SAMD and STM32 architectures.</sub>
+- An alternate version ```SPIFlash flash (SPIPinsArray)``` of the constructor can be used (only with ESP32 board as of now) to enable the use of custom SPI pins. ```SPIPinsArray``` has to be a 4 element array containing the custom SPI pin numbers (as signed integers - int8_t) in the following order - sck, miso, mosi, ss.
 - Also make sure to include ```flash.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of flash chip installed and load the right parameters.
 
     <sub>* Optional</sub>
@@ -279,6 +281,7 @@ Note: If you are unable to fix the error/s, please raise an issue [here](http://
 | **0x11** | Unable to read Erase Parameters from chip. <br> Reverting to library defaults. |
 | **0x12** | Unable to read erase times from flash memory. <br> Reverting to library defaults. |
 | **0x13** | Unable to read program times from flash memory. <br> Reverting to library defaults. |
+| **0x14** | No Chip Select pin defined in the custom SPI Array. <br> Refer to section about Constructor for information on how to use custom SPI pins. |
 | **0xFE** | Unknown error. <br> Please raise an issue. |
 
 <hr>
