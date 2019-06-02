@@ -81,12 +81,12 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 |FlashDiagnostics.ino from v3.2.0<br>with #RUNDIAGNOSTIC commented out | Arduino Pro Mini 8MHz 3.3V |
 
 
-| Library version | Compiled code size<br>(Bytesb | SFDP status | Size compared to v3.1.0 |
+| Library version | Compiled code size<br>(Bytes) | SFDP status | Size compared to v3.1.0 |
 | :------: | :------: | :------: | :-----: |
 | v3.1.0 | 17652 | SFDP discovery not supported | Same size |
 | v3.2.0 | 20104 | SFDP discovery supported & on by default | 13.9% larger than v3.1.0 |
 | v3.2.1 | 15316 | SFDP discovery turned off | 13.75% smaller than v3.1.0 |
-| v3.2.1 | 17854 bytes | SFDP discovery turned on | 1.1% larger than v3.1.0 |
+| v3.2.1 | 17854 | SFDP discovery turned on | 1.1% larger than v3.1.0 |
 
 <hr>
 
