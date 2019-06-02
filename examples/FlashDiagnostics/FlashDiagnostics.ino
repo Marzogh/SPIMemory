@@ -45,7 +45,7 @@ SPIFlash flash;
 //SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 
 void setup() {
-  
+
   Serial.begin(BAUD_RATE);
 #if defined (ARDUINO_ARCH_SAMD) || defined (__AVR_ATmega32U4__) || defined (ARCH_STM32) || defined (NRF5) || defined (ARDUINO_ARCH_ESP32)
   while (!Serial) ; // Wait for Serial monitor to open
@@ -59,10 +59,14 @@ void setup() {
   }
   Serial.println();
   randomSeed(analogRead(RANDPIN));
-  Serial.println(flash.error(VERBOSE));
+  
+  if (flash.error()) {
+    Serial.println(flash.error(VERBOSE));
+  }
+  
   flash.begin();
   //To use a custom flash memory size (if using memory from manufacturers not officially supported by the library) - declare a size variable according to the list in defines.h
-  //flash.begin(MB(1));
+  //flash.begin(MB(32));
 
   if (getID()) {
 
@@ -78,7 +82,7 @@ void setup() {
     Serial.print("     Runtime");
     printLine();
 
-    powerDownTest();
+    //powerDownTest();
     Serial.println();
     powerUpTest();
     Serial.println();
