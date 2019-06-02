@@ -183,6 +183,7 @@
 #else
 #define SPI_CLK       104000000       //Hz equivalent of 104MHz
 #endif
+#define ENFASTREAD    0x01
 #define WRTEN         0x02
 #define SUS           0x80
 #define WSE           0x04
@@ -193,11 +194,11 @@
 #define NULLINT       0x0000
 #define NO_CONTINUE   0x00
 #define NOVERBOSE     0x00
+#define VERBOSE       0x01
 #define PASS          0x01
 #define FAIL          0x00
 #define NOOVERFLOW    false
 #define NOERRCHK      false
-#define VERBOSE       true
 #define PRINTOVERRIDE true
 #define ERASEFUNC     0xEF
 #define BUSY_TIMEOUT  1000000000L
