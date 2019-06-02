@@ -202,8 +202,8 @@
 
      case FASTREAD:
      _nextByte(WRITE, opcode);
-     _nextByte(WRITE, DUMMYBYTE);
      _transferAddress();
+     _nextByte(WRITE, DUMMYBYTE);
      break;
 
      case SECTORERASE:
@@ -576,7 +576,7 @@
    else {
      if (_chip.sfdpAvailable) {
        #ifdef RUNDIAGNOSTIC
-         Serial.println("SFDP ID finished.");
+         Serial.println(F("SFDP ID finished."));
        #endif
        return true;
      }
@@ -588,7 +588,9 @@
    }
 
    if (!_chip.capacity) {
-
+     #ifdef RUNDIAGNOSTIC
+       Serial.println(F("Chip capacity cannot be identified"));
+     #endif
      if (flashChipSize) {
        // If a custom chip size is defined
        #ifdef RUNDIAGNOSTIC
