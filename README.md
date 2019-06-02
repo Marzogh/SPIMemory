@@ -105,13 +105,13 @@ As of v3.2.1, SFDP parameter discovery is an user controlled option. To get the 
 
 #### SPIFram <sup>^</sup>
 
-- The library is called by declaring the```SPIFram fram(csPin*)``` constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
+- The library is called by declaring the```SPIFram fram(csPin*)``` constructor where 'fram' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the fram module.
 
     <sub>* Optional. Do not include csPin if using the default slave select pin for your board.</sub>
 - Every version of the library >= v3.0.0 supports the ability to use any of multiple SPI interfaces (if your micro-controller supports them). Switching to use another SPI interface is done by calling ```SPIFram fram(csPin, &SPI1);``` (or &SPI2 and so on), instead of ```SPIFram fram(csPin)```.
 
     <sub>* NOTE: This is currently only officially supported on the SAMD and STM32 architectures.</sub>
-- Also make sure to include ```fram.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of flash chip installed and load the right parameters.
+- Also make sure to include ```fram.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of fram chip installed and load the right parameters.
 
 <sup>^</sup> <sub> Currently in BETA. The methods in SPIFram are not final and subject to change over the next few revisions.</sub>
 
