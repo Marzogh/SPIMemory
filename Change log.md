@@ -27,6 +27,9 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 - Using other SPI ports (HSPI, VSPI, SPI1, SPI2 etc.) is now also supported on ESP32 boards - along with SAMD and STM32 boards (supported since v3.0.0). Resolves #177
 - Formatted and merged pull request #153. This changes the way [setClock()](https://github.com/Marzogh/SPIMemory/wiki/Library-instantiation-functions#setclockclockspeed) works and allows for the definition of clock speed before the SPI Bus is instantiated. Refer to [wiki](https://github.com/Marzogh/SPIMemory/wiki/Library-instantiation-functions#setclockclockspeed) for further details. Thanks @rambo.
 
+###### New Microcontrollers supported:
+- nRF52832 ARM Cortex M4F (Adafruit nRF52 Feather)
+
 ###### New flash memory chips supported:
 
 ###### New FRAM memory chips supported:

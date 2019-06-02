@@ -30,6 +30,7 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 | ATmega2560 | Arduino Mega | - |
 | ATSAMD21G18 (ARM Cortex M0+) | Adafruit Feather M0, <br> Adafruit Feather M0 Express, <br> Adafruit ItsyBitsy M0 Express | - |
 | AT91SAM3X8E (ARM Cortex M3) | Arduino Due | - |
+| nRF52832 (ARM Cortex M4F) | Adafruit nRF52 Feather | - |
 | ATSAMD51J19 (ARM Cortex M4) | Adafruit Metro M4 | - |
 | STM32F091RCT6 | Nucleo-F091RC | |
 | ESP8266 | Adafruit ESP8266 Feather, <br> Sparkfun ESP8266 Thing | - |

@@ -82,7 +82,7 @@ void setup() {
     Serial.print("     Runtime");
     printLine();
 
-    //powerDownTest();
+    powerDownTest();
     Serial.println();
     powerUpTest();
     Serial.println();
