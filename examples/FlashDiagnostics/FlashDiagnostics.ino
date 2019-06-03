@@ -61,8 +61,16 @@ void setup() {
   randomSeed(analogRead(RANDPIN));
   
   if (flash.error()) {
+    Serial.print("Library instantiation error: ");
     Serial.println(flash.error(VERBOSE));
+    Serial.println();
   }
+
+  Serial.print("Library instantiated in: ");
+  Serial.print(flash.functionRunTime());
+  Serial.println(" µS");
+
+  Serial.println();
   
   flash.begin();
   //To use a custom flash memory size (if using memory from manufacturers not officially supported by the library) - declare a size variable according to the list in defines.h

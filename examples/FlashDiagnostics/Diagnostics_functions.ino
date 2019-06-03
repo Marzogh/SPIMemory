@@ -101,6 +101,14 @@ bool getID() {
   Serial.println(F("< 2.5.0"));
 #endif
   Serial.println();
+
+
+  Serial.print("flash.begin() runtime: ");
+  Serial.print(flash.functionRunTime());
+  Serial.println(" µS");
+
+  Serial.println();
+
   uint32_t JEDEC = flash.getJEDECID();
   if (!JEDEC) {
     Serial.println("No comms. Check wiring. Is chip supported? If unable to fix, raise an issue on Github");
