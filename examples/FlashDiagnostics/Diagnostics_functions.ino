@@ -89,7 +89,7 @@ void printUniqueID(void) {
 bool getID() {
   Serial.println();
   Serial.print("SPIMemory Library version: ");
-#ifdef LIBVER
+#ifdef SPIFLASH_LIBVER
   uint8_t _ver, _subver, _bugfix;
   flash.libver(&_ver, &_subver, &_bugfix);
   Serial.print(_ver);
