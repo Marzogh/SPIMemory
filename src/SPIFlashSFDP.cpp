@@ -160,16 +160,7 @@ void SPIFlash::_getSFDPEraseParam(void) {
     for (uint8_t i = 0; i < 8; i++) {
       _eraseExists += _eraseInfo[i];
       if (!_eraseExists) { // If faulty SFDP read, then revert to defaults
-          kb4Erase.supported = kb32Erase.supported = kb64Erase.supported = chipErase.supported = true;
-          kb4Erase.opcode = SECTORERASE;
-          kb32Erase.opcode = BLOCK32ERASE;
-          kb64Erase.opcode = BLOCK64ERASE;
-          kb4Erase.time = BUSY_TIMEOUT;
-          kb32Erase.time = kb4Erase.time * 8;
-          kb64Erase.time = kb32Erase.time * 4;
-          kb256Erase.supported = false;
-          chipErase.opcode = CHIPERASE;
-          chipErase.time = kb64Erase.time * 100L;
+        _setDefaultParams();
         _troubleshoot(NOSFDPERASEPARAM);
       }
     }
