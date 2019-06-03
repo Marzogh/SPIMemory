@@ -30,14 +30,23 @@
 // Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
 #if defined (ARDUINO_ARCH_AVR)
 SPIFlash::SPIFlash(uint8_t cs) {
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros();
+  #endif
         _SPIInUse = STDSPI;
         csPin = cs;
         cs_mask = digitalPinToBitMask(csPin);
         pinMode(csPin, OUTPUT);
         CHIP_DESELECT
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+  #endif
 }
 #elif defined (ARDUINO_ARCH_SAMD) || defined (ARCH_STM32) || defined(ARDUINO_ARCH_ESP32)
 SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros();
+  #endif
         _spi = spiinterface; //Sets SPI interface - if no user selection is made, this defaults to SPI
         if (_spi == &SPI) {
                 _SPIInUse = STDSPI;
@@ -48,22 +57,34 @@ SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
         csPin = cs;
         pinMode(csPin, OUTPUT);
         CHIP_DESELECT
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+  #endif
 }
 
 #elif defined (BOARD_RTL8195A)
 SPIFlash::SPIFlash(PinName cs) {
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros();
+  #endif
         _SPIInUse = STDSPI;
         gpio_init(&csPin, cs);
         gpio_dir(&csPin, PIN_OUTPUT);
         gpio_mode(&csPin, PullNone);
         gpio_write(&csPin, 1);
         CHIP_DESELECT
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+  #endif
 }
 
 #else
 //#elif defined (ALTSPI)
 //If board has multiple SPI interfaces, this overloaded constructor lets the user choose between them. Currently only works with ESP32
 SPIFlash::SPIFlash(int8_t *SPIPinsArray) {
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros();
+  #endif
         _nonStdSPI.sck = SPIPinsArray[0];
         _nonStdSPI.miso = SPIPinsArray[1];
         _nonStdSPI.mosi = SPIPinsArray[2];
@@ -86,14 +107,23 @@ SPIFlash::SPIFlash(int8_t *SPIPinsArray) {
 
         pinMode(csPin, OUTPUT);
         CHIP_DESELECT
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+  #endif
 }
 
 //#else
 SPIFlash::SPIFlash(uint8_t cs) {
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros();
+  #endif
         _SPIInUse = STDSPI;
         csPin = cs;
         pinMode(csPin, OUTPUT);
         CHIP_DESELECT
+  #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+  #endif
 }
 
 #endif
@@ -105,6 +135,7 @@ SPIFlash::SPIFlash(uint8_t cs) {
 //Identifies chip and establishes parameters
 bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros();
         Serial.println(F("Chip Diagnostics initiated."));
         Serial.println();
 #endif
@@ -135,6 +166,9 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
         bool retVal = _chipID(flashChipSize);
         _endSPI();
         _disableGlobalBlockProtect();
+    #ifdef RUNDIAGNOSTIC
+        _spifuncruntime = micros() - _spifuncruntime;
+    #endif
         return retVal;
 }
 
