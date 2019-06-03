@@ -49,11 +49,12 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 | Winbond | W25Q16BV <br> W25Q64FV <br> W25Q64JV <br> W25Q80BV <br> W25Q256FV | Should work with the W25QXXXBV, W25QXXXFV & <br> W25QXXXJV families |
 | Microchip | SST25VF064C <br> SST26VF016B <br> SST26VF032B <br> SST26VF064B | Should work with the SST25 & SST26 families |
 | Cypress/Spansion | S25FL032P <br> S25FL116K <br> S25FL127S | Should work with the S25FL family |
-| ON Semiconductor | LE25U40CMC  |  |
-| AMIC| A25L512A0  |  |
-| Micron| M25P40  |  |
-| Adesto| AT25SF041  |  |
-| Giga devices| GD25Q16C  | (Used on the Adafruit ItsyBitsy M0 Express) |
+| ON Semiconductor | LE25U40CMC |  |
+| AMIC| A25L512A0 |  |
+| Micron| M25P40 |  |
+| Adesto| AT25SF041 |  |
+| Giga devices| GD25Q16C | (Used on the Adafruit ItsyBitsy M0 Express) |
+| Macronix| MX25L4005 <br> MX25L4005 |  |
 
 ##### Should work with any flash memory that is compatible with the SFDP standard as defined in JESD216B
 

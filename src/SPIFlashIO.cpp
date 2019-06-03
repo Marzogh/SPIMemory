@@ -562,6 +562,22 @@
        Serial.println(F("No Chip size defined by user. Checking library support."));
      #endif
      //Identify capacity
+     if(_chip.manufacturerID == MACRONIX_MANID)
+     {
+       switch(_chip.capacityID)
+       {
+         case MX25L4005:
+         _chip.capacity = MB(4);
+         break;
+
+         case MX25L8005:
+         _chip.capacity = MB(8);
+         break;
+
+         default:
+         _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
+ 		 } //TODO - Set up other manufaturerIDs in a similar pattern.
+ 	 }
      for (uint8_t j = 0; j < sizeof(_capID); j++) {
        if (_chip.capacityID == _capID[j]) {
          _chip.capacity = (_memSize[j]);

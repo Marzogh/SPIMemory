@@ -156,21 +156,25 @@
   #define RAMTRON_FRAM_MANID    0xC2
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define ADESTO_MANID         0x1F
+  #define ADESTO_MANID          0x1F
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define MICRON_MANID         0x20
-  #define M25P40               0x20
+  #define MICRON_MANID          0x20
+  #define M25P40                0x20
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ ON ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define ON_MANID             0x62
+  #define ON_MANID              0x62
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Giga ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define GIGA_MANID            0xC8
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define AMIC_MANID           0x37
-  #define A25L512              0x30
+  #define AMIC_MANID            0x37
+  #define A25L512               0x30
+//~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MACRONIX_MANID        0xC2
+  #define MX25L4005             0x13
+  #define MX25L8005             0x14
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

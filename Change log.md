@@ -16,6 +16,7 @@
 #### Release date TBA
 
 ###### Bugs squashed:
+- FastRead works properly now. All previous versions of the library has a FastRead bug that prevent it from doing what it was supposed to.
 
 ###### Enhancements:
 - An alternate version of the constructor
@@ -32,6 +33,7 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 - STM32L0 ARM Cortex M0+ (Nucleo-L031K6)
 
 ###### New flash memory chips supported:
+- MX25L4005 & MX25L4005 from Macronix
 
 ###### New FRAM memory chips supported:
 
