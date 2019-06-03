@@ -1,8 +1,8 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 20/04/2019
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -262,7 +262,7 @@
    #if !defined(ARDUINO_ARCH_SAM) && !defined(ARDUINO_ARCH_SAMD) && !defined(ARDUINO_ARCH_AVR)
    uint8_t *_dataAddr = &(*data_buffer);
    #endif
-   
+
    switch (opcode) {
      case READDATA:
      #if defined (ARDUINO_ARCH_SAM)

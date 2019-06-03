@@ -2,7 +2,7 @@
 ##### Change log
 [![Build Status](https://travis-ci.org/Marzogh/SPIMemory.svg?branch=master)](https://travis-ci.org/Marzogh/SPIMemory) [![DOI](https://zenodo.org/badge/35823047.svg)](https://zenodo.org/badge/latestdoi/35823047)
 [![GitHub release](https://img.shields.io/github/release/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory)
-[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.3.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.3.0...development)
+[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.4.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.3.0...v3.4.0)
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
@@ -11,9 +11,9 @@
 
 <hr>
 
-## Version 3.4.0 (In progress)
+## Version 3.4.0
 
-#### Release date TBA
+#### Release date 03.06.2019
 
 ###### Bugs squashed:
 - FastRead works properly now. All previous versions of the library has a FastRead bug that prevent it from doing what it was supposed to.
@@ -34,8 +34,6 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 
 ###### New flash memory chips supported:
 - MX25L4005 & MX25L4005 from Macronix
-
-###### New FRAM memory chips supported:
 
 
 <hr>

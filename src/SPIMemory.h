@@ -1,7 +1,7 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 18/04/2018
- * Modified by Prajwal Bhattaram - 02/04/2019
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -114,9 +114,13 @@
   #include <util/delay.h>
 #endif
 
-#define LIBVER 3
-#define LIBSUBVER 4
-#define BUGFIXVER 0
+#define SPIFLASH_LIBVER 3
+#define SPIFLASH_LIBSUBVER 4
+#define SPIFLASH_REVVER 0
+
+#define SPIFRAM_LIBVER 0
+#define SPIFRAM_LIBSUBVER 0
+#define SPIFRAM_REVVER 1
 
 class SPIMemory {
 public:

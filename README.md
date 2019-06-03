@@ -1,6 +1,6 @@
 # SPIMemory [![Build Status](https://travis-ci.org/Marzogh/SPIMemory.svg?branch=master)](https://travis-ci.org/Marzogh/SPIMemory) [![DOI](https://zenodo.org/badge/35823047.svg)](https://zenodo.org/badge/latestdoi/35823047)
 [![GitHub release](https://img.shields.io/github/release/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory)
-[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.2.1.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.2.1...v3.3.0)
+[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.3.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.3.0...v3.4.0)
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
@@ -53,8 +53,9 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 | AMIC| A25L512A0 |  |
 | Micron| M25P40 |  |
 | Adesto| AT25SF041 |  |
-| Giga devices| GD25Q16C | (Used on the Adafruit ItsyBitsy M0 Express) |
 | Macronix| MX25L4005 <br> MX25L4005 |  |
+| Giga devices| GD25Q16C | (Used on the Adafruit ItsyBitsy M0 Express) |
+
 
 ##### Should work with any flash memory that is compatible with the SFDP standard as defined in JESD216B
 
