@@ -56,6 +56,12 @@
    #define BEGIN_SPI SPI.begin();
  #endif
 
+ #ifdef RUNDIAGNOSTIC
+ #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+ #define Serial SERIAL_PORT_USBVIRTUAL
+ #endif
+ #endif
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //						Common Instructions 						  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//

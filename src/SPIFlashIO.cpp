@@ -259,7 +259,10 @@
 
  //Reads/Writes next data buffer. Should be called after _beginSPI()
  void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
+   #if !defined(ARDUINO_ARCH_SAM) && !defined(ARDUINO_ARCH_SAMD) && !defined(ARDUINO_ARCH_AVR)
    uint8_t *_dataAddr = &(*data_buffer);
+   #endif
+   
    switch (opcode) {
      case READDATA:
      #if defined (ARDUINO_ARCH_SAM)
