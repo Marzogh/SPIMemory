@@ -29,6 +29,7 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 
 ###### New Microcontrollers supported:
 - nRF52832 ARM Cortex M4F (Adafruit nRF52 Feather)
+- STM32L0 ARM Cortex M0+ (Nucleo-L031K6)
 
 ###### New flash memory chips supported:
 

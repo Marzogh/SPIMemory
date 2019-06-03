@@ -33,6 +33,7 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 | nRF52832 (ARM Cortex M4F) | Adafruit nRF52 Feather | - |
 | ATSAMD51J19 (ARM Cortex M4) | Adafruit Metro M4 | - |
 | STM32F091RCT6 | Nucleo-F091RC | |
+| STM32L0 | Nucleo-L031K6 | |
 | ESP8266 | Adafruit ESP8266 Feather, <br> Sparkfun ESP8266 Thing | - |
 | ESP32 | Adafruit ESP32 Feather, <br> Sparkfun ESP32 Thing | Onboard flash memory. Refer to footnote<sup>£</sup> below. |
 | Simblee | Sparkfun Simblee | - |
