@@ -34,7 +34,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     Uncomment the code below to run a diagnostic if your flash 	  //
+//     Uncomment the code below to run a diagnostic if your flash     //
 //                         does not respond                           //
 //                                                                    //
 //      Error codes will be generated and returned on functions       //
@@ -91,14 +91,14 @@
 
 #if defined (BOARD_RTL8195A)
   #ifdef __cplusplus
-    extern "C" {
+extern "C" {
   #endif
 
   #include "gpio_api.h"
   #include "PinNames.h"
 
   #ifdef __cplusplus
-    }
+}
   #endif
 #endif
 
@@ -124,11 +124,13 @@
 
 class SPIMemory {
 public:
-  //------------------------------------ Constructor ------------------------------------//
-  SPIMemory(void) {};
-  ~SPIMemory(void) {};
-  //------------------------------- Public functions -----------------------------------//
-  //------------------------------- Public variables -----------------------------------//
+        //------------------------------------ Constructor ------------------------------------//
+        SPIMemory(void) {
+        };
+        ~SPIMemory(void) {
+        };
+        //------------------------------- Public functions -----------------------------------//
+        //------------------------------- Public variables -----------------------------------//
 
 
 };
