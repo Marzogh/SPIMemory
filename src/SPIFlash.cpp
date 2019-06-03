@@ -1,8 +1,8 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 20/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 20/04/2019
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -27,36 +27,75 @@
 #include "SPIFlash.h"
 
 // Constructor
-//If board has multiple SPI interfaces, this constructor lets the user choose between them
 // Adding Low level HAL API to initialize the Chip select pinMode on RTL8195A - @boseji <salearj@hotmail.com> 2nd March 2017
 #if defined (ARDUINO_ARCH_AVR)
 SPIFlash::SPIFlash(uint8_t cs) {
+  _SPIInUse = STDSPI;
   csPin = cs;
   cs_mask = digitalPinToBitMask(csPin);
   pinMode(csPin, OUTPUT);
   CHIP_DESELECT
 }
-#elif defined (ARDUINO_ARCH_SAMD) || defined (ARCH_STM32)
+#elif defined (ARDUINO_ARCH_SAMD) || defined (ARCH_STM32) || defined(ARDUINO_ARCH_ESP32)
 SPIFlash::SPIFlash(uint8_t cs, SPIClass *spiinterface) {
   _spi = spiinterface;  //Sets SPI interface - if no user selection is made, this defaults to SPI
+  if (_spi == &SPI) {
+    _SPIInUse = STDSPI;
+  }
+  else {
+    _SPIInUse = ALTSPI;
+  }
   csPin = cs;
   pinMode(csPin, OUTPUT);
   CHIP_DESELECT
 }
+
 #elif defined (BOARD_RTL8195A)
 SPIFlash::SPIFlash(PinName cs) {
+  _SPIInUse = STDSPI;
   gpio_init(&csPin, cs);
   gpio_dir(&csPin, PIN_OUTPUT);
   gpio_mode(&csPin, PullNone);
   gpio_write(&csPin, 1);
   CHIP_DESELECT
 }
+
 #else
+//#elif defined (ALTSPI)
+//If board has multiple SPI interfaces, this overloaded constructor lets the user choose between them. Currently only works with ESP32
+SPIFlash::SPIFlash(int8_t *SPIPinsArray) {
+  _nonStdSPI.sck = SPIPinsArray[0];
+  _nonStdSPI.miso = SPIPinsArray[1];
+  _nonStdSPI.mosi = SPIPinsArray[2];
+  _nonStdSPI.ss  = SPIPinsArray[3];
+  if (_nonStdSPI.ss == -1)
+  {
+    _troubleshoot(NOCHIPSELECTDECLARED, PRINTOVERRIDE);
+    return;
+  }
+  else {
+    csPin = _nonStdSPI.ss;
+  }
+
+  if (_nonStdSPI.sck == -1 || _nonStdSPI.sck == -1 || _nonStdSPI.sck == -1) {
+    _SPIInUse = STDSPI;
+  }
+  else {
+    _SPIInUse = ALTSPI;
+  }
+
+  pinMode(csPin, OUTPUT);
+  CHIP_DESELECT
+}
+
+//#else
 SPIFlash::SPIFlash(uint8_t cs) {
+  _SPIInUse = STDSPI;
   csPin = cs;
   pinMode(csPin, OUTPUT);
   CHIP_DESELECT
 }
+
 #endif
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -73,10 +112,24 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
   Serial.println(F("Highspeed mode initiated."));
   Serial.println();
 #endif
-  BEGIN_SPI
+  if (_SPIInUse == ALTSPI) {
+    #if defined (ARDUINO_ARCH_ESP32)
+    SPI.begin(_nonStdSPI.sck, _nonStdSPI.miso, _nonStdSPI.mosi, _nonStdSPI.ss);
+    #endif
+  }
+  else {
+    BEGIN_SPI
+  }
+
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
-  _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+  if (!_SPISettingsSet) {
+    _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+  }
+#else
+  if (!_clockdiv) {
+    _clockdiv = SPI_CLOCK_DIV2;
+  }
 #endif
   bool retVal = _chipID(flashChipSize);
   _endSPI();
@@ -90,6 +143,11 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef SPI_HAS_TRANSACTION
 void SPIFlash::setClock(uint32_t clockSpeed) {
   _settings = SPISettings(clockSpeed, MSBFIRST, SPI_MODE0);
+  _SPISettingsSet = true;
+}
+#else
+void SPIFlash::setClock(uint8_t clockdiv) {
+  _clockdiv = clockdiv;
 }
 #endif
 
@@ -125,9 +183,9 @@ float SPIFlash::functionRunTime(void) {
 
 //Returns the library version as three bytes
 bool SPIFlash::libver(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
-  *b1 = LIBVER;
-  *b2 = LIBSUBVER;
-  *b3 = BUGFIXVER;
+  *b1 = SPIFLASH_LIBVER;
+  *b2 = SPIFLASH_LIBSUBVER;
+  *b3 = SPIFLASH_REVVER;
   return true;
 }
 

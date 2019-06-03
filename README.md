@@ -1,9 +1,10 @@
 # SPIMemory [![Build Status](https://travis-ci.org/Marzogh/SPIMemory.svg?branch=master)](https://travis-ci.org/Marzogh/SPIMemory) [![DOI](https://zenodo.org/badge/35823047.svg)](https://zenodo.org/badge/latestdoi/35823047)
 [![GitHub release](https://img.shields.io/github/release/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory)
-[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.2.1.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.2.1...v3.3.0)
+[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.3.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.3.0...v3.4.0)
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
+[![Join the chat at https://gitter.im/SPIMemory/community](https://badges.gitter.im/SPIMemory/community.svg)](https://gitter.im/SPIMemory/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Arduino library for Flash & FRAM Memory Chips (SPI based only)
 <sup> Download the latest stable release from [here](https://github.com/Marzogh/SPIMemory/releases/latest). Please report any bugs in [issues](https://github.com/Marzogh/SPIMemory/issues/new).</sup>
@@ -29,8 +30,10 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 | ATmega2560 | Arduino Mega | - |
 | ATSAMD21G18 (ARM Cortex M0+) | Adafruit Feather M0, <br> Adafruit Feather M0 Express, <br> Adafruit ItsyBitsy M0 Express | - |
 | AT91SAM3X8E (ARM Cortex M3) | Arduino Due | - |
+| nRF52832 (ARM Cortex M4F) | Adafruit nRF52 Feather | - |
 | ATSAMD51J19 (ARM Cortex M4) | Adafruit Metro M4 | - |
 | STM32F091RCT6 | Nucleo-F091RC | |
+| STM32L0 | Nucleo-L031K6 | |
 | ESP8266 | Adafruit ESP8266 Feather, <br> Sparkfun ESP8266 Thing | - |
 | ESP32 | Adafruit ESP32 Feather, <br> Sparkfun ESP32 Thing | Onboard flash memory. Refer to footnote<sup>£</sup> below. |
 | Simblee | Sparkfun Simblee | - |
@@ -46,11 +49,13 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 | Winbond | W25Q16BV <br> W25Q64FV <br> W25Q64JV <br> W25Q80BV <br> W25Q256FV | Should work with the W25QXXXBV, W25QXXXFV & <br> W25QXXXJV families |
 | Microchip | SST25VF064C <br> SST26VF016B <br> SST26VF032B <br> SST26VF064B | Should work with the SST25 & SST26 families |
 | Cypress/Spansion | S25FL032P <br> S25FL116K <br> S25FL127S | Should work with the S25FL family |
-| ON Semiconductor | LE25U40CMC  |  |
-| AMIC| A25L512A0  |  |
-| Micron| M25P40  |  |
-| Adesto| AT25SF041  |  |
-| Giga devices| GD25Q16C  | (Used on the Adafruit ItsyBitsy M0 Express) |
+| ON Semiconductor | LE25U40CMC |  |
+| AMIC| A25L512A0 |  |
+| Micron| M25P40 |  |
+| Adesto| AT25SF041 |  |
+| Macronix| MX25L4005 <br> MX25L4005 |  |
+| Giga devices| GD25Q16C | (Used on the Adafruit ItsyBitsy M0 Express) |
+
 
 ##### Should work with any flash memory that is compatible with the SFDP standard as defined in JESD216B
 
@@ -88,6 +93,7 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 - Every version of the library >= v3.0.0 supports the ability to use any of multiple SPI interfaces (if your micro-controller supports them). Switching to use another SPI interface is done by calling ```SPIFlash flash(csPin, &SPI1);``` (or &SPI2 and so on), instead of ```SPIFlash flash(csPin)```.
 
     <sub>* NOTE: This is currently only supported on the SAMD and STM32 architectures.</sub>
+- An alternate version ```SPIFlash flash (SPIPinsArray)``` of the constructor can be used (only with ESP32 board as of now) to enable the use of custom SPI pins. ```SPIPinsArray``` has to be a 4 element array containing the custom SPI pin numbers (as signed integers - int8_t) in the following order - sck, miso, mosi, ss.
 - Also make sure to include ```flash.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of flash chip installed and load the right parameters.
 
     <sub>* Optional</sub>
@@ -103,13 +109,13 @@ As of v3.2.1, SFDP parameter discovery is an user controlled option. To get the 
 
 #### SPIFram <sup>^</sup>
 
-- The library is called by declaring the```SPIFram fram(csPin*)``` constructor where 'flash' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the flash module.
+- The library is called by declaring the```SPIFram fram(csPin*)``` constructor where 'fram' can be replaced by a user constructor of choice and 'csPin' is the Chip Select pin for the fram module.
 
     <sub>* Optional. Do not include csPin if using the default slave select pin for your board.</sub>
 - Every version of the library >= v3.0.0 supports the ability to use any of multiple SPI interfaces (if your micro-controller supports them). Switching to use another SPI interface is done by calling ```SPIFram fram(csPin, &SPI1);``` (or &SPI2 and so on), instead of ```SPIFram fram(csPin)```.
 
     <sub>* NOTE: This is currently only officially supported on the SAMD and STM32 architectures.</sub>
-- Also make sure to include ```fram.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of flash chip installed and load the right parameters.
+- Also make sure to include ```fram.begin(CHIPSIZE*)``` in ```void setup()```. This enables the library to detect the type of fram chip installed and load the right parameters.
 
 <sup>^</sup> <sub> Currently in BETA. The methods in SPIFram are not final and subject to change over the next few revisions.</sub>
 
@@ -279,6 +285,7 @@ Note: If you are unable to fix the error/s, please raise an issue [here](http://
 | **0x11** | Unable to read Erase Parameters from chip. <br> Reverting to library defaults. |
 | **0x12** | Unable to read erase times from flash memory. <br> Reverting to library defaults. |
 | **0x13** | Unable to read program times from flash memory. <br> Reverting to library defaults. |
+| **0x14** | No Chip Select pin defined in the custom SPI Array. <br> Refer to section about Constructor for information on how to use custom SPI pins. |
 | **0xFE** | Unknown error. <br> Please raise an issue. |
 
 <hr>

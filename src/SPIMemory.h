@@ -1,7 +1,7 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2017 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 18/04/2018
- * Modified by Prajwal Bhattaram - 02/04/2019
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -103,20 +103,24 @@
 #endif
 
 #ifndef ARCH_STM32
-  #if defined(ARDUINO_ARCH_STM32) || defined(__STM32F1__) || defined(STM32F1) || defined(STM32F3) || defined(STM32F4) || defined(STM32F0xx)
+  #if defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(__STM32F1__) || defined(STM32F1) || defined(STM32F3) || defined(STM32F4) || defined(STM32F0xx)
     #define ARCH_STM32
   #endif
 #endif
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(ARCH_STM32) || defined(ESP32) || defined(NRF5)
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(ARCH_STM32) || defined(ESP32) || defined(NRF52)
 // RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
   #define _delay_us(us) delayMicroseconds(us)
 #else
   #include <util/delay.h>
 #endif
 
-#define LIBVER 3
-#define LIBSUBVER 3
-#define BUGFIXVER 0
+#define SPIFLASH_LIBVER 3
+#define SPIFLASH_LIBSUBVER 4
+#define SPIFLASH_REVVER 0
+
+#define SPIFRAM_LIBVER 0
+#define SPIFRAM_LIBSUBVER 0
+#define SPIFRAM_REVVER 1
 
 class SPIMemory {
 public:

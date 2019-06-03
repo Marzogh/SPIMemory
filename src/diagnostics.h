@@ -1,7 +1,7 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 20/04/2019
+ * Modified by Prajwal Bhattaram - 02/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -51,6 +51,7 @@
   #define NOSFDPERASEPARAM        0x11
   #define NOSFDPERASETIME         0x12
   #define NOSFDPPROGRAMTIMEPARAM  0x13
+  #define NOCHIPSELECTDECLARED    0x14
   #define UNKNOWNERROR            0xFE
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
