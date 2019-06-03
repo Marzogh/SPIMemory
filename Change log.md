@@ -11,6 +11,18 @@
 
 <hr>
 
+## Version 3.5.0
+
+#### Release date TBA
+
+###### Bugs squashed:
+
+###### Enhancements:
+- `_chipID()` in `flash.begin()` has been completely re-written from scratch. In previous versions of the library, this function took between **200 to 250 ms** to execute. It now takes **450 to 500 µS** (i.e. it is ~500x faster).
+- `FlashDiagnostics.ino` now also returns the run time of the constructor and `flash.begin()` as a part of its diagnostics output (only when `RUNDIAGNOSTIC` is uncommented in `SPIMemory.h`)
+
+<hr>
+
 ## Version 3.4.0
 
 #### Release date 03.06.2019
