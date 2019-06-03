@@ -1,8 +1,8 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 20/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 20/04/2019
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -123,7 +123,13 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 
 #ifdef SPI_HAS_TRANSACTION
   //Define the settings to be used by the SPI bus
-  _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+  if (!_SPISettingsSet) {
+    _settings = SPISettings(SPI_CLK, MSBFIRST, SPI_MODE0);
+  }
+#else
+  if (!_clockdiv) {
+    _clockdiv = SPI_CLOCK_DIV2;
+  }
 #endif
   bool retVal = _chipID(flashChipSize);
   _endSPI();
@@ -137,6 +143,11 @@ bool SPIFlash::begin(uint32_t flashChipSize) {
 #ifdef SPI_HAS_TRANSACTION
 void SPIFlash::setClock(uint32_t clockSpeed) {
   _settings = SPISettings(clockSpeed, MSBFIRST, SPI_MODE0);
+  _SPISettingsSet = true;
+}
+#else
+void SPIFlash::setClock(uint8_t clockdiv) {
+  _clockdiv = clockdiv;
 }
 #endif
 
@@ -172,9 +183,9 @@ float SPIFlash::functionRunTime(void) {
 
 //Returns the library version as three bytes
 bool SPIFlash::libver(uint8_t *b1, uint8_t *b2, uint8_t *b3) {
-  *b1 = LIBVER;
-  *b2 = LIBSUBVER;
-  *b3 = BUGFIXVER;
+  *b1 = SPIFLASH_LIBVER;
+  *b2 = SPIFLASH_LIBSUBVER;
+  *b3 = SPIFLASH_REVVER;
   return true;
 }
 

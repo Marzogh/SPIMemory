@@ -1,8 +1,8 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 20/04/2019
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -174,7 +174,7 @@
      #ifdef SPI_HAS_TRANSACTION
        SPI.beginTransaction(_settings);
      #else
-       SPI.setClockDivider(SPI_CLOCK_DIV4);
+       SPI.setClockDivider(_clockdiv);
        SPI.setDataMode(SPI_MODE0);
        SPI.setBitOrder(MSBFIRST);
      #endif
@@ -202,8 +202,8 @@
 
      case FASTREAD:
      _nextByte(WRITE, opcode);
-     _nextByte(WRITE, DUMMYBYTE);
      _transferAddress();
+     _nextByte(WRITE, DUMMYBYTE);
      break;
 
      case SECTORERASE:
@@ -259,7 +259,10 @@
 
  //Reads/Writes next data buffer. Should be called after _beginSPI()
  void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
+   #if !defined(ARDUINO_ARCH_SAM) && !defined(ARDUINO_ARCH_SAMD) && !defined(ARDUINO_ARCH_AVR)
    uint8_t *_dataAddr = &(*data_buffer);
+   #endif
+
    switch (opcode) {
      case READDATA:
      #if defined (ARDUINO_ARCH_SAM)
@@ -562,6 +565,22 @@
        Serial.println(F("No Chip size defined by user. Checking library support."));
      #endif
      //Identify capacity
+     if(_chip.manufacturerID == MACRONIX_MANID)
+     {
+       switch(_chip.capacityID)
+       {
+         case MX25L4005:
+         _chip.capacity = MB(4);
+         break;
+
+         case MX25L8005:
+         _chip.capacity = MB(8);
+         break;
+
+         default:
+         _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
+ 		 } //TODO - Set up other manufaturerIDs in a similar pattern.
+ 	 }
      for (uint8_t j = 0; j < sizeof(_capID); j++) {
        if (_chip.capacityID == _capID[j]) {
          _chip.capacity = (_memSize[j]);
@@ -576,7 +595,7 @@
    else {
      if (_chip.sfdpAvailable) {
        #ifdef RUNDIAGNOSTIC
-         Serial.println("SFDP ID finished.");
+         Serial.println(F("SFDP ID finished."));
        #endif
        return true;
      }
@@ -588,7 +607,9 @@
    }
 
    if (!_chip.capacity) {
-
+     #ifdef RUNDIAGNOSTIC
+       Serial.println(F("Chip capacity cannot be identified"));
+     #endif
      if (flashChipSize) {
        // If a custom chip size is defined
        #ifdef RUNDIAGNOSTIC

@@ -1,8 +1,8 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 20/04/2019
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
  * Flash and FRAM memory modules. In its current form it enables reading,
@@ -43,7 +43,11 @@ public:
   #endif
   //----------------------------- Initial / Chip Functions ------------------------------//
   bool     begin(uint32_t flashChipSize = 0);
+  #ifdef SPI_HAS_TRANSACTION
   void     setClock(uint32_t clockSpeed);
+  #else
+  void     setClock(uint8_t clockdiv);
+  #endif
   bool     libver(uint8_t *b1, uint8_t *b2, uint8_t *b3);
   bool     sfdpPresent(void);
   uint8_t  error(bool verbosity = false);
@@ -153,6 +157,9 @@ private:
   //-------------------------------- Private variables ----------------------------------//
   #ifdef SPI_HAS_TRANSACTION
     SPISettings _settings;
+    bool _SPISettingsSet = false;
+  #else
+    uint8_t _clockdiv;
   #endif
 
   //If multiple SPI ports are available this variable is used to choose between them (SPI, SPI1, SPI2 etc.)
@@ -215,7 +222,7 @@ private:
   {KB(64), KB(128), KB(256), KB(512), MB(1), MB(2), MB(4), MB(8), MB(16), MB(32), MB(2), MB(4), MB(8), MB(8), KB(256), KB(512), MB(4), KB(512)};
   // To understand the _memSize definitions check defines.h
 
-  const uint8_t _supportedManID[8] = {WINBOND_MANID, MICROCHIP_MANID, CYPRESS_MANID, ADESTO_MANID, MICRON_MANID, ON_MANID, GIGA_MANID, AMIC_MANID};
+  const uint8_t _supportedManID[9] = {WINBOND_MANID, MICROCHIP_MANID, CYPRESS_MANID, ADESTO_MANID, MICRON_MANID, ON_MANID, GIGA_MANID, AMIC_MANID, MACRONIX_MANID};
 
   const uint8_t _altChipEraseReq[3] = {A25L512, M25P40, SST26};
 };

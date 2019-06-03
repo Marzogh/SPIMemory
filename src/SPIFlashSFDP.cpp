@@ -1,4 +1,4 @@
-/* Arduino SPIMemory Library v.3.3.0
+/* Arduino SPIMemory Library v.3.4.0
  * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 18/04/2018
  * Modified by Prajwal Bhattaram - 19/06/2018

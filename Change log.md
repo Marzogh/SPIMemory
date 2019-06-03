@@ -2,7 +2,7 @@
 ##### Change log
 [![Build Status](https://travis-ci.org/Marzogh/SPIMemory.svg?branch=master)](https://travis-ci.org/Marzogh/SPIMemory) [![DOI](https://zenodo.org/badge/35823047.svg)](https://zenodo.org/badge/latestdoi/35823047)
 [![GitHub release](https://img.shields.io/github/release/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory)
-[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.3.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.3.0...development)
+[![GitHub commits](https://img.shields.io/github/commits-since/Marzogh/SPIMemory/v3.4.0.svg)](https://github.com/Marzogh/SPIMemory/compare/v3.3.0...v3.4.0)
 [![GitHub issues](https://img.shields.io/github/issues/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/pulls)
 [![license](https://img.shields.io/github/license/Marzogh/SPIMemory.svg)](https://github.com/Marzogh/SPIMemory/blob/master/LICENSE)
@@ -11,11 +11,12 @@
 
 <hr>
 
-## Version 3.4.0 (In progress)
+## Version 3.4.0
 
-#### Release date TBA
+#### Release date 03.06.2019
 
 ###### Bugs squashed:
+- FastRead works properly now. All previous versions of the library has a FastRead bug that prevent it from doing what it was supposed to.
 
 ###### Enhancements:
 - An alternate version of the constructor
@@ -25,10 +26,14 @@ SPIFlash flash(int8_t *SPIPinsArray);
 can be used (only with ESP32 boards as of now) to enable the use of custom SPI pins. ```SPIPinsArray``` has to be a 4 element array containing the custom SPI pin numbers (as signed integers - int8_t) in the following order - sck, miso, mosi, ss. Refer to the wiki for more information. Resolves #113
 - Created new error code `NOCHIPSELECTDECLARED` for errors with declaring custom SPI pins.
 - Using other SPI ports (HSPI, VSPI, SPI1, SPI2 etc.) is now also supported on ESP32 boards - along with SAMD and STM32 boards (supported since v3.0.0). Resolves #177
+- Formatted and merged pull request #153. This changes the way [setClock()](https://github.com/Marzogh/SPIMemory/wiki/Library-instantiation-functions#setclockclockspeed) works and allows for the definition of clock speed before the SPI Bus is instantiated. Refer to [wiki](https://github.com/Marzogh/SPIMemory/wiki/Library-instantiation-functions#setclockclockspeed) for further details. Thanks @rambo.
+
+###### New Microcontrollers supported:
+- nRF52832 ARM Cortex M4F (Adafruit nRF52 Feather)
+- STM32L0 ARM Cortex M0+ (Nucleo-L031K6)
 
 ###### New flash memory chips supported:
-
-###### New FRAM memory chips supported:
+- MX25L4005 & MX25L4005 from Macronix
 
 
 <hr>
@@ -80,12 +85,12 @@ can be used (only with ESP32 boards as of now) to enable the use of custom SPI p
 |FlashDiagnostics.ino from v3.2.0<br>with #RUNDIAGNOSTIC commented out | Arduino Pro Mini 8MHz 3.3V |
 
 
-| Library version | Compiled code size<br>(Bytesb | SFDP status | Size compared to v3.1.0 |
+| Library version | Compiled code size<br>(Bytes) | SFDP status | Size compared to v3.1.0 |
 | :------: | :------: | :------: | :-----: |
 | v3.1.0 | 17652 | SFDP discovery not supported | Same size |
 | v3.2.0 | 20104 | SFDP discovery supported & on by default | 13.9% larger than v3.1.0 |
 | v3.2.1 | 15316 | SFDP discovery turned off | 13.75% smaller than v3.1.0 |
-| v3.2.1 | 17854 bytes | SFDP discovery turned on | 1.1% larger than v3.1.0 |
+| v3.2.1 | 17854 | SFDP discovery turned on | 1.1% larger than v3.1.0 |
 
 <hr>
 
