@@ -115,7 +115,7 @@ extern "C" {
 #endif
 
 #define SPIFLASH_LIBVER 3
-#define SPIFLASH_LIBSUBVER 4
+#define SPIFLASH_LIBSUBVER 5
 #define SPIFLASH_REVVER 0
 
 #define SPIFRAM_LIBVER 0
