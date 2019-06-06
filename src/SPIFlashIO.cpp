@@ -536,7 +536,7 @@ SPIFlash::_writeDisable(void)
 bool
 SPIFlash::_disableGlobalBlockProtect(void)
 {
-    if (_chip.memoryTypeID == SST25) {
+    if (_chip.memoryTypeID == SST25_MEMID) {
         _readStat1();
         uint8_t _tempStat1 = stat1 & 0xC3;
         _beginSPI(WRITESTATEN);
@@ -544,7 +544,7 @@ SPIFlash::_disableGlobalBlockProtect(void)
           _beginSPI(WRITESTAT1);
         _nextByte(_tempStat1);
         CHIP_DESELECT
-    } else if (_chip.memoryTypeID == SST26) {
+    } else if (_chip.memoryTypeID == SST26_MEMID) {
         if (!_notBusy()) {
             return false;
         }

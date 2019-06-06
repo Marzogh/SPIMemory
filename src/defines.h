@@ -50,7 +50,7 @@ sbrk(int i);
 # define BEGIN_SPI     _spi->begin();
 
 // Defines and variables not specific to any architecture
-#else  /* if defined(ARDUINO_ARCH_SAM) */
+#else /* if defined(ARDUINO_ARCH_SAM) */
 # define CHIP_SELECT   digitalWrite(csPin, LOW);
 # define CHIP_DESELECT digitalWrite(csPin, HIGH);
 # define xfer(n) SPI.transfer(n)
@@ -149,19 +149,25 @@ sbrk(int i);
 #define SPI_PAGESIZE 0x100
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
+// Does not follow the JEDEC convention of capacity (in bytes) = 1 << capID
 #define ADESTO_MANID 0x1F
 #define AT25SF041    0x01 // 512 KB
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
-#define AMIC_MANID         0x37
-#define A25L512_MEMID      0x30
-#define A25L512            0x10 // 64 KB
-#define A25L010            0x11 // 128 KB
-#define A25L020            0x12 // 256 KB
+// Follow the JEDEC convention of capacity (in bytes) = 1 << capID
+#define AMIC_MANID      0x37
+#define A25L512_MEMID   0x30
+#define A25L512         0x10 // 64 KB
+#define A25L010         0x11 // 128 KB
+#define A25L020         0x12 // 256 KB
 // ~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
-#define CYPRESS_MANID      0x01
-#define S25FL032P_MEMID    0x02
-#define S25FL032P_CAPID    0x15 // 4 MB
+#define CYPRESS_MANID   0x01
+#define S25FL032P_MEMID 0x02
+
+// Does not follow the JEDEC convention of capacity (in bytes) = 1 << capID
+#define S25FL032P_CAPID 0x15 // 4 MB
+
+// Follow the JEDEC convention of capacity (in bytes) = 1 << capID
 #define S25FL116K          0x15 // 2 MB
 #define S25FL132K          0x16 // 4 MB
 #define S25FL164K          0x17 // 8 MB
@@ -170,35 +176,43 @@ sbrk(int i);
 #define RAMTRON_FRAM_MANID 0xC2
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~ Giga ~~~~~~~~~~~~~~~~~~~~~~~~//
+// Follows the JEDEC convention of capacity (in bytes) = 1 << capID
 #define GIGA_MANID 0xC8
 #define GD25Q16C   0x15 // 2 MB
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~ Macronix ~~~~~~~~~~~~~~~~~~~~~~~~//
+// Follow the JEDEC convention of capacity (in bytes) = 1 << capID
 #define MACRONIX_MANID 0xC2
 #define MX25L4005      0x13 // 512 KB
 #define MX25L8005      0x14 // 1 MB
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~ Microchip ~~~~~~~~~~~~~~~~~~~~~~~~//
+// Does not follow the JEDEC convention of capacity (in bytes) = 1 << capID
 #define MICROCHIP_MANID 0xBF
-#define SST25           0x25
-#define SST26           0x26
+#define SST25_MEMID     0x25
+#define SST26_MEMID     0x26
 #define SST25VF064C     0x4B // 8 MB
-#define SST26VF016B     0x41 // 2 MB
-#define SST26VF032B     0x42 // 4 MB
-#define SST26VF064B     0x43 // 8 MB
-#define ULBPR           0x98 // Global Block Protection Unlock (Ref sections 4.1.1 & 5.37 of datasheet)
+
+// Follows a proprietary convention of capacity (in bytes) = MB(1 << capID)
+#define SST26VF016B 0x41 // 2 MB
+#define SST26VF032B 0x42 // 4 MB
+#define SST26VF064B 0x43 // 8 MB
+#define ULBPR       0x98 // Global Block Protection Unlock (Ref sections 4.1.1 & 5.37 of datasheet)
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
+// Follow the JEDEC convention of capacity (in bytes) = 1 << capID
 #define MICRON_MANID 0x20
 #define M25P40_MEMID 0x20
 #define M25P40       0x13 // 512 KB
 #define M25P80       0x14 // 1 MB
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~ ON ~~~~~~~~~~~~~~~~~~~~~~~~//
+// Follow the JEDEC convention of capacity (in bytes) = 1 << capID
 #define ON_MANID   0x62
 #define LE25U40CMC 0x13 // 512 KB
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~ Winbond ~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Follow the JEDEC convention of capacity (in bytes) = 1 << capID
 #define WINBOND_MANID        0xEF
 #define W25Q80BV             0x14 // 1 MB
 #define W25Q16BV             0x15 // 2 MB
@@ -215,7 +229,7 @@ sbrk(int i);
 #define BUSY          0x01
 #define STDSPI        0x0A
 #define ALTSPI        0x0B
-#if defined(ARDUINO_ARCH_ESP32)
+#ifdef ARDUINO_ARCH_ESP32
 # define SPI_CLK      20000000 // Hz equivalent of 20MHz
 #else
 # define SPI_CLK      104000000 // Hz equivalent of 104MHz

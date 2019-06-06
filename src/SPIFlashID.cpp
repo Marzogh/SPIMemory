@@ -104,6 +104,9 @@ SPIFlash::_idAmic(void)
             break;
 
         default:
+            _chip.capacity = 1 << (_chip.capacityID);
+            return true;
+
             break;
     }
     return false;
@@ -142,6 +145,9 @@ SPIFlash::_idCypress(void)
             break;
 
         default:
+            _chip.capacity = 1 << (_chip.capacityID);
+            return true;
+
             break;
     }
     return false;
@@ -158,6 +164,9 @@ SPIFlash::_idGiga(void)
             break;
 
         default:
+            _chip.capacity = 1 << (_chip.capacityID);
+            return true;
+
             break;
     }
     return false;
@@ -180,6 +189,9 @@ SPIFlash::_idMacronix(void)
             break;
 
         default:
+            _chip.capacity = 1 << (_chip.capacityID);
+            return true;
+
             break;
     }
     return false;
@@ -188,36 +200,50 @@ SPIFlash::_idMacronix(void)
 bool
 SPIFlash::_idMicrochip(void)
 {
-    switch (_chip.capacityID) {
-        case SST26VF016B:
-            _chip.capacity = MB(2);
-            return true;
-
+    switch (_chip.memoryTypeID) {
+        case SST25_MEMID:
+            if (_chip.capacityID == SST25VF064C) {
+                _chip.capacity = MB(8);
+                return true;
+            } else {
+                return false;
+            }
             break;
 
-        case SST26VF032B:
-            _chip.capacity = MB(4);
-            return true;
+        case SST26_MEMID:
+            switch (_chip.capacityID) {
+                case SST26VF016B:
+                    _chip.capacity = MB(2);
+                    return true;
 
-            break;
+                    break;
 
-        case SST26VF064B:
-            _chip.capacity = MB(8);
-            return true;
+                case SST26VF032B:
+                    _chip.capacity = MB(4);
+                    return true;
 
-            break;
+                    break;
 
-        case SST25VF064C:
-            _chip.capacity = MB(8);
-            return true;
+                case SST26VF064B:
+                    _chip.capacity = MB(8);
+                    return true;
 
-            break;
+                    break;
+
+                default:
+                    _chip.capacity = MB(1 << (_chip.capacityID));
+                    return true;
+
+                    break;
+            }
 
         default:
+            return false;
+
             break;
     }
     return false;
-}
+} // SPIFlash::_idMicrochip
 
 bool
 SPIFlash::_idMicron(void)
@@ -236,6 +262,9 @@ SPIFlash::_idMicron(void)
             break;
 
         default:
+            _chip.capacity = 1 << (_chip.capacityID);
+            return true;
+
             break;
     }
     return false;
@@ -252,6 +281,9 @@ SPIFlash::_idOn(void)
             break;
 
         default:
+            _chip.capacity = 1 << (_chip.capacityID);
+            return true;
+
             break;
     }
     return false;
@@ -286,10 +318,13 @@ SPIFlash::_idWinbond(void)
             break;
 
         default:
+            _chip.capacity = 1 << (_chip.capacityID);
+            return true;
+
             break;
     }
     return false;
-}
+} // SPIFlash::_idWinbond
 
 // Identifies the chip
 bool
@@ -415,7 +450,7 @@ SPIFlash::_chipID(uint32_t flashChipSize)
 
         case MICROCHIP_MANID:
             _chip.supportedMan = true;
-            if (_chip.memoryTypeID == SST26) {
+            if (_chip.memoryTypeID == SST26_MEMID) {
                 chipErase.opcode = ALT_CHIPERASE; // SST26 chips use 0xC7 instead of 0x60
             }
             if (!_idMicrochip()) {
