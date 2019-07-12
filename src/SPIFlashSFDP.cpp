@@ -30,8 +30,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 // This function returns the SFDP table requested as an array of 32 bit integers
-bool
-SPIFlash::_getSFDPTable(uint32_t _address, uint8_t * data_buffer, uint8_t numberOfDWords)
+bool SPIFlash::_getSFDPTable(uint32_t _address, uint8_t * data_buffer, uint8_t numberOfDWords)
 {
     if (!_notBusy()) {
         return false;
@@ -47,8 +46,7 @@ SPIFlash::_getSFDPTable(uint32_t _address, uint8_t * data_buffer, uint8_t number
 }
 
 // This function returns a custom length of data from the SFDP table requested as an array of 8 bit integers (bytes)
-bool
-SPIFlash::_getSFDPData(uint32_t _address, uint8_t * data_buffer, uint8_t numberOfBytes)
+bool SPIFlash::_getSFDPData(uint32_t _address, uint8_t * data_buffer, uint8_t numberOfBytes)
 {
     if (!_notBusy()) {
         return false;
@@ -64,8 +62,7 @@ SPIFlash::_getSFDPData(uint32_t _address, uint8_t * data_buffer, uint8_t numberO
 }
 
 // dWordNumber can be between 1 to 256
-uint32_t
-SPIFlash::_getSFDPdword(uint32_t _tableAddress, uint8_t dWordNumber)
+uint32_t SPIFlash::_getSFDPdword(uint32_t _tableAddress, uint8_t dWordNumber)
 {
     if (!_notBusy()) {
         return false;
@@ -80,8 +77,7 @@ SPIFlash::_getSFDPdword(uint32_t _tableAddress, uint8_t dWordNumber)
 }
 
 // startByte is the byte from which the 16-bit integer starts and can be between 1 to 256
-uint16_t
-SPIFlash::_getSFDPint(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t startByte)
+uint16_t SPIFlash::_getSFDPint(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t startByte)
 {
     if (!_notBusy()) {
         return false;
@@ -96,8 +92,7 @@ SPIFlash::_getSFDPint(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t start
 }
 
 // byteNumber can be between 1 to 256
-uint8_t
-SPIFlash::_getSFDPbyte(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t byteNumber)
+uint8_t SPIFlash::_getSFDPbyte(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t byteNumber)
 {
     if (!_notBusy()) {
         return false;
@@ -109,14 +104,12 @@ SPIFlash::_getSFDPbyte(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t byte
 }
 
 // bitNumber can be between 0 to 31
-bool
-SPIFlash::_getSFDPbit(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t bitNumber)
+bool SPIFlash::_getSFDPbit(uint32_t _tableAddress, uint8_t dWordNumber, uint8_t bitNumber)
 {
     return (_getSFDPdword(_tableAddress, dWordNumber) & (0x01 << bitNumber));
 }
 
-uint32_t
-SPIFlash::_getSFDPTableAddr(uint32_t paramHeaderNum)
+uint32_t SPIFlash::_getSFDPTableAddr(uint32_t paramHeaderNum)
 {
     uint32_t _tableAddr = _getSFDPdword(paramHeaderNum * 8, 0x02); // Each parameter header table is 8 bytes long
 
@@ -124,8 +117,7 @@ SPIFlash::_getSFDPTableAddr(uint32_t paramHeaderNum)
     return _tableAddr;
 }
 
-bool
-SPIFlash::_checkForSFDP(void)
+bool SPIFlash::_checkForSFDP(void)
 {
     if (_getSFDPdword(SFDP_HEADER_ADDR, SFDP_SIGNATURE_DWORD) == SFDPSIGNATURE) {
         _chip.sfdpAvailable = true;
@@ -139,8 +131,7 @@ SPIFlash::_checkForSFDP(void)
     return _chip.sfdpAvailable;
 }
 
-uint32_t
-SPIFlash::_calcSFDPEraseTimeUnits(uint8_t _unitBits)
+uint32_t SPIFlash::_calcSFDPEraseTimeUnits(uint8_t _unitBits)
 {
     switch (_unitBits) {
         case MS1:
@@ -164,8 +155,7 @@ SPIFlash::_calcSFDPEraseTimeUnits(uint8_t _unitBits)
     return false;
 }
 
-void
-SPIFlash::_getSFDPEraseParam(void)
+void SPIFlash::_getSFDPEraseParam(void)
 {
     // Get sector erase details if available on SFDP Tables
     if (_noOfBasicParamDwords >= SFDP_ERASE1_INSTRUCTION_DWORD) {
@@ -279,8 +269,7 @@ SPIFlash::_getSFDPEraseParam(void)
 } // SPIFlash::_getSFDPEraseParam
 
 // Gets IO timing information from SFDP tables - if available.
-void
-SPIFlash::_getSFDPProgramTimeParam(void)
+void SPIFlash::_getSFDPProgramTimeParam(void)
 {
     if (_noOfBasicParamDwords >= SFDP_PROGRAM_TIME_DWORD) {
         union {
@@ -334,8 +323,7 @@ SPIFlash::_getSFDPProgramTimeParam(void)
 } // SPIFlash::_getSFDPProgramTimeParam
 
 // Reads and stores any required values from the Basic Flash Parameter table
-bool
-SPIFlash::_getSFDPFlashParam(void)
+bool SPIFlash::_getSFDPFlashParam(void)
 {
     _noOfParamHeaders = _getSFDPbyte(SFDP_HEADER_ADDR, SFDP_NPH_DWORD, SFDP_NPH_BYTE) + 1; // Number of parameter headers is 0 based - i.e. 0x00 means there is 1 header.
     if (_noOfParamHeaders > 1) {

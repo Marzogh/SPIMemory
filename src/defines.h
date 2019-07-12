@@ -30,8 +30,7 @@
 # define xfer          due.SPITransfer
 # define BEGIN_SPI     due.SPIBegin();
 extern char _end;
-extern "C" char *
-sbrk(int i);
+extern "C" char * sbrk(int i);
 // char *ramstart=(char *)0x20070000;
 // char *ramend=(char *)0x20088000;
 
@@ -219,7 +218,7 @@ sbrk(int i);
 #define W25Q64BV             0x17 // 8 MB // Same for W25Q64FV, W25Q64JV
 #define W25Q256FV            0x19 // 32 MB
 
-#define WINBOND_WRITE_DELAY  0x02
+#define WINBOND_WRITE_DELAY  3000L
 #define WINBOND_WREN_TIMEOUT 10L
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
