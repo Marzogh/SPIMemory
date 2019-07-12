@@ -24,13 +24,19 @@
 
 #include "SPIFlash.h"
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//           Private functions used to ID SPI Flash chips             //
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+/************************************************
+* Private functions used to ID SPI Flash chips *
+************************************************/
 
-// Checks for presence of chip by requesting JEDEC ID
-bool
-SPIFlash::_getJedecId(void)
+/**
+ * @brief   Requests JEDEC ID from chip
+ * Checks for the presence of chip by requesting  the JEDEC ID
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _chipID
+ * @see   begin
+ */
+bool SPIFlash::_getJedecId(void)
 {
     if (!_notBusy()) {
         return false;
@@ -48,9 +54,15 @@ SPIFlash::_getJedecId(void)
     }
 }
 
-// Checks the device ID to establish storage parameters
-bool
-SPIFlash::_getManId(uint8_t * b1, uint8_t * b2)
+/**
+ * @brief   Gets device Manufacturer ID
+ * Checks the device manufacturer ID to establish storage parameters
+ *
+ * @param  b1 Pointer to an unsigned byte to return the memoryTypeID to
+ * @param  b2 Pointer to an unsigned byte to return the capacityID to
+ * @returns  TRUE if successful, FALSE if unsuccessful
+ */
+bool SPIFlash::_getManId(uint8_t * b1, uint8_t * b2)
 {
     if (!_notBusy()) {
         return false;
@@ -65,8 +77,14 @@ SPIFlash::_getManId(uint8_t * b1, uint8_t * b2)
     return true;
 }
 
-bool
-SPIFlash::_idAdesto(void)
+/**
+ * @brief   Identifies Adesto manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idAdesto(void)
 {
     switch (_chip.capacityID) {
         case AT25SF041:
@@ -81,8 +99,14 @@ SPIFlash::_idAdesto(void)
     return false;
 }
 
-bool
-SPIFlash::_idAmic(void)
+/**
+ * @brief   Identifies AMIC manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idAmic(void)
 {
     switch (_chip.capacityID) {
         case A25L512:
@@ -112,8 +136,14 @@ SPIFlash::_idAmic(void)
     return false;
 }
 
-bool
-SPIFlash::_idCypress(void)
+/**
+ * @brief   Identifies Cypress manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idCypress(void)
 {
     switch (_chip.capacityID) {
         case S25FL116K: // or S25FL032P - same capacityID, different capacities
@@ -153,8 +183,14 @@ SPIFlash::_idCypress(void)
     return false;
 } // SPIFlash::_idCypress
 
-bool
-SPIFlash::_idGiga(void)
+/**
+ * @brief   Identifies Giga Devices manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idGiga(void)
 {
     switch (_chip.capacityID) {
         case GD25Q16C:
@@ -172,8 +208,14 @@ SPIFlash::_idGiga(void)
     return false;
 }
 
-bool
-SPIFlash::_idMacronix(void)
+/**
+ * @brief   Identifies Macronix manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idMacronix(void)
 {
     switch (_chip.capacityID) {
         case MX25L4005:
@@ -197,8 +239,14 @@ SPIFlash::_idMacronix(void)
     return false;
 }
 
-bool
-SPIFlash::_idMicrochip(void)
+/**
+ * @brief   Identifies Microchip manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idMicrochip(void)
 {
     switch (_chip.memoryTypeID) {
         case SST25_MEMID:
@@ -245,8 +293,14 @@ SPIFlash::_idMicrochip(void)
     return false;
 } // SPIFlash::_idMicrochip
 
-bool
-SPIFlash::_idMicron(void)
+/**
+ * @brief   Identifies Micron manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idMicron(void)
 {
     switch (_chip.capacityID) {
         case M25P40:
@@ -270,8 +324,14 @@ SPIFlash::_idMicron(void)
     return false;
 }
 
-bool
-SPIFlash::_idOn(void)
+/**
+ * @brief   Identifies ON Semiconductor manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idOn(void)
 {
     switch (_chip.capacityID) {
         case LE25U40CMC:
@@ -289,8 +349,14 @@ SPIFlash::_idOn(void)
     return false;
 }
 
-bool
-SPIFlash::_idWinbond(void)
+/**
+ * @brief   Identifies Winbond manufactured flash memories' storage capacity
+ *
+ * @returns TRUE if successful, FALSE if unsuccessful
+ * @see   _getJedecId
+ * @see   _chipID
+ */
+bool SPIFlash::_idWinbond(void)
 {
     switch (_chip.capacityID) {
         case W25Q80BV:
@@ -326,23 +392,45 @@ SPIFlash::_idWinbond(void)
     return false;
 } // SPIFlash::_idWinbond
 
-// Identifies the chip
-bool
-SPIFlash::_chipID(uint32_t flashChipSize)
+/**
+ * @brief   Identifies the flash memory chip
+ * Identifies the flash memory chip using one of three methods:
+ *      1.  Uses user-declared custom chipsize to set up library.
+ *          If `flashChipSize` is declared, it overrides automatic identification.
+ *      2.  Uses sfdp parameters to set up library.
+ *          If `#define USES_SFDP` is declared, it overrides the library support check.
+ *      3.    Gets manufacturer ID from the `_getJedecId()` function.
+ *          Uses it to check if the chip is supported by the library.
+ *          Attempts to identify unsupported chips if they are from supported manufacturers.
+ *
+ * @param   flashChipSize Optional uint32_t passed on from `begin()`. Allows end-user to declare a custom chip-size
+ * @returns TRUE if chip is successfully identified. FALSE if not.
+ * @throws  `UNKNOWNCHIP` if chip is from a supported manufacturer but capacity cannot be identified
+ * @throws  `UNKNOWNCAP` if chip's capacity cannot be identified.
+ * @exceptsafe  **basic** If the function throws an exception, the program will be in a valid state, but not necessarily a predictable one. No memory, file descriptors, locks, or other resources will be leaked.
+ * @see   _getJedecId
+ * @see   _getManId
+ * @see   _idAdesto
+ * @see   _idAmic
+ * @see   _idCypress
+ * @see   _idGiga
+ * @see   _idMacronix
+ * @see   _idMicrochip
+ * @see   _idMicron
+ * @see   _idOn
+ * @see   _idWinbond
+ */
+bool SPIFlash::_chipID(uint32_t flashChipSize)
 {
-    // Checks to see if comms can be established and gets JEDEC ID
     if (_getJedecId()) {
         chipPoweredDown = false; // If comms can be established, chip is awake
     } else {
         return false; // SPI comms failure
     }
 
-    // ***************************************//
-    // ~~~~ Begin custom chipsize section ~~~~//
-    // ***************************************//
-    // Uses user-declared custom chipsize to set up library
-    // If custom chipsize is declared, it overrides automatic identification.
-
+    /*********************************
+    * Begin custom chipsize section *
+    *********************************/
     if (flashChipSize) {
         #ifdef RUNDIAGNOSTIC
         Serial.println(F("Custom Chipsize defined"));
@@ -357,16 +445,14 @@ SPIFlash::_chipID(uint32_t flashChipSize)
         #endif
     }
 
-    // *************************************//
-    // ~~~~ End custom chipsize section ~~~~//
-    // *************************************//
+    /*******************************
+    * End custom chipsize section *
+    *******************************/
 
-    // *******************************//
-    // ~~~~ Begin SFDP ID section ~~~~//
-    // *******************************//
-    // Uses sfdp parameters to set up library
-    // If USES_SFDP is declared, it overrides the library support check.
 
+    /*************************
+    * Begin SFDP ID section *
+    *************************/
     #ifdef USES_SFDP
 
     # ifdef RUNDIAGNOSTIC
@@ -389,14 +475,15 @@ SPIFlash::_chipID(uint32_t flashChipSize)
     # endif
 
     #endif // ifdef USES_SFDP
-    // *****************************//
-    // ~~~~ End SFDP ID section ~~~~//
-    // *****************************//
 
-    // *********************************************//
-    // ~~~~ Begin Library support check section ~~~~//
-    // *********************************************//
-    // Uses the manufacturer ID obtained from the _getJedecId() function earlier
+    /***********************
+    * End SFDP ID section *
+    ***********************/
+
+
+    /***************************************
+    * Begin Library support check section *
+    ***************************************/
     #ifdef RUNDIAGNOSTIC
     Serial.println(F("Checking library support."));
     #endif
@@ -494,6 +581,9 @@ SPIFlash::_chipID(uint32_t flashChipSize)
             break;
     }
 
+    /***************************************
+    * Begin Library support check section *
+    ***************************************/
 
     if (_chip.supported) {
         #ifdef RUNDIAGNOSTIC

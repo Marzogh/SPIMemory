@@ -26,12 +26,20 @@
 
 #include "SPIFlash.h"
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-//     Private functions used by read, write and erase operations     //
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-// Creates bit mask from bit x to bit y
-unsigned
-SPIFlash::_createMask(unsigned x, unsigned y)
+/**************************************************************
+* Private functions used by read, write and erase operations *
+**************************************************************/
+
+/**
+ * @brief   Creates bit mask from bit x to bit y
+ *
+ * @param   x   Lowest digit to mask
+ * @param   y   Highest digit to mask
+ * @returns Bit-masked binary of user-defined size
+ * @exceptsafe  **no-throw** The function is guaranteed to always return without throwing an exception.
+ * @see
+ */
+unsigned SPIFlash::_createMask(unsigned x, unsigned y)
 {
     unsigned r = 0;
 
@@ -41,9 +49,13 @@ SPIFlash::_createMask(unsigned x, unsigned y)
     return r;
 }
 
-// Sets default parameters
-void
-SPIFlash::_setDefaultParams(void)
+/**
+ * @brief   Sets default parameters for flash chip's SPI functions
+ *
+ * @exceptsafe  **no-throw** The function is guaranteed to always return without throwing an exception.
+ * @see     _chipID()
+ */
+void SPIFlash::_setDefaultParams(void)
 {
     // set some default values
     kb4Erase.supported   = kb32Erase.supported = kb64Erase.supported = chipErase.supported = true;
@@ -59,10 +71,24 @@ SPIFlash::_setDefaultParams(void)
     _pageSize = SPI_PAGESIZE;
 }
 
-// Checks to see if page overflow is permitted and assists with determining next address to read/write.
-// Sets the global address variable
-bool
-SPIFlash::_addressCheck(uint32_t _addr, uint32_t size)
+/**
+ * @brief   Checks a memory block starting at a specific address for issues
+ * Checks user input address to:
+ *    1. Check if the address is valid
+ *    2. Check if page overflow is permitted
+ *    3. Assist with determining next address to read/write
+ *    4. Set the global address variable
+ *
+ * @param      _addr   Start address of the memory block to be checked
+ * @param      size    Size of data to be written to memory (in bytes)
+ * @returns    TRUE indicates if the memory block can be successfully written to. FALSE indicates otherwise.
+ * @throws  `CALLBEGIN` if chip's capacity cannot be identified.
+ * @throws  `OUTOFBOUNDS` if `#define DISABLEOVERFLOW` has been uncommented and the address is outside the capacity of the flash chip.
+ *
+ * @exceptsafe  **basic** If the function throws an exception, the program will be in a valid state, but not necessarily a predictable one. No memory, file descriptors, locks, or other resources will be leaked.
+ * @see     begin
+ */
+bool SPIFlash::_addressCheck(uint32_t _addr, uint32_t size)
 {
     uint32_t _submittedAddress = _addr;
     uint8_t _errorcode         = error();
@@ -102,11 +128,19 @@ SPIFlash::_addressCheck(uint32_t _addr, uint32_t size)
     // Serial.println(_currentAddress, HEX);
 } // SPIFlash::_addressCheck
 
-// Checks to see if the block of memory has been previously written to
-bool
-SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size)
+/**
+ * @brief   Checks to see if a block of memory has been previously written to
+ * Checks to see if the memory block passed to it contains previously written data.
+ *
+ * @param      _addr   Address where memory block begins
+ * @param      size    Size of data to be written to memory (in bytes)
+ * @returns    TRUE if block of memory has **no** previously written data in it. FALSE if block of memory has previously written data in it
+ * @throws     `PREVWRITTEN` if the memory block has data in it
+ * @exceptsafe  **basic** If the function throws an exception, the program will be in a valid state, but not necessarily a predictable one. No memory, file descriptors, locks, or other resources will be leaked.
+ */
+// TODO Allow this function to be called publicly as well.
+bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size)
 {
-    // uint8_t _dat;
     _beginSPI(READDATA);
     for (uint32_t i = 0; i < size; i++) {
         if (_nextByte() != 0xFF) {
@@ -117,12 +151,26 @@ SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size)
     }
     CHIP_DESELECT
     return true;
-}
+} // SPIFlash::_notPrevWritten
 
-// Double checks all parameters before calling a read or write. Comes in two variants
-// Takes address and returns the address if true, else returns false. Throws an error if there is a problem.
-bool
-SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size)
+/**
+ * @brief   Double checks all required chip conditions before calling a read or write.
+ * Checks the chips for the following conditions Must be called before any instruction is passed to the chip.
+ *        1. Enables 4 byte addressing if required (Winbond only for now)
+ *        2. Checks to see if the chip is **not** powered down
+ *        3. Checks to see if the memory block to be written to is available
+ *        4. Checks to see if the memory block to be written to has not been previously written to
+ *        5. Checks to see if the chip is not busy with another operation
+ *        6. Sets the `WRITEENABLE` register in the chip's status register to enable write operations
+ *
+ * @param      opcode   Indicates upcoming function call to allow for function-specific checks to be made.
+ * @param      _addr    Address where memory block begins
+ * @param      size     Size of data to be written to/read from memory (in bytes)
+ * @returns    TRUE if the chip meets all the conditions. FALSE if it doesn't.
+ * @throws     Any errors thown here are specific to the internal functions called.
+ * @exceptsafe **basic** If the function throws an exception, the program will be in a valid state, but not necessarily a predictable one. No memory, file descriptors, locks, or other resources will be leaked.
+ */
+bool SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size)
 {
     // If the flash memory is >= 256 MB enable 4-byte addressing
     if (_chip.manufacturerID == WINBOND_MANID && _addr >= MB(16)) {
@@ -171,8 +219,14 @@ SPIFlash::_prep(uint8_t opcode, uint32_t _addr, uint32_t size)
 } // SPIFlash::_prep
 
 // Transfer Address.
-bool
-SPIFlash::_transferAddress(void)
+
+/**
+ * @brief      Transfer currently active address to the chip
+ *
+ * @returns    TRUE if transfer is successful. FALSE if unsuccessful.
+ * @exceptsafe **basic** If the function throws an exception, the program will be in a valid state, but not necessarily a predictable one. No memory, file descriptors, locks, or other resources will be leaked.
+ */
+bool SPIFlash::_transferAddress(void)
 {
     if (address4ByteEnabled) {
         _nextByte(Highest(_currentAddress));
@@ -183,8 +237,15 @@ SPIFlash::_transferAddress(void)
     return true;
 }
 
-bool
-SPIFlash::_startSPIBus(void)
+/**
+ * @brief      Starts up the SPI bus
+ * Checks if SPI Transactions are enabled. Sets up SPI Clock divider, SPI data mode, SPI Bit order; initializes DMA mode (optional) and sets the global `SPIBusState` variable to TRUE to prevent re-running all these steps when the SPI bus is active.
+ *
+ * @returns    TRUE
+ * @exceptsafe **no-throw** The function is guaranteed to always return without throwing an exception.
+ * @see
+ */
+bool SPIFlash::_startSPIBus(void)
 {
     #ifndef SPI_HAS_TRANSACTION
     noInterrupts();
@@ -221,9 +282,18 @@ SPIFlash::_startSPIBus(void)
     return true;
 } // SPIFlash::_startSPIBus
 
-// Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involves writing or reading to/from an address)
-bool
-SPIFlash::_beginSPI(uint8_t opcode)
+/**
+ * @brief      Begins an SPI comms operation
+ * Configures and starts up the SPIBus if it has not already been instantiated. Transfers the opcode, optionally followed by the memory address, for the I/O operation, to the chip.
+ *
+ * @param      opcode     The command to be sent to the chip.
+ * @returns    TRUE
+ * @exceptsafe **no-throw** The function is guaranteed to always return without throwing an exception.
+ * @see       _nextByte
+ * @see       _nextBuf
+ * @note      No data is transferred to the flash chip with this function. Always call _prep() before this function (especially when it involves writing or reading to/from an address). SPI data lines are left open until _endSPI() is called.
+ */
+bool SPIFlash::_beginSPI(uint8_t opcode)
 {
     if (!SPIBusState) {
         _startSPIBus();
@@ -245,7 +315,7 @@ SPIFlash::_beginSPI(uint8_t opcode)
             _transferAddress();
             _nextByte(DUMMYBYTE);
             break;
-
+        // TODO Fix erase opcodes - they're not always the same! For eg. force the opcode transferred here to be the kb64Erase.opcode and force _beginSPI in sector erase to transfer SECTORERASE only.
         case SECTORERASE:
             _nextByte(opcode);
             _transferAddress();
@@ -260,7 +330,7 @@ SPIFlash::_beginSPI(uint8_t opcode)
             _nextByte(opcode);
             _transferAddress();
             break;
-
+        // UNIQUEID, CHIPERASE, ALT_CHIPERASE, SUSPEND, RESUME, POWERDOWN, RELEASE, JEDECID, MANID, READSFDP
         default:
             _nextByte(opcode);
             break;
@@ -268,11 +338,20 @@ SPIFlash::_beginSPI(uint8_t opcode)
     return true;
 } // SPIFlash::_beginSPI
 
-// SPI data lines are left open until _endSPI() is called
+/**
+ * @brief      Reads/Writes next byte.
+ * Reads/Writes next byte of data to/from the chip. Should be called after _beginSPI()
+ *
+ * @param      data Data to be written to / read from the chip
+ * @returns    One byte (unsigned 8-bit)
+ * @throws
+ * @exceptsafe **no-throw** The function is guaranteed to always return without throwing an exception.
+ * @see       _beginSPI
+ * @see       _endSPI
+ * @note      Should be called after _beginSPI()
+ */
 
-// Reads/Writes next byte. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
-uint8_t
-SPIFlash::_nextByte(uint8_t data)
+uint8_t SPIFlash::_nextByte(uint8_t data)
 {
     #if defined(ARDUINO_ARCH_SAMD)
     # ifdef ENABLEZERODMA
@@ -294,9 +373,19 @@ SPIFlash::_nextByte(uint8_t data)
     #endif // if defined(ARDUINO_ARCH_SAMD)
 }
 
-// Reads/Writes next int. Call 'n' times to read/write 'n' number of integers. Should be called after _beginSPI()
-uint16_t
-SPIFlash::_nextInt(uint16_t data)
+/**
+ * @brief      Reads/Writes next int.
+ * Reads/Writes next int of data to/from the chip. Should be called after _beginSPI()
+ *
+ * @param      data Data to be written to / read from the chip
+ * @returns    One int (unsigned 16-bit)
+ * @throws
+ * @exceptsafe **no-throw** The function is guaranteed to always return without throwing an exception.
+ * @see       _beginSPI
+ * @see       _endSPI
+ * @note      Should be called after _beginSPI()
+ */
+uint16_t SPIFlash::_nextInt(uint16_t data)
 {
     #if defined(ARDUINO_ARCH_SAMD)
     return _spi->transfer16(data);
@@ -307,9 +396,22 @@ SPIFlash::_nextInt(uint16_t data)
     #endif
 }
 
+/**
+ * @brief      Reads/Writes next array of bytes.
+ * Reads/Writes next array of bytes of data to/from the chip. Should be called after _beginSPI()
+ *
+ * @param      opcode         Indicates if the command is to read or write
+ * @param      data_buffer    Data to be written to / read from the chip in the form of am array of bytes.
+ * @param      size           Number of members in the array
+ * @returns    One array of bytes (unsigned 8-bit) with user-defined number of members
+ * @exceptsafe **no-throw** The function is guaranteed to always return without throwing an exception.
+ * @see       _beginSPI
+ * @see       _endSPI
+ * @note      Should be called after _beginSPI()
+ */
+
 // Reads/Writes next data buffer. Should be called after _beginSPI()
-void
-SPIFlash::_nextBuf(uint8_t opcode, uint8_t * data_buffer, uint32_t size)
+void SPIFlash::_nextBuf(uint8_t opcode, uint8_t * data_buffer, uint32_t size)
 {
     #if !defined(ARDUINO_ARCH_SAM) && !defined(ARDUINO_ARCH_SAMD) && !defined(ARDUINO_ARCH_AVR)
     uint8_t * _dataAddr = &(*data_buffer);
@@ -357,8 +459,7 @@ SPIFlash::_nextBuf(uint8_t opcode, uint8_t * data_buffer, uint32_t size)
 } // SPIFlash::_nextBuf
 
 // Stops all operations. Should be called after all the required data is read/written from repeated _nextByte() calls
-void
-SPIFlash::_endSPI(void)
+void SPIFlash::_endSPI(void)
 {
     CHIP_DESELECT
 
@@ -383,8 +484,7 @@ SPIFlash::_endSPI(void)
 }
 
 // Checks if status register 1 can be accessed - used to check chip status, during powerdown and power up and for debugging
-uint8_t
-SPIFlash::_readStat1(void)
+uint8_t SPIFlash::_readStat1(void)
 {
     _beginSPI(READSTAT1);
     stat1 = _nextByte();
@@ -393,8 +493,7 @@ SPIFlash::_readStat1(void)
 }
 
 // Checks if status register 2 can be accessed, if yes, reads and returns it
-uint8_t
-SPIFlash::_readStat2(void)
+uint8_t SPIFlash::_readStat2(void)
 {
     _beginSPI(READSTAT2);
     stat2 = _nextByte();
@@ -404,8 +503,7 @@ SPIFlash::_readStat2(void)
 }
 
 // Checks if status register 3 can be accessed, if yes, reads and returns it
-uint8_t
-SPIFlash::_readStat3(void)
+uint8_t SPIFlash::_readStat3(void)
 {
     _beginSPI(READSTAT3);
     stat3 = _nextByte();
@@ -415,8 +513,7 @@ SPIFlash::_readStat3(void)
 }
 
 // Checks to see if 4-byte addressing is already enabled and if not, enables it
-bool
-SPIFlash::_enable4ByteAddressing(void)
+bool SPIFlash::_enable4ByteAddressing(void)
 {
     if (_readStat3() & ADS) {
         return true;
@@ -433,8 +530,7 @@ SPIFlash::_enable4ByteAddressing(void)
 }
 
 // Checks to see if 4-byte addressing is already disabled and if not, disables it
-bool
-SPIFlash::_disable4ByteAddressing(void)
+bool SPIFlash::_disable4ByteAddressing(void)
 {
     if (!(_readStat3() & ADS)) { // If 4 byte addressing is disabled (default state)
         return true;
@@ -450,8 +546,7 @@ SPIFlash::_disable4ByteAddressing(void)
 }
 
 // Checks the erase/program suspend flag before enabling/disabling a program/erase suspend operation
-bool
-SPIFlash::_noSuspend(void)
+bool SPIFlash::_noSuspend(void)
 {
     switch (_chip.manufacturerID) {
         case WINBOND_MANID:
@@ -474,8 +569,7 @@ SPIFlash::_noSuspend(void)
 }
 
 // Checks to see if chip is powered down. If it is, retrns true. If not, returns false.
-bool
-SPIFlash::_isChipPoweredDown(void)
+bool SPIFlash::_isChipPoweredDown(void)
 {
     if (chipPoweredDown) {
         _troubleshoot(CHIPISPOWEREDDOWN);
@@ -486,8 +580,7 @@ SPIFlash::_isChipPoweredDown(void)
 }
 
 // Polls the status register 1 until busy flag is cleared or timeout
-bool
-SPIFlash::_notBusy(uint32_t timeout)
+bool SPIFlash::_notBusy(uint32_t timeout)
 {
     _delay_us(WINBOND_WRITE_DELAY);
     uint32_t _time = micros();
@@ -506,8 +599,7 @@ SPIFlash::_notBusy(uint32_t timeout)
 }
 
 // Enables writing to chip by setting the WRITEENABLE bit
-bool
-SPIFlash::_writeEnable(bool _troubleshootEnable)
+bool SPIFlash::_writeEnable(bool _troubleshootEnable)
 {
     _beginSPI(WRITEENABLE);
     CHIP_DESELECT
@@ -525,16 +617,14 @@ SPIFlash::_writeEnable(bool _troubleshootEnable)
 // i.e. to write disable state:
 // Power-up, Write Disable, Page Program, Quad Page Program, Sector Erase, Block Erase, Chip Erase, Write Status Register,
 // Erase Security Register and Program Security register
-bool
-SPIFlash::_writeDisable(void)
+bool SPIFlash::_writeDisable(void)
 {
     _beginSPI(WRITEDISABLE);
     CHIP_DESELECT
     return true;
 }
 
-bool
-SPIFlash::_disableGlobalBlockProtect(void)
+bool SPIFlash::_disableGlobalBlockProtect(void)
 {
     if (_chip.memoryTypeID == SST25_MEMID) {
         _readStat1();
@@ -559,8 +649,7 @@ SPIFlash::_disableGlobalBlockProtect(void)
 }
 
 // Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.
-void
-SPIFlash::_troubleshoot(uint8_t _code, bool printoverride)
+void SPIFlash::_troubleshoot(uint8_t _code, bool printoverride)
 {
     diagnostics.troubleshoot(_code, printoverride);
 }
