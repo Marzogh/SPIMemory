@@ -16,6 +16,7 @@
 #### Release date TBA
 
 ###### Bugs squashed:
+- Fixes Issue #184 : Page boundary error in `flash.writeStr()` has been fixed as of commit a69ecd8. This issue caused a corruption of data when a long string was written across page boundaries
 
 ###### Enhancements:
 - `_chipID()` in `flash.begin()` has been completely re-written from scratch. In previous versions of the library, this function took between **200 to 250 ms** to execute. It now takes **450 to 500 µS** (i.e. it is ~500x faster).
