@@ -166,6 +166,14 @@
      #if defined ENABLEZERODMA
        dma_init();
      #endif
+   #elif defined (ARCH_STM32)
+     #ifdef SPI_HAS_TRANSACTION
+       _spi->beginTransaction(_settings);
+     #else
+       _spi->setClockDivider(SPI_CLOCK_DIV_4);
+       _spi->setDataMode(SPI_MODE0);
+       _spi->setBitOrder(MSBFIRST);
+     #endif
    #else
      #if defined (ARDUINO_ARCH_AVR)
        //save current SPI settings
