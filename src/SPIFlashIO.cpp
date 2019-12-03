@@ -54,7 +54,7 @@
    //Serial.print(F("_chip.capacity: "));
    //Serial.println(_chip.capacity, HEX);
 
-   if (_submittedAddress + size >= _chip.capacity) {
+   if (_submittedAddress + size > _chip.capacity) {
      //Serial.print(F("_submittedAddress + size: "));
      //Serial.println(_submittedAddress + size, HEX);
    #ifdef DISABLEOVERFLOW
