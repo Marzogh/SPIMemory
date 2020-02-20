@@ -318,11 +318,11 @@ template <class T> bool SPIFlash::_write(uint32_t _addr, const T& value, uint32_
   if (!SPIBusState) {
     _startSPIBus();
   }
-  CHIP_SELECT
-  _nextByte(WRITE, PAGEPROG);
-  _transferAddress();
 
   if (maxBytes > length) {
+    CHIP_SELECT
+    _nextByte(WRITE, PAGEPROG);
+    _transferAddress();
     for (uint16_t i = 0; i < length; ++i) {
       _nextByte(WRITE, *p++);
     }
