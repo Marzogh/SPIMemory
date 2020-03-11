@@ -110,6 +110,8 @@
 #if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(ARCH_STM32) || defined(ESP32) || defined(NRF52)
 // RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
   #define _delay_us(us) delayMicroseconds(us)
+#elif PLATFORM_ID == PLATFORM_BORON
+  #define _delay_us(us) delayMicroseconds(us)
 #else
   #include <util/delay.h>
 #endif

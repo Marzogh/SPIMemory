@@ -191,6 +191,23 @@
    return true;
  }
 
+uint16_t _transfer16Flash(uint16_t data)
+{
+  uint16_t retVal = 0;
+  // if endianness of both sides fits together
+  // SPI.transfer((uint8_t*)&data, (uint8_t*)&retVal, sizeof(data), NULL);
+
+  // MSB before LSB
+  retVal |= SPI.transfer(data >> 8) << 8; 
+  retVal |= SPI.transfer(data & 0x00FF);
+
+  // LSB before MSB
+  // retVal |= SPI.transfer(data & 0x00FF);
+  // retVal |= SPI.transfer(data >> 8) << 8; 
+
+  return retVal;
+}
+
  //Initiates SPI operation - but data is not transferred yet. Always call _prep() before this function (especially when it involves writing or reading to/from an address)
  bool SPIFlash::_beginSPI(uint8_t opcode) {
    if (!SPIBusState) {
@@ -260,8 +277,10 @@
  uint16_t SPIFlash::_nextInt(uint16_t data) {
  #if defined (ARDUINO_ARCH_SAMD)
    return _spi->transfer16(data);
+#elif PLATFORM_ID == PLATFORM_BORON
+  return _transfer16Flash(data);
  #else
-   return SPI.transfer16(data);
+   return _transfer16(data);
  #endif
  }
 

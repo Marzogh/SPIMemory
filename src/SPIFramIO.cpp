@@ -192,10 +192,28 @@
  #endif
  }
 
+uint16_t _transfer16Fram(uint16_t data)
+{
+  uint16_t retVal = 0;
+  // if endianness of both sides fits together
+  // SPI.transfer((uint8_t*)&data, (uint8_t*)&retVal, sizeof(data), NULL);
+
+  // MSB before LSB
+  retVal |= SPI.transfer(data >> 8) << 8; 
+  retVal |= SPI.transfer(data & 0x00FF);
+
+  // LSB before MSB
+  // retVal |= SPI.transfer(data & 0x00FF);
+  // retVal |= SPI.transfer(data >> 8) << 8; 
+
+  return retVal;
+}
  //Reads/Writes next int. Call 'n' times to read/write 'n' number of integers. Should be called after _beginSPI()
  uint16_t SPIFram::_nextInt(uint16_t data) {
  #if defined (ARDUINO_ARCH_SAMD)
    return _spi->transfer16(data);
+#elif PLATFORM_ID == PLATFORM_BORON
+  return _transfer16Fram(data);
  #else
    return SPI.transfer16(data);
  #endif
