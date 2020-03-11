@@ -1,13 +1,12 @@
-/* Arduino SPIMemory Library v.3.2.1
- * Copyright (C) 2017 by Prajwal Bhattaram
+/* Arduino SPIMemory Library v.3.4.0
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
  * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 21/05/2018
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -52,11 +51,11 @@
      return false;
  	}
 
-   //Serial.print("_chip.capacity: ");
+   //Serial.print(F("_chip.capacity: "));
    //Serial.println(_chip.capacity, HEX);
 
    if (_submittedAddress + size >= _chip.capacity) {
-     //Serial.print("_submittedAddress + size: ");
+     //Serial.print(F("_submittedAddress + size: "));
      //Serial.println(_submittedAddress + size, HEX);
    #ifdef DISABLEOVERFLOW
      _troubleshoot(OUTOFBOUNDS);
@@ -64,7 +63,7 @@
    #else
      _addressOverflow = ((_submittedAddress + size) - _chip.capacity);
      _currentAddress = _addr;
-     //Serial.print("_addressOverflow: ");
+     //Serial.print(F("_addressOverflow: "));
      //Serial.println(_addressOverflow, HEX);
      return true;					// At end of memory - (pageOverflow)
    #endif
@@ -74,13 +73,13 @@
      _currentAddress = _addr;
      return true;				// Not at end of memory if (address < _chip.capacity)
    }
-   //Serial.print("_currentAddress: ");
+   //Serial.print(F("_currentAddress: "));
    //Serial.println(_currentAddress, HEX);
  }
 
  // Checks to see if the block of memory has been previously written to
  bool SPIFlash::_notPrevWritten(uint32_t _addr, uint32_t size) {
-   uint8_t _dat;
+   //uint8_t _dat;
    _beginSPI(READDATA);
    for (uint32_t i = 0; i < size; i++) {
      if (_nextByte(READ) != 0xFF) {
@@ -183,7 +182,7 @@
      #ifdef SPI_HAS_TRANSACTION
        SPI.beginTransaction(_settings);
      #else
-       SPI.setClockDivider(SPI_CLOCK_DIV4);
+       SPI.setClockDivider(_clockdiv);
        SPI.setDataMode(SPI_MODE0);
        SPI.setBitOrder(MSBFIRST);
      #endif
@@ -211,8 +210,8 @@
 
      case FASTREAD:
      _nextByte(WRITE, opcode);
-     _nextByte(WRITE, DUMMYBYTE);
      _transferAddress();
+     _nextByte(WRITE, DUMMYBYTE);
      break;
 
      case SECTORERASE:
@@ -268,7 +267,10 @@
 
  //Reads/Writes next data buffer. Should be called after _beginSPI()
  void SPIFlash::_nextBuf(uint8_t opcode, uint8_t *data_buffer, uint32_t size) {
+   #if !defined(ARDUINO_ARCH_SAM) && !defined(ARDUINO_ARCH_SAMD) && !defined(ARDUINO_ARCH_AVR)
    uint8_t *_dataAddr = &(*data_buffer);
+   #endif
+
    switch (opcode) {
      case READDATA:
      #if defined (ARDUINO_ARCH_SAM)
@@ -539,6 +541,7 @@
    kb256Erase.supported = false;
    chipErase.opcode = CHIPERASE;
    chipErase.time = kb64Erase.time * 100L;
+   _pageSize = SPI_PAGESIZE;
 
    _getJedecId();
 
@@ -567,31 +570,58 @@
 
    if (_chip.supportedMan) {
      #ifdef RUNDIAGNOSTIC
-       Serial.println("No Chip size defined by user. Automated identification initiated.");
+       Serial.println(F("No Chip size defined by user. Checking library support."));
      #endif
      //Identify capacity
+     if(_chip.manufacturerID == MACRONIX_MANID)
+     {
+       switch(_chip.capacityID)
+       {
+         case MX25L4005:
+         _chip.capacity = MB(4);
+         break;
+
+         case MX25L8005:
+         _chip.capacity = MB(8);
+         break;
+
+         default:
+         _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
+ 		 } //TODO - Set up other manufaturerIDs in a similar pattern.
+ 	 }
      for (uint8_t j = 0; j < sizeof(_capID); j++) {
        if (_chip.capacityID == _capID[j]) {
          _chip.capacity = (_memSize[j]);
          _chip.supported = true;
          #ifdef RUNDIAGNOSTIC
-           Serial.println("Chip identified. This chip is fully supported by the library.");
+           Serial.println(F("Chip identified. This chip is fully supported by the library."));
          #endif
          return true;
        }
      }
    }
    else {
-     _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
-     return false;
+     if (_chip.sfdpAvailable) {
+       #ifdef RUNDIAGNOSTIC
+         Serial.println(F("SFDP ID finished."));
+       #endif
+       return true;
+     }
+     else {
+       _troubleshoot(UNKNOWNCHIP); //Error code for unidentified capacity
+       return false;
+     }
+
    }
 
    if (!_chip.capacity) {
-
+     #ifdef RUNDIAGNOSTIC
+       Serial.println(F("Chip capacity cannot be identified"));
+     #endif
      if (flashChipSize) {
        // If a custom chip size is defined
        #ifdef RUNDIAGNOSTIC
-       Serial.println("Custom Chipsize defined");
+       Serial.println(F("Custom Chipsize defined"));
        #endif
        _chip.capacity = flashChipSize;
        _chip.supported = false;
@@ -604,6 +634,7 @@
      }
 
    }
+   return true;
  }
 
  //Troubleshooting function. Called when #ifdef RUNDIAGNOSTIC is uncommented at the top of this file.

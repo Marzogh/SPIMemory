@@ -62,9 +62,9 @@ Example code:
     _address = flash.getAddress(sizeof(dataIn));
     dataIn = flash.readByte(_address);    // This function should be changed depending on the type of data
                                           // being read from the flash memory
-    Serial.print("Address = ");
+    Serial.print(F("Address = "));
     Serial.println(_address);
-    Serial.print("Data read : 0x");
+    Serial.print(F("Data read : 0x"));
     Serial.println(dataIn, HEX);
   }
 

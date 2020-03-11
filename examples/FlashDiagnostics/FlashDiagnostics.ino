@@ -2,10 +2,10 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                             FlashDiagnostics.ino                                                              |
   |                                                               SPIMemory library                                                                |
-  |                                                                   v 3.2.0                                                                     |
+  |                                                                   v 3.4.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  02.05.2018                                                                   |
+  |                                                                  01.06.2019                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
@@ -37,15 +37,20 @@
 #define TRUE 1
 #define FALSE 0
 
+int8_t SPIPins[4] = {-1, -1, -1, 33};
+
 SPIFlash flash;
-//SPIFlash flash(11);
+//SPIFlash flash(SPIPins);
+//SPIFlash flash(33);
 //SPIFlash flash(SS1, &SPI1);       //Use this constructor if using an SPI bus other than the default SPI. Only works with chips with more than one hardware SPI bus
 
 void setup() {
+
   Serial.begin(BAUD_RATE);
-#if defined (ARDUINO_ARCH_SAMD) || (__AVR_ATmega32U4__) || defined(ARCH_STM32) || defined(NRF5)
+#if defined (ARDUINO_ARCH_SAMD) || defined (__AVR_ATmega32U4__) || defined (ARCH_STM32) || defined (NRF5) || defined (ARDUINO_ARCH_ESP32)
   while (!Serial) ; // Wait for Serial monitor to open
 #endif
+
   delay(50); //Time to terminal get connected
   Serial.print(F("Initialising"));
   for (uint8_t i = 0; i < 10; ++i)
@@ -54,12 +59,17 @@ void setup() {
   }
   Serial.println();
   randomSeed(analogRead(RANDPIN));
+  
+  if (flash.error()) {
+    Serial.println(flash.error(VERBOSE));
+  }
+  
   flash.begin();
   //To use a custom flash memory size (if using memory from manufacturers not officially supported by the library) - declare a size variable according to the list in defines.h
-  //flash.begin(MB(1));
+  //flash.begin(MB(32));
 
   if (getID()) {
-    
+
     printLine();
     printTab(7);
     Serial.print("Testing library code");
@@ -71,14 +81,14 @@ void setup() {
     printTab(3);
     Serial.print("     Runtime");
     printLine();
-    
+
     powerDownTest();
     Serial.println();
     powerUpTest();
     Serial.println();
-    
+
     Serial.println();
-    
+
     eraseChipTest();
     Serial.println();
     eraseSectionTest();
@@ -107,7 +117,7 @@ void setup() {
     printTab(1);
     Serial.print("      Read time");
     printLine();
-    
+
     byteTest();
     Serial.println();
     charTest();

@@ -1,13 +1,11 @@
-/* Arduino SPIMemory Library v.3.1.0
- * Copyright (C) 2017 by Prajwal Bhattaram
- * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by @boseji <salearj@hotmail.com> - 02/03/2017
- * Modified by Prajwal Bhattaram - 24/02/2018
+/* Arduino SPIMemory Library v.3.4.0
+ * Copyright (C) 2019 by Prajwal Bhattaram
+ * Created by Prajwal Bhattaram - 18/04/2018
+ * Modified by Prajwal Bhattaram - 19/06/2018
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -115,7 +113,7 @@ bool SPIFlash::_checkForSFDP(void) {
   if (_getSFDPdword(SFDP_HEADER_ADDR, SFDP_SIGNATURE_DWORD) == SFDPSIGNATURE) {
     _chip.sfdpAvailable = true;
     #ifdef RUNDIAGNOSTIC
-    Serial.println("SFDP available");
+    Serial.println(F("SFDP available"));
     #endif
   }
   else {
@@ -327,19 +325,17 @@ bool SPIFlash::_getSFDPFlashParam(void) {
     }
     _noOfBasicParamDwords = _getSFDPbyte(SFDP_BASIC_PARAM_TABLE_HDR_ADDR, SFDP_PARAM_TABLE_LENGTH_DWORD, SFDP_PARAM_TABLE_LENGTH_BYTE);
     _BasicParamTableAddr = _getSFDPTableAddr(SFDP_BASIC_PARAM_TABLE_NO);
+
     // Calculate chip capacity
+
     _chip.capacity = _getSFDPdword(_BasicParamTableAddr, SFDP_MEMORY_DENSITY_DWORD);
-    uint8_t _multiplier = Highest(_chip.capacity);                  //----
-    Highest(_chip.capacity) = 0x00;                  //                   |
-    if (_multiplier <= 0x0F) {                       //                   |
-      _chip.capacity = (_chip.capacity + 1) * (_multiplier + 1); //       |---> This section calculates the chip capacity as
-    }                                                //                   |---> detailed in JESD216B
-    else {                                           //                   |
-      _chip.capacity = ((_chip.capacity + 1) * 2);   //                   |
-    }                                                              //----
-    #ifdef RUNDIAGNOSTIC
-      Serial.println("Chip identified using sfdp. Most of this chip's functions are supported by the library.");
-    #endif
+    if (bitIsSet(Highest(_chip.capacity), 7)) {     // If bit 31 (bit 7 of byte 3) is set, then the density is double the value read in bits from 30:0 (Refer to Page 16 of JESD216B)
+      clearBit(Highest(_chip.capacity), 7); // Clear bit 31
+      _chip.capacity*=2;
+    }
+    // Else _chip.capacity is the value as read in bits.
+
+    _chip.capacity = (_chip.capacity/8) + 1; // Since the value read in is in bits, convert it to bytes here (1 is added because the number of bits is zero based - i.e. if there are 8 bytes, then they are numbered 0 -> 7)
 
   // Get Erase Parameters if available
   _getSFDPEraseParam();
@@ -350,6 +346,9 @@ bool SPIFlash::_getSFDPFlashParam(void) {
 
   //Serial.print("dWord 9: 0x");
   //Serial.println(_getSFDPdword(_BasicParamTableAddr, DWORD(9)), HEX);
+  #ifdef RUNDIAGNOSTIC
+    Serial.println("Chip identified using sfdp. Most of this chip's functions are supported by the library.");
+  #endif
   return true;
 }
 

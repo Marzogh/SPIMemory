@@ -1,12 +1,11 @@
-/* Arduino SPIMemory Library v.3.2.1
- * Copyright (C) 2017 by Prajwal Bhattaram
+/* Arduino SPIMemory Library v.3.4.0
+ * Copyright (C) 2019 by Prajwal Bhattaram
  * Created by Prajwal Bhattaram - 19/05/2015
- * Modified by Prajwal Bhattaram - 21/05/2018
+ * Modified by Prajwal Bhattaram - 03/06/2019
  *
  * This file is part of the Arduino SPIMemory Library. This library is for
- * Winbond NOR flash memory modules. In its current form it enables reading
- * and writing individual data variables, structs and arrays from and to various locations;
- * reading and writing pages; continuous read functions; sector, block and chip erase;
+ * Flash and FRAM memory modules. In its current form it enables reading,
+ * writing and erasing data from and to various locations;
  * suspending and resuming programming/erase and powering down for low power operation.
  *
  * This Library is free software: you can redistribute it and/or modify
@@ -43,16 +42,24 @@
    #define BEGIN_SPI SPI.begin();
 
  // Defines and variables specific to SAMD architecture
- #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
+ #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)|| defined(ARDUINO_ARCH_ESP32)
    #define CHIP_SELECT   digitalWrite(csPin, LOW);
    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
    #define xfer(n)   _spi->transfer(n)
    #define BEGIN_SPI _spi->begin();
+
+ // Defines and variables not specific to any architecture
  #else
    #define CHIP_SELECT   digitalWrite(csPin, LOW);
    #define CHIP_DESELECT digitalWrite(csPin, HIGH);
    #define xfer(n)   SPI.transfer(n)
    #define BEGIN_SPI SPI.begin();
+ #endif
+
+ #ifdef RUNDIAGNOSTIC
+ #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+ #define Serial SERIAL_PORT_USBVIRTUAL
+ #endif
  #endif
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -87,6 +94,7 @@
 #define RELEASE       0xAB
 #define READSFDP      0x5A
 #define UNIQUEID      0x4B
+#define FRAMSERNO     0xC3
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //                     General size definitions                       //
@@ -151,30 +159,41 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Cypress ~~~~~~~~~~~~~~~~~~~~~~~~//
   #define CYPRESS_MANID         0x01
+  #define RAMTRON_FRAM_MANID    0xC2
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Adesto ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define ADESTO_MANID         0x1F
+  #define ADESTO_MANID          0x1F
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ Micron ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define MICRON_MANID         0x20
-  #define M25P40               0x20
+  #define MICRON_MANID          0x20
+  #define M25P40                0x20
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ ON ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define ON_MANID             0x62
+  #define ON_MANID              0x62
+
+//~~~~~~~~~~~~~~~~~~~~~~~~ Giga ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define GIGA_MANID            0xC8
 
 //~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
-  #define AMIC_MANID           0x37
-  #define A25L512              0x30
+  #define AMIC_MANID            0x37
+  #define A25L512               0x30
+//~~~~~~~~~~~~~~~~~~~~~~~~ AMIC ~~~~~~~~~~~~~~~~~~~~~~~~//
+  #define MACRONIX_MANID        0xC2
+  #define MX25L4005             0x13
+  #define MX25L8005             0x14
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 //							Definitions 							  //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 #define BUSY          0x01
+#define STDSPI        0x0A
+#define ALTSPI     0x0B
 #if defined (ARDUINO_ARCH_ESP32)
 #define SPI_CLK       20000000        //Hz equivalent of 20MHz
 #else
 #define SPI_CLK       104000000       //Hz equivalent of 104MHz
 #endif
+#define ENFASTREAD    0x01
 #define WRTEN         0x02
 #define SUS           0x80
 #define WSE           0x04
@@ -184,11 +203,12 @@
 #define NULLBYTE      0x00
 #define NULLINT       0x0000
 #define NO_CONTINUE   0x00
+#define NOVERBOSE     0x00
+#define VERBOSE       0x01
 #define PASS          0x01
 #define FAIL          0x00
 #define NOOVERFLOW    false
 #define NOERRCHK      false
-#define VERBOSE       true
 #define PRINTOVERRIDE true
 #define ERASEFUNC     0xEF
 #define BUSY_TIMEOUT  1000000000L
