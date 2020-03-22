@@ -161,8 +161,8 @@
 
      case FASTREAD:
      _nextByte(WRITE, opcode);
-     _nextByte(WRITE, DUMMYBYTE);
      _transferAddress();
+     _nextByte(WRITE, DUMMYBYTE);
      break;
 
      default:

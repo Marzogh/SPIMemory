@@ -336,12 +336,11 @@ template <class T> bool SPIFram::_read(uint32_t _addr, T& value, uint32_t _sz, b
     else {
       CHIP_SELECT
       if (fastRead) {
-        _nextByte(WRITE, FASTREAD);
+        _beginSPI(WRITE, FASTREAD);
       }
       else {
-        _nextByte(WRITE, READDATA);
+        _beginSPI(WRITE, READDATA);
       }
-      _transferAddress();
       for (uint16_t i = 0; i < _sz; i++) {
         *p++ =_nextByte(READ);
       }
