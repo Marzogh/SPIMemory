@@ -1,7 +1,7 @@
 /*
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                          FlashDiagnostic_functions.ino                                                        |
-  |                                                               SPIMemory library                                                                |
+  |                                                               SPIMemory library                                                               |
   |                                                                   v 3.2.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
@@ -9,7 +9,7 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                                  For a full diagnostics rundown - with error codes and details of the errors                                  |
-  |                                 uncomment #define RUNDIAGNOSTIC in SPIMemory.h in the library before compiling                                 |
+  |                                 uncomment #define RUNDIAGNOSTIC in SPIMemory.h in the library before compiling                                |
   |                                             and loading this application onto your Arduino.                                                   |
   |                                                                                                                                               |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -89,7 +89,7 @@ void printUniqueID(void) {
 bool getID() {
   Serial.println();
   Serial.print("SPIMemory Library version: ");
-#ifdef LIBVER
+#ifdef SPIFLASH_LIBVER
   uint8_t _ver, _subver, _bugfix;
   flash.libver(&_ver, &_subver, &_bugfix);
   Serial.print(_ver);
@@ -101,6 +101,14 @@ bool getID() {
   Serial.println(F("< 2.5.0"));
 #endif
   Serial.println();
+
+
+  Serial.print("flash.begin() runtime: ");
+  Serial.print(flash.functionRunTime());
+  Serial.println(" µS");
+
+  Serial.println();
+
   uint32_t JEDEC = flash.getJEDECID();
   if (!JEDEC) {
     Serial.println("No comms. Check wiring. Is chip supported? If unable to fix, raise an issue on Github");

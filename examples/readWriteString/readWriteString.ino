@@ -2,10 +2,10 @@
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                             readWriteString.ino                                                               |
   |                                                               SPIMemory library                                                                |
-  |                                                                   v 3.0.0                                                                     |
+  |                                                                   v 3.5.0                                                                     |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                    Marzogh                                                                    |
-  |                                                                  29.05.2017                                                                   |
+  |                                                                  13.07.2019                                                                   |
   |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
   |                                                                                                                                               |
   |                        This program shows the method of reading a string from the console and saving it to flash memory                       |
@@ -44,18 +44,40 @@ void setup() {
 
   randomSeed(analogRead(RANDPIN));
   strAddr = random(0, flash.getCapacity());
+  //strAddr = 4500;
   String inputString = "This is a test String";
-  flash.writeStr(strAddr, inputString);
-  Serial.print(F("Written string: "));
-  Serial.println(inputString);
-  Serial.print(F("To address: "));
-  Serial.println(strAddr);
+  //String inputString = R"({"Loc":"BACK","SL:NO":1.3,"ImgID":3,"C ON":"OPEN CONDITION","Qtion":"Hey, this is Device A from location Delhi ID 24A612334"})";
+  //char inArray[6] = {'a', 'b', 'c', 'd', 'e', 'f'};
+  //if (flash.writeCharArray(strAddr, inArray, 6)) {
+  if (flash.writeStr(strAddr, inputString)) {
+    Serial.print(F("Written data: "));
+  }
+  else {
+    Serial.print(F("Unable to write data: "));
+  }
+  Serial.print(inputString);
+  /*for (uint8_t i = 0; i < 6; i++) {
+    Serial.print(inArray[i]);
+    Serial.print(", ");
+  }*/
+  Serial.print(F(" to address: 0x"));
+  Serial.println(strAddr, HEX);
+
   String outputString = "";
-  if (flash.readStr(strAddr, outputString)) {
-    Serial.print(F("Read string: "));
-    Serial.println(outputString);
-    Serial.print(F("From address: "));
-    Serial.println(strAddr);
+  char outArray[6];
+  //if (flash.readCharArray(strAddr, outArray, 6)) {
+  if (flash.readStr(strAddr, outputString)){
+    Serial.print(F("Read data: "));
+    Serial.print(outputString);
+    /*for (uint8_t i = 0; i < 6; i++) {
+      Serial.print(outArray[i]);
+      Serial.print(", ");
+    }*/
+    Serial.print(F(" from address: 0x"));
+    Serial.println(strAddr, HEX);
+  }
+  else {
+    Serial.println("Unable to read String");
   }
   while (!flash.eraseSector(strAddr));
 }
