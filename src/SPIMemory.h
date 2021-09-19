@@ -64,43 +64,43 @@
 //                        platforms (In ALPHA)                        //
 //                                                                    //
 //   Change the ZERO_SPISERCOM define below to use other SPI ports    //
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-// #define ENABLEZERODMA                                               //
-// #define ZERO_SPISERCOM SERCOM4                                      //
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//#define ENABLEZERODMA                                               //
+//#define ZERO_SPISERCOM SERCOM4                                      //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-# include <Arduino.h>
-# include <SPI.h>
-# include "defines.h"
-# include "SPIFlash.h"
-# include "SPIFram.h"
-# include "diagnostics.h"
+  #include <Arduino.h>
+  #include <SPI.h>
+  #include "defines.h"
+  #include "SPIFlash.h"
+  #include "SPIFram.h"
+  #include "diagnostics.h"
 
-# if defined(ARDUINO_ARCH_SAM)
-#  include <malloc.h>
-#  include <stdlib.h>
-#  include <stdio.h>
-#  include "DMASAM.h"
-# endif
+#if defined (ARDUINO_ARCH_SAM)
+  #include <malloc.h>
+  #include <stdlib.h>
+  #include <stdio.h>
+  #include "DMASAM.h"
+#endif
 
-# if defined(ARDUINO_ARCH_SAMD)
-#  if defined(ENABLEZERODMA)
-#   include "DMASAMD.h"
-#  endif
-# endif
+#if defined (ARDUINO_ARCH_SAMD)
+  #if defined (ENABLEZERODMA)
+    #include "DMASAMD.h"
+  #endif
+#endif
 
-# if defined(BOARD_RTL8195A)
-#  ifdef __cplusplus
-extern "C" {
-#  endif
+#if defined (BOARD_RTL8195A)
+  #ifdef __cplusplus
+    extern "C" {
+  #endif
 
-#  include "gpio_api.h"
-#  include "PinNames.h"
+  #include "gpio_api.h"
+  #include "PinNames.h"
 
-#  ifdef __cplusplus
-}
-#  endif
-# endif /* if defined(BOARD_RTL8195A) */
+  #ifdef __cplusplus
+    }
+  #endif
+#endif
 
 # ifndef ARCH_STM32
 #  if defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(__STM32F1__) || defined(STM32F1) || \
@@ -109,7 +109,8 @@ extern "C" {
 #  endif
 # endif
 # if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_ESP8266) || defined(SIMBLEE) || \
-    defined(ARDUINO_ARCH_ESP32) || defined(BOARD_RTL8195A) || defined(ARCH_STM32) || defined(ESP32) || defined(NRF52)
+    defined(ARDUINO_ARCH_ESP32) || defined(BOARD_RTL8195A) || defined(ARCH_STM32) || defined(ESP32) || defined(NRF52) || defined(NRF52_SERIES)
+
 // RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
 #  define _delay_us(us) delayMicroseconds(us)
 # else
