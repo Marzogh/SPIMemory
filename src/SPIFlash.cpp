@@ -1337,6 +1337,7 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr)
         if (!_notBusy(kb32Erase.time)) {
             return false; // Datasheet says erasing a sector takes 400ms max
         }
+    #endif
     _writeDisable();
     #ifdef RUNDIAGNOSTIC
         _spifuncruntime = micros() - _spifuncruntime;
