@@ -7,7 +7,7 @@
 
 .. _noteOnErrorCheck:
 
-Advanced use ``errorCheck`` ``HIGHSPEED``
+Advanced use ``errorCheck`` ``HIGHSPEED`` ``ERASE_ASYNC``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -----------
@@ -78,3 +78,23 @@ Then, if ``#define HIGHSPEED`` is uncommented in `SPIFlash.h <https://github.com
   Please note that using a combination of the methods listed in :ref:`High speed mode <noteOnHighSpeed>` and :ref:`Error checking <noteOnErrorCheck>` will result in the highest possible write speed from the library. However, this will result in the highest probability of write errors / data corruption as well.
 
   ``**WARNING**``
+
+Asynchronous erase mode
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Normally, the library waits for erase transactions to signal that they are complete before proceeding with execution. However, these instructions can take excessive amounts of time (as much as 2 seconds for the 64K block erase) which may not be permissible for real-time applications.
+
+If ``#define ERASE_ASYNC`` is uncommented in `SPIFlash.h`, the library will not wait for erases to be finished before continuing with execution. This means that if an erase fails, it is harder to trace the issue; however, ``suspendProg()`` can then be called to suspend the erase and allow a write to begin, then ``resumeProg()`` can be called after the write is complete to allow the erase to continue.
+
+This functionality is subject to the following caveats:
+
+  * Currently, only suspending during erase is supported; writes are always synchronous. Asynchronous writes are supported by the specification, but are not yet implemented.
+  
+  * There is at best no effect to the time required for the erase and subsequent write; the time required for the erase is simply split into smaller segments.
+  
+  * It is not permitted to erase another sector while a previous erase is suspended.
+
+  * It is not permitted to write to a sector that is in the process of being erased.
+
+  * It is not permitted to suspend a full-chip erase.
+  
