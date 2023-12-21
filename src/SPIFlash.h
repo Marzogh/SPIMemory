@@ -27,6 +27,13 @@
 #ifndef SPIFLASH_H
 #define SPIFLASH_H
 
+// Allow erase operations to happen asynchronously by not waiting for the chip
+// to become un-busy after an erase operation; this allows interleaving writes
+// with an ongoing erase
+// Slightly worsens error handling by making the timeout limit for failed erases
+// very slow, but the impact is not hugely meaningful in 99.9% of cases
+#define ERASE_ASYNC
+
 #include "SPIMemory.h"
 
 class SPIFlash {
