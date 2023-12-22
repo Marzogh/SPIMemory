@@ -1304,11 +1304,13 @@ bool SPIFlash::eraseSector(uint32_t _addr)
     _beginSPI(kb4Erase.opcode); // The address is transferred as a part of this function
     _endSPI();
 
-    if (!_notBusy(kb4Erase.time)) {
-        return false; // Datasheet says erasing a sector takes 400ms max
-    }
-    // _writeDisable();
-    #ifdef RUNDIAGNOSTIC
+    #ifndef ERASE_ASYNC
+        if(!_notBusy(kb4Erase.time)) {
+            return false;	//Datasheet says erasing a sector takes 400ms max
+        }
+    #endif
+    //_writeDisable();
+  #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
     #endif
 
@@ -1331,13 +1333,14 @@ bool SPIFlash::eraseBlock32K(uint32_t _addr)
     }
     _beginSPI(kb32Erase.opcode);
     _endSPI();
-
-    if (!_notBusy(kb32Erase.time)) {
-        return false; // Datasheet says erasing a sector takes 400ms max
-    }
+    #ifndef ERASE_ASYNC
+        if (!_notBusy(kb32Erase.time)) {
+            return false; // Datasheet says erasing a sector takes 400ms max
+        }
+    #endif
     _writeDisable();
     #ifdef RUNDIAGNOSTIC
-    _spifuncruntime = micros() - _spifuncruntime;
+        _spifuncruntime = micros() - _spifuncruntime;
     #endif
 
     return true;
@@ -1361,9 +1364,12 @@ bool SPIFlash::eraseBlock64K(uint32_t _addr)
     _beginSPI(kb64Erase.opcode);
     _endSPI();
 
-    if (!_notBusy(kb64Erase.time)) {
-        return false; // Datasheet says erasing a sector takes 400ms max
-    }
+    
+    #ifndef ERASE_ASYNC
+        if(!_notBusy(kb64Erase.time)) {
+            return false;	//Datasheet says erasing a sector takes 400ms max
+        }
+    #endif
     #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros() - _spifuncruntime;
     #endif
@@ -1403,8 +1409,11 @@ bool SPIFlash::suspendProg(void)
     #ifdef RUNDIAGNOSTIC
     _spifuncruntime = micros();
     #endif
-    if (_isChipPoweredDown() || _notBusy()) {
-        return false;
+    // Technically I think it's possible for suspend to fail while the chip is
+    // busy - e.g. during chip erase - but there's literally no point using suspend
+    // while the chip isn't busy so I don't think there's any reason for this check
+	if(_isChipPoweredDown()/* || _notBusy()*/) {
+		return false;
     }
 
     if (!_noSuspend()) {
