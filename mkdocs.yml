@@ -1,0 +1,53 @@
+site_name: SPIMemory
+site_description: Arduino SPI Flash and SPI FRAM memory library documentation
+site_url: https://chipsncode.com/SPIMemory/
+repo_url: https://github.com/Marzogh/SPIMemory
+repo_name: Marzogh/SPIMemory
+edit_uri: edit/master/docs/
+
+docs_dir: docs
+site_dir: site
+exclude_docs: |
+  index.html
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Quick Start: guide/quickstart.md
+      - Core Concepts: guide/concepts.md
+      - Build Configuration: guide/configuration.md
+      - Compatibility Matrix: guide/compatibility.md
+  - API Reference:
+      - Overview: api/index.md
+      - SPIFlash: api/spiflash.md
+      - SPIFram: api/spifram.md
+      - Errors and Diagnostics: api/errors.md
+  - Operations:
+      - Troubleshooting: operations/troubleshooting.md
+      - Maintainer Guide: operations/maintainer.md
+      - Release Checklist: operations/release-checklist.md
+  - Legacy Docs: legacy.md
+  - Docs Contributing Guide: CONTRIBUTING.md
+  - Docs Tooling:
+      - Local Build Guide: local-build.md
+      - Docs Release Checklist: release-checklist.md
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+  - fenced_code
+  - attr_list
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Marzogh/SPIMemory

@@ -4,3 +4,11 @@
 
 *.DS_Store
 Thumbs.db
+
+# Docs build artifacts
+docs/_build/
+site/
+
+# Local env/cache
+.venv/
+.cache/

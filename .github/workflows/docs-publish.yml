@@ -1,0 +1,76 @@
+name: docs-publish
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install docs dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/requirements.txt
+
+      - name: Build docs
+        run: mkdocs build --strict
+
+      - name: Add legacy path redirects
+        run: |
+          mkdir -p site/docs site/_build/html site/spimemory
+          cat > site/docs/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en"><head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=/SPIMemory/">
+            <link rel="canonical" href="/SPIMemory/">
+            <title>Redirecting...</title>
+            <script>window.location.replace('/SPIMemory/');</script>
+          </head><body>
+            <p>Redirecting to <a href="/SPIMemory/">/SPIMemory/</a>...</p>
+          </body></html>
+          HTML
+          cat > site/_build/html/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en"><head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=/SPIMemory/">
+            <link rel="canonical" href="/SPIMemory/">
+            <title>Redirecting...</title>
+            <script>window.location.replace('/SPIMemory/');</script>
+          </head><body>
+            <p>Redirecting to <a href="/SPIMemory/">/SPIMemory/</a>...</p>
+          </body></html>
+          HTML
+          cat > site/spimemory/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en"><head>
+            <meta charset="utf-8">
+            <meta http-equiv="refresh" content="0; url=/SPIMemory/">
+            <link rel="canonical" href="/SPIMemory/">
+            <title>Redirecting...</title>
+            <script>window.location.replace('/SPIMemory/');</script>
+          </head><body>
+            <p>Redirecting to <a href="/SPIMemory/">/SPIMemory/</a>...</p>
+          </body></html>
+          HTML
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
