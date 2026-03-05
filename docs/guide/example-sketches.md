@@ -4,12 +4,49 @@ The bundled examples are one of the best parts of this library. This page explai
 
 ## `FlashDiagnostics/FlashDiagnostics.ino`
 
-### What it tests
+### Exact test inventory (every operation it executes)
 
-- Chip identity (`getJEDECID`, capacity, max page, unique ID)
-- Power operations (`powerDown`, `powerUp`)
-- Erase operations (`eraseChip`, `eraseSection`, sector/block erase)
-- Data I/O for many types (byte, char, word, short, long, float, struct, array, string)
+Identity and metadata (from `getID()`):
+
+- `flash.libver(&_ver, &_subver, &_bugfix)` (when `LIBVER` is enabled)
+- `flash.getJEDECID()`
+- `flash.getCapacity()`
+- `flash.getMaxPage()`
+- `flash.getUniqueID()`
+
+Power tests:
+
+- `flash.powerDown()`
+- `flash.powerUp()`
+
+Erase tests:
+
+- `flash.eraseChip()`
+- `flash.eraseSection(_addr, KB(72))`
+- `flash.eraseBlock64K(_addr)`
+- `flash.eraseBlock32K(_addr)`
+- `flash.eraseSector(_addr)` (4 KB)
+
+Primitive data write/read tests:
+
+- `flash.writeByte(addr, 35)` + `flash.readByte(addr)`
+- `flash.writeChar(addr, -110)` + `flash.readChar(addr)`
+- `flash.writeWord(addr, 4520)` + `flash.readWord(addr)`
+- `flash.writeShort(addr, -1250)` + `flash.readShort(addr)`
+- `flash.writeULong(addr, 876532)` + `flash.readULong(addr)`
+- `flash.writeLong(addr, -10959)` + `flash.readLong(addr)`
+- `flash.writeFloat(addr, 3.14)` + `flash.readFloat(addr)`
+
+Higher-level data tests:
+
+- `flash.writeStr(addr, "This is a test String 123!@#")` + `flash.readStr(addr, _data)`
+- `flash.writeAnything(addr, testStruct)` + `flash.readAnything(addr, testStructOut)`
+- `flash.writeByteArray(addr, _d, 256)` + `flash.readByteArray(addr, _data, 256)`
+
+Timing and diagnostics:
+
+- `flash.functionRunTime()` is sampled after each operation to print runtime columns.
+- PASS/FAIL is decided by value comparison in each test function.
 
 ### Why run it first
 
@@ -77,6 +114,23 @@ Interactive serial command tester for direct operation-by-operation checks.
 
 Use this when you want to isolate a single failing operation (`writeByte`, `eraseSector`, `readStr`, etc.) without full diagnostics noise.
 
+### Full command map (all interactive commands)
+
+1. `getJEDECID` and component ID bytes
+2. `writeByte(addr, byte)`
+3. `readByte(addr)`
+4. `writeWord(addr, word)`
+5. `readWord(addr)`
+6. `writeStr(addr, inputString)`
+7. `readStr(addr, outputString)`
+8. `writeByteArray(addr, pageBuffer, SPI_PAGESIZE)` where `pageBuffer` is `0..255`
+9. `readByteArray(addr, data_buffer, SPI_PAGESIZE)` via `printPage`
+10. Full-chip dump: loops through flash and calls `readByteArray` repeatedly in `printAllPages`
+11. `eraseSector(addr)` (4 KB)
+12. `eraseBlock32K(addr)`
+13. `eraseBlock64K(addr)`
+14. `eraseChip()`
+
 ### Tips
 
 - Set Serial Monitor to expected line ending mode from sketch notes.
@@ -126,6 +180,22 @@ The byte at address ... is: ...
 
 How to use `getAddress()` and `sizeofStr()` to allocate addresses safely without hardcoding offsets.
 
+### Exact API calls used
+
+- Allocation:
+  - `flash.getAddress(sizeof(byte))`
+  - `flash.getAddress(sizeof(float))`
+  - `flash.getAddress(flash.sizeofStr(testStr[i]))`
+- Byte I/O:
+  - `flash.writeByte(byteAddr[i], testByte[i])`
+  - `flash.readByte(byteAddr[i])`
+- Float I/O:
+  - `flash.writeFloat(floatAddr[i], testFloat[i])`
+  - `flash.readFloat(floatAddr[i])`
+- String I/O:
+  - `flash.writeStr(strAddr[i], testStr[i])`
+  - `flash.readStr(strAddr[i], _string)`
+
 ### Troubleshooting value
 
 If this fails, you may have pre-written data conflicts or boundary behavior confusion.
@@ -158,6 +228,13 @@ Addresses should be valid hex values and read-back values should match writes.
 
 Simple `writeStr`/`readStr` workflow.
 
+### Exact API calls used
+
+- `flash.getCapacity()` (for random address generation)
+- `flash.writeStr(strAddr, inputString)`
+- `flash.readStr(strAddr, outputString)`
+- `flash.eraseSector(strAddr)` (cleanup after test)
+
 ### Troubleshooting value
 
 Great for catching string-specific issues (length metadata, readback integrity, sector erase assumptions).
@@ -180,6 +257,19 @@ The written/read strings should be identical and the address should match in bot
 ### What it teaches
 
 Write/read complete structs repeatedly, including nested members and arrays.
+
+### Exact API calls used
+
+- `flash.getCapacity()` (random target address range)
+- `flash.eraseSection(_addr, sizeof(configurationIn))`
+- `flash.writeAnything(_addr, configurationIn)`
+- `flash.readAnything(_addr, configurationOut)`
+
+Loop behavior detail:
+
+- Runs `NUMBEROFREPEATS` iterations (`100` by default).
+- Tracks `eraseCount`, `writeCount`, `errorCount`, `readCount`.
+- Final summary prints all counters.
 
 ### Troubleshooting value
 
@@ -228,6 +318,15 @@ This file does not run as a standalone sketch. It provides helper print function
 - ID printing (`getID`, `printUniqueID`)
 
 If formatting looks wrong in diagnostics output, this helper file is the first place to inspect.
+
+### Helper functions defined in this file
+
+- Output helpers: `printLine`, `printTab`, `printTime`, `printTimer`, `pass`
+- Identity helpers: `printUniqueID`, `getID`
+- Test routines:
+  - `powerDownTest`, `powerUpTest`
+  - `eraseChipTest`, `eraseSectionTest`, `eraseBlock64KTest`, `eraseBlock32KTest`, `eraseSectorTest`
+  - `byteTest`, `charTest`, `wordTest`, `shortTest`, `uLongTest`, `longTest`, `floatTest`, `structTest`, `arrayTest`, `stringTest`
 
 ## Recommended order for beginners
 
