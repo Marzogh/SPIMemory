@@ -26,6 +26,12 @@ Constructors do not return values; they prepare the instance.
 
 Incorrect bus/pin choices usually surface during `begin()` with zero IDs or non-zero error codes.
 
+## Common Mistakes
+
+- Using incorrect CS pin or alternate bus for your board wiring.
+- Assuming constructor validates wiring immediately (validation happens at `begin()`).
+- Reusing examples with different board pin numbering conventions without adjustment.
+
 ## Example
 
 ```cpp

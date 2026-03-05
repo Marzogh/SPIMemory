@@ -25,6 +25,12 @@ Returns unique ID value, often `0` when unsupported/unavailable.
 
 Not all chips implement unique-ID commands; a zero value may reflect unsupported feature rather than total comms failure.
 
+## Common Mistakes
+
+- Assuming all chips implement unique ID and treating `0` as guaranteed comm failure.
+- Using UID as security/authentication secret without threat modeling.
+- Changing provisioning logic without handling unsupported chips.
+
 ## Example
 
 ```cpp

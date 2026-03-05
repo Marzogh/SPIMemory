@@ -26,6 +26,12 @@ Returns decoded `float` value from memory.
 
 If address is invalid or comms fail, returned value may be stale/default/invalid. Check `error()` after suspicious reads.
 
+## Common Mistakes
+
+- Reading with wrong type/API compared to how data was written.
+- Using out-of-range or stale addresses.
+- Trusting suspicious values without checking error state.
+
 ## Example
 
 ```cpp

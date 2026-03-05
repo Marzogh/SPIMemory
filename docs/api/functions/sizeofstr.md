@@ -25,6 +25,12 @@ Returns required byte count for storing that specific `String`.
 
 If you erase/write fewer bytes than required, reads can truncate or include stale residual bytes.
 
+## Common Mistakes
+
+- Using `String.length()` instead of `sizeofStr()` for storage planning.
+- Erasing fewer bytes than string storage actually requires.
+- Reusing old allocation size after string content grows.
+
 ## Example
 
 ```cpp

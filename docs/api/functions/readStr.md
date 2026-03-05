@@ -27,6 +27,12 @@ Returns `true` when read/decode succeeded and output string was populated.
 
 False return indicates decode/read failure, invalid address span, or communication errors.
 
+## Common Mistakes
+
+- Reading from an address that was not written by `writeStr()`.
+- Mixing manual binary layout with `readStr()` decoding.
+- Ignoring `false` return and using stale output string.
+
 ## Example
 
 ```cpp

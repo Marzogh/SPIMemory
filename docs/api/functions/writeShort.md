@@ -27,6 +27,12 @@ Returns `true` when write sequence completes (and optional verification passes).
 
 Common failures: out-of-range address, flash not erased, chip busy, powered-down device, or SPI signal integrity problems.
 
+## Common Mistakes
+
+- Writing to flash without erasing target region first.
+- Ignoring `false` return and not checking `error(VERBOSE)`.
+- Reusing addresses without a clear storage map.
+
 ## Example
 
 ```cpp

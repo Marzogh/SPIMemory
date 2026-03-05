@@ -25,6 +25,12 @@ Returns `true` when chip acknowledges wake-up sequence.
 
 If wake fails, subsequent operations may fail; check wiring/power timing and error code.
 
+## Common Mistakes
+
+- Skipping `powerUp()` after deep sleep before first memory access.
+- Assuming immediate readiness without checking first operation result.
+- Ignoring wake failures and misattributing later read errors.
+
 ## Example
 
 ```cpp

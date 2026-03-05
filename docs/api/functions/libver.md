@@ -27,6 +27,12 @@ Returns `true` if version values were written successfully.
 
 Passing null/invalid pointers leads to undefined behavior in C++ pointer semantics. Always pass addresses of `uint8_t` variables.
 
+## Common Mistakes
+
+- Passing invalid/null pointers for version outputs.
+- Printing version once at boot and forgetting to include it in bug reports.
+- Assuming runtime version is identical across all build environments.
+
 ## Example
 
 ```cpp

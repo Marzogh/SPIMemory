@@ -24,6 +24,12 @@ Returns `true` if SFDP was detected/read, else `false`.
 
 `false` may be normal on older/non-SFDP chips. It is not automatically a fatal error if chip ID and operations still work.
 
+## Common Mistakes
+
+- Treating `false` as immediate hard failure on chips that do not expose SFDP.
+- Skipping JEDEC/basic comm checks because SFDP is present.
+- Assuming SFDP guarantees all opcodes are supported the same way.
+
 ## Example
 
 ```cpp

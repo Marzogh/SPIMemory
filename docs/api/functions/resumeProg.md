@@ -24,6 +24,12 @@ Returns `true` on successful resume.
 
 Fails if no suspend state exists, command unsupported, or chip state invalid.
 
+## Common Mistakes
+
+- Calling resume without a valid suspended operation.
+- Assuming resume success without verifying final data integrity.
+- Ignoring failed resume and continuing normal writes immediately.
+
 ## Example
 
 ```cpp

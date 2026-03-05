@@ -28,6 +28,12 @@ Returns `true` when all requested bytes were written successfully.
 
 Failures come from invalid pointers, address overflow, erase prerequisites (flash), or bus errors.
 
+## Common Mistakes
+
+- Passing buffer length that does not match real payload size.
+- Forgetting erase-before-write on flash region.
+- Using invalid/temporary buffer pointers.
+
 ## Example
 
 ```cpp

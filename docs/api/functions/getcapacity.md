@@ -25,6 +25,12 @@ Returns capacity in bytes.
 
 Using hardcoded capacities causes address overrun on different chip variants.
 
+## Common Mistakes
+
+- Hardcoding capacity from datasheet instead of querying runtime value.
+- Using random address upper bound equal to capacity without considering payload size.
+- Assuming same capacity across all user hardware variants.
+
 ## Example
 
 ```cpp

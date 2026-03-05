@@ -26,6 +26,12 @@ Returns `true` when clear operation completed successfully.
 
 Invalid ranges, protected states, busy chip state, or unsupported erase granularity can cause failure.
 
+## Common Mistakes
+
+- Erasing too small a region before rewriting larger payloads.
+- Assuming section erase aligns exactly to your object boundaries.
+- Not accounting for erase latency in time-sensitive loops.
+
 ## Example
 
 ```cpp

@@ -28,6 +28,12 @@ Returns `true` when requested bytes were read into buffer.
 
 If used as C-strings, ensure null termination is handled explicitly by your code.
 
+## Common Mistakes
+
+- Reading more bytes than destination buffer can hold.
+- Using wrong start address and mis-parsing shifted data.
+- Assuming data is valid without checking application-level framing/CRC.
+
 ## Example
 
 ```cpp

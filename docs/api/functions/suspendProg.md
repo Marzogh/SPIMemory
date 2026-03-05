@@ -24,6 +24,12 @@ Returns `true` if suspend request succeeded.
 
 Not all chips support suspend semantics for every operation/state.
 
+## Common Mistakes
+
+- Assuming suspend is supported on every chip and operation state.
+- Calling suspend/resume without checking return values.
+- Suspending and never resuming, leaving long operation incomplete.
+
 ## Example
 
 ```cpp

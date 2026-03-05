@@ -27,6 +27,12 @@ No return value. Clock setting is stored and used by subsequent memory calls.
 
 Too-fast clocks can cause intermittent read/write mismatches, ID read failures, and random PASS/FAIL behavior in diagnostics.
 
+## Common Mistakes
+
+- Setting SPI speed too high during bring-up on long/jumper wiring.
+- Changing clock and assuming old stability still holds without re-testing diagnostics.
+- Using board-specific clock APIs incorrectly for your core version.
+
 ## Example
 
 ```cpp

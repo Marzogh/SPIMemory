@@ -25,6 +25,12 @@ Returns JEDEC ID packed into a 32-bit value.
 
 Zero or unstable values indicate communication faults, wrong voltage, wrong chip-select, or unsupported devices.
 
+## Common Mistakes
+
+- Proceeding when JEDEC ID is `0x000000` or unstable.
+- Assuming every JEDEC ID is in the library support list.
+- Not logging JEDEC ID in support/troubleshooting reports.
+
 ## Example
 
 ```cpp

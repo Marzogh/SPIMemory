@@ -25,6 +25,12 @@ Returns numeric error code (`0` generally means no current error).
 
 Calling much later can hide root cause because newer operations may overwrite error context.
 
+## Common Mistakes
+
+- Reading `error()` long after the failing call, losing useful context.
+- Ignoring non-zero error values during early bring-up.
+- Using `error()` without `VERBOSE` while debugging first hardware setup.
+
 ## Example
 
 ```cpp

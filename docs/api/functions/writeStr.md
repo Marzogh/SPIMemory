@@ -27,6 +27,12 @@ Returns `true` on successful write (and verification when enabled).
 
 Failures occur from insufficient erased space (flash), invalid address range, comms errors, or write-protect state.
 
+## Common Mistakes
+
+- Writing string data without reserving/erasing `sizeofStr(data)` bytes first on flash.
+- Changing string length over time without updating allocation/erase size.
+- Treating `String` storage as C-string without considering library format.
+
 ## Example
 
 ```cpp

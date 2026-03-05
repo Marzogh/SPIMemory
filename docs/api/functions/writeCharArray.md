@@ -28,6 +28,12 @@ Returns `true` when all requested bytes were written successfully.
 
 Failures come from invalid pointers, address overflow, erase prerequisites (flash), or bus errors.
 
+## Common Mistakes
+
+- Assuming null terminator is auto-managed when `bufferSize` excludes it.
+- Writing text payload with incorrect length.
+- Skipping erase step on flash destinations.
+
 ## Example
 
 ```cpp

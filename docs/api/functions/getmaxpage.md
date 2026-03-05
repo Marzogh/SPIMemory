@@ -24,6 +24,12 @@ Returns max page value used by library page calculations.
 
 Using stale/hardcoded page limits can cause out-of-range accesses.
 
+## Common Mistakes
+
+- Confusing page count with byte capacity.
+- Using page math from another chip without recalculating.
+- Assuming page operations are equivalent to erase boundaries.
+
 ## Example
 
 ```cpp

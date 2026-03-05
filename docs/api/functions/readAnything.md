@@ -27,6 +27,12 @@ Returns `true` when object bytes were read successfully.
 
 Mismatched type layout gives corrupted values even if API reports success.
 
+## Common Mistakes
+
+- Reading into a type layout different from what was written.
+- Assuming success return means semantic correctness of decoded fields.
+- Using packed/unpacked structs inconsistently across toolchains.
+
 ## Example
 
 ```cpp

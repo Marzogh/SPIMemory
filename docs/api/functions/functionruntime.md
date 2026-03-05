@@ -25,6 +25,12 @@ Returns elapsed runtime value of previous operation.
 
 Interpret values carefully: runtime depends on operation type, chip state, and diagnostic compile settings.
 
+## Common Mistakes
+
+- Comparing runtimes from different operation types directly.
+- Benchmarking with unstable wiring and reading too much into variance.
+- Forgetting that diagnostics/build settings can affect reported timing.
+
 ## Example
 
 ```cpp

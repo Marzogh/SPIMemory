@@ -25,6 +25,12 @@ Returns start address for the requested block.
 
 If allocation wraps or requested size exceeds available strategy assumptions, subsequent writes may fail address checks.
 
+## Common Mistakes
+
+- Assuming `getAddress()` persists across reboot without your own metadata scheme.
+- Mixing manual offsets and allocator-style addresses accidentally.
+- Not reserving exact sizes for variable-length payloads.
+
 ## Example
 
 ```cpp

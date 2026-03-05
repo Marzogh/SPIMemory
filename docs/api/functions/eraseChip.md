@@ -25,6 +25,12 @@ Returns `true` when full erase/clear succeeds.
 
 Operation can be long on large flash chips. Power loss mid-operation may leave partially erased contents.
 
+## Common Mistakes
+
+- Running chip erase in normal flow instead of explicit maintenance/reset paths.
+- Not warning users that operation is destructive and long-running.
+- Power-cycling mid-erase and assuming data integrity afterwards.
+
 ## Example
 
 ```cpp

@@ -24,6 +24,12 @@ Returns `true` on success.
 
 Unsupported opcode/chip profile mismatch or bus errors can fail this call.
 
+## Common Mistakes
+
+- Erasing a 64 KB block when only a small region needed reset.
+- Failing to back up adjacent data in same block.
+- Treating block erase boundaries as page boundaries.
+
 ## Example
 
 ```cpp

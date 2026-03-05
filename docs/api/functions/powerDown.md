@@ -25,6 +25,12 @@ Returns `true` if command accepted by chip.
 
 Unsupported on some chips or states; subsequent read/write calls fail while powered down.
 
+## Common Mistakes
+
+- Powering down and then attempting reads/writes without wake-up.
+- Assuming every chip fully supports low-power command set.
+- Not integrating memory wake timing with MCU sleep/wake flow.
+
 ## Example
 
 ```cpp

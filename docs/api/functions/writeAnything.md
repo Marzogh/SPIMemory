@@ -27,6 +27,12 @@ Returns `true` on full write success.
 
 Changing struct layout between firmware versions breaks compatibility unless you version and migrate your data format.
 
+## Common Mistakes
+
+- Changing struct layout between firmware versions without migration.
+- Using non-trivially-copyable types/pointers inside persisted structs.
+- Forgetting erase-before-write requirement on flash.
+
 ## Example
 
 ```cpp

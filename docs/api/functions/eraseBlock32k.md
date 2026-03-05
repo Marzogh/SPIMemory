@@ -24,6 +24,12 @@ Returns `true` when erase completes.
 
 May fail on chips lacking 32 KB erase opcode or when write/ready checks fail.
 
+## Common Mistakes
+
+- Using 32 KB erase for tiny updates, causing unnecessary data loss.
+- Assuming all chips support 32 KB erase opcode.
+- Not preserving neighboring data in same erase block.
+
 ## Example
 
 ```cpp

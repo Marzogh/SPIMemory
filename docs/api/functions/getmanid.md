@@ -25,6 +25,12 @@ Returns manufacturer ID value.
 
 Unexpected values usually indicate wiring/SPI issues or unsupported chips.
 
+## Common Mistakes
+
+- Using manufacturer ID alone to infer exact chip size/model.
+- Trusting unstable IDs without verifying wiring and power integrity.
+- Skipping JEDEC read when manufacturer ID looks plausible.
+
 ## Example
 
 ```cpp

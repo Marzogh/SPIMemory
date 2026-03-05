@@ -24,6 +24,12 @@ Returns `true` on successful sector erase.
 
 Fails if chip is busy, write-enable path fails, address invalid, or erase opcode unsupported.
 
+## Common Mistakes
+
+- Expecting arbitrary byte-range erase; this targets 4 KB sector granularity.
+- Erasing wrong sector by passing nearby but unintended address.
+- Not checking return code before writing new data.
+
 ## Example
 
 ```cpp

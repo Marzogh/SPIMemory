@@ -25,6 +25,12 @@ Returns `true` on successful initialization and chip identification. Returns `fa
 
 Failure usually indicates wiring issues, wrong CS pin, unsupported chip, incorrect voltage levels, or SPI bus mismatch. Check `error(VERBOSE)` immediately.
 
+## Common Mistakes
+
+- Calling memory I/O before `begin()` has succeeded.
+- Passing a custom `flashChipSize` that does not match real hardware.
+- Ignoring a `false` return and continuing instead of checking `error(VERBOSE)`.
+
 ## Example
 
 ```cpp

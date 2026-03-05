@@ -28,6 +28,12 @@ Constructors do not return values. They create the object and store interface co
 
 Misconfigured pins or bus selection are usually detected at `begin()` time via failed ID reads or error codes.
 
+## Common Mistakes
+
+- Using wrong CS pin relative to your wiring diagram.
+- Selecting alternate SPI bus constructor on a board/core that does not support it.
+- Passing custom SPI pin arrays that do not match board capabilities.
+
 ## Example
 
 ```cpp
