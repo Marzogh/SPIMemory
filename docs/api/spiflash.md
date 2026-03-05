@@ -1,5 +1,7 @@
 # SPIFlash API
 
+For full per-call detail, use the [SPIFlash Function Reference](spiflash-reference.md).
+
 ## Functional groups
 
 - Initialization: `begin`, `setClock`, `sfdpPresent`

@@ -9,3 +9,9 @@ Each function entry should describe:
 - return semantics
 - side effects
 - failure behavior
+
+## Fast Navigation
+
+- [SPIFlash function-by-function reference](spiflash-reference.md)
+- [SPIFram function-by-function reference](spifram-reference.md)
+- [Error handling and diagnostics](errors.md)

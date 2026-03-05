@@ -1,5 +1,7 @@
 # SPIFram API
 
+For full per-call detail, use the [SPIFram Function Reference](spifram-reference.md).
+
 ## Status
 
 FRAM support exists in the library and should be treated as a narrower compatibility surface than SPIFlash.

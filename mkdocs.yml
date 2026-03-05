@@ -14,13 +14,16 @@ nav:
   - Home: index.md
   - Getting Started:
       - Quick Start: guide/quickstart.md
+      - Common Tasks: guide/common-tasks.md
       - Core Concepts: guide/concepts.md
       - Build Configuration: guide/configuration.md
       - Compatibility Matrix: guide/compatibility.md
   - API Reference:
       - Overview: api/index.md
       - SPIFlash: api/spiflash.md
+      - SPIFlash Function Reference: api/spiflash-reference.md
       - SPIFram: api/spifram.md
+      - SPIFram Function Reference: api/spifram-reference.md
       - Errors and Diagnostics: api/errors.md
   - Operations:
       - Troubleshooting: operations/troubleshooting.md
