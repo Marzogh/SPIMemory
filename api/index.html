@@ -564,13 +564,63 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fast-navigation" class="md-nav__link">
+  <a href="#start-by-task" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fast Navigation
+        Start by Task
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-discovery-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function Discovery Index
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Discovery Index">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared-spiflashspifram-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared SPIFlash/SPIFram families
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spiflash-only-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPIFlash-only families
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1069,13 +1119,63 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fast-navigation" class="md-nav__link">
+  <a href="#start-by-task" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fast Navigation
+        Start by Task
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-discovery-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function Discovery Index
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Discovery Index">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared-spiflashspifram-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared SPIFlash/SPIFram families
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spiflash-only-families" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPIFlash-only families
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1100,21 +1200,78 @@
 
 
 <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<p>This section is the authoritative API surface summary.</p>
-<p>Each function entry should describe:</p>
+<p>This section provides two ways to find what you need:</p>
 <ul>
-<li>purpose</li>
-<li>preconditions</li>
-<li>return semantics</li>
-<li>side effects</li>
-<li>failure behavior</li>
+<li><strong>By task</strong> (beginner-friendly)</li>
+<li><strong>By full function list</strong> (complete call-by-call reference)</li>
 </ul>
-<h2 id="fast-navigation">Fast Navigation<a class="headerlink" href="#fast-navigation" title="Permanent link">&para;</a></h2>
+<h2 id="start-by-task">Start by Task<a class="headerlink" href="#start-by-task" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Recommended calls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initialize memory chip</td>
+<td><code>begin</code>, <code>setClock</code></td>
+</tr>
+<tr>
+<td>Check chip identity</td>
+<td><code>getJEDECID</code>, <code>getManID</code>, <code>getUniqueID</code></td>
+</tr>
+<tr>
+<td>Find free write location</td>
+<td><code>getAddress</code>, <code>sizeofStr</code></td>
+</tr>
+<tr>
+<td>Write/read one primitive value</td>
+<td><code>writeByte</code>/<code>readByte</code>, <code>writeULong</code>/<code>readULong</code>, etc.</td>
+</tr>
+<tr>
+<td>Write/read strings</td>
+<td><code>writeStr</code>, <code>readStr</code></td>
+</tr>
+<tr>
+<td>Write/read structs</td>
+<td><code>writeAnything</code>, <code>readAnything</code></td>
+</tr>
+<tr>
+<td>Write/read buffers</td>
+<td><code>writeByteArray</code>/<code>readByteArray</code>, <code>writeCharArray</code>/<code>readCharArray</code></td>
+</tr>
+<tr>
+<td>Erase flash data</td>
+<td><code>eraseSector</code>, <code>eraseBlock32K</code>, <code>eraseBlock64K</code>, <code>eraseSection</code>, <code>eraseChip</code></td>
+</tr>
+<tr>
+<td>Power control</td>
+<td><code>powerDown</code>, <code>powerUp</code></td>
+</tr>
+<tr>
+<td>Suspend/resume flash operation</td>
+<td><code>suspendProg</code>, <code>resumeProg</code></td>
+</tr>
+<tr>
+<td>Diagnose failures</td>
+<td><code>error</code>, <code>error(VERBOSE)</code>, <code>functionRunTime</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="full-references">Full References<a class="headerlink" href="#full-references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="spiflash-reference/">SPIFlash function-by-function reference</a></li>
-<li><a href="spifram-reference/">SPIFram function-by-function reference</a></li>
-<li><a href="errors/">Error handling and diagnostics</a></li>
+<li><a href="spiflash-reference/">SPIFlash Function Reference</a></li>
+<li><a href="spifram-reference/">SPIFram Function Reference</a></li>
+<li><a href="errors/">Errors and Diagnostics</a></li>
 </ul>
+<h2 id="function-discovery-index">Function Discovery Index<a class="headerlink" href="#function-discovery-index" title="Permanent link">&para;</a></h2>
+<p>If you're searching by function name, start here:</p>
+<h3 id="shared-spiflashspifram-families">Shared SPIFlash/SPIFram families<a class="headerlink" href="#shared-spiflashspifram-families" title="Permanent link">&para;</a></h3>
+<p><code>begin</code>, <code>setClock</code>, <code>libver</code>, <code>error</code>, <code>getManID</code>, <code>getJEDECID</code>, <code>getUniqueID</code>, <code>getAddress</code>, <code>sizeofStr</code>, <code>getCapacity</code>, <code>functionRunTime</code>, <code>writeByte</code>, <code>readByte</code>, <code>writeChar</code>, <code>readChar</code>, <code>writeShort</code>, <code>readShort</code>, <code>writeWord</code>, <code>readWord</code>, <code>writeLong</code>, <code>readLong</code>, <code>writeULong</code>, <code>readULong</code>, <code>writeFloat</code>, <code>readFloat</code>, <code>writeStr</code>, <code>readStr</code>, <code>writeByteArray</code>, <code>readByteArray</code>, <code>writeCharArray</code>, <code>readCharArray</code>, <code>writeAnything</code>, <code>readAnything</code>, <code>eraseSection</code>, <code>eraseChip</code>, <code>powerDown</code>, <code>powerUp</code></p>
+<h3 id="spiflash-only-families">SPIFlash-only families<a class="headerlink" href="#spiflash-only-families" title="Permanent link">&para;</a></h3>
+<p><code>sfdpPresent</code>, <code>getMaxPage</code>, <code>eraseSector</code>, <code>eraseBlock32K</code>, <code>eraseBlock64K</code>, <code>suspendProg</code>, <code>resumeProg</code></p>
 
 
 

@@ -704,10 +704,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#retrieval" class="md-nav__link">
+  <a href="#how-to-read-errors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Retrieval
+        How to read errors
       
     </span>
   </a>
@@ -715,10 +715,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-classes" class="md-nav__link">
+  <a href="#error-code-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error classes
+        Error Code Table
       
     </span>
   </a>
@@ -726,10 +726,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#operational-guidance" class="md-nav__link">
+  <a href="#fast-debug-sequence-beginners" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operational guidance
+        Fast Debug Sequence (Beginners)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
       
     </span>
   </a>
@@ -1091,10 +1102,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#retrieval" class="md-nav__link">
+  <a href="#how-to-read-errors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Retrieval
+        How to read errors
       
     </span>
   </a>
@@ -1102,10 +1113,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-classes" class="md-nav__link">
+  <a href="#error-code-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error classes
+        Error Code Table
       
     </span>
   </a>
@@ -1113,10 +1124,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#operational-guidance" class="md-nav__link">
+  <a href="#fast-debug-sequence-beginners" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operational guidance
+        Fast Debug Sequence (Beginners)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
       
     </span>
   </a>
@@ -1144,21 +1166,148 @@
 
 
 <h1 id="errors-and-diagnostics">Errors and Diagnostics<a class="headerlink" href="#errors-and-diagnostics" title="Permanent link">&para;</a></h1>
-<h2 id="retrieval">Retrieval<a class="headerlink" href="#retrieval" title="Permanent link">&para;</a></h2>
+<h2 id="how-to-read-errors">How to read errors<a class="headerlink" href="#how-to-read-errors" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>error()</code> returns the last error code.</li>
-<li><code>error(VERBOSE)</code> prints diagnostic context.</li>
+<li><code>error()</code> returns the last error code as a byte.</li>
+<li><code>error(VERBOSE)</code> prints a message to serial and still returns the code.</li>
 </ul>
-<h2 id="error-classes">Error classes<a class="headerlink" href="#error-classes" title="Permanent link">&para;</a></h2>
+<h2 id="error-code-table">Error Code Table<a class="headerlink" href="#error-code-table" title="Permanent link">&para;</a></h2>
+<p>These values come from <code>src/diagnostics.h</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x00</code></td>
+<td><code>SUCCESS</code></td>
+<td>Function completed successfully</td>
+</tr>
+<tr>
+<td><code>0x01</code></td>
+<td><code>CALLBEGIN</code></td>
+<td><code>begin()</code> was not called</td>
+</tr>
+<tr>
+<td><code>0x02</code></td>
+<td><code>UNKNOWNCHIP</code></td>
+<td>Chip ID not recognized</td>
+</tr>
+<tr>
+<td><code>0x03</code></td>
+<td><code>UNKNOWNCAP</code></td>
+<td>Capacity not identified</td>
+</tr>
+<tr>
+<td><code>0x04</code></td>
+<td><code>CHIPBUSY</code></td>
+<td>Chip remained busy past timeout</td>
+</tr>
+<tr>
+<td><code>0x05</code></td>
+<td><code>OUTOFBOUNDS</code></td>
+<td>Address exceeded memory limits with overflow disabled</td>
+</tr>
+<tr>
+<td><code>0x06</code></td>
+<td><code>CANTENWRITE</code></td>
+<td>Write-enable latch could not be set</td>
+</tr>
+<tr>
+<td><code>0x07</code></td>
+<td><code>PREVWRITTEN</code></td>
+<td>Target area already contains data</td>
+</tr>
+<tr>
+<td><code>0x08</code></td>
+<td><code>LOWRAM</code></td>
+<td>Low RAM condition detected</td>
+</tr>
+<tr>
+<td><code>0x09</code></td>
+<td><code>SYSSUSPEND</code></td>
+<td>Suspend/resume state error</td>
+</tr>
+<tr>
+<td><code>0x0A</code></td>
+<td><code>ERRORCHKFAIL</code></td>
+<td>Post-write verification failed</td>
+</tr>
+<tr>
+<td><code>0x0B</code></td>
+<td><code>NORESPONSE</code></td>
+<td>No chip response over SPI</td>
+</tr>
+<tr>
+<td><code>0x0C</code></td>
+<td><code>UNSUPPORTEDFUNC</code></td>
+<td>Function unsupported by chip</td>
+</tr>
+<tr>
+<td><code>0x0D</code></td>
+<td><code>UNABLETO4BYTE</code></td>
+<td>Could not enable 4-byte addressing</td>
+</tr>
+<tr>
+<td><code>0x0E</code></td>
+<td><code>UNABLETO3BYTE</code></td>
+<td>Could not return to 3-byte addressing</td>
+</tr>
+<tr>
+<td><code>0x0F</code></td>
+<td><code>CHIPISPOWEREDDOWN</code></td>
+<td>Operation attempted while powered down</td>
+</tr>
+<tr>
+<td><code>0x10</code></td>
+<td><code>NOSFDP</code></td>
+<td>SFDP not available</td>
+</tr>
+<tr>
+<td><code>0x11</code></td>
+<td><code>NOSFDPERASEPARAM</code></td>
+<td>SFDP erase parameters unavailable</td>
+</tr>
+<tr>
+<td><code>0x12</code></td>
+<td><code>NOSFDPERASETIME</code></td>
+<td>SFDP erase timing unavailable</td>
+</tr>
+<tr>
+<td><code>0x13</code></td>
+<td><code>NOSFDPPROGRAMTIMEPARAM</code></td>
+<td>SFDP program timing unavailable</td>
+</tr>
+<tr>
+<td><code>0x14</code></td>
+<td><code>NOCHIPSELECTDECLARED</code></td>
+<td>Custom SPI constructor missing chip select</td>
+</tr>
+<tr>
+<td><code>0xFE</code></td>
+<td><code>UNKNOWNERROR</code></td>
+<td>Unknown error state</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fast-debug-sequence-beginners">Fast Debug Sequence (Beginners)<a class="headerlink" href="#fast-debug-sequence-beginners" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Call <code>begin()</code> in <code>setup()</code> and print <code>getJEDECID()</code>.</li>
+<li>If zero or invalid, check wiring and chip-select pin.</li>
+<li>Call <code>error(VERBOSE)</code> after each failed operation.</li>
+<li>For flash writes, erase region before writing.</li>
+<li>Keep <code>errorCheck=true</code> until your setup is stable.</li>
+</ol>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ul>
-<li>initialization/state errors</li>
-<li>address/boundary errors</li>
-<li>write-enable and busy-state errors</li>
-<li>verification failures</li>
-<li>unsupported hardware/function errors</li>
+<li>Keep a small serial log of operation + returned error code.</li>
+<li>For production firmware, map key error codes into telemetry counters.</li>
+<li>Use <code>FlashDiagnostics</code> example sketch for initial bring-up.</li>
 </ul>
-<h2 id="operational-guidance">Operational guidance<a class="headerlink" href="#operational-guidance" title="Permanent link">&para;</a></h2>
-<p>Capture and map key error codes into firmware telemetry for faster field debugging.</p>
 
 
 

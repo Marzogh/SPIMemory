@@ -449,10 +449,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#compile-time-flags-in-spimemoryh" class="md-nav__link">
+  <a href="#compile-time-flags" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compile-Time Flags (in SPIMemory.h)
+        Compile-Time Flags
       
     </span>
   </a>
@@ -460,10 +460,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#runtime-configuration" class="md-nav__link">
+  <a href="#runtime-configuration-calls" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Runtime Configuration
+        Runtime Configuration Calls
       
     </span>
   </a>
@@ -471,10 +471,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#platform-notes" class="md-nav__link">
+  <a href="#constructor-guide" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Platform Notes
+        Constructor Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Constructor Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-spi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default SPI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternate-spi-interface-supported-platforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternate SPI interface (supported platforms)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-spi-pins-esp32-oriented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom SPI pins (ESP32-oriented)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-beginner-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended beginner defaults
       
     </span>
   </a>
@@ -1091,10 +1141,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#compile-time-flags-in-spimemoryh" class="md-nav__link">
+  <a href="#compile-time-flags" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compile-Time Flags (in SPIMemory.h)
+        Compile-Time Flags
       
     </span>
   </a>
@@ -1102,10 +1152,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#runtime-configuration" class="md-nav__link">
+  <a href="#runtime-configuration-calls" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Runtime Configuration
+        Runtime Configuration Calls
       
     </span>
   </a>
@@ -1113,10 +1163,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#platform-notes" class="md-nav__link">
+  <a href="#constructor-guide" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Platform Notes
+        Constructor Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Constructor Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-spi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default SPI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternate-spi-interface-supported-platforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternate SPI interface (supported platforms)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-spi-pins-esp32-oriented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom SPI pins (ESP32-oriented)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-beginner-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended beginner defaults
       
     </span>
   </a>
@@ -1144,22 +1244,77 @@
 
 
 <h1 id="build-configuration">Build Configuration<a class="headerlink" href="#build-configuration" title="Permanent link">&para;</a></h1>
-<h2 id="compile-time-flags-in-spimemoryh">Compile-Time Flags (in <code>SPIMemory.h</code>)<a class="headerlink" href="#compile-time-flags-in-spimemoryh" title="Permanent link">&para;</a></h2>
+<p>This library is configured mainly through compile-time flags in <code>src/SPIMemory.h</code>.</p>
+<h2 id="compile-time-flags">Compile-Time Flags<a class="headerlink" href="#compile-time-flags" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>What it does</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>USES_SFDP</code></td>
+<td>Off</td>
+<td>Enables SFDP discovery logic for compatible flash chips</td>
+<td>Using unsupported but SFDP-capable flash parts</td>
+</tr>
+<tr>
+<td><code>RUNDIAGNOSTIC</code></td>
+<td>Off</td>
+<td>Enables verbose diagnostics messaging and runtime tracing support</td>
+<td>Hardware bring-up and debugging</td>
+</tr>
+<tr>
+<td><code>HIGHSPEED</code></td>
+<td>Off</td>
+<td>Skips pre-write blank checks (<code>_notPrevWritten</code>)</td>
+<td>Performance tuning after you trust erase discipline</td>
+</tr>
+<tr>
+<td><code>DISABLEOVERFLOW</code></td>
+<td>Off</td>
+<td>Disables address wraparound at end-of-chip</td>
+<td>Safety-critical logging where wrap is not acceptable</td>
+</tr>
+<tr>
+<td><code>ENABLEZERODMA</code></td>
+<td>Off</td>
+<td>Enables experimental SAMD DMA path</td>
+<td>Advanced tuning on SAMD if validated on your board</td>
+</tr>
+</tbody>
+</table>
+<h2 id="runtime-configuration-calls">Runtime Configuration Calls<a class="headerlink" href="#runtime-configuration-calls" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>USES_SFDP</code>: enable SFDP discovery for unsupported flash chips</li>
-<li><code>RUNDIAGNOSTIC</code>: verbose diagnostics output</li>
-<li><code>HIGHSPEED</code>: skip pre-write blank checks</li>
-<li><code>DISABLEOVERFLOW</code>: disable address rollover</li>
-<li><code>ENABLEZERODMA</code>: experimental SAMD DMA mode</li>
+<li><code>begin(chipSize)</code> for optional explicit capacity override.</li>
+<li><code>setClock(clockSpeed)</code> for SPI speed tuning.</li>
+<li>Alternate constructor variants for non-default SPI bus or custom pins.</li>
 </ul>
-<h2 id="runtime-configuration">Runtime Configuration<a class="headerlink" href="#runtime-configuration" title="Permanent link">&para;</a></h2>
+<h2 id="constructor-guide">Constructor Guide<a class="headerlink" href="#constructor-guide" title="Permanent link">&para;</a></h2>
+<h3 id="default-spi">Default SPI<a class="headerlink" href="#default-spi" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>begin(chipSize)</code> optionally forces chip size</li>
-<li><code>setClock(clockSpeed)</code> changes SPI clock settings</li>
-<li>platform-specific constructors enable alternate SPI interfaces</li>
+<li><code>SPIFlash flash(csPin);</code></li>
+<li><code>SPIFram fram(csPin);</code></li>
 </ul>
-<h2 id="platform-notes">Platform Notes<a class="headerlink" href="#platform-notes" title="Permanent link">&para;</a></h2>
-<p>When default SPI pins/bus are unsuitable, use board-specific constructor variants.</p>
+<h3 id="alternate-spi-interface-supported-platforms">Alternate SPI interface (supported platforms)<a class="headerlink" href="#alternate-spi-interface-supported-platforms" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>SPIFlash flash(csPin, &amp;SPI1);</code></li>
+<li><code>SPIFram fram(csPin, &amp;SPI1);</code></li>
+</ul>
+<h3 id="custom-spi-pins-esp32-oriented">Custom SPI pins (ESP32-oriented)<a class="headerlink" href="#custom-spi-pins-esp32-oriented" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>SPIFlash flash(spiPinsArray);</code> where array order is <code>sck, miso, mosi, ss</code>.</li>
+</ul>
+<h2 id="recommended-beginner-defaults">Recommended beginner defaults<a class="headerlink" href="#recommended-beginner-defaults" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Keep all compile-time flags at default.</li>
+<li>Keep write <code>errorCheck=true</code>.</li>
+<li>Enable <code>RUNDIAGNOSTIC</code> only while debugging.</li>
+</ul>
 
 
 

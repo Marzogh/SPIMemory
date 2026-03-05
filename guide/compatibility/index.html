@@ -477,10 +477,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#recommended-table-fields" class="md-nav__link">
+  <a href="#arduino-architectures-from-libraryproperties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recommended table fields
+        Arduino Architectures (from library.properties)
       
     </span>
   </a>
@@ -488,10 +488,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maintenance-rule" class="md-nav__link">
+  <a href="#boards-and-mcus-documented-as-tested" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Maintenance rule
+        Boards and MCUs (documented as tested)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flash-chip-compatibility-documented-as-tested" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flash Chip Compatibility (documented as tested)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flash Chip Compatibility (documented as tested)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sfdp-note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SFDP note
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fram-compatibility-documented-as-tested" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRAM Compatibility (documented as tested)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constructor-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constructor Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-buy-a-new-chip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before You Buy a New Chip
       
     </span>
   </a>
@@ -1080,10 +1141,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#recommended-table-fields" class="md-nav__link">
+  <a href="#arduino-architectures-from-libraryproperties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recommended table fields
+        Arduino Architectures (from library.properties)
       
     </span>
   </a>
@@ -1091,10 +1152,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maintenance-rule" class="md-nav__link">
+  <a href="#boards-and-mcus-documented-as-tested" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Maintenance rule
+        Boards and MCUs (documented as tested)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flash-chip-compatibility-documented-as-tested" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flash Chip Compatibility (documented as tested)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flash Chip Compatibility (documented as tested)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sfdp-note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SFDP note
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fram-compatibility-documented-as-tested" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRAM Compatibility (documented as tested)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constructor-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constructor Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-buy-a-new-chip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before You Buy a New Chip
       
     </span>
   </a>
@@ -1122,23 +1244,166 @@
 
 
 <h1 id="compatibility-matrix">Compatibility Matrix<a class="headerlink" href="#compatibility-matrix" title="Permanent link">&para;</a></h1>
-<p>Use this page as the canonical compatibility source for current releases.</p>
-<h2 id="recommended-table-fields">Recommended table fields<a class="headerlink" href="#recommended-table-fields" title="Permanent link">&para;</a></h2>
+<p>This page lists the compatibility data currently documented in this repository (<code>README.md</code>, <code>library.properties</code>, and headers).</p>
+<h2 id="arduino-architectures-from-libraryproperties">Arduino Architectures (from <code>library.properties</code>)<a class="headerlink" href="#arduino-architectures-from-libraryproperties" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Board / MCU</li>
-<li>Core package version</li>
-<li>SPI mode used (default or alternate)</li>
-<li>Flash chips validated</li>
-<li>FRAM chips validated</li>
-<li>Known caveats</li>
+<li><code>avr</code></li>
+<li><code>sam</code></li>
+<li><code>samd</code></li>
+<li><code>esp8266</code></li>
+<li><code>esp32</code></li>
+<li><code>Simblee</code></li>
+<li><code>stm32</code></li>
+<li><code>nrf52</code></li>
 </ul>
-<h2 id="maintenance-rule">Maintenance rule<a class="headerlink" href="#maintenance-rule" title="Permanent link">&para;</a></h2>
-<p>Any new support claim should include:</p>
+<h2 id="boards-and-mcus-documented-as-tested">Boards and MCUs (documented as tested)<a class="headerlink" href="#boards-and-mcus-documented-as-tested" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>MCU / family</th>
+<th>Example boards tested</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ATmega328P</td>
+<td>Uno, Micro, Fio, Nano</td>
+<td>Uses default SPI constructor by default</td>
+</tr>
+<tr>
+<td>ATmega32u4</td>
+<td>Leonardo, Fio v3</td>
+<td>Wait for <code>Serial</code> before logging on boards that require it</td>
+</tr>
+<tr>
+<td>ATmega2560</td>
+<td>Mega</td>
+<td>Standard SPI use</td>
+</tr>
+<tr>
+<td>ATSAMD21G18</td>
+<td>Feather M0, Feather M0 Express, ItsyBitsy M0 Express</td>
+<td>Alternate SPI interface constructor supported</td>
+</tr>
+<tr>
+<td>AT91SAM3X8E</td>
+<td>Arduino Due</td>
+<td>Dedicated SAM path in library</td>
+</tr>
+<tr>
+<td>nRF52832</td>
+<td>Adafruit nRF52 Feather</td>
+<td>Included in supported architectures</td>
+</tr>
+<tr>
+<td>ATSAMD51J19</td>
+<td>Adafruit Metro M4</td>
+<td>Included in tested list</td>
+</tr>
+<tr>
+<td>STM32F091RCT6</td>
+<td>Nucleo-F091RC</td>
+<td>STM32 architecture macro path</td>
+</tr>
+<tr>
+<td>STM32L0</td>
+<td>Nucleo-L031K6</td>
+<td>Added in v3.4.0 changelog</td>
+</tr>
+<tr>
+<td>ESP8266</td>
+<td>Adafruit Feather ESP8266, Sparkfun ESP8266 Thing</td>
+<td>Uses ESP8266 architecture branch</td>
+</tr>
+<tr>
+<td>ESP32</td>
+<td>Adafruit Feather ESP32, Sparkfun ESP32 Thing</td>
+<td>May require explicit CS and custom SPI pins</td>
+</tr>
+<tr>
+<td>Simblee</td>
+<td>Sparkfun Simblee</td>
+<td>Listed as tested</td>
+</tr>
+</tbody>
+</table>
+<h2 id="flash-chip-compatibility-documented-as-tested">Flash Chip Compatibility (documented as tested)<a class="headerlink" href="#flash-chip-compatibility-documented-as-tested" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Parts listed in repo docs/changelog</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Winbond</td>
+<td>W25Q16BV, W25Q64FV, W25Q64JV, W25Q80BV, W25Q256FV</td>
+</tr>
+<tr>
+<td>Microchip</td>
+<td>SST25VF064C, SST26VF016B, SST26VF032B, SST26VF064B</td>
+</tr>
+<tr>
+<td>Cypress/Spansion</td>
+<td>S25FL032P, S25FL116K, S25FL127S</td>
+</tr>
+<tr>
+<td>ON Semiconductor</td>
+<td>LE25U40CMC</td>
+</tr>
+<tr>
+<td>AMIC</td>
+<td>A25L512A0</td>
+</tr>
+<tr>
+<td>Micron</td>
+<td>M25P40</td>
+</tr>
+<tr>
+<td>Adesto</td>
+<td>AT25SF041</td>
+</tr>
+<tr>
+<td>Macronix</td>
+<td>MX25L4005, MX25L8005</td>
+</tr>
+<tr>
+<td>GigaDevice</td>
+<td>GD25Q16C</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sfdp-note">SFDP note<a class="headerlink" href="#sfdp-note" title="Permanent link">&para;</a></h3>
+<p>The library can support more flash chips through SFDP discovery when <code>USES_SFDP</code> is enabled in <code>SPIMemory.h</code>.</p>
+<h2 id="fram-compatibility-documented-as-tested">FRAM Compatibility (documented as tested)<a class="headerlink" href="#fram-compatibility-documented-as-tested" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Manufacturer</th>
+<th>Part</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cypress/Spansion</td>
+<td>FM25W256</td>
+</tr>
+</tbody>
+</table>
+<h2 id="constructor-compatibility-notes">Constructor Compatibility Notes<a class="headerlink" href="#constructor-compatibility-notes" title="Permanent link">&para;</a></h2>
 <ul>
-<li>exact board and core version tested</li>
-<li>exact chip part number</li>
-<li>required compile-time flags</li>
+<li><code>SPIFlash(uint8_t cs)</code> and <code>SPIFram(uint8_t cs)</code> are the default constructors.</li>
+<li><code>SPIFlash(uint8_t cs, SPIClass *spiinterface)</code> and <code>SPIFram(uint8_t cs, SPIClass *spiinterface)</code> are used on multi-SPI platforms.</li>
+<li><code>SPIFlash(int8_t *SPIPinsArray)</code> is intended for custom SPI pin routing (ESP32-style use cases).</li>
 </ul>
+<h2 id="before-you-buy-a-new-chip">Before You Buy a New Chip<a class="headerlink" href="#before-you-buy-a-new-chip" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Check if the manufacturer is already in the tested list.</li>
+<li>Check if the part is SFDP-compatible (for flash).</li>
+<li>Plan to validate with <code>FlashDiagnostics</code> example and error codes on your target board.</li>
+</ol>
 
 
 

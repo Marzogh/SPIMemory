@@ -404,10 +404,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#save-a-text-string" class="md-nav__link">
+  <a href="#save-and-load-a-string" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Save a text string
+        Save and load a string
       
     </span>
   </a>
@@ -415,10 +415,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#save-a-custom-struct" class="md-nav__link">
+  <a href="#save-and-load-a-struct" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Save a custom struct
+        Save and load a struct
       
     </span>
   </a>
@@ -426,21 +426,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#find-where-to-write-next" class="md-nav__link">
+  <a href="#writeread-byte-buffers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Find where to write next
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#erase-enough-flash-for-a-variable-sized-record" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Erase enough flash for a variable-sized record
+        Write/read byte buffers
       
     </span>
   </a>
@@ -459,10 +448,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#speed-up-readswrites" class="md-nav__link">
+  <a href="#improve-speed-safely" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Speed up reads/writes
+        Improve speed safely
       
     </span>
   </a>
@@ -1146,10 +1135,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#save-a-text-string" class="md-nav__link">
+  <a href="#save-and-load-a-string" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Save a text string
+        Save and load a string
       
     </span>
   </a>
@@ -1157,10 +1146,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#save-a-custom-struct" class="md-nav__link">
+  <a href="#save-and-load-a-struct" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Save a custom struct
+        Save and load a struct
       
     </span>
   </a>
@@ -1168,21 +1157,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#find-where-to-write-next" class="md-nav__link">
+  <a href="#writeread-byte-buffers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Find where to write next
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#erase-enough-flash-for-a-variable-sized-record" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Erase enough flash for a variable-sized record
+        Write/read byte buffers
       
     </span>
   </a>
@@ -1201,10 +1179,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#speed-up-readswrites" class="md-nav__link">
+  <a href="#improve-speed-safely" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Speed up reads/writes
+        Improve speed safely
       
     </span>
   </a>
@@ -1233,26 +1211,45 @@
 
 <h1 id="common-tasks-beginner-friendly">Common Tasks (Beginner Friendly)<a class="headerlink" href="#common-tasks-beginner-friendly" title="Permanent link">&para;</a></h1>
 <h2 id="save-one-number-and-read-it-back">Save one number and read it back<a class="headerlink" href="#save-one-number-and-read-it-back" title="Permanent link">&para;</a></h2>
-<p>Use <code>writeULong</code> and <code>readULong</code>.</p>
-<h2 id="save-a-text-string">Save a text string<a class="headerlink" href="#save-a-text-string" title="Permanent link">&para;</a></h2>
-<p>Use <code>writeStr</code> and <code>readStr</code>.</p>
-<h2 id="save-a-custom-struct">Save a custom struct<a class="headerlink" href="#save-a-custom-struct" title="Permanent link">&para;</a></h2>
-<p>Use <code>writeAnything</code> and <code>readAnything</code>.</p>
-<h2 id="find-where-to-write-next">Find where to write next<a class="headerlink" href="#find-where-to-write-next" title="Permanent link">&para;</a></h2>
-<p>Use <code>getAddress(size)</code> before writing.</p>
-<h2 id="erase-enough-flash-for-a-variable-sized-record">Erase enough flash for a variable-sized record<a class="headerlink" href="#erase-enough-flash-for-a-variable-sized-record" title="Permanent link">&para;</a></h2>
-<p>Use <code>eraseSection(address, size)</code>.</p>
+<pre><code class="language-cpp">uint32_t addr = 0;
+flash.eraseSector(addr);
+flash.writeULong(addr, 42);
+uint32_t out = flash.readULong(addr);
+</code></pre>
+<h2 id="save-and-load-a-string">Save and load a string<a class="headerlink" href="#save-and-load-a-string" title="Permanent link">&para;</a></h2>
+<pre><code class="language-cpp">String in = &quot;hello&quot;;
+String out;
+uint32_t addr = flash.getAddress(flash.sizeofStr(in));
+flash.eraseSection(addr, flash.sizeofStr(in));
+flash.writeStr(addr, in);
+flash.readStr(addr, out);
+</code></pre>
+<h2 id="save-and-load-a-struct">Save and load a struct<a class="headerlink" href="#save-and-load-a-struct" title="Permanent link">&para;</a></h2>
+<pre><code class="language-cpp">struct Config { uint16_t a; float b; } cfgIn{7, 3.14f}, cfgOut;
+uint32_t addr = flash.getAddress(sizeof(Config));
+flash.eraseSection(addr, sizeof(Config));
+flash.writeAnything(addr, cfgIn);
+flash.readAnything(addr, cfgOut);
+</code></pre>
+<h2 id="writeread-byte-buffers">Write/read byte buffers<a class="headerlink" href="#writeread-byte-buffers" title="Permanent link">&para;</a></h2>
+<pre><code class="language-cpp">uint8_t tx[8] = {1,2,3,4,5,6,7,8};
+uint8_t rx[8] = {0};
+uint32_t addr = flash.getAddress(sizeof(tx));
+flash.eraseSection(addr, sizeof(tx));
+flash.writeByteArray(addr, tx, sizeof(tx));
+flash.readByteArray(addr, rx, sizeof(rx));
+</code></pre>
 <h2 id="chip-not-responding">Chip not responding<a class="headerlink" href="#chip-not-responding" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Confirm wiring and CS pin.</li>
-<li>Call <code>begin()</code> in <code>setup()</code>.</li>
-<li>Read <code>error(VERBOSE)</code>.</li>
-<li>Enable <code>RUNDIAGNOSTIC</code> during debug.</li>
+<li>Verify wiring and CS pin.</li>
+<li>Ensure <code>begin()</code> is called in <code>setup()</code>.</li>
+<li>Print <code>getJEDECID()</code> and <code>error(VERBOSE)</code>.</li>
+<li>Run <code>FlashDiagnostics</code> example sketch.</li>
 </ol>
-<h2 id="speed-up-readswrites">Speed up reads/writes<a class="headerlink" href="#speed-up-readswrites" title="Permanent link">&para;</a></h2>
+<h2 id="improve-speed-safely">Improve speed safely<a class="headerlink" href="#improve-speed-safely" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Reads: use <code>fastRead=true</code> where needed.</li>
-<li>Writes: disable error check only after validation.</li>
+<li>Read path: use <code>fastRead=true</code> selectively.</li>
+<li>Write path: only disable error checks after full validation.</li>
 </ul>
 
 
