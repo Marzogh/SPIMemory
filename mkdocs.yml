@@ -22,6 +22,7 @@ nav:
       - Compatibility Matrix: guide/compatibility.md
   - API Reference:
       - Overview: api/index.md
+      - Function Pages Index: api/functions/index.md
       - SPIFlash: api/spiflash.md
       - SPIFlash Function Reference: api/spiflash-reference.md
       - SPIFram: api/spifram.md

@@ -1,9 +1,6 @@
 # API Reference
 
-This section provides two ways to find what you need:
-
-- **By task** (beginner-friendly)
-- **By full function list** (complete call-by-call reference)
+This section supports both quick navigation and deep call-by-call documentation.
 
 ## Start by Task
 
@@ -21,20 +18,13 @@ This section provides two ways to find what you need:
 | Suspend/resume flash operation | `suspendProg`, `resumeProg` |
 | Diagnose failures | `error`, `error(VERBOSE)`, `functionRunTime` |
 
-## Full References
+## Reference Entry Points
 
 - [SPIFlash Function Reference](spiflash-reference.md)
 - [SPIFram Function Reference](spifram-reference.md)
+- [Function Pages Index (one page per function)](functions/index.md)
 - [Errors and Diagnostics](errors.md)
 
-## Function Discovery Index
+## Search Tip
 
-If you're searching by function name, start here:
-
-### Shared SPIFlash/SPIFram families
-
-`begin`, `setClock`, `libver`, `error`, `getManID`, `getJEDECID`, `getUniqueID`, `getAddress`, `sizeofStr`, `getCapacity`, `functionRunTime`, `writeByte`, `readByte`, `writeChar`, `readChar`, `writeShort`, `readShort`, `writeWord`, `readWord`, `writeLong`, `readLong`, `writeULong`, `readULong`, `writeFloat`, `readFloat`, `writeStr`, `readStr`, `writeByteArray`, `readByteArray`, `writeCharArray`, `readCharArray`, `writeAnything`, `readAnything`, `eraseSection`, `eraseChip`, `powerDown`, `powerUp`
-
-### SPIFlash-only families
-
-`sfdpPresent`, `getMaxPage`, `eraseSector`, `eraseBlock32K`, `eraseBlock64K`, `suspendProg`, `resumeProg`
+Use the docs search with the exact function name (for example `writeByteArray`) to jump directly to that function's dedicated page.
