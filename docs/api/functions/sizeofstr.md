@@ -31,6 +31,12 @@ If you erase/write fewer bytes than required, reads can truncate or include stal
 - Erasing fewer bytes than string storage actually requires.
 - Reusing old allocation size after string content grows.
 
+## Choosing Between Similar APIs
+
+- Use `sizeofStr()` before `writeStr()` for exact storage planning.
+- Use `writeCharArray()` when you need explicit fixed-length text layout.
+- Prefer fixed-length arrays over `String` in hard real-time memory maps.
+
 ## Example
 
 ```cpp

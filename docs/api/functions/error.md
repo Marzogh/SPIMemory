@@ -31,6 +31,12 @@ Calling much later can hide root cause because newer operations may overwrite er
 - Ignoring non-zero error values during early bring-up.
 - Using `error()` without `VERBOSE` while debugging first hardware setup.
 
+## Choosing Between Similar APIs
+
+- Use `error(VERBOSE)` during bring-up and troubleshooting.
+- Use plain `error()` in production telemetry when serial logging is too expensive.
+- Read error immediately after a failed call, not later.
+
 ## Example
 
 ```cpp

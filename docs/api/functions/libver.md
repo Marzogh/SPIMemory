@@ -33,6 +33,12 @@ Passing null/invalid pointers leads to undefined behavior in C++ pointer semanti
 - Printing version once at boot and forgetting to include it in bug reports.
 - Assuming runtime version is identical across all build environments.
 
+## Choosing Between Similar APIs
+
+- Use `libver()` when collecting support logs.
+- Use compile-time docs/changelog for feature planning, not runtime version alone.
+- Keep both runtime version and JEDEC ID in bug reports.
+
 ## Example
 
 ```cpp

@@ -31,6 +31,12 @@ Zero or unstable values indicate communication faults, wrong voltage, wrong chip
 - Assuming every JEDEC ID is in the library support list.
 - Not logging JEDEC ID in support/troubleshooting reports.
 
+## Choosing Between Similar APIs
+
+- Use `getJEDECID()` as primary identity check.
+- Use `getManID()` only as a coarse supplement.
+- Use `getCapacity()` after successful begin for operational bounds.
+
 ## Example
 
 ```cpp

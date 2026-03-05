@@ -30,6 +30,12 @@ Fails if chip is busy, write-enable path fails, address invalid, or erase opcode
 - Erasing wrong sector by passing nearby but unintended address.
 - Not checking return code before writing new data.
 
+## Choosing Between Similar APIs
+
+- Use `eraseSector()` for localized updates in one 4 KB region.
+- Use `eraseBlock32K/64K` for larger contiguous rewrites.
+- Use `eraseSection()` when payload size is dynamic.
+
 ## Example
 
 ```cpp

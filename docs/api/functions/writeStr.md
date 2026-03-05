@@ -33,6 +33,12 @@ Failures occur from insufficient erased space (flash), invalid address range, co
 - Changing string length over time without updating allocation/erase size.
 - Treating `String` storage as C-string without considering library format.
 
+## Choosing Between Similar APIs
+
+- Use `writeStr()` for Arduino `String` workflows with variable length.
+- Use `writeCharArray()` for fixed-size or C-string buffers.
+- Use `writeByteArray()` for non-text binary payloads.
+
 ## Example
 
 ```cpp

@@ -32,6 +32,12 @@ Incorrect bus/pin choices usually surface during `begin()` with zero IDs or non-
 - Assuming constructor validates wiring immediately (validation happens at `begin()`).
 - Reusing examples with different board pin numbering conventions without adjustment.
 
+## Choosing Between Similar APIs
+
+- Use default constructor for single-bus setups.
+- Use alternate bus constructor only when your board/core supports extra SPI instances.
+- Pick constructor based on wiring first, not performance assumptions.
+
 ## Example
 
 ```cpp

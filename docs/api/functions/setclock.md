@@ -33,6 +33,12 @@ Too-fast clocks can cause intermittent read/write mismatches, ID read failures, 
 - Changing clock and assuming old stability still holds without re-testing diagnostics.
 - Using board-specific clock APIs incorrectly for your core version.
 
+## Choosing Between Similar APIs
+
+- Use lower clocks for bring-up and long jumpers.
+- Raise clock only after diagnostics pass repeatedly.
+- Prefer reliability over peak speed for data integrity paths.
+
 ## Example
 
 ```cpp

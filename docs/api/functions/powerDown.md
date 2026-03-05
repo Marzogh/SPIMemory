@@ -31,6 +31,12 @@ Unsupported on some chips or states; subsequent read/write calls fail while powe
 - Assuming every chip fully supports low-power command set.
 - Not integrating memory wake timing with MCU sleep/wake flow.
 
+## Choosing Between Similar APIs
+
+- Use `powerDown()` for low-power idle intervals.
+- Skip power cycling if your workload is high-frequency and latency-sensitive.
+- Always schedule `powerUp()` before next access.
+
 ## Example
 
 ```cpp

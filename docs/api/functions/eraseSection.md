@@ -32,6 +32,12 @@ Invalid ranges, protected states, busy chip state, or unsupported erase granular
 - Assuming section erase aligns exactly to your object boundaries.
 - Not accounting for erase latency in time-sensitive loops.
 
+## Choosing Between Similar APIs
+
+- Use `eraseSection()` when object size is known and may span multiple sectors.
+- Use `eraseSector()`/block erases for explicit granularity control.
+- Prefer smallest erase scope that still covers your write region.
+
 ## Example
 
 ```cpp

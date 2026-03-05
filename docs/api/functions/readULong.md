@@ -32,6 +32,12 @@ If address is invalid or comms fail, returned value may be stale/default/invalid
 - Using out-of-range or stale addresses.
 - Trusting suspicious values without checking error state.
 
+## Choosing Between Similar APIs
+
+- Use this typed read only for data written with matching type/layout.
+- Use `readAnything()` for struct reconstruction.
+- Use array/string reads for variable-length payloads.
+
 ## Example
 
 ```cpp

@@ -33,6 +33,12 @@ Mismatched type layout gives corrupted values even if API reports success.
 - Assuming success return means semantic correctness of decoded fields.
 - Using packed/unpacked structs inconsistently across toolchains.
 
+## Choosing Between Similar APIs
+
+- Use `readAnything()` to reconstruct objects written by `writeAnything()`.
+- Use typed reads for single values to reduce layout-coupling risk.
+- Use array reads when decoding custom protocol payloads manually.
+
 ## Example
 
 ```cpp

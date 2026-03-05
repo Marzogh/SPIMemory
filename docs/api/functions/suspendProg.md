@@ -30,6 +30,12 @@ Not all chips support suspend semantics for every operation/state.
 - Calling suspend/resume without checking return values.
 - Suspending and never resuming, leaving long operation incomplete.
 
+## Choosing Between Similar APIs
+
+- Use `suspendProg()` only during long erase/program operations when urgent access is needed.
+- Use normal blocking flow if your application can tolerate erase latency.
+- Always pair with `resumeProg()` when suspend succeeds.
+
 ## Example
 
 ```cpp

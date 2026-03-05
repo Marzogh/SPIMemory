@@ -33,6 +33,12 @@ Common failures: out-of-range address, flash not erased, chip busy, powered-down
 - Ignoring `false` return and not checking `error(VERBOSE)`.
 - Reusing addresses without a clear storage map.
 
+## Choosing Between Similar APIs
+
+- Use this typed write when your payload is exactly this type.
+- Use `writeAnything()` for composite structs.
+- Use array/string writes when storing variable-length data.
+
 ## Example
 
 ```cpp

@@ -31,6 +31,12 @@ Using hardcoded capacities causes address overrun on different chip variants.
 - Using random address upper bound equal to capacity without considering payload size.
 - Assuming same capacity across all user hardware variants.
 
+## Choosing Between Similar APIs
+
+- Use `getCapacity()` for dynamic bounds-safe code.
+- Use constants only when targeting one fixed chip SKU.
+- Combine with payload size checks to avoid end-of-chip overruns.
+
 ## Example
 
 ```cpp

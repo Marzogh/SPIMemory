@@ -30,6 +30,12 @@ Unsupported opcode/chip profile mismatch or bus errors can fail this call.
 - Failing to back up adjacent data in same block.
 - Treating block erase boundaries as page boundaries.
 
+## Choosing Between Similar APIs
+
+- Use `eraseBlock64K()` for large contiguous regions.
+- Use 32K/4K erase to reduce unnecessary data destruction.
+- Coordinate block boundaries with your storage partitioning.
+
 ## Example
 
 ```cpp

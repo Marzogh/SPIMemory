@@ -31,6 +31,12 @@ If allocation wraps or requested size exceeds available strategy assumptions, su
 - Mixing manual offsets and allocator-style addresses accidentally.
 - Not reserving exact sizes for variable-length payloads.
 
+## Choosing Between Similar APIs
+
+- Use `getAddress(size)` for sequential app-managed allocations.
+- Use fixed addresses when you need deterministic on-disk layout/versioning.
+- Pair with `sizeofStr()` for variable-length string records.
+
 ## Example
 
 ```cpp

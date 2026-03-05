@@ -31,6 +31,12 @@ Operation can be long on large flash chips. Power loss mid-operation may leave p
 - Not warning users that operation is destructive and long-running.
 - Power-cycling mid-erase and assuming data integrity afterwards.
 
+## Choosing Between Similar APIs
+
+- Use `eraseChip()` for full reset/factory-clear flows.
+- Use section/sector/block erase for normal incremental updates.
+- Avoid chip erase in frequently called runtime paths.
+
 ## Example
 
 ```cpp

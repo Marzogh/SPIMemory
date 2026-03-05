@@ -31,6 +31,12 @@ Failure usually indicates wiring issues, wrong CS pin, unsupported chip, incorre
 - Passing a custom `flashChipSize` that does not match real hardware.
 - Ignoring a `false` return and continuing instead of checking `error(VERBOSE)`.
 
+## Choosing Between Similar APIs
+
+- Use `begin(0)` for normal auto-detection.
+- Use non-zero `flashChipSize` only for unsupported/custom chips where auto-detect is inadequate.
+- If `begin()` is unstable, fix wiring/clock before trying advanced APIs.
+
 ## Example
 
 ```cpp

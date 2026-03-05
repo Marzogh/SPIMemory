@@ -31,6 +31,12 @@ If wake fails, subsequent operations may fail; check wiring/power timing and err
 - Assuming immediate readiness without checking first operation result.
 - Ignoring wake failures and misattributing later read errors.
 
+## Choosing Between Similar APIs
+
+- Use `powerUp()` after explicit memory power-down or deep sleep.
+- Skip only when chip was never placed in low-power state.
+- If wake is flaky, reduce SPI speed and verify power sequencing.
+
 ## Example
 
 ```cpp

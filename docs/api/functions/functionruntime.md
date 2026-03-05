@@ -31,6 +31,12 @@ Interpret values carefully: runtime depends on operation type, chip state, and d
 - Benchmarking with unstable wiring and reading too much into variance.
 - Forgetting that diagnostics/build settings can affect reported timing.
 
+## Choosing Between Similar APIs
+
+- Use `functionRunTime()` for relative profiling on the same board/chip setup.
+- Use external timing instrumentation for cross-platform comparisons.
+- Compare identical operations only (for example write-vs-write).
+
 ## Example
 
 ```cpp

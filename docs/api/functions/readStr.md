@@ -33,6 +33,12 @@ False return indicates decode/read failure, invalid address span, or communicati
 - Mixing manual binary layout with `readStr()` decoding.
 - Ignoring `false` return and using stale output string.
 
+## Choosing Between Similar APIs
+
+- Use `readStr()` only for data written by `writeStr()`.
+- Use `readCharArray()` for fixed buffer text decoding.
+- Use `readByteArray()` for binary or mixed-format records.
+
 ## Example
 
 ```cpp

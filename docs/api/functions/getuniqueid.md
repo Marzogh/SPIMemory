@@ -31,6 +31,12 @@ Not all chips implement unique-ID commands; a zero value may reflect unsupported
 - Using UID as security/authentication secret without threat modeling.
 - Changing provisioning logic without handling unsupported chips.
 
+## Choosing Between Similar APIs
+
+- Use `getUniqueID()` for unit fingerprinting when supported.
+- Use JEDEC/manufacturer IDs for chip compatibility, not per-unit identity.
+- If UID is unsupported, fall back to app-level provisioning IDs.
+
 ## Example
 
 ```cpp

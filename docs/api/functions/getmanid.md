@@ -31,6 +31,12 @@ Unexpected values usually indicate wiring/SPI issues or unsupported chips.
 - Trusting unstable IDs without verifying wiring and power integrity.
 - Skipping JEDEC read when manufacturer ID looks plausible.
 
+## Choosing Between Similar APIs
+
+- Use `getManID()` for quick vendor sanity checks.
+- Use `getJEDECID()` for model/capacity-level identification.
+- Prefer JEDEC for compatibility decisions.
+
 ## Example
 
 ```cpp

@@ -30,6 +30,12 @@ Using stale/hardcoded page limits can cause out-of-range accesses.
 - Using page math from another chip without recalculating.
 - Assuming page operations are equivalent to erase boundaries.
 
+## Choosing Between Similar APIs
+
+- Use `getMaxPage()` for page-oriented diagnostics/tooling.
+- Use raw byte addresses for most application storage logic.
+- Do not substitute page count for erase-block planning.
+
 ## Example
 
 ```cpp

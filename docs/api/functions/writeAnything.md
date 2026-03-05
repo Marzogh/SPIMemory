@@ -33,6 +33,12 @@ Changing struct layout between firmware versions breaks compatibility unless you
 - Using non-trivially-copyable types/pointers inside persisted structs.
 - Forgetting erase-before-write requirement on flash.
 
+## Choosing Between Similar APIs
+
+- Use `writeAnything()` for stable structs/config blobs.
+- Use typed APIs (`writeULong`, `writeFloat`, etc.) for simple scalar values.
+- Use byte/char array APIs when you need explicit binary format control.
+
 ## Example
 
 ```cpp

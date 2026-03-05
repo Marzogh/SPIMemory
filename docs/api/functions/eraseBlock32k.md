@@ -30,6 +30,12 @@ May fail on chips lacking 32 KB erase opcode or when write/ready checks fail.
 - Assuming all chips support 32 KB erase opcode.
 - Not preserving neighboring data in same erase block.
 
+## Choosing Between Similar APIs
+
+- Use `eraseBlock32K()` for medium-size bulk rewrites.
+- Use sector erase for smaller updates to avoid collateral data loss.
+- Use 64K erase when throughput matters and data layout allows.
+
 ## Example
 
 ```cpp

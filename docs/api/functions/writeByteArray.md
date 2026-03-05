@@ -34,6 +34,12 @@ Failures come from invalid pointers, address overflow, erase prerequisites (flas
 - Forgetting erase-before-write on flash region.
 - Using invalid/temporary buffer pointers.
 
+## Choosing Between Similar APIs
+
+- Use `writeByteArray()` for binary payloads and packet buffers.
+- Use `writeCharArray()` for text buffers where character semantics matter.
+- Use `writeAnything()` for typed structs with stable layout.
+
 ## Example
 
 ```cpp

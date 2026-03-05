@@ -34,6 +34,12 @@ If used as C-strings, ensure null termination is handled explicitly by your code
 - Reading wrong byte count and truncating text.
 - Using text APIs on binary data unintentionally.
 
+## Choosing Between Similar APIs
+
+- Use `readCharArray()` for text buffers you parse/print as chars.
+- Use `readStr()` for `String`-formatted records.
+- Use `readByteArray()` when contents are binary.
+
 ## Example
 
 ```cpp

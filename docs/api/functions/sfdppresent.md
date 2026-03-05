@@ -30,6 +30,12 @@ Returns `true` if SFDP was detected/read, else `false`.
 - Skipping JEDEC/basic comm checks because SFDP is present.
 - Assuming SFDP guarantees all opcodes are supported the same way.
 
+## Choosing Between Similar APIs
+
+- Use `sfdpPresent()` to detect optional advanced parameter support.
+- Use `getJEDECID()` for baseline identification regardless of SFDP.
+- Do not gate all functionality solely on SFDP presence.
+
 ## Example
 
 ```cpp

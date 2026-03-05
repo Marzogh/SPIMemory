@@ -34,6 +34,12 @@ If used as C-strings, ensure null termination is handled explicitly by your code
 - Using wrong start address and mis-parsing shifted data.
 - Assuming data is valid without checking application-level framing/CRC.
 
+## Choosing Between Similar APIs
+
+- Use `readByteArray()` when you need raw bytes.
+- Use typed read APIs for direct scalar conversion.
+- Use `readCharArray()` when treating output as text.
+
 ## Example
 
 ```cpp

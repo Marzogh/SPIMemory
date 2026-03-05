@@ -34,6 +34,12 @@ Failures come from invalid pointers, address overflow, erase prerequisites (flas
 - Writing text payload with incorrect length.
 - Skipping erase step on flash destinations.
 
+## Choosing Between Similar APIs
+
+- Use `writeCharArray()` for text/c-string style buffers.
+- Use `writeStr()` when using Arduino `String` objects.
+- Use `writeByteArray()` when bytes are not textual data.
+
 ## Example
 
 ```cpp

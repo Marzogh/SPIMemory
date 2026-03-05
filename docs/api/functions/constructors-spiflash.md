@@ -34,6 +34,12 @@ Misconfigured pins or bus selection are usually detected at `begin()` time via f
 - Selecting alternate SPI bus constructor on a board/core that does not support it.
 - Passing custom SPI pin arrays that do not match board capabilities.
 
+## Choosing Between Similar APIs
+
+- Use default constructor when your board uses default SPI pins and only CS is custom.
+- Use `SPIFlash(cs, &SPI1)` when board exposes multiple hardware SPI buses.
+- Use `SPIFlash(SPIPinsArray)` only on targets that support non-standard SPI pin routing.
+
 ## Example
 
 ```cpp
