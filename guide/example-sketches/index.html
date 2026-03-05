@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://chipsncode.com/SPIMemory/operations/release-checklist/">
+        <link rel="canonical" href="https://chipsncode.com/SPIMemory/guide/example-sketches/">
       
       
-        <link rel="prev" href="../maintainer/">
+        <link rel="prev" href="../common-tasks/">
       
       
-        <link rel="next" href="../../legacy/">
+        <link rel="next" href="../concepts/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Release Checklist - SPIMemory</title>
+        <title>Example Sketches Guide - SPIMemory</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-checklist" class="md-skip">
+        <a href="#example-sketches-guide-troubleshooting-learning" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Release Checklist
+              Example Sketches Guide
             
           </span>
         </div>
@@ -248,8 +248,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -260,11 +262,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -285,7 +287,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -303,7 +305,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/quickstart/" class="md-nav__link">
+      <a href="../quickstart/" class="md-nav__link">
         
   
   
@@ -331,7 +333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/first-hour/" class="md-nav__link">
+      <a href="../first-hour/" class="md-nav__link">
         
   
   
@@ -359,7 +361,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/common-tasks/" class="md-nav__link">
+      <a href="../common-tasks/" class="md-nav__link">
         
   
   
@@ -384,10 +386,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../guide/example-sketches/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example Sketches Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -403,6 +432,315 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#flashdiagnosticsflashdiagnosticsino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FlashDiagnostics/FlashDiagnostics.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FlashDiagnostics/FlashDiagnostics.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-run-it-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why run it first
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-success-signs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expected success signs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-failure-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common failure patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testflashtestflashino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TestFlash/TestFlash.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TestFlash/TestFlash.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getaddressexgetaddressexino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        getAddressEx/getAddressEx.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="getAddressEx/getAddressEx.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-teaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it teaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#readwritestringreadwritestringino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        readWriteString/readWriteString.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="readWriteString/readWriteString.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-teaches_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it teaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-value_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struct_writerstruct_writerino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struct_writer/Struct_writer.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Struct_writer/Struct_writer.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-teaches_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it teaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-value_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flashdiagnosticsdiagnostics_functionsino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FlashDiagnostics/Diagnostics_functions.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FlashDiagnostics/Diagnostics_functions.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-is_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-it-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why it matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-order-for-beginners" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended order for beginners
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-to-capture-when-asking-for-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to capture when asking for help
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -415,7 +753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/concepts/" class="md-nav__link">
+      <a href="../concepts/" class="md-nav__link">
         
   
   
@@ -443,7 +781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/configuration/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -471,7 +809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guide/compatibility/" class="md-nav__link">
+      <a href="../compatibility/" class="md-nav__link">
         
   
   
@@ -730,8 +1068,6 @@
       
   
   
-    
-  
   
   
     
@@ -744,11 +1080,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
@@ -769,7 +1105,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -787,7 +1123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../troubleshooting/" class="md-nav__link">
+      <a href="../../operations/troubleshooting/" class="md-nav__link">
         
   
   
@@ -815,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../maintainer/" class="md-nav__link">
+      <a href="../../operations/maintainer/" class="md-nav__link">
         
   
   
@@ -840,37 +1176,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Release Checklist
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../operations/release-checklist/" class="md-nav__link">
         
   
   
@@ -886,59 +1195,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#docs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Docs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#publish" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Publish
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1147,10 +1403,277 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#docs" class="md-nav__link">
+  <a href="#flashdiagnosticsflashdiagnosticsino" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docs
+        FlashDiagnostics/FlashDiagnostics.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FlashDiagnostics/FlashDiagnostics.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-run-it-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why run it first
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-success-signs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expected success signs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-failure-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common failure patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testflashtestflashino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TestFlash/TestFlash.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TestFlash/TestFlash.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getaddressexgetaddressexino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        getAddressEx/getAddressEx.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="getAddressEx/getAddressEx.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-teaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it teaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#readwritestringreadwritestringino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        readWriteString/readWriteString.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="readWriteString/readWriteString.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-teaches_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it teaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-value_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struct_writerstruct_writerino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struct_writer/Struct_writer.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Struct_writer/Struct_writer.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-teaches_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it teaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-value_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flashdiagnosticsdiagnostics_functionsino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FlashDiagnostics/Diagnostics_functions.ino
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FlashDiagnostics/Diagnostics_functions.ino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-it-is_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-it-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why it matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-order-for-beginners" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended order for beginners
       
     </span>
   </a>
@@ -1158,21 +1681,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
+  <a href="#what-to-capture-when-asking-for-help" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#publish" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Publish
+        What to capture when asking for help
       
     </span>
   </a>
@@ -1199,24 +1711,81 @@
   
 
 
-<h1 id="release-checklist">Release Checklist<a class="headerlink" href="#release-checklist" title="Permanent link">&para;</a></h1>
-<h2 id="docs">Docs<a class="headerlink" href="#docs" title="Permanent link">&para;</a></h2>
+<h1 id="example-sketches-guide-troubleshooting-learning">Example Sketches Guide (Troubleshooting + Learning)<a class="headerlink" href="#example-sketches-guide-troubleshooting-learning" title="Permanent link">&para;</a></h1>
+<p>The bundled examples are one of the best parts of this library. This page explains what each one does, what success looks like, and what failures mean.</p>
+<h2 id="flashdiagnosticsflashdiagnosticsino"><code>FlashDiagnostics/FlashDiagnostics.ino</code><a class="headerlink" href="#flashdiagnosticsflashdiagnosticsino" title="Permanent link">&para;</a></h2>
+<h3 id="what-it-tests">What it tests<a class="headerlink" href="#what-it-tests" title="Permanent link">&para;</a></h3>
 <ul>
-<li>compatibility matrix updated</li>
-<li>API reference updated for all changed methods</li>
-<li>docs build passes in CI</li>
+<li>Chip identity (<code>getJEDECID</code>, capacity, max page, unique ID)</li>
+<li>Power operations (<code>powerDown</code>, <code>powerUp</code>)</li>
+<li>Erase operations (<code>eraseChip</code>, <code>eraseSection</code>, sector/block erase)</li>
+<li>Data I/O for many types (byte, char, word, short, long, float, struct, array, string)</li>
 </ul>
-<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
+<h3 id="why-run-it-first">Why run it first<a class="headerlink" href="#why-run-it-first" title="Permanent link">&para;</a></h3>
+<p>It gives broad signal quickly: if this sketch fails, fix hardware/config before writing app logic.</p>
+<h3 id="expected-success-signs">Expected success signs<a class="headerlink" href="#expected-success-signs" title="Permanent link">&para;</a></h3>
 <ul>
-<li>compile examples across representative boards</li>
-<li>verify read/write/erase on at least one flash and one FRAM part</li>
-<li>verify diagnostics still map correctly</li>
+<li>JEDEC ID prints non-zero.</li>
+<li>Function tests report pass.</li>
+<li>Read values match written values.</li>
 </ul>
-<h2 id="publish">Publish<a class="headerlink" href="#publish" title="Permanent link">&para;</a></h2>
+<h3 id="common-failure-patterns">Common failure patterns<a class="headerlink" href="#common-failure-patterns" title="Permanent link">&para;</a></h3>
 <ul>
-<li>merge to main branch</li>
-<li>confirm docs publish workflow succeeded</li>
-<li>verify site URL and key links</li>
+<li>Fails immediately: wiring/CS/board SPI mismatch.</li>
+<li>Write tests fail: region not erased, <code>WP/HOLD</code> pin state, unstable power.</li>
+<li>Mixed intermittent failures: clock too fast, shared SPI bus interference.</li>
+</ul>
+<hr />
+<h2 id="testflashtestflashino"><code>TestFlash/TestFlash.ino</code><a class="headerlink" href="#testflashtestflashino" title="Permanent link">&para;</a></h2>
+<h3 id="what-it-is">What it is<a class="headerlink" href="#what-it-is" title="Permanent link">&para;</a></h3>
+<p>Interactive serial command tester for direct operation-by-operation checks.</p>
+<h3 id="best-use">Best use<a class="headerlink" href="#best-use" title="Permanent link">&para;</a></h3>
+<p>Use this when you want to isolate a single failing operation (<code>writeByte</code>, <code>eraseSector</code>, <code>readStr</code>, etc.) without full diagnostics noise.</p>
+<h3 id="tips">Tips<a class="headerlink" href="#tips" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Set Serial Monitor to expected line ending mode from sketch notes.</li>
+<li>Test simple operations first (<code>getID</code>, <code>writeByte</code> + <code>readByte</code>).</li>
+<li>Move to erase and string operations after basics pass.</li>
+</ul>
+<hr />
+<h2 id="getaddressexgetaddressexino"><code>getAddressEx/getAddressEx.ino</code><a class="headerlink" href="#getaddressexgetaddressexino" title="Permanent link">&para;</a></h2>
+<h3 id="what-it-teaches">What it teaches<a class="headerlink" href="#what-it-teaches" title="Permanent link">&para;</a></h3>
+<p>How to use <code>getAddress()</code> and <code>sizeofStr()</code> to allocate addresses safely without hardcoding offsets.</p>
+<h3 id="troubleshooting-value">Troubleshooting value<a class="headerlink" href="#troubleshooting-value" title="Permanent link">&para;</a></h3>
+<p>If this fails, you may have pre-written data conflicts or boundary behavior confusion.</p>
+<hr />
+<h2 id="readwritestringreadwritestringino"><code>readWriteString/readWriteString.ino</code><a class="headerlink" href="#readwritestringreadwritestringino" title="Permanent link">&para;</a></h2>
+<h3 id="what-it-teaches_1">What it teaches<a class="headerlink" href="#what-it-teaches_1" title="Permanent link">&para;</a></h3>
+<p>Simple <code>writeStr</code>/<code>readStr</code> workflow.</p>
+<h3 id="troubleshooting-value_1">Troubleshooting value<a class="headerlink" href="#troubleshooting-value_1" title="Permanent link">&para;</a></h3>
+<p>Great for catching string-specific issues (length metadata, readback integrity, sector erase assumptions).</p>
+<hr />
+<h2 id="struct_writerstruct_writerino"><code>Struct_writer/Struct_writer.ino</code><a class="headerlink" href="#struct_writerstruct_writerino" title="Permanent link">&para;</a></h2>
+<h3 id="what-it-teaches_2">What it teaches<a class="headerlink" href="#what-it-teaches_2" title="Permanent link">&para;</a></h3>
+<p>Write/read complete structs repeatedly, including nested members and arrays.</p>
+<h3 id="troubleshooting-value_2">Troubleshooting value<a class="headerlink" href="#troubleshooting-value_2" title="Permanent link">&para;</a></h3>
+<p>Use this for data-model persistence validation. If this fails while primitive tests pass, inspect struct layout assumptions and erase coverage.</p>
+<hr />
+<h2 id="flashdiagnosticsdiagnostics_functionsino"><code>FlashDiagnostics/Diagnostics_functions.ino</code><a class="headerlink" href="#flashdiagnosticsdiagnostics_functionsino" title="Permanent link">&para;</a></h2>
+<h3 id="what-it-is_1">What it is<a class="headerlink" href="#what-it-is_1" title="Permanent link">&para;</a></h3>
+<p>Helper routines used by diagnostics output (formatting, timing presentation, pass/fail display).</p>
+<h3 id="why-it-matters">Why it matters<a class="headerlink" href="#why-it-matters" title="Permanent link">&para;</a></h3>
+<p>Helps you understand what diagnostics output lines map to which underlying test sections.</p>
+<h2 id="recommended-order-for-beginners">Recommended order for beginners<a class="headerlink" href="#recommended-order-for-beginners" title="Permanent link">&para;</a></h2>
+<ol>
+<li><code>FlashDiagnostics.ino</code></li>
+<li><code>TestFlash.ino</code> (targeted operation isolation)</li>
+<li><code>readWriteString.ino</code></li>
+<li><code>getAddressEx.ino</code></li>
+<li><code>Struct_writer.ino</code></li>
+</ol>
+<h2 id="what-to-capture-when-asking-for-help">What to capture when asking for help<a class="headerlink" href="#what-to-capture-when-asking-for-help" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Board and core version</li>
+<li>Chip part number</li>
+<li>Wiring summary (including <code>WP/HOLD</code> if flash)</li>
+<li>Example sketch name</li>
+<li>Error code (<code>error()</code> value) and serial output snippet</li>
 </ul>
 
 

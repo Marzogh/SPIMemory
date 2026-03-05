@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://chipsncode.com/SPIMemory/guide/common-tasks/">
       
       
-        <link rel="prev" href="../quickstart/">
+        <link rel="prev" href="../first-hour/">
       
       
-        <link rel="next" href="../concepts/">
+        <link rel="next" href="../example-sketches/">
       
       
         
@@ -330,6 +330,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../first-hour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First Hour Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -462,6 +490,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../example-sketches/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example Sketches Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1210,6 +1266,7 @@
 
 
 <h1 id="common-tasks-beginner-friendly">Common Tasks (Beginner Friendly)<a class="headerlink" href="#common-tasks-beginner-friendly" title="Permanent link">&para;</a></h1>
+<p>If this is your first run on real hardware, start with <a href="../first-hour/">First Hour Setup</a>, then use <a href="../example-sketches/">Example Sketches Guide</a> when validating behavior.</p>
 <h2 id="save-one-number-and-read-it-back">Save one number and read it back<a class="headerlink" href="#save-one-number-and-read-it-back" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t addr = 0;
 flash.eraseSector(addr);
@@ -1245,6 +1302,7 @@ flash.readByteArray(addr, rx, sizeof(rx));
 <li>Ensure <code>begin()</code> is called in <code>setup()</code>.</li>
 <li>Print <code>getJEDECID()</code> and <code>error(VERBOSE)</code>.</li>
 <li>Run <code>FlashDiagnostics</code> example sketch.</li>
+<li>Compare results against <a href="../example-sketches/">Example Sketches Guide</a>.</li>
 </ol>
 <h2 id="improve-speed-safely">Improve speed safely<a class="headerlink" href="#improve-speed-safely" title="Permanent link">&para;</a></h2>
 <ul>
