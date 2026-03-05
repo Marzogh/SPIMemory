@@ -2,32 +2,53 @@
 
 ## Save one number and read it back
 
-Use `writeULong` and `readULong`.
+```cpp
+uint32_t addr = 0;
+flash.eraseSector(addr);
+flash.writeULong(addr, 42);
+uint32_t out = flash.readULong(addr);
+```
 
-## Save a text string
+## Save and load a string
 
-Use `writeStr` and `readStr`.
+```cpp
+String in = "hello";
+String out;
+uint32_t addr = flash.getAddress(flash.sizeofStr(in));
+flash.eraseSection(addr, flash.sizeofStr(in));
+flash.writeStr(addr, in);
+flash.readStr(addr, out);
+```
 
-## Save a custom struct
+## Save and load a struct
 
-Use `writeAnything` and `readAnything`.
+```cpp
+struct Config { uint16_t a; float b; } cfgIn{7, 3.14f}, cfgOut;
+uint32_t addr = flash.getAddress(sizeof(Config));
+flash.eraseSection(addr, sizeof(Config));
+flash.writeAnything(addr, cfgIn);
+flash.readAnything(addr, cfgOut);
+```
 
-## Find where to write next
+## Write/read byte buffers
 
-Use `getAddress(size)` before writing.
-
-## Erase enough flash for a variable-sized record
-
-Use `eraseSection(address, size)`.
+```cpp
+uint8_t tx[8] = {1,2,3,4,5,6,7,8};
+uint8_t rx[8] = {0};
+uint32_t addr = flash.getAddress(sizeof(tx));
+flash.eraseSection(addr, sizeof(tx));
+flash.writeByteArray(addr, tx, sizeof(tx));
+flash.readByteArray(addr, rx, sizeof(rx));
+```
 
 ## Chip not responding
 
-1. Confirm wiring and CS pin.
-2. Call `begin()` in `setup()`.
-3. Read `error(VERBOSE)`.
-4. Enable `RUNDIAGNOSTIC` during debug.
+1. Verify wiring and CS pin.
+2. Ensure `begin()` is called in `setup()`.
+3. Print `getJEDECID()` and `error(VERBOSE)`.
+4. Run `FlashDiagnostics` example sketch.
 
-## Speed up reads/writes
+## Improve speed safely
 
-- Reads: use `fastRead=true` where needed.
-- Writes: disable error check only after validation.
+- Read path: use `fastRead=true` selectively.
+- Write path: only disable error checks after full validation.

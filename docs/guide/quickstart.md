@@ -1,40 +1,77 @@
 # Quick Start
 
-## Goal
+## Who this is for
 
-Initialize a flash chip and verify one write/read cycle.
+If you are new to Arduino external memory chips, start here.
 
-## Checklist
+## 1. Install the library
 
-- Wire SPI pins correctly (SCK, MISO, MOSI, CS, VCC, GND)
-- Instantiate `SPIFlash` with the desired chip-select pin
-- Call `begin()` in `setup()`
-- Erase the target region before first flash write
+### Arduino Library Manager
 
-## Minimal Sketch
+1. Open Arduino IDE.
+2. Go to **Sketch > Include Library > Manage Libraries**.
+3. Search for **SPIMemory**.
+4. Install latest version.
+
+### ZIP install
+
+1. Download repository ZIP.
+2. Rename extracted folder to `SPIMemory`.
+3. Move it to your Arduino libraries folder.
+
+## 2. Wire the chip
+
+Connect at minimum:
+
+- `SCK`
+- `MISO`
+- `MOSI`
+- `CS` (chip select)
+- `VCC`
+- `GND`
+
+For flash chips, ensure `HOLD` and `WP` pins are pulled to valid logic levels as required by datasheet.
+
+## 3. First flash sketch
 
 ```cpp
 #include <SPIMemory.h>
 
-SPIFlash flash(10);
+SPIFlash flash(10); // CS pin
 
 void setup() {
   Serial.begin(115200);
-  flash.begin();
 
-  const uint32_t addr = 0;
+  if (!flash.begin()) {
+    Serial.print("begin failed, err=0x");
+    Serial.println(flash.error(), HEX);
+    return;
+  }
+
+  uint32_t addr = 0;
   flash.eraseSector(addr);
-  flash.writeULong(addr, 0xDEADBEEF);
 
+  flash.writeULong(addr, 123456789UL);
   uint32_t out = flash.readULong(addr);
-  Serial.println(out, HEX);
+
+  Serial.print("Read: ");
+  Serial.println(out);
 }
 
 void loop() {}
 ```
 
-## Next Steps
+## 4. Validate using bundled examples
 
-- Use `getAddress()` for automatic allocation.
-- Use typed APIs and `writeAnything`/`readAnything` for structs.
-- Enable diagnostics during bring-up and hardware debug.
+Recommended beginner order:
+
+1. `examples/FlashDiagnostics/FlashDiagnostics.ino`
+2. `examples/readWriteString/readWriteString.ino`
+3. `examples/getAddressEx/getAddressEx.ino`
+4. `examples/Struct_writer/Struct_writer.ino`
+
+## 5. If it fails
+
+- Call `flash.error(VERBOSE)`.
+- Check [Errors and Diagnostics](../api/errors.md).
+- Run diagnostics example and capture output.

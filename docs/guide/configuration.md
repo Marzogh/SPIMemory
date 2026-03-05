@@ -1,19 +1,41 @@
 # Build Configuration
 
-## Compile-Time Flags (in `SPIMemory.h`)
+This library is configured mainly through compile-time flags in `src/SPIMemory.h`.
 
-- `USES_SFDP`: enable SFDP discovery for unsupported flash chips
-- `RUNDIAGNOSTIC`: verbose diagnostics output
-- `HIGHSPEED`: skip pre-write blank checks
-- `DISABLEOVERFLOW`: disable address rollover
-- `ENABLEZERODMA`: experimental SAMD DMA mode
+## Compile-Time Flags
 
-## Runtime Configuration
+| Flag | Default | What it does | When to use |
+| --- | --- | --- | --- |
+| `USES_SFDP` | Off | Enables SFDP discovery logic for compatible flash chips | Using unsupported but SFDP-capable flash parts |
+| `RUNDIAGNOSTIC` | Off | Enables verbose diagnostics messaging and runtime tracing support | Hardware bring-up and debugging |
+| `HIGHSPEED` | Off | Skips pre-write blank checks (`_notPrevWritten`) | Performance tuning after you trust erase discipline |
+| `DISABLEOVERFLOW` | Off | Disables address wraparound at end-of-chip | Safety-critical logging where wrap is not acceptable |
+| `ENABLEZERODMA` | Off | Enables experimental SAMD DMA path | Advanced tuning on SAMD if validated on your board |
 
-- `begin(chipSize)` optionally forces chip size
-- `setClock(clockSpeed)` changes SPI clock settings
-- platform-specific constructors enable alternate SPI interfaces
+## Runtime Configuration Calls
 
-## Platform Notes
+- `begin(chipSize)` for optional explicit capacity override.
+- `setClock(clockSpeed)` for SPI speed tuning.
+- Alternate constructor variants for non-default SPI bus or custom pins.
 
-When default SPI pins/bus are unsuitable, use board-specific constructor variants.
+## Constructor Guide
+
+### Default SPI
+
+- `SPIFlash flash(csPin);`
+- `SPIFram fram(csPin);`
+
+### Alternate SPI interface (supported platforms)
+
+- `SPIFlash flash(csPin, &SPI1);`
+- `SPIFram fram(csPin, &SPI1);`
+
+### Custom SPI pins (ESP32-oriented)
+
+- `SPIFlash flash(spiPinsArray);` where array order is `sck, miso, mosi, ss`.
+
+## Recommended beginner defaults
+
+- Keep all compile-time flags at default.
+- Keep write `errorCheck=true`.
+- Enable `RUNDIAGNOSTIC` only while debugging.
