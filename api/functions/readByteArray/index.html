@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1222,6 +1233,12 @@
 <li>Reading more bytes than destination buffer can hold.</li>
 <li>Using wrong start address and mis-parsing shifted data.</li>
 <li>Assuming data is valid without checking application-level framing/CRC.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>readByteArray()</code> when you need raw bytes.</li>
+<li>Use typed read APIs for direct scalar conversion.</li>
+<li>Use <code>readCharArray()</code> when treating output as text.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint8_t rx[8] = {0};

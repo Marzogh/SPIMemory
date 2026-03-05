@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Comparing runtimes from different operation types directly.</li>
 <li>Benchmarking with unstable wiring and reading too much into variance.</li>
 <li>Forgetting that diagnostics/build settings can affect reported timing.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>functionRunTime()</code> for relative profiling on the same board/chip setup.</li>
+<li>Use external timing instrumentation for cross-platform comparisons.</li>
+<li>Compare identical operations only (for example write-vs-write).</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">flash.writeByte(addr, 0x12);

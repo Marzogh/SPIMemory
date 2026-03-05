@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Assuming all chips implement unique ID and treating <code>0</code> as guaranteed comm failure.</li>
 <li>Using UID as security/authentication secret without threat modeling.</li>
 <li>Changing provisioning logic without handling unsupported chips.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>getUniqueID()</code> for unit fingerprinting when supported.</li>
+<li>Use JEDEC/manufacturer IDs for chip compatibility, not per-unit identity.</li>
+<li>If UID is unsupported, fall back to app-level provisioning IDs.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint64_t uid = flash.getUniqueID();

@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Assuming <code>getAddress()</code> persists across reboot without your own metadata scheme.</li>
 <li>Mixing manual offsets and allocator-style addresses accidentally.</li>
 <li>Not reserving exact sizes for variable-length payloads.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>getAddress(size)</code> for sequential app-managed allocations.</li>
+<li>Use fixed addresses when you need deterministic on-disk layout/versioning.</li>
+<li>Pair with <code>sizeofStr()</code> for variable-length string records.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t cfgAddr = flash.getAddress(sizeof(Config));

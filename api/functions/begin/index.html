@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Calling memory I/O before <code>begin()</code> has succeeded.</li>
 <li>Passing a custom <code>flashChipSize</code> that does not match real hardware.</li>
 <li>Ignoring a <code>false</code> return and continuing instead of checking <code>error(VERBOSE)</code>.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>begin(0)</code> for normal auto-detection.</li>
+<li>Use non-zero <code>flashChipSize</code> only for unsupported/custom chips where auto-detect is inadequate.</li>
+<li>If <code>begin()</code> is unstable, fix wiring/clock before trying advanced APIs.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">SPIFlash flash(10);

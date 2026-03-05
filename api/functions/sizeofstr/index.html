@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Using <code>String.length()</code> instead of <code>sizeofStr()</code> for storage planning.</li>
 <li>Erasing fewer bytes than string storage actually requires.</li>
 <li>Reusing old allocation size after string content grows.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>sizeofStr()</code> before <code>writeStr()</code> for exact storage planning.</li>
+<li>Use <code>writeCharArray()</code> when you need explicit fixed-length text layout.</li>
+<li>Prefer fixed-length arrays over <code>String</code> in hard real-time memory maps.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">String name = &quot;sensor-A&quot;;

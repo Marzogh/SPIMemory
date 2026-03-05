@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1221,6 +1232,12 @@
 <li>Writing to flash without erasing target region first.</li>
 <li>Ignoring <code>false</code> return and not checking <code>error(VERBOSE)</code>.</li>
 <li>Reusing addresses without a clear storage map.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use this typed write when your payload is exactly this type.</li>
+<li>Use <code>writeAnything()</code> for composite structs.</li>
+<li>Use array/string writes when storing variable-length data.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t addr = 0;

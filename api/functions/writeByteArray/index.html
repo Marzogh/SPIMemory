@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1222,6 +1233,12 @@
 <li>Passing buffer length that does not match real payload size.</li>
 <li>Forgetting erase-before-write on flash region.</li>
 <li>Using invalid/temporary buffer pointers.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>writeByteArray()</code> for binary payloads and packet buffers.</li>
+<li>Use <code>writeCharArray()</code> for text buffers where character semantics matter.</li>
+<li>Use <code>writeAnything()</code> for typed structs with stable layout.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint8_t payload[8] = {1,2,3,4,5,6,7,8};

@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Running chip erase in normal flow instead of explicit maintenance/reset paths.</li>
 <li>Not warning users that operation is destructive and long-running.</li>
 <li>Power-cycling mid-erase and assuming data integrity afterwards.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>eraseChip()</code> for full reset/factory-clear flows.</li>
+<li>Use section/sector/block erase for normal incremental updates.</li>
+<li>Avoid chip erase in frequently called runtime paths.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (confirmReset) {

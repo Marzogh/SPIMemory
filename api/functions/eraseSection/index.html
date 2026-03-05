@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1220,6 +1231,12 @@
 <li>Erasing too small a region before rewriting larger payloads.</li>
 <li>Assuming section erase aligns exactly to your object boundaries.</li>
 <li>Not accounting for erase latency in time-sensitive loops.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>eraseSection()</code> when object size is known and may span multiple sectors.</li>
+<li>Use <code>eraseSector()</code>/block erases for explicit granularity control.</li>
+<li>Prefer smallest erase scope that still covers your write region.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t len = sizeof(Config);

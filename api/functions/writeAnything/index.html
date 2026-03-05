@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1221,6 +1232,12 @@
 <li>Changing struct layout between firmware versions without migration.</li>
 <li>Using non-trivially-copyable types/pointers inside persisted structs.</li>
 <li>Forgetting erase-before-write requirement on flash.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>writeAnything()</code> for stable structs/config blobs.</li>
+<li>Use typed APIs (<code>writeULong</code>, <code>writeFloat</code>, etc.) for simple scalar values.</li>
+<li>Use byte/char array APIs when you need explicit binary format control.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">struct Config { uint16_t mode; float gain; } cfg{2, 1.25f};

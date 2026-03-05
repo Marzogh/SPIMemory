@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1218,6 +1229,12 @@
 <li>Using 32 KB erase for tiny updates, causing unnecessary data loss.</li>
 <li>Assuming all chips support 32 KB erase opcode.</li>
 <li>Not preserving neighboring data in same erase block.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>eraseBlock32K()</code> for medium-size bulk rewrites.</li>
+<li>Use sector erase for smaller updates to avoid collateral data loss.</li>
+<li>Use 64K erase when throughput matters and data layout allows.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (!flash.eraseBlock32K(addr)) {

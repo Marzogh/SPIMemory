@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1218,6 +1229,12 @@
 <li>Treating <code>false</code> as immediate hard failure on chips that do not expose SFDP.</li>
 <li>Skipping JEDEC/basic comm checks because SFDP is present.</li>
 <li>Assuming SFDP guarantees all opcodes are supported the same way.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>sfdpPresent()</code> to detect optional advanced parameter support.</li>
+<li>Use <code>getJEDECID()</code> for baseline identification regardless of SFDP.</li>
+<li>Do not gate all functionality solely on SFDP presence.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (flash.sfdpPresent()) {

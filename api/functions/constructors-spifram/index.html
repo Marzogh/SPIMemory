@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1220,6 +1231,12 @@
 <li>Using incorrect CS pin or alternate bus for your board wiring.</li>
 <li>Assuming constructor validates wiring immediately (validation happens at <code>begin()</code>).</li>
 <li>Reusing examples with different board pin numbering conventions without adjustment.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use default constructor for single-bus setups.</li>
+<li>Use alternate bus constructor only when your board/core supports extra SPI instances.</li>
+<li>Pick constructor based on wiring first, not performance assumptions.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">#include &lt;SPIMemory.h&gt;

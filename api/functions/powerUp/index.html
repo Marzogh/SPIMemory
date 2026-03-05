@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Skipping <code>powerUp()</code> after deep sleep before first memory access.</li>
 <li>Assuming immediate readiness without checking first operation result.</li>
 <li>Ignoring wake failures and misattributing later read errors.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>powerUp()</code> after explicit memory power-down or deep sleep.</li>
+<li>Skip only when chip was never placed in low-power state.</li>
+<li>If wake is flaky, reduce SPI speed and verify power sequencing.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (!flash.powerUp()) {

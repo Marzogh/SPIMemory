@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Powering down and then attempting reads/writes without wake-up.</li>
 <li>Assuming every chip fully supports low-power command set.</li>
 <li>Not integrating memory wake timing with MCU sleep/wake flow.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>powerDown()</code> for low-power idle intervals.</li>
+<li>Skip power cycling if your workload is high-frequency and latency-sensitive.</li>
+<li>Always schedule <code>powerUp()</code> before next access.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">flash.powerDown();

@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Reading <code>error()</code> long after the failing call, losing useful context.</li>
 <li>Ignoring non-zero error values during early bring-up.</li>
 <li>Using <code>error()</code> without <code>VERBOSE</code> while debugging first hardware setup.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>error(VERBOSE)</code> during bring-up and troubleshooting.</li>
+<li>Use plain <code>error()</code> in production telemetry when serial logging is too expensive.</li>
+<li>Read error immediately after a failed call, not later.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (!flash.writeByte(addr, 0x2A)) {

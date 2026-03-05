@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1222,6 +1233,12 @@
 <li>Printing as C-string without ensuring null termination.</li>
 <li>Reading wrong byte count and truncating text.</li>
 <li>Using text APIs on binary data unintentionally.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>readCharArray()</code> for text buffers you parse/print as chars.</li>
+<li>Use <code>readStr()</code> for <code>String</code>-formatted records.</li>
+<li>Use <code>readByteArray()</code> when contents are binary.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">char rx[8] = {0};

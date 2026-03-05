@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1221,6 +1232,12 @@
 <li>Passing invalid/null pointers for version outputs.</li>
 <li>Printing version once at boot and forgetting to include it in bug reports.</li>
 <li>Assuming runtime version is identical across all build environments.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>libver()</code> when collecting support logs.</li>
+<li>Use compile-time docs/changelog for feature planning, not runtime version alone.</li>
+<li>Keep both runtime version and JEDEC ID in bug reports.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint8_t maj, min, pat;

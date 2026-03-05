@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Hardcoding capacity from datasheet instead of querying runtime value.</li>
 <li>Using random address upper bound equal to capacity without considering payload size.</li>
 <li>Assuming same capacity across all user hardware variants.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>getCapacity()</code> for dynamic bounds-safe code.</li>
+<li>Use constants only when targeting one fixed chip SKU.</li>
+<li>Combine with payload size checks to avoid end-of-chip overruns.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t cap = flash.getCapacity();

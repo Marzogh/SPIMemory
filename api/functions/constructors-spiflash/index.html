@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1222,6 +1233,12 @@
 <li>Using wrong CS pin relative to your wiring diagram.</li>
 <li>Selecting alternate SPI bus constructor on a board/core that does not support it.</li>
 <li>Passing custom SPI pin arrays that do not match board capabilities.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use default constructor when your board uses default SPI pins and only CS is custom.</li>
+<li>Use <code>SPIFlash(cs, &amp;SPI1)</code> when board exposes multiple hardware SPI buses.</li>
+<li>Use <code>SPIFlash(SPIPinsArray)</code> only on targets that support non-standard SPI pin routing.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">#include &lt;SPIMemory.h&gt;

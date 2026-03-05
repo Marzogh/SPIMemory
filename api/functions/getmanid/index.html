@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1219,6 +1230,12 @@
 <li>Using manufacturer ID alone to infer exact chip size/model.</li>
 <li>Trusting unstable IDs without verifying wiring and power integrity.</li>
 <li>Skipping JEDEC read when manufacturer ID looks plausible.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>getManID()</code> for quick vendor sanity checks.</li>
+<li>Use <code>getJEDECID()</code> for model/capacity-level identification.</li>
+<li>Prefer JEDEC for compatibility decisions.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">Serial.print(&quot;Man ID: 0x&quot;);

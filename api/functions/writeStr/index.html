@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1221,6 +1232,12 @@
 <li>Writing string data without reserving/erasing <code>sizeofStr(data)</code> bytes first on flash.</li>
 <li>Changing string length over time without updating allocation/erase size.</li>
 <li>Treating <code>String</code> storage as C-string without considering library format.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>writeStr()</code> for Arduino <code>String</code> workflows with variable length.</li>
+<li>Use <code>writeCharArray()</code> for fixed-size or C-string buffers.</li>
+<li>Use <code>writeByteArray()</code> for non-text binary payloads.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">String msg = &quot;Hello flash&quot;;

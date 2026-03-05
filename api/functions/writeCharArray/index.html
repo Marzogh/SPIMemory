@@ -1166,6 +1166,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#choosing-between-similar-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing Between Similar APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1222,6 +1233,12 @@
 <li>Assuming null terminator is auto-managed when <code>bufferSize</code> excludes it.</li>
 <li>Writing text payload with incorrect length.</li>
 <li>Skipping erase step on flash destinations.</li>
+</ul>
+<h2 id="choosing-between-similar-apis">Choosing Between Similar APIs<a class="headerlink" href="#choosing-between-similar-apis" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Use <code>writeCharArray()</code> for text/c-string style buffers.</li>
+<li>Use <code>writeStr()</code> when using Arduino <code>String</code> objects.</li>
+<li>Use <code>writeByteArray()</code> when bytes are not textual data.</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">char payload[8] = {1,2,3,4,5,6,7,8};
