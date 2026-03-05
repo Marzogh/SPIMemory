@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1203,6 +1214,12 @@
 <p>Returns numeric error code (<code>0</code> generally means no current error).</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Calling much later can hide root cause because newer operations may overwrite error context.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Reading <code>error()</code> long after the failing call, losing useful context.</li>
+<li>Ignoring non-zero error values during early bring-up.</li>
+<li>Using <code>error()</code> without <code>VERBOSE</code> while debugging first hardware setup.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (!flash.writeByte(addr, 0x2A)) {
   uint8_t code = flash.error(VERBOSE);

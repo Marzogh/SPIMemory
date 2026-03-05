@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1202,6 +1213,12 @@
 <p>Returns <code>true</code> when erase completes.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>May fail on chips lacking 32 KB erase opcode or when write/ready checks fail.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Using 32 KB erase for tiny updates, causing unnecessary data loss.</li>
+<li>Assuming all chips support 32 KB erase opcode.</li>
+<li>Not preserving neighboring data in same erase block.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (!flash.eraseBlock32K(addr)) {
   flash.error(VERBOSE);

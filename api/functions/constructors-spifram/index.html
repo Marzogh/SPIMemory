@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1204,6 +1215,12 @@
 <p>Constructors do not return values; they prepare the instance.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Incorrect bus/pin choices usually surface during <code>begin()</code> with zero IDs or non-zero error codes.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Using incorrect CS pin or alternate bus for your board wiring.</li>
+<li>Assuming constructor validates wiring immediately (validation happens at <code>begin()</code>).</li>
+<li>Reusing examples with different board pin numbering conventions without adjustment.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">#include &lt;SPIMemory.h&gt;
 

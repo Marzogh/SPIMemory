@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1203,6 +1214,12 @@
 <p>Returns required byte count for storing that specific <code>String</code>.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>If you erase/write fewer bytes than required, reads can truncate or include stale residual bytes.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Using <code>String.length()</code> instead of <code>sizeofStr()</code> for storage planning.</li>
+<li>Erasing fewer bytes than string storage actually requires.</li>
+<li>Reusing old allocation size after string content grows.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">String name = &quot;sensor-A&quot;;
 uint16_t sz = flash.sizeofStr(name);

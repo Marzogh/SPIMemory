@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1205,6 +1216,12 @@
 <p>Returns <code>true</code> if version values were written successfully.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Passing null/invalid pointers leads to undefined behavior in C++ pointer semantics. Always pass addresses of <code>uint8_t</code> variables.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Passing invalid/null pointers for version outputs.</li>
+<li>Printing version once at boot and forgetting to include it in bug reports.</li>
+<li>Assuming runtime version is identical across all build environments.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint8_t maj, min, pat;
 if (flash.libver(&amp;maj, &amp;min, &amp;pat)) {

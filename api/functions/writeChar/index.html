@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1205,6 +1216,12 @@
 <p>Returns <code>true</code> when write sequence completes (and optional verification passes). Returns <code>false</code> on address, power-state, bus, or verification errors.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Common failures: out-of-range address, flash not erased, chip busy, powered-down device, or SPI signal integrity problems.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Writing to flash without erasing target region first.</li>
+<li>Ignoring <code>false</code> return and not checking <code>error(VERBOSE)</code>.</li>
+<li>Reusing addresses without a clear storage map.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t addr = 0;
 // flash.eraseSector(addr); // required for flash if not erased

@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1206,6 +1217,12 @@
 <p>Returns <code>true</code> when all requested bytes were written successfully.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Failures come from invalid pointers, address overflow, erase prerequisites (flash), or bus errors.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Passing buffer length that does not match real payload size.</li>
+<li>Forgetting erase-before-write on flash region.</li>
+<li>Using invalid/temporary buffer pointers.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint8_t payload[8] = {1,2,3,4,5,6,7,8};
 flash.eraseSection(addr, sizeof(payload));

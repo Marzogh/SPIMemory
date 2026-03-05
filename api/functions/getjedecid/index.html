@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1203,6 +1214,12 @@
 <p>Returns JEDEC ID packed into a 32-bit value.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Zero or unstable values indicate communication faults, wrong voltage, wrong chip-select, or unsupported devices.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Proceeding when JEDEC ID is <code>0x000000</code> or unstable.</li>
+<li>Assuming every JEDEC ID is in the library support list.</li>
+<li>Not logging JEDEC ID in support/troubleshooting reports.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t jedec = flash.getJEDECID();
 Serial.print(&quot;JEDEC: 0x&quot;);

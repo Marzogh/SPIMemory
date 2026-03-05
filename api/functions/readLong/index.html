@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1204,6 +1215,12 @@
 <p>Returns decoded <code>int32_t</code> value from memory.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>If address is invalid or comms fail, returned value may be stale/default/invalid. Check <code>error()</code> after suspicious reads.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Reading with wrong type/API compared to how data was written.</li>
+<li>Using out-of-range or stale addresses.</li>
+<li>Trusting suspicious values without checking error state.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">int32_t out = flash.readLong(0);
 Serial.println(out);

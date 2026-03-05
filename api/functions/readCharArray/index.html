@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1206,6 +1217,12 @@
 <p>Returns <code>true</code> when requested bytes were read into buffer.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>If used as C-strings, ensure null termination is handled explicitly by your code.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Printing as C-string without ensuring null termination.</li>
+<li>Reading wrong byte count and truncating text.</li>
+<li>Using text APIs on binary data unintentionally.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">char rx[8] = {0};
 if (flash.readCharArray(addr, rx, sizeof(rx))) {

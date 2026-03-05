@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1205,6 +1216,12 @@
 <p>Returns <code>true</code> on full write success.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Changing struct layout between firmware versions breaks compatibility unless you version and migrate your data format.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Changing struct layout between firmware versions without migration.</li>
+<li>Using non-trivially-copyable types/pointers inside persisted structs.</li>
+<li>Forgetting erase-before-write requirement on flash.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">struct Config { uint16_t mode; float gain; } cfg{2, 1.25f};
 flash.eraseSection(addr, sizeof(Config));

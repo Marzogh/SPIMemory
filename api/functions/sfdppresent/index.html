@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1202,6 +1213,12 @@
 <p>Returns <code>true</code> if SFDP was detected/read, else <code>false</code>.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p><code>false</code> may be normal on older/non-SFDP chips. It is not automatically a fatal error if chip ID and operations still work.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Treating <code>false</code> as immediate hard failure on chips that do not expose SFDP.</li>
+<li>Skipping JEDEC/basic comm checks because SFDP is present.</li>
+<li>Assuming SFDP guarantees all opcodes are supported the same way.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (flash.sfdpPresent()) {
   Serial.println(&quot;SFDP available&quot;);

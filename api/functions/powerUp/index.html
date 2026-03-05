@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1203,6 +1214,12 @@
 <p>Returns <code>true</code> when chip acknowledges wake-up sequence.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>If wake fails, subsequent operations may fail; check wiring/power timing and error code.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Skipping <code>powerUp()</code> after deep sleep before first memory access.</li>
+<li>Assuming immediate readiness without checking first operation result.</li>
+<li>Ignoring wake failures and misattributing later read errors.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">if (!flash.powerUp()) {
   flash.error(VERBOSE);

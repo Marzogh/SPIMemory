@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1202,6 +1213,12 @@
 <p>Returns <code>true</code> on successful sector erase.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Fails if chip is busy, write-enable path fails, address invalid, or erase opcode unsupported.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Expecting arbitrary byte-range erase; this targets 4 KB sector granularity.</li>
+<li>Erasing wrong sector by passing nearby but unintended address.</li>
+<li>Not checking return code before writing new data.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t addr = 0x1200;
 if (!flash.eraseSector(addr)) flash.error(VERBOSE);

@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1205,6 +1216,12 @@
 <p>Returns <code>true</code> on successful write (and verification when enabled).</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Failures occur from insufficient erased space (flash), invalid address range, comms errors, or write-protect state.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Writing string data without reserving/erasing <code>sizeofStr(data)</code> bytes first on flash.</li>
+<li>Changing string length over time without updating allocation/erase size.</li>
+<li>Treating <code>String</code> storage as C-string without considering library format.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">String msg = &quot;Hello flash&quot;;
 uint16_t sz = flash.sizeofStr(msg);

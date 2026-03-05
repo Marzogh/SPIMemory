@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1206,6 +1217,12 @@
 <p>Constructors do not return values. They create the object and store interface configuration for later calls.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Misconfigured pins or bus selection are usually detected at <code>begin()</code> time via failed ID reads or error codes.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Using wrong CS pin relative to your wiring diagram.</li>
+<li>Selecting alternate SPI bus constructor on a board/core that does not support it.</li>
+<li>Passing custom SPI pin arrays that do not match board capabilities.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">#include &lt;SPIMemory.h&gt;
 

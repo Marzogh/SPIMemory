@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1203,6 +1214,12 @@
 <p>Returns start address for the requested block.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>If allocation wraps or requested size exceeds available strategy assumptions, subsequent writes may fail address checks.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Assuming <code>getAddress()</code> persists across reboot without your own metadata scheme.</li>
+<li>Mixing manual offsets and allocator-style addresses accidentally.</li>
+<li>Not reserving exact sizes for variable-length payloads.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">uint32_t cfgAddr = flash.getAddress(sizeof(Config));
 uint32_t nameAddr = flash.getAddress(flash.sizeofStr(name));

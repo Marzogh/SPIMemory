@@ -1155,6 +1155,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#common-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1205,6 +1216,12 @@
 <p>No return value. Clock setting is stored and used by subsequent memory calls.</p>
 <h2 id="failure-behavior">Failure Behavior<a class="headerlink" href="#failure-behavior" title="Permanent link">&para;</a></h2>
 <p>Too-fast clocks can cause intermittent read/write mismatches, ID read failures, and random PASS/FAIL behavior in diagnostics.</p>
+<h2 id="common-mistakes">Common Mistakes<a class="headerlink" href="#common-mistakes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Setting SPI speed too high during bring-up on long/jumper wiring.</li>
+<li>Changing clock and assuming old stability still holds without re-testing diagnostics.</li>
+<li>Using board-specific clock APIs incorrectly for your core version.</li>
+</ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <pre><code class="language-cpp">flash.begin();
 flash.setClock(8000000); // 8 MHz as a conservative starting point
