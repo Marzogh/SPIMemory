@@ -17,6 +17,14 @@ nav:
       - First Hour Setup: guide/first-hour.md
       - Common Tasks: guide/common-tasks.md
       - Example Sketches Guide: guide/example-sketches.md
+      - Example Sketch Pages:
+          - Overview: guide/examples/index.md
+          - FlashDiagnostics.ino: guide/examples/flashdiagnostics.md
+          - TestFlash.ino: guide/examples/testflash.md
+          - getAddressEx.ino: guide/examples/getaddressex.md
+          - readWriteString.ino: guide/examples/readwritestring.md
+          - Struct_writer.ino: guide/examples/struct-writer.md
+          - Diagnostics_functions.ino: guide/examples/diagnostics-functions.md
       - Core Concepts: guide/concepts.md
       - Build Configuration: guide/configuration.md
       - Compatibility Matrix: guide/compatibility.md
