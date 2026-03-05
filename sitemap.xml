@@ -261,6 +261,34 @@
          <lastmod>2026-03-05</lastmod>
     </url>
     <url>
+         <loc>https://chipsncode.com/SPIMemory/guide/examples/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://chipsncode.com/SPIMemory/guide/examples/diagnostics-functions/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://chipsncode.com/SPIMemory/guide/examples/flashdiagnostics/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://chipsncode.com/SPIMemory/guide/examples/getaddressex/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://chipsncode.com/SPIMemory/guide/examples/readwritestring/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://chipsncode.com/SPIMemory/guide/examples/struct-writer/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://chipsncode.com/SPIMemory/guide/examples/testflash/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
          <loc>https://chipsncode.com/SPIMemory/operations/maintainer/</loc>
          <lastmod>2026-03-05</lastmod>
     </url>
