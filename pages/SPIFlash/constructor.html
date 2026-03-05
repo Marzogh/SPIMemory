@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constructor Mandatory &mdash; SPIMemory 0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8dde47fa"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Library Instantiation" href="libInstantiate.html" />
+    <link rel="prev" title="Library structure" href="libStructure.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SPIMemory
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SPIFlash</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About SPIFlash</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">SPIFlash</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N8SPIFlash8SPIFlashE7uint8_tP8SPIClass"><code class="docutils literal notranslate"><span class="pre">SPIFlash()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constructor-mandatory">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="readDataIndependent.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readDataDependent.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="readSingleVariable.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="readArray.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="writeFunc.html">Write functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="writeDataIndependent.html">Data type-independent write function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="writeDataDependent.html">Data type-dependent write functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="writeSingleVariable.html">Single variable write functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="writeArray.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code> <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="writeAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIMemory/tree/master">Source Code</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SPIMemory</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API and Usage</a></li>
+      <li class="breadcrumb-item active">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pages/SPIFlash/constructor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="libStructure.html" class="btn btn-neutral float-left" title="Library structure" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="libInstantiate.html" class="btn btn-neutral float-right" title="Library Instantiation" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <dl class="cpp class" id="constructor">
+<dt class="sig sig-object cpp" id="_CPPv48SPIFlash">
+<span id="_CPPv38SPIFlash"></span><span id="_CPPv28SPIFlash"></span><span id="SPIFlash"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SPIFlash</span></span></span><a class="headerlink" href="#_CPPv48SPIFlash" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N8SPIFlash8SPIFlashE7uint8_tP8SPIClass">
+<span id="_CPPv3N8SPIFlash8SPIFlashE7uint8_tP8SPIClass"></span><span id="_CPPv2N8SPIFlash8SPIFlashE7uint8_tP8SPIClass"></span><span id="SPIFlash::SPIFlash__uint8_t.SPIClassP"></span><span class="sig-prename descclassname"><a class="reference internal" href="#_CPPv4N8SPIFlash8SPIFlashE7uint8_tP8SPIClass" title="SPIFlash::SPIFlash"><span class="n"><span class="pre">SPIFlash</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">SPIFlash</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cs</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">CS</span></span>, <span class="n"><span class="pre">SPIClass</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">spiinterface</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">&amp;</span></span><span class="n"><span class="pre">SPI</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8SPIFlash8SPIFlashE7uint8_tP8SPIClass" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<section id="constructor-mandatory">
+<h1>Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code><a class="headerlink" href="#constructor-mandatory" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A constructor is a special kind of class member function that is executed when an object of that class is instantiated.
+Constructors are typically used to initialize member variables/functions of the class to appropriate default values, or to allow the user to easily initialize those member
+variables/functions to whatever values are desired. <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>*<span class="fn-bracket">]</span></a></p>
+</div>
+<section id="parameters-optional">
+<h2>Parameters <code class="docutils literal notranslate"><span class="pre">Optional</span></code><a class="headerlink" href="#parameters-optional" title="Link to this heading"></a></h2>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv42cs">
+<span id="_CPPv32cs"></span><span id="_CPPv22cs"></span><span id="cs__uint8_t"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cs</span></span></span><a class="headerlink" href="#_CPPv42cs" title="Link to this definition"></a><br /></dt>
+<dd><p>Refer to <a class="reference internal" href="#customcspin"><span class="std std-ref">Defining a custom Chip Select pin</span></a></p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv412spiinterface">
+<span id="_CPPv312spiinterface"></span><span id="_CPPv212spiinterface"></span><span id="spiinterface__SPIClassP"></span><span class="n"><span class="pre">SPIClass</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">spiinterface</span></span></span><a class="headerlink" href="#_CPPv412spiinterface" title="Link to this definition"></a><br /></dt>
+<dd><p>Refer to <a class="reference internal" href="#nondefaultspi"><span class="std std-ref">Using a non-default SPI interface</span></a></p>
+</dd></dl>
+
+</section>
+<section id="what-it-does">
+<h2>What it does<a class="headerlink" href="#what-it-does" title="Link to this heading"></a></h2>
+<section id="returns-nothing">
+<h3>Returns <code class="docutils literal notranslate"><span class="pre">Nothing</span></code><a class="headerlink" href="#returns-nothing" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>The constructor must be called before <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setup()</span></code>. The constructor can be any word of your choice. For example, the library can called by the example code below where <code class="docutils literal notranslate"><span class="pre">flash</span></code> can be replaced by a constructor of the user’s choice.</p></li>
+<li><p>The constructor is used to call a function from the SPIFlash library.</p></li>
+</ul>
+</section>
+</section>
+<section id="example-code">
+<h2>Example code:<a class="headerlink" href="#example-code" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SPIMemory.h&gt;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="n">SPIFlash</span><span class="w"> </span><span class="n">flash</span><span class="p">;</span><span class="w">   </span><span class="c1">//This is the constructor. This example uses &#39;flash&#39; as the constructor</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos"> 6</span><span class="w">  </span><span class="p">...</span>
+<span class="linenos"> 7</span><span class="w">  </span><span class="p">}</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">10</span><span class="w">  </span><span class="n">flash</span><span class="p">.</span><span class="n">readByte</span><span class="p">(...);</span><span class="w">  </span><span class="c1">//The constructor &#39;flash&#39; is used to call the function &#39;readByte()&#39; from the library</span>
+<span class="linenos">11</span><span class="w">  </span><span class="p">...</span>
+<span class="linenos">12</span><span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="related-errors-none">
+<h2>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Link to this heading"></a></h2>
+</section>
+<section id="advanced-use">
+<span id="advanceduseconstructor"></span><h2>Advanced Use<a class="headerlink" href="#advanced-use" title="Link to this heading"></a></h2>
+<section id="defining-a-custom-chip-select-pin">
+<span id="customcspin"></span><h3>Defining a custom Chip Select pin<a class="headerlink" href="#defining-a-custom-chip-select-pin" title="Link to this heading"></a></h3>
+<p>The library can also called by declaring the <code class="docutils literal notranslate"><span class="pre">cs</span></code> parameter in the constructor where <code class="docutils literal notranslate"><span class="pre">cs</span></code> is the uuser defined Chip Select pin for the flash module.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SPIMemory.h&gt;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="n">SPIFlash</span><span class="w"> </span><span class="nf">flash</span><span class="p">(</span><span class="mi">33</span><span class="p">);</span><span class="w">   </span><span class="c1">// The library uses the `pin 33` as the Chip Select pin instead of the default</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos"> 6</span><span class="w">  </span><span class="p">...</span>
+<span class="linenos"> 7</span><span class="p">}</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="kt">void</span><span class="w"> </span><span class="n">loop</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">10</span><span class="w">  </span><span class="p">...</span>
+<span class="linenos">11</span><span class="p">}</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+<section id="using-a-non-default-spi-interface">
+<span id="nondefaultspi"></span><h3>Using a non-default SPI interface <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>†<span class="fn-bracket">]</span></a><a class="headerlink" href="#using-a-non-default-spi-interface" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The library currently only supports using non-default SPI interfaces on the following architectures:</dt><dd><ul>
+<li><p>SAMD</p></li>
+<li><p>STM32</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>The csPin <strong>MUST</strong> be declared if using a non-default SPI interface.</p></li>
+<li><p>Only available if library &gt; v3.0.0</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SPIMemory.h&gt;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="n">SPIFlash</span><span class="w"> </span><span class="nf">flash</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">SPI1</span><span class="p">);</span><span class="w">  </span><span class="c1">// The library now uses the &#39;SPI1&#39; interface instead of the default &#39;SPI0&#39;.</span>
+<span class="linenos"> 4</span><span class="w">                            </span><span class="c1">// It also uses pin 33 instead of the default Chip Select pin</span>
+<span class="linenos"> 5</span><span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos"> 6</span><span class="w">  </span><span class="p">...</span>
+<span class="linenos"> 7</span><span class="p">}</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="kt">void</span><span class="w"> </span><span class="n">loop</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">10</span><span class="w">  </span><span class="p">...</span>
+<span class="linenos">11</span><span class="p">}</span>
+</pre></div>
+</div>
+<p class="rubric">Footnotes</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">*</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://www.learncpp.com/cpp-tutorial/85-constructors/">learncpp.com</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">†</a><span class="fn-bracket">]</span></span>
+<p>This is currently only supported on the SAMD and STM32 architectures.</p>
+</aside>
+</aside>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="libStructure.html" class="btn btn-neutral float-left" title="Library structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="libInstantiate.html" class="btn btn-neutral float-right" title="Library Instantiation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, Prajwal Bhattaram.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
