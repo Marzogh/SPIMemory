@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Single variable write functions &mdash; SPIMemory 0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Array write functions" href="writeArray.html" />
+    <link rel="prev" title="Data type-dependent write functions" href="writeDataDependent.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> SPIMemory
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About SPIFlash</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="readDataIndependent.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readDataDependent.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="readSingleVariable.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="readArray.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="writeDataIndependent.html">Data type-independent write function</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="writeDataDependent.html">Data type-dependent write functions</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Single variable write functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="writeArray.html">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code> <code class="docutils literal notranslate"><span class="pre">PREVWRITTEN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="writeAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://forum.arduino.cc/index.php?topic=324009">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIMemory/tree/master">Source Code</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SPIMemory</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API and Usage</a> &raquo;</li>
+        
+          <li><a href="writeFunc.html">Write functions</a> &raquo;</li>
+        
+          <li><a href="writeDataDependent.html">Data type-dependent write functions</a> &raquo;</li>
+        
+      <li>Single variable write functions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/pages/SPIFlash/writeSingleVariable.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="writeArray.html" class="btn btn-neutral float-right" title="Array write functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="writeDataDependent.html" class="btn btn-neutral" title="Data type-dependent write functions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="single-variable-write-functions">
+<h1>Single variable write functions<a class="headerlink" href="#single-variable-write-functions" title="Permalink to this headline">¶</a></h1>
+<p>These functions are designed to write a single variable - of a specific data type - to the flash memory. Each supported data type has a function specific to it - as listed below:</p>
+<dl class="function">
+<dt id="_CPPv39writeByte8uint32_t7uint8_tb">
+<span id="_CPPv29writeByte8uint32_t7uint8_tb"></span><span id="writeByte__uint32_t.uint8_t.b"></span>bool <code class="descname">writeByte</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, uint8_t <em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv39writeByte8uint32_t7uint8_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes an unsigned 8 bit integer - a <code class="docutils literal notranslate"><span class="pre">byte</span></code>- to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv39writeChar8uint32_t6int8_tb">
+<span id="_CPPv29writeChar8uint32_t6int8_tb"></span><span id="writeChar__uint32_t.int8_t.b"></span>bool <code class="descname">writeChar</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, int8_t <em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv39writeChar8uint32_t6int8_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes a signed 8 bit integer - a <code class="docutils literal notranslate"><span class="pre">char</span></code>- to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv310writeShort8uint32_t7int16_tb">
+<span id="_CPPv210writeShort8uint32_t7int16_tb"></span><span id="writeShort__uint32_t.int16_t.b"></span>bool <code class="descname">writeShort</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, int16_t <em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv310writeShort8uint32_t7int16_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes a signed 16 bit integer - a <code class="docutils literal notranslate"><span class="pre">short</span></code>- to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv39writeWord8uint32_t8uint16_tb">
+<span id="_CPPv29writeWord8uint32_t8uint16_tb"></span><span id="writeWord__uint32_t.uint16_t.b"></span>bool <code class="descname">writeWord</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, uint16_t <em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv39writeWord8uint32_t8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes an unsigned 16 bit integer - a <code class="docutils literal notranslate"><span class="pre">word</span></code>- to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv39writeLong8uint32_t7int32_tb">
+<span id="_CPPv29writeLong8uint32_t7int32_tb"></span><span id="writeLong__uint32_t.int32_t.b"></span>bool <code class="descname">writeLong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, int32_t <em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv39writeLong8uint32_t7int32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes a signed 32 bit integer - a <code class="docutils literal notranslate"><span class="pre">long</span></code>- to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv310writeULong8uint32_t8uint32_tb">
+<span id="_CPPv210writeULong8uint32_t8uint32_tb"></span><span id="writeULong__uint32_t.uint32_t.b"></span>bool <code class="descname">writeULong</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, uint32_t <em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv310writeULong8uint32_t8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes an unsigned 32 bit integer - an <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span></code>- to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv310writeFloat8uint32_tfb">
+<span id="_CPPv210writeFloat8uint32_tfb"></span><span id="writeFloat__uint32_t.float.b"></span>bool <code class="descname">writeFloat</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, float <em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv310writeFloat8uint32_tfb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes a <code class="docutils literal notranslate"><span class="pre">float</span></code> to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv38writeStr8uint32_tR6Stringb">
+<span id="_CPPv28writeStr8uint32_tR6Stringb"></span><span id="writeStr__uint32_t.StringR.b"></span>bool <code class="descname">writeStr</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, String &amp;<em>data</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv38writeStr8uint32_tR6Stringb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes a <code class="docutils literal notranslate"><span class="pre">String</span></code> to the address specified.</li>
+</ul>
+<div class="section" id="parameters-mandatory-optional">
+<h2>Parameters <code class="docutils literal notranslate"><span class="pre">Mandatory</span> <span class="pre">&amp;</span> <span class="pre">Optional</span></code><a class="headerlink" href="#parameters-mandatory-optional" title="Permalink to this headline">¶</a></h2>
+<dl class="var">
+<dt id="_CPPv35_addr">
+<span id="_CPPv25_addr"></span><span id="_addr__uint32_t"></span>uint32_t <code class="descname">_addr</code><br /></dt>
+<dd></dd></dl>
+
+<p>Address in memory where the data is to be written to. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+<dl class="var">
+<dt id="_CPPv34data">
+<span id="_CPPv24data"></span><span id="data__s"></span>size_t <code class="descname">data</code><br /></dt>
+<dd></dd></dl>
+
+<p>Data variable to write to the flash memory. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+<dl class="var">
+<dt id="_CPPv310errorCheck">
+<span id="_CPPv210errorCheck"></span><span id="errorCheck__b"></span>bool <code class="descname">errorCheck</code><br /></dt>
+<dd></dd></dl>
+
+<p>Refer to <a class="reference internal" href="writeAdvanced.html#noteonerrorcheck"><span class="std std-ref">Advanced use</span></a> <code class="docutils literal notranslate"><span class="pre">Optional</span></code></p>
+</div>
+<div class="section" id="what-they-do">
+<h2>What they do<a class="headerlink" href="#what-they-do" title="Permalink to this headline">¶</a></h2>
+<p>Write the data (of the datatype and size specified by the user) to the address provided</p>
+</div>
+<div class="section" id="returns-boolean">
+<h2>Returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#returns-boolean" title="Permalink to this headline">¶</a></h2>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">TRUE</span></code> if data written successfully, else returns <code class="docutils literal notranslate"><span class="pre">FALSE</span></code></p>
+</div>
+<div class="section" id="example-code">
+<h2>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">uint32_t</span> <span class="n">_address</span><span class="p">;</span>
+<span class="c1">// This data type should be changed depending on the type of data being write to the flash memory</span>
+<span class="n">String</span> <span class="n">dataOut</span> <span class="o">=</span> <span class="s">&quot;This is a test String!&quot;</span><span class="p">;</span>
+
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+  <span class="n">_address</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getAddress</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">dataIn</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Address = &quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">_address</span><span class="p">);</span>
+
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Data write &quot;</span><span class="p">);</span>
+  <span class="c1">// This function should be changed depending on the type of data being written to the flash memory</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">flash</span><span class="p">.</span><span class="n">writeStr</span><span class="p">(</span><span class="n">_address</span><span class="p">,</span> <span class="n">dataOut</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;successful&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;failed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="writeArray.html" class="btn btn-neutral float-right" title="Array write functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="writeDataDependent.html" class="btn btn-neutral" title="Data type-dependent write functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Prajwal Bhattaram.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

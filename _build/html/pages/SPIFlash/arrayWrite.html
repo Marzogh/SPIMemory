@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Array write functions &mdash; SPIMemory 0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" href="writeErrors.html" />
+    <link rel="prev" title="Single variable read functions" href="singleVariableWrite.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> SPIMemory
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">SPIMemory</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chipID.html">Chip ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readFunc.html">Read functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dataIndependentRead.html">Data type-independent read function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dataDependentRead.html">Data type-dependent read functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="singleVariableRead.html">Single variable read functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="arrayRead.html">Array read functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedRead.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="writeFunc.html">Write functions</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dataIndependentWrite.html">Data type-independent write function</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="dataDependentWrite.html">Data type-dependent write functions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="singleVariableWrite.html">Single variable read functions</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Array write functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="writeErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="advancedWrite.html">Advanced use <code class="docutils literal notranslate"><span class="pre">errorCheck</span></code> <code class="docutils literal notranslate"><span class="pre">HIGHSPEED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SPIMemory</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API and Usage</a> &raquo;</li>
+        
+          <li><a href="writeFunc.html">Write functions</a> &raquo;</li>
+        
+          <li><a href="dataDependentWrite.html">Data type-dependent write functions</a> &raquo;</li>
+        
+      <li>Array write functions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/pages/SPIFlash/arrayWrite.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="writeErrors.html" class="btn btn-neutral float-right" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="singleVariableWrite.html" class="btn btn-neutral" title="Single variable read functions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="array-write-functions">
+<h1>Array write functions<a class="headerlink" href="#array-write-functions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="_CPPv314writeByteArray8uint32_tP7uint8_t6size_tb">
+<span id="_CPPv214writeByteArray8uint32_tP7uint8_t6size_tb"></span><span id="writeByteArray__uint32_t.uint8_tP.s.b"></span>bool <code class="descname">writeByteArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, uint8_t *<em>data_buffer</em>, size_t <em>bufferSize</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv314writeByteArray8uint32_tP7uint8_t6size_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes an <code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">bytes</span></code> to the address specified.</li>
+</ul>
+<dl class="function">
+<dt id="_CPPv314writeCharArray8uint32_tPc6size_tb">
+<span id="_CPPv214writeCharArray8uint32_tPc6size_tb"></span><span id="writeCharArray__uint32_t.cP.s.b"></span>bool <code class="descname">writeCharArray</code><span class="sig-paren">(</span>uint32_t <em>_addr</em>, char *<em>data_buffer</em>, size_t <em>bufferSize</em>, bool <em>errorCheck</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv314writeCharArray8uint32_tPc6size_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<ul class="simple">
+<li>Writes an <code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">chars</span></code> to the address specified.</li>
+</ul>
+<div class="section" id="parameters-mandatory-optional">
+<h2>Parameters <code class="docutils literal notranslate"><span class="pre">Mandatory</span> <span class="pre">&amp;</span> <span class="pre">Optional</span></code><a class="headerlink" href="#parameters-mandatory-optional" title="Permalink to this headline">¶</a></h2>
+<dl class="var">
+<dt id="_CPPv35_addr">
+<span id="_CPPv25_addr"></span><span id="_addr__uint32_t"></span>uint32_t <code class="descname">_addr</code><br /></dt>
+<dd></dd></dl>
+
+<p>Address in memory where the data is to be written to. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+<dl class="var">
+<dt id="_CPPv311data_buffer">
+<span id="_CPPv211data_buffer"></span><span id="data_buffer__uint8_tP"></span>uint8_t *<code class="descname">data_buffer</code><br /></dt>
+<dd></dd></dl>
+
+<p>Pointer to data buffer to write the array from. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+<dl class="var">
+<dt id="_CPPv310bufferSize">
+<span id="_CPPv210bufferSize"></span><span id="bufferSize__s"></span>size_t <code class="descname">bufferSize</code><a class="headerlink" href="#_CPPv310bufferSize" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>Size of the array to be written out to flash memory. <code class="docutils literal notranslate"><span class="pre">Mandatory</span></code></p>
+<dl class="var">
+<dt id="_CPPv310errorCheck">
+<span id="_CPPv210errorCheck"></span><span id="errorCheck__b"></span>bool <code class="descname">errorCheck</code><a class="headerlink" href="#_CPPv310errorCheck" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>Refer to <a class="reference internal" href="advancedWrite.html#noteonerrorcheck"><span class="std std-ref">Advanced use</span></a> <code class="docutils literal notranslate"><span class="pre">Optional</span></code></p>
+</div>
+<div class="section" id="what-they-do">
+<h2>What they do<a class="headerlink" href="#what-they-do" title="Permalink to this headline">¶</a></h2>
+<p>Write the array of values of the datatype and size specified by the user, to the address provided</p>
+</div>
+<div class="section" id="returns-boolean">
+<h2>Returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#returns-boolean" title="Permalink to this headline">¶</a></h2>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">TRUE</span></code> if data written successfully, else returns <code class="docutils literal notranslate"><span class="pre">FALSE</span></code></p>
+</div>
+<div class="section" id="example-code">
+<h2>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="cp">#define _bufferSize 8</span>
+
+<span class="kt">uint8_t</span> <span class="n">dataOut</span><span class="p">[</span><span class="n">_bufferSize</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">};</span>
+<span class="c1">// This data type should be changed depending on the type of data being written to the flash memory</span>
+<span class="kt">uint32_t</span> <span class="n">_address</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">flash</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+  <span class="n">_address</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getAddress</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">dataIn</span><span class="p">));</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Address = &quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">_address</span><span class="p">);</span>
+
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Data write: &quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">flash</span><span class="p">.</span><span class="n">writeByteArray</span><span class="p">(</span><span class="n">_address</span><span class="p">,</span> <span class="n">dataOut</span><span class="p">,</span> <span class="n">_bufferSize</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// This function should be changed depending on the type of data being written to the flash memory</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span> <span class="p">(</span><span class="s">&quot;Successful&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Failed&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="writeErrors.html" class="btn btn-neutral float-right" title="Related Errors CHIPISPOWEREDDOWN CALLBEGIN OUTOFBOUNDS CHIPBUSY" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="singleVariableWrite.html" class="btn btn-neutral" title="Single variable read functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Prajwal Bhattaram.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

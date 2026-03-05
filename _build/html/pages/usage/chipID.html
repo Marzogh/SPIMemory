@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Chip ID &mdash; SPIMemory 0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Contribute" href="../contribute.html" />
+    <link rel="prev" title="Library Instantiation" href="libInstantiate.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> SPIMemory
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">SPIMemory</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/about.html">About SPIMemory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/compatibility.html">Compatibility</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SPIFlash</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API and Usage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="libStructure.html">Library structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constructor.html">Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libInstantiate.html">Library Instantiation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Chip ID</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Marzogh/SPIFlash/tree/master">Source Code</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SPIMemory</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API and Usage</a> &raquo;</li>
+        
+      <li>Chip ID</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/pages/usage/chipID.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="libInstantiate.html" class="btn btn-neutral" title="Library Instantiation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="chip-id">
+<h1>Chip ID<a class="headerlink" href="#chip-id" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="sfdp-compatibility-dependent">
+<h2><code class="docutils literal notranslate"><span class="pre">SFDP</span> <span class="pre">compatibility</span> <span class="pre">dependent</span></code><a class="headerlink" href="#sfdp-compatibility-dependent" title="Permalink to this headline">¶</a></h2>
+<p>A number of functions are available to the library user to identify chip in use.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The library is designed to identify the flash memory chip in use when the <code class="docutils literal notranslate"><span class="pre">begin();</span></code> function is called (using the internal function <code class="docutils literal notranslate"><span class="pre">_chipID();</span></code>). This happens in two ways:</p>
+<ul class="last simple">
+<li>If the flash memory supports the SFDP standard, then, the SFDP tables are used to identify the chip. The information from the tables is usually enough to let the library execute all functions without impediment, so any Chip ID errors thrown (if any) can be and, are ignored.</li>
+<li>If the flash memory does not support the SFDP standard, three situations can arise:<ul>
+<li>If the chip is officially supported by the library, its can be identified by internal methods.</li>
+<li>If the chip is not officially supported, then the user has to declare the size as an argument when calling the <code class="docutils literal notranslate"><span class="pre">begin();</span></code> function. This information is usually enough to let the library execute all functions without impediment, so any Chip ID errors thrown (if any) can be and, are ignored.</li>
+<li>If the chip canot be ID’d and the user does not declare a size in <code class="docutils literal notranslate"><span class="pre">begin();</span></code>, the library throws an error - <code class="docutils literal notranslate"><span class="pre">UNKNOWNCHIP</span></code> as soon as the function <code class="docutils literal notranslate"><span class="pre">begin();</span></code> is called. (Refer to  <a class="reference internal" href="errorReporting.html#errorreporting"><span class="std std-ref">Diagnostics &amp; Error reporting</span></a>)</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="getmanid">
+<h2>getManID()<a class="headerlink" href="#getmanid" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="_CPPv3N8SPIFlash8getManIDEv">
+<span id="_CPPv2N8SPIFlash8getManIDEv"></span><span id="SPIFlash::getManID__void"></span>uint16_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getManID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash8getManIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="parameters-none">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#parameters-none" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="what-it-does">
+<h3>What it does<a class="headerlink" href="#what-it-does" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Returns the Manufacturer ID as a 16 bit unsigned integer</li>
+</ul>
+</div>
+<div class="section" id="example-code">
+<h3>Example code:<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">manID</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getManID</span><span class="p">();</span>      <span class="c1">// Function is used to get the manufacturer ID and store it as</span>
+                                          <span class="c1">// a 16 bit unsigned integer</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Chip Manufacturer ID: 0x&quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">manID</span><span class="p">,</span> <span class="n">HEX</span><span class="p">);</span>                  <span class="c1">// The manufacturer ID is printed as a Hexadecimal number</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="related-errors-none">
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#related-errors-none" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="advanced-use-n-a">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#advanced-use-n-a" title="Permalink to this headline">¶</a></h3>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="getjedecid">
+<span id="id1"></span><h2>getJEDECID()<a class="headerlink" href="#getjedecid" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="_CPPv3N8SPIFlash10getJEDECIDEv">
+<span id="_CPPv2N8SPIFlash10getJEDECIDEv"></span><span id="SPIFlash::getJEDECID__void"></span>uint32_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getJEDECID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash10getJEDECIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="id2">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id3">
+<h3>What it does<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Returns the JEDEC ID as a 32 bit unsigned integer</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>Example code:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">JEDEC</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getJEDECID</span><span class="p">();</span>      <span class="c1">// Function is used to get the JEDEC ID and store it as</span>
+                                            <span class="c1">// a 32 bit unsigned integer</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;JEDEC ID: 0x&quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">JEDEC</span><span class="p">,</span> <span class="n">HEX</span><span class="p">);</span>                  <span class="c1">// The JEDEC ID is printed as a Hexadecimal number</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="related-errors-unknownchip">
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">UNKNOWNCHIP</span></code><a class="headerlink" href="#related-errors-unknownchip" title="Permalink to this headline">¶</a></h3>
+<p>The way this function executes depends on whether the flash memory chip complies with the SFDP standard.</p>
+<ul class="simple">
+<li>If the chip supports SFDP (immaterial of official support), then, the library will work as it should - immaterial of whether or not it can read the JEDEC ID (even if it throws the error <code class="docutils literal notranslate"><span class="pre">UNKNOWNCHIP</span></code>).</li>
+<li>If the chip is does not support SFDP and the chip is unable to read the JEDEC ID (internally in the <code class="docutils literal notranslate"><span class="pre">begin();</span></code> function), then it throws the error <code class="docutils literal notranslate"><span class="pre">UNKNOWNCHIP</span></code></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="getuniqueid-memory-ic-dependent">
+<h2>getUniqueID()  <code class="docutils literal notranslate"><span class="pre">Memory</span> <span class="pre">IC</span> <span class="pre">dependent</span></code><a class="headerlink" href="#getuniqueid-memory-ic-dependent" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="_CPPv3N8SPIFlash11getUniqueIDEv">
+<span id="_CPPv2N8SPIFlash11getUniqueIDEv"></span><span id="SPIFlash::getUniqueID__void"></span>uint64_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getUniqueID</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash11getUniqueIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="id6">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id7">
+<h3>What it does<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Returns the flash memory chip’s unique ID as a 64 bit unsigned integer</li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h3>Example code:<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">uint64_t</span> <span class="n">uniqueID</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getUniqueID</span><span class="p">();</span>      <span class="c1">// Function is used to get the unique ID and store it as</span>
+                                                <span class="c1">// a 64 bit unsigned integer</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Unique ID: 0x&quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">uniqueID</span><span class="p">,</span> <span class="n">HEX</span><span class="p">);</span>                  <span class="c1">// The unique ID is printed as a Hexadecimal number</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id10">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="getcapacity">
+<span id="id11"></span><h2>getCapacity()<a class="headerlink" href="#getcapacity" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="_CPPv3N8SPIFlash11getCapacityEv">
+<span id="_CPPv2N8SPIFlash11getCapacityEv"></span><span id="SPIFlash::getCapacity__void"></span>uint32_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getCapacity</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash11getCapacityEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="id12">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id13">
+<h3>What it does<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Returns the flash memory chip’s capacity as a 32 bit unsigned integer</li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h3>Example code:<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">cap</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getCapacity</span><span class="p">();</span>      <span class="c1">// Function is used to get the unique ID and store it as</span>
+                                                <span class="c1">// a 32 bit unsigned integer</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Capacity: &quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">cap</span><span class="p">);</span>               <span class="c1">// The unique ID is printed as a decimal number - in bytes</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="related-errors-unknowncap">
+<h3>Related Errors  <code class="docutils literal notranslate"><span class="pre">UNKNOWNCAP</span></code><a class="headerlink" href="#related-errors-unknowncap" title="Permalink to this headline">¶</a></h3>
+<p>If the chip’s capacity cannot be determined, the library throws an error - <code class="docutils literal notranslate"><span class="pre">UNKNOWNCAP</span></code> as soon as the function <code class="docutils literal notranslate"><span class="pre">begin();</span></code> is called. (Refer to  <a class="reference internal" href="errorReporting.html#errorreporting"><span class="std std-ref">Diagnostics &amp; Error reporting</span></a>)</p>
+</div>
+<div class="section" id="id15">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The way this function executes depends on whether the flash memory chip complies with the SFDP standard.</p>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>The chip’s capacity is determined in one of three ways:</dt>
+<dd><ul class="first last">
+<li>If the chip supports SFDP (immaterial of official support), then, the chip’s capacity is read from the SFDP tables.</li>
+<li>If the chip is officially supported by the library, its capacity is already known.</li>
+<li>If the chip is not officially supported, then the user has to declare the size as an argument when calling the <code class="docutils literal notranslate"><span class="pre">begin()</span></code> function.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="getmaxpage">
+<h2>getMaxPage()<a class="headerlink" href="#getmaxpage" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="_CPPv3N8SPIFlash10getMaxPageEv">
+<span id="_CPPv2N8SPIFlash10getMaxPageEv"></span><span id="SPIFlash::getMaxPage__void"></span>uint32_t <a class="reference internal" href="constructor.html#_CPPv38SPIFlash" title="SPIFlash">SPIFlash</a><code class="descclassname">::</code><code class="descname">getMaxPage</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N8SPIFlash10getMaxPageEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<div class="section" id="id16">
+<h3>Parameters <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id17">
+<h3>What it does<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Returns the number of physical <cite>pages</cite> in the flash memory as a 32 bit unsigned integer</li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h3>Example code:<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;SPIMemory.h&gt;</span><span class="cp"></span>
+
+<span class="n">SPIFlash</span> <span class="n">flash</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">maxPage</span> <span class="o">=</span> <span class="n">flash</span><span class="p">.</span><span class="n">getMaxPage</span><span class="p">();</span>  <span class="c1">// Function is used to get the number of pages and store it as</span>
+                                          <span class="c1">// a 32 bit unsigned integer</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Maximum pages: &quot;</span><span class="p">);</span>
+  <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">maxPage</span><span class="p">);</span>                  <span class="c1">// The number of pages is printed</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id19">
+<h3>Related Errors <code class="docutils literal notranslate"><span class="pre">None</span></code><a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="id20">
+<h3>Advanced use <code class="docutils literal notranslate"><span class="pre">N/A</span></code><a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The way this function executes depends on whether the flash memory chip complies with the SFDP standard.</p>
+<ul class="last simple">
+<li>If the chip supports SFDP, then, the chip’s capacity and page size (in bytes) are read from the SFDP tables.</li>
+<li>If the chip does not support SFDP, then the chip’s capacity is determined in one of two ways (refer to the note in <a class="reference internal" href="#getcapacity"><span class="std std-ref">getCapacity()</span></a>). The pagesize uses the default (and most common) value of 256 bytes per page.</li>
+</ul>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../contribute.html" class="btn btn-neutral float-right" title="Contribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="libInstantiate.html" class="btn btn-neutral" title="Library Instantiation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Prajwal Bhattaram.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>
