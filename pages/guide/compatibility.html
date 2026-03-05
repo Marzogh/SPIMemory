@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Read functions &mdash; SPIMemory 3.4.0 documentation</title>
+  <title>Compatibility Matrix &mdash; SPIMemory 3.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
@@ -18,7 +18,9 @@
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="API Reference" href="../api/index.html" />
+    <link rel="prev" title="Build Configuration" href="configuration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,11 +43,11 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../guide/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guide/concepts.html">Core Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guide/configuration.html">Build Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guide/compatibility.html">Compatibility Matrix</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Core Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Build Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Compatibility Matrix</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -78,36 +80,54 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Read functions</li>
+      <li class="breadcrumb-item active">Compatibility Matrix</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/pages/SPIFlash/readFunc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/guide/compatibility.rst.txt" rel="nofollow"> View page source</a>
       </li>
-  </ul>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Build Configuration" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="read-functions">
-<h1>Read functions<a class="headerlink" href="#read-functions" title="Link to this heading"></a></h1>
-<p>These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types and can be used as required.</p>
-<p>There are two basic types of read functions - one that is independent of data type being read, the other is dependent on the data type. Please refer to the links below for further details.</p>
-<hr class="docutils" />
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">More about Read functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="readDataIndependent.html">Data type-independent read function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readDataDependent.html">Data type-dependent read functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+  <section id="compatibility-matrix">
+<h1>Compatibility Matrix<a class="headerlink" href="#compatibility-matrix" title="Link to this heading"></a></h1>
+<section id="microcontrollers">
+<h2>Microcontrollers<a class="headerlink" href="#microcontrollers" title="Link to this heading"></a></h2>
+<p>See the project README for validated board/chip combinations. This page should become the canonical, regularly updated compatibility source.</p>
+</section>
+<section id="recommended-table-fields">
+<h2>Recommended Table Fields<a class="headerlink" href="#recommended-table-fields" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>MCU / board</p></li>
+<li><p>Arduino core version</p></li>
+<li><p>SPI bus mode used (default/alternate)</p></li>
+<li><p>Flash chips validated</p></li>
+<li><p>FRAM chips validated</p></li>
+<li><p>Known caveats</p></li>
 </ul>
-</div>
+</section>
+<section id="versioning-policy">
+<h2>Versioning Policy<a class="headerlink" href="#versioning-policy" title="Link to this heading"></a></h2>
+<p>When adding support, document:</p>
+<ul class="simple">
+<li><p>exact board and core version tested</p></li>
+<li><p>chip part number and datasheet link</p></li>
+<li><p>any required compile-time flags</p></li>
+</ul>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Build Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

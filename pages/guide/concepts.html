@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Read functions &mdash; SPIMemory 3.4.0 documentation</title>
+  <title>Core Concepts &mdash; SPIMemory 3.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
@@ -18,7 +18,9 @@
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Build Configuration" href="configuration.html" />
+    <link rel="prev" title="Quick Start" href="quickstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,11 +43,11 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../guide/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guide/concepts.html">Core Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guide/configuration.html">Build Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guide/compatibility.html">Compatibility Matrix</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Matrix</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -78,36 +80,56 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Read functions</li>
+      <li class="breadcrumb-item active">Core Concepts</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/pages/SPIFlash/readFunc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/guide/concepts.rst.txt" rel="nofollow"> View page source</a>
       </li>
-  </ul>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Build Configuration" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="read-functions">
-<h1>Read functions<a class="headerlink" href="#read-functions" title="Link to this heading"></a></h1>
-<p>These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types and can be used as required.</p>
-<p>There are two basic types of read functions - one that is independent of data type being read, the other is dependent on the data type. Please refer to the links below for further details.</p>
-<hr class="docutils" />
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">More about Read functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="readDataIndependent.html">Data type-independent read function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readDataDependent.html">Data type-dependent read functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+  <section id="core-concepts">
+<h1>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading"></a></h1>
+<section id="addressing-model">
+<h2>Addressing Model<a class="headerlink" href="#addressing-model" title="Link to this heading"></a></h2>
+<p>All I/O APIs use 32-bit linear addresses. Internally, page/sector/block behavior is handled by the library.</p>
+</section>
+<section id="erase-before-write-flash">
+<h2>Erase Before Write (Flash)<a class="headerlink" href="#erase-before-write-flash" title="Link to this heading"></a></h2>
+<p>Flash writes require erased bytes (typically <code class="docutils literal notranslate"><span class="pre">0xFF</span></code>). Use <code class="docutils literal notranslate"><span class="pre">eraseSector</span></code>, <code class="docutils literal notranslate"><span class="pre">eraseBlock32K</span></code>, <code class="docutils literal notranslate"><span class="pre">eraseBlock64K</span></code>, or <code class="docutils literal notranslate"><span class="pre">eraseSection</span></code> before writing.</p>
+</section>
+<section id="overflow-behavior">
+<h2>Overflow Behavior<a class="headerlink" href="#overflow-behavior" title="Link to this heading"></a></h2>
+<p>By default, address overflow wraps to <code class="docutils literal notranslate"><span class="pre">0x00</span></code>. This can be disabled with <code class="docutils literal notranslate"><span class="pre">DISABLEOVERFLOW</span></code>.</p>
+</section>
+<section id="fast-read-and-error-check">
+<h2>Fast Read and Error Check<a class="headerlink" href="#fast-read-and-error-check" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Read functions can use <code class="docutils literal notranslate"><span class="pre">fastRead=true</span></code></p></li>
+<li><p>Write functions validate written data by default (can be disabled for speed)</p></li>
 </ul>
-</div>
+</section>
+<section id="flash-vs-fram">
+<h2>Flash vs FRAM<a class="headerlink" href="#flash-vs-fram" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Flash: erase required, typically larger capacity</p></li>
+<li><p>FRAM: byte-level writes without erase, lower write latency</p></li>
+</ul>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Build Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

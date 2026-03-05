@@ -1,0 +1,23 @@
+Build Configuration
+===================
+
+Compile-Time Flags (in ``SPIMemory.h``)
+---------------------------------------
+
+- ``USES_SFDP``: enable SFDP discovery for unsupported flash chips
+- ``RUNDIAGNOSTIC``: enable verbose diagnostic output
+- ``HIGHSPEED``: skip pre-write blank checks for speed
+- ``DISABLEOVERFLOW``: disable address rollover
+- ``ENABLEZERODMA``: enable experimental SAMD DMA path
+
+Runtime Configuration
+---------------------
+
+- ``begin(chipSize)``: optional explicit chip size
+- ``setClock(clockSpeed)``: set SPI clock after construction
+- Alternate SPI bus constructors are supported on selected platforms
+
+Platform Notes
+--------------
+
+Use board-specific constructor variants when default SPI pins/bus are not desired (for example ESP32 custom pins or alternate SPI instances).

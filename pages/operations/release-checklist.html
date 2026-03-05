@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Read functions &mdash; SPIMemory 3.4.0 documentation</title>
+  <title>Release Checklist &mdash; SPIMemory 3.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
@@ -18,7 +18,9 @@
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Index" href="../../genindex.html" />
+    <link rel="prev" title="Maintainer Guide" href="maintainer.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,10 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../api/errors.html">Errors and Diagnostics</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Operations</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../operations/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../operations/maintainer.html">Maintainer Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../operations/release-checklist.html">Release Checklist</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintainer.html">Maintainer Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Checklist</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
@@ -78,36 +80,54 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Read functions</li>
+      <li class="breadcrumb-item active">Release Checklist</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/pages/SPIFlash/readFunc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/pages/operations/release-checklist.rst.txt" rel="nofollow"> View page source</a>
       </li>
-  </ul>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="maintainer.html" class="btn btn-neutral float-left" title="Maintainer Guide" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../genindex.html" class="btn btn-neutral float-right" title="Index" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="read-functions">
-<h1>Read functions<a class="headerlink" href="#read-functions" title="Link to this heading"></a></h1>
-<p>These functions enable the user to read data that is stored on the flash memory chip. The various functions listed return different data types and can be used as required.</p>
-<p>There are two basic types of read functions - one that is independent of data type being read, the other is dependent on the data type. Please refer to the links below for further details.</p>
-<hr class="docutils" />
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">More about Read functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="readDataIndependent.html">Data type-independent read function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readDataDependent.html">Data type-dependent read functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readErrors.html">Related Errors <code class="docutils literal notranslate"><span class="pre">CHIPISPOWEREDDOWN</span></code> <code class="docutils literal notranslate"><span class="pre">CALLBEGIN</span></code> <code class="docutils literal notranslate"><span class="pre">OUTOFBOUNDS</span></code> <code class="docutils literal notranslate"><span class="pre">CHIPBUSY</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="readAdvanced.html">Advanced use <code class="docutils literal notranslate"><span class="pre">fastRead</span></code></a></li>
+  <section id="release-checklist">
+<h1>Release Checklist<a class="headerlink" href="#release-checklist" title="Link to this heading"></a></h1>
+<section id="docs">
+<h2>Docs<a class="headerlink" href="#docs" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Update compatibility matrix</p></li>
+<li><p>Update API docs for new/changed methods</p></li>
+<li><p>Rebuild docs and verify links</p></li>
 </ul>
-</div>
+</section>
+<section id="validation">
+<h2>Validation<a class="headerlink" href="#validation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Compile examples on representative boards</p></li>
+<li><p>Validate read/write/erase on at least one flash and one FRAM device</p></li>
+<li><p>Verify diagnostics still map to intended errors</p></li>
+</ul>
+</section>
+<section id="publishing">
+<h2>Publishing<a class="headerlink" href="#publishing" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Build Sphinx HTML</p></li>
+<li><p>Publish output to <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch</p></li>
+<li><p>Confirm site availability after deploy</p></li>
+</ul>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="maintainer.html" class="btn btn-neutral float-left" title="Maintainer Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../genindex.html" class="btn btn-neutral float-right" title="Index" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

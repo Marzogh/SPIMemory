@@ -1,0 +1,26 @@
+Maintainer Guide
+================
+
+Critical Code Paths
+-------------------
+
+- ``SPIFlash::_prep`` and ``_addressCheck``
+- ``SPIFlash::_chipID`` and SFDP parsing path
+- SPI transaction start/end behavior by architecture
+- FRAM chip identification and capacity derivation
+
+When Adding Chip Support
+------------------------
+
+- Add identification logic
+- Add erase/program timing or SFDP extraction
+- Validate write/read/erase/power flows
+- Add example coverage and docs updates
+
+Regression Focus
+----------------
+
+- Page-boundary writes
+- Address overflow behavior
+- Suspend/resume semantics
+- Power down/up semantics

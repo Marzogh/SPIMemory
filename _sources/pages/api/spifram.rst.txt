@@ -1,0 +1,22 @@
+SPIFram API
+===========
+
+Status
+------
+
+FRAM support exists but should be documented with explicit maturity notes and tested-device scope.
+
+High-Level Groups
+-----------------
+
+- Initialization and identification
+- Primitive and typed read/write operations
+- Section/chip clear operations
+- Power control
+
+Documentation To Add
+--------------------
+
+- Confirmed FRAM devices
+- Differences from flash semantics
+- Any known limitations vs ``SPIFlash`` behavior

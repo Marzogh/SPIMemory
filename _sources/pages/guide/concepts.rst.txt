@@ -1,0 +1,29 @@
+Core Concepts
+=============
+
+Addressing Model
+----------------
+
+All I/O APIs use 32-bit linear addresses. Internally, page/sector/block behavior is handled by the library.
+
+Erase Before Write (Flash)
+--------------------------
+
+Flash writes require erased bytes (typically ``0xFF``). Use ``eraseSector``, ``eraseBlock32K``, ``eraseBlock64K``, or ``eraseSection`` before writing.
+
+Overflow Behavior
+-----------------
+
+By default, address overflow wraps to ``0x00``. This can be disabled with ``DISABLEOVERFLOW``.
+
+Fast Read and Error Check
+-------------------------
+
+- Read functions can use ``fastRead=true``
+- Write functions validate written data by default (can be disabled for speed)
+
+Flash vs FRAM
+-------------
+
+- Flash: erase required, typically larger capacity
+- FRAM: byte-level writes without erase, lower write latency

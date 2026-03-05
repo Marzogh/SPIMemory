@@ -1,0 +1,25 @@
+SPIFlash API
+============
+
+High-Level Groups
+-----------------
+
+- Initialization: ``begin``, ``setClock``, ``sfdpPresent``
+- Introspection: ``getJEDECID``, ``getUniqueID``, ``getCapacity``
+- Addressing: ``getAddress``, ``sizeofStr``
+- Read/write primitives and arrays
+- Typed and generic I/O: ``writeAnything/readAnything``
+- Erase operations
+- Power and suspend/resume operations
+
+Behavioral Notes
+----------------
+
+- Writes are page-aware and can span page boundaries
+- Optional error-check verification is enabled by default
+- Erase timing may be SFDP-derived or library defaults
+
+Detailed API
+------------
+
+Legacy detailed API pages remain available under the legacy section and can be migrated here incrementally.

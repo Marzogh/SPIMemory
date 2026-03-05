@@ -1,0 +1,45 @@
+Quick Start
+===========
+
+Goal
+----
+
+Get a flash chip initialized and perform one write/read cycle.
+
+Checklist
+---------
+
+- Wire SPI correctly (SCK, MISO, MOSI, CS, VCC, GND)
+- Create a ``SPIFlash`` instance with your CS pin
+- Call ``begin()`` in ``setup()``
+- Erase target region before first write
+
+Minimal Sketch
+--------------
+
+.. code-block:: cpp
+
+   #include <SPIMemory.h>
+
+   SPIFlash flash(10);
+
+   void setup() {
+     Serial.begin(115200);
+     flash.begin();
+
+     const uint32_t addr = 0;
+     flash.eraseSector(addr);
+     flash.writeULong(addr, 0xDEADBEEF);
+
+     uint32_t out = flash.readULong(addr);
+     Serial.println(out, HEX);
+   }
+
+   void loop() {}
+
+Next Steps
+----------
+
+- Use ``getAddress()`` for automatic allocation
+- Move to typed APIs and ``writeAnything/readAnything`` for structs
+- Enable diagnostics when hardware communication fails

@@ -1,0 +1,26 @@
+Compatibility Matrix
+====================
+
+Microcontrollers
+----------------
+
+See the project README for validated board/chip combinations. This page should become the canonical, regularly updated compatibility source.
+
+Recommended Table Fields
+------------------------
+
+- MCU / board
+- Arduino core version
+- SPI bus mode used (default/alternate)
+- Flash chips validated
+- FRAM chips validated
+- Known caveats
+
+Versioning Policy
+-----------------
+
+When adding support, document:
+
+- exact board and core version tested
+- chip part number and datasheet link
+- any required compile-time flags

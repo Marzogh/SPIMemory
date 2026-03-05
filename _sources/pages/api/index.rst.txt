@@ -1,0 +1,23 @@
+API Reference
+=============
+
+This section is the authoritative API surface summary.
+
+Reference Pages
+---------------
+
+- ``SPIFlash`` API
+- ``SPIFram`` API
+- Diagnostic and error behavior
+
+Documentation Standard
+----------------------
+
+Each function entry should include:
+
+- Purpose
+- Signature
+- Preconditions
+- Return value semantics
+- Side effects
+- Error codes
