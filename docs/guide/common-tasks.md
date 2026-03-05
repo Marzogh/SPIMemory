@@ -1,5 +1,7 @@
 # Common Tasks (Beginner Friendly)
 
+If this is your first run on real hardware, start with [First Hour Setup](first-hour.md), then use [Example Sketches Guide](example-sketches.md) when validating behavior.
+
 ## Save one number and read it back
 
 ```cpp
@@ -47,6 +49,7 @@ flash.readByteArray(addr, rx, sizeof(rx));
 2. Ensure `begin()` is called in `setup()`.
 3. Print `getJEDECID()` and `error(VERBOSE)`.
 4. Run `FlashDiagnostics` example sketch.
+5. Compare results against [Example Sketches Guide](example-sketches.md).
 
 ## Improve speed safely
 

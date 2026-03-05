@@ -14,7 +14,9 @@ nav:
   - Home: index.md
   - Getting Started:
       - Quick Start: guide/quickstart.md
+      - First Hour Setup: guide/first-hour.md
       - Common Tasks: guide/common-tasks.md
+      - Example Sketches Guide: guide/example-sketches.md
       - Core Concepts: guide/concepts.md
       - Build Configuration: guide/configuration.md
       - Compatibility Matrix: guide/compatibility.md

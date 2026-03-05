@@ -4,6 +4,8 @@
 
 If you are new to Arduino external memory chips, start here.
 
+For a step-by-step first session, use [First Hour Setup](first-hour.md).
+
 ## 1. Install the library
 
 ### Arduino Library Manager
@@ -70,8 +72,11 @@ Recommended beginner order:
 3. `examples/getAddressEx/getAddressEx.ino`
 4. `examples/Struct_writer/Struct_writer.ino`
 
+Use [Example Sketches Guide](example-sketches.md) for a full breakdown of what each sketch tests, what success looks like, and how to use failures for troubleshooting.
+
 ## 5. If it fails
 
 - Call `flash.error(VERBOSE)`.
 - Check [Errors and Diagnostics](../api/errors.md).
 - Run diagnostics example and capture output.
+- Follow the troubleshooting workflow in [Example Sketches Guide](example-sketches.md).
