@@ -69,12 +69,32 @@
 //#define ZERO_SPISERCOM SERCOM4                                      //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-  #include <Arduino.h>
-  #include <SPI.h>
-  #include "defines.h"
-  #include "SPIFlash.h"
-  #include "SPIFram.h"
-  #include "diagnostics.h"
+#ifndef ARCH_STM32
+  #if defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(__STM32F1__) || defined(STM32F1) || defined(STM32F3) || defined(STM32F4) || defined(STM32F0xx)
+    #define ARCH_STM32
+  #endif
+#endif
+#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(ARCH_STM32) || defined(ESP32) || defined(NRF52)
+// RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
+  #define _delay_us(us) delayMicroseconds(us)
+#else
+  #include <util/delay.h>
+#endif
+
+#define SPIFLASH_LIBVER 3
+#define SPIFLASH_LIBSUBVER 4
+#define SPIFLASH_REVVER 0
+
+#define SPIFRAM_LIBVER 0
+#define SPIFRAM_LIBSUBVER 0
+#define SPIFRAM_REVVER 1
+
+#include <Arduino.h>
+#include <SPI.h>
+#include "defines.h"
+#include "SPIFlash.h"
+#include "SPIFram.h"
+#include "diagnostics.h"
 
 #if defined (ARDUINO_ARCH_SAM)
   #include <malloc.h>
@@ -102,25 +122,6 @@
   #endif
 #endif
 
-#ifndef ARCH_STM32
-  #if defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_STM32L0) || defined(__STM32F1__) || defined(STM32F1) || defined(STM32F3) || defined(STM32F4) || defined(STM32F0xx)
-    #define ARCH_STM32
-  #endif
-#endif
-#if defined (ARDUINO_ARCH_SAM) || defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_ESP8266) || defined (SIMBLEE) || defined (ARDUINO_ARCH_ESP32) || defined (BOARD_RTL8195A) || defined(ARCH_STM32) || defined(ESP32) || defined(NRF52)
-// RTL8195A included - @boseji <salearj@hotmail.com> 02.03.17
-  #define _delay_us(us) delayMicroseconds(us)
-#else
-  #include <util/delay.h>
-#endif
-
-#define SPIFLASH_LIBVER 3
-#define SPIFLASH_LIBSUBVER 4
-#define SPIFLASH_REVVER 0
-
-#define SPIFRAM_LIBVER 0
-#define SPIFRAM_LIBSUBVER 0
-#define SPIFRAM_REVVER 1
 
 class SPIMemory {
 public:

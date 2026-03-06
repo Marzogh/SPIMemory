@@ -34,6 +34,7 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 | ATSAMD51J19 (ARM Cortex M4) | Adafruit Metro M4 | - |
 | STM32F091RCT6 | Nucleo-F091RC | |
 | STM32L0 | Nucleo-L031K6 | |
+| STM32F4 | STM32F407VET6 | |
 | ESP8266 | Adafruit ESP8266 Feather, <br> Sparkfun ESP8266 Thing | - |
 | ESP32 | Adafruit ESP32 Feather, <br> Sparkfun ESP32 Thing | Onboard flash memory. Refer to footnote<sup>£</sup> below. |
 | Simblee | Sparkfun Simblee | - |
@@ -46,7 +47,7 @@ This Arduino library is for use with flash and FRAM memory chips that communicat
 
 | Manufacturer | Flash IC | Notes |
 | ------------ | -------- | ----- |
-| Winbond | W25Q16BV <br> W25Q64FV <br> W25Q64JV <br> W25Q80BV <br> W25Q256FV | Should work with the W25QXXXBV, W25QXXXFV & <br> W25QXXXJV families |
+| Winbond | W25Q16BV <br> W25Q64FV <br> W25Q64JV <br> W25Q80BV <br> W25Q256FV <br> W25Q16JV| Should work with the W25QXXXBV, W25QXXXFV & <br> W25QXXXJV families |
 | Microchip | SST25VF064C <br> SST26VF016B <br> SST26VF032B <br> SST26VF064B | Should work with the SST25 & SST26 families |
 | Cypress/Spansion | S25FL032P <br> S25FL116K <br> S25FL127S | Should work with the S25FL family |
 | ON Semiconductor | LE25U40CMC |  |

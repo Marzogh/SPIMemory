@@ -154,7 +154,7 @@
 
    #if defined (ARDUINO_ARCH_SAM)
      due.SPIInit(DUE_SPI_CLK);
-   #elif defined (ARDUINO_ARCH_SAMD)
+   #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
      #ifdef SPI_HAS_TRANSACTION
        _spi->beginTransaction(_settings);
      #else
@@ -231,7 +231,7 @@
 
  //Reads/Writes next byte. Call 'n' times to read/write 'n' number of bytes. Should be called after _beginSPI()
  uint8_t SPIFlash::_nextByte(char IOType, uint8_t data) {
- #if defined (ARDUINO_ARCH_SAMD)
+ #if defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
    #ifdef ENABLEZERODMA
      union {
        uint8_t dataBuf[1];
@@ -250,7 +250,7 @@
 
  //Reads/Writes next int. Call 'n' times to read/write 'n' number of integers. Should be called after _beginSPI()
  uint16_t SPIFlash::_nextInt(uint16_t data) {
- #if defined (ARDUINO_ARCH_SAMD)
+ #if defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
    return _spi->transfer16(data);
  #else
    return SPI.transfer16(data);
@@ -267,7 +267,7 @@
      case READDATA:
      #if defined (ARDUINO_ARCH_SAM)
        due.SPIRecByte(&(*data_buffer), size);
-     #elif defined (ARDUINO_ARCH_SAMD)
+     #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
        #ifdef ENABLEZERODMA
          spi_read(&(*data_buffer), size);
        #else
@@ -286,7 +286,7 @@
      case PAGEPROG:
      #if defined (ARDUINO_ARCH_SAM)
        due.SPISendByte(&(*data_buffer), size);
-     #elif defined (ARDUINO_ARCH_SAMD)
+     #elif defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
        #ifdef ENABLEZERODMA
          spi_write(&(*data_buffer), size);
        #else
@@ -313,7 +313,7 @@
    }
 
  #ifdef SPI_HAS_TRANSACTION
-   #if defined (ARDUINO_ARCH_SAMD)
+   #if defined (ARDUINO_ARCH_SAMD) || defined(ARCH_STM32)
      _spi->endTransaction();
    #else
      SPI.endTransaction();
