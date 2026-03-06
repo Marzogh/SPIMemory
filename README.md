@@ -214,13 +214,13 @@ All write commands take a boolean last argument 'errorCheck'. This argument defa
 </sub>
 <hr>
 
-###### `readByteArray(address, *data_buffer, bufferSize)`
+###### `readByteArray(address, *data_buffer, bufferSize, fastRead)`
 
-###### `writeByteArray(address, *data_buffer, bufferSize)`
+###### `writeByteArray(address, *data_buffer, bufferSize, errorCheck)`
 
-###### `readCharArray(address, *data_buffer, bufferSize)`
+###### `readCharArray(address, *data_buffer, bufferSize, fastRead)`
 
-###### `writeCharArray(address, *data_buffer, bufferSize)`
+###### `writeCharArray(address, *data_buffer, bufferSize, errorCheck)`
 
 <hr>
 
